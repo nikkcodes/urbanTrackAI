@@ -1,0 +1,151 @@
+{
+  "description": "Temporary synthetic input used to test the Member 3 downstream analytics pipeline.",
+  "disclaimer": "This file is mock synthetic trajectory data for Member 3 Phase 2 validation only. It does not represent Member 2's final camera tracking output format.",
+  "generated_at": "2026-09-08T08:00:00Z",
+  "trajectories": [
+    {
+      "track_id": "TRK_001",
+      "origin_node": "J01",
+      "destination_node": "J12",
+      "vehicle_weight": 1.0,
+      "time_window_start": "08:00:00",
+      "time_window_end": "08:15:00",
+      "timestamp": "2026-09-08T08:02:15Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J01", "J02", "J05", "J08", "J10", "J12"],
+          "probability": 0.70,
+          "metadata": {"route_desc": "Central Midtown Corridor"}
+        },
+        {
+          "nodes": ["J01", "J04", "J08", "J11", "J12"],
+          "probability": 0.30,
+          "metadata": {"route_desc": "Civic University Corridor"}
+        }
+      ],
+      "metadata": {"vehicle_class": "sedan"}
+    },
+    {
+      "track_id": "TRK_002",
+      "origin_node": "J01",
+      "destination_node": "J12",
+      "vehicle_weight": 1.0,
+      "time_window_start": "08:00:00",
+      "time_window_end": "08:15:00",
+      "timestamp": "2026-09-08T08:05:30Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J01", "J02", "J05", "J08", "J10", "J12"],
+          "probability": 0.80,
+          "metadata": {"route_desc": "Central Midtown Corridor"}
+        },
+        {
+          "nodes": ["J01", "J13", "J07", "J14", "J10", "J12"],
+          "probability": 0.20,
+          "metadata": {"route_desc": "West Bypass & Airport Expressway"}
+        }
+      ],
+      "metadata": {"vehicle_class": "suv"}
+    },
+    {
+      "track_id": "TRK_003",
+      "origin_node": "J02",
+      "destination_node": "J08",
+      "vehicle_weight": 1.0,
+      "time_window_start": "08:00:00",
+      "time_window_end": "08:15:00",
+      "timestamp": "2026-09-08T08:07:00Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J02", "J05", "J08"],
+          "probability": 0.60,
+          "metadata": {"route_desc": "Midtown Direct"}
+        },
+        {
+          "nodes": ["J02", "J03", "J06", "J08"],
+          "probability": 0.40,
+          "metadata": {"route_desc": "Commercial Tech Loop"}
+        }
+      ],
+      "metadata": {"vehicle_class": "hatchback"}
+    },
+    {
+      "track_id": "TRK_004",
+      "origin_node": "J01",
+      "destination_node": "J12",
+      "vehicle_weight": 1.0,
+      "time_window_start": "08:00:00",
+      "time_window_end": "08:15:00",
+      "timestamp": "2026-09-08T08:10:45Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J01", "J02", "J03", "J06", "J09", "J11", "J12"],
+          "probability": 1.00,
+          "metadata": {"route_desc": "East Arterial Expressway"}
+        }
+      ],
+      "metadata": {"vehicle_class": "commercial_van"}
+    },
+    {
+      "track_id": "TRK_005",
+      "origin_node": "J07",
+      "destination_node": "J10",
+      "vehicle_weight": 2.0,
+      "time_window_start": "08:00:00",
+      "time_window_end": "08:15:00",
+      "timestamp": "2026-09-08T08:12:00Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J07", "J14", "J10"],
+          "probability": 0.50,
+          "metadata": {"route_desc": "Airport Expressway Direct"}
+        },
+        {
+          "nodes": ["J07", "J04", "J08", "J10"],
+          "probability": 0.50,
+          "metadata": {"route_desc": "Civic Midtown Link"}
+        }
+      ],
+      "metadata": {"vehicle_class": "truck_convoy", "convoy_size": 2}
+    },
+    {
+      "track_id": "TRK_006",
+      "origin_node": "J04",
+      "destination_node": "J12",
+      "vehicle_weight": 1.0,
+      "time_window_start": "08:15:00",
+      "time_window_end": "08:30:00",
+      "timestamp": "2026-09-08T08:18:20Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J04", "J05", "J06", "J09", "J11", "J12"],
+          "probability": 1.00,
+          "metadata": {"route_desc": "Civic East Perimeter"}
+        }
+      ],
+      "metadata": {"vehicle_class": "sedan"}
+    },
+    {
+      "track_id": "TRK_007",
+      "origin_node": "J08",
+      "destination_node": "J12",
+      "vehicle_weight": 1.5,
+      "time_window_start": "08:15:00",
+      "time_window_end": "08:30:00",
+      "timestamp": "2026-09-08T08:22:10Z",
+      "candidate_routes": [
+        {
+          "nodes": ["J08", "J10", "J12"],
+          "probability": 0.65,
+          "metadata": {"route_desc": "South Boulevard Direct"}
+        },
+        {
+          "nodes": ["J08", "J11", "J12"],
+          "probability": 0.35,
+          "metadata": {"route_desc": "University Cross Route"}
+        }
+      ],
+      "metadata": {"vehicle_class": "bus_cluster"}
+    }
+  ]
+}

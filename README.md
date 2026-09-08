@@ -59,6 +59,30 @@ Phase 1 establishes a clean, tested, and extensible foundation for the city road
 
 ---
 
+## Phase 2: Probabilistic Flow Aggregation
+
+Phase 2 bridges probabilistic vehicle tracking with network-level road traffic analytics:
+
+- **Normalized Trajectory Layer (`backend/flow/models.py`)**:
+  - `CandidateRoute`: Ordered node sequences with valid probability values $[0.0, 1.0]$.
+  - `NormalizedTrajectory`: Decoupled internal representation carrying track IDs, OD endpoints, vehicle weights, time windows, and candidate routes.
+  - Strict non-silent probability validation: sum of candidate route probabilities must equal $1.0 \pm 10^{-6}$.
+  - `RoadFlow` & `FlowAggregationResult`: Structured flow output retaining underlying trajectories for Phase 4 OD analysis.
+- **Adapter Boundary (`backend/flow/adapters.py`)**:
+  - `BaseTrajectoryAdapter`: Abstract adapter interface for future Member 2 integration.
+  - `MockTrajectoryAdapter`: Ingests synthetic mock trajectory payloads from JSON or memory without leaking mock details into aggregation logic.
+- **Aggregation Engine (`backend/flow/aggregation.py`)**:
+  - `ExpectedFlowAggregator`: Maps candidate route node sequences to directed `RoadSegment` IDs in the `MobilityGraph`.
+  - Preserves uncertainty across candidate routes: $\text{expected flow} += \text{weight} \times \text{probability}$.
+  - Duplicate-road traversal rule: loops in a candidate route count the road once per route for expected vehicle flow.
+  - Supports partitioned aggregation by time window (`aggregate_by_time_window`).
+- **Synthetic Mock Fixture (`data/synthetic/mock_trajectories.json`)**:
+  - Isolated test fixture covering multi-vehicle road sharing, split-route probabilities, vehicle weights, and time windows.
+- **Executable Demo (`run_phase2_demo.py`)**:
+  - Runnable demonstration aggregating flows onto the synthetic city network.
+
+---
+
 ## Quickstart
 
 ### Prerequisites
@@ -69,14 +93,19 @@ Phase 1 establishes a clean, tested, and extensible foundation for the city road
 pip install -r requirements.txt
 ```
 
-### 2. Run the Demonstration
-Run the executable smoke test to verify graph loading, candidate route discovery, road incident closure, and restoration:
+### 2. Run Demonstrations
+Phase 1 Mobility Engine demo:
 ```powershell
 python run_demo.py
 ```
 
+Phase 2 Flow Aggregation Engine demo:
+```powershell
+python run_phase2_demo.py
+```
+
 ### 3. Run Unit Tests
-Execute the comprehensive test suite:
+Execute the comprehensive test suite across all phases:
 ```powershell
 python -m unittest discover -s tests -v
 ```
@@ -90,8 +119,13 @@ urbanTrackAI/
 ├── backend/
 │   ├── __init__.py
 │   ├── api/
-│   │   └── __init__.py            # API layer placeholder
-│   └── mobility/
+│   │   └── __init__.py            # API layer placeholder (future phase)
+│   ├── flow/                      # Phase 2: Flow Aggregation Engine
+│   │   ├── __init__.py            # Flow engine public exports
+│   │   ├── adapters.py            # Base and Mock trajectory adapters
+│   │   ├── aggregation.py         # ExpectedFlowAggregator
+│   │   └── models.py              # CandidateRoute, NormalizedTrajectory, RoadFlow
+│   └── mobility/                  # Phase 1: Mobility Engine
 │       ├── __init__.py            # Mobility engine public exports
 │       ├── config.py              # Routing parameters & unit constants
 │       ├── graph.py               # Directed MobilityGraph with closure support
@@ -100,19 +134,27 @@ urbanTrackAI/
 │
 ├── data/
 │   └── synthetic/
-│       └── city_network.json      # Deterministic 14-junction test network
+│       ├── city_network.json      # Deterministic 14-junction test network
+│       └── mock_trajectories.json # Phase 2 synthetic trajectory test fixture
 │
 ├── docs/
-│   └── member3_mobility.md        # Technical architecture documentation
+│   ├── member3_mobility.md        # Phase 1 technical architecture documentation
+│   └── member3_phase2.md          # Phase 2 flow aggregation documentation
 │
 ├── tests/
 │   ├── __init__.py
-│   └── mobility/
+│   ├── flow/                      # Phase 2 unit tests
+│   │   ├── __init__.py
+│   │   ├── test_adapters.py       # Trajectory adapter tests
+│   │   ├── test_aggregation.py    # Flow aggregation engine tests (14 required tests)
+│   │   └── test_models.py         # Trajectory and route model validation tests
+│   └── mobility/                  # Phase 1 unit tests
 │       ├── __init__.py
 │       ├── test_graph.py          # Unit tests for graph, nodes, roads, closures
 │       └── test_routes.py         # Unit tests for routing and travel-time metrics
 │
-├── run_demo.py                    # Smoke test & demonstration script
+├── run_demo.py                    # Phase 1 demonstration script
+├── run_phase2_demo.py             # Phase 2 demonstration script
 ├── requirements.txt               # Dependencies (networkx)
 ├── .env.example                   # Environment configuration template
 ├── .gitignore                     # Git ignore rules
@@ -123,14 +165,14 @@ urbanTrackAI/
 
 ## Roadmap: Subsequent Development Phases
 
-- **Phase 2: Probabilistic Flow Aggregation**:
-  - Ingesting probabilistic trajectory candidates from Member 2.
-  - BPR (Bureau of Public Roads) volume-delay functions for dynamic travel time under congestion.
-- **Phase 3: Traffic Analytics & Bottleneck Forecasting**:
-  - Origin-Destination (OD) matrix generation across temporal slices.
-  - Centrality and spillback bottleneck detection.
-- **Phase 4: Counterfactual Simulation Engine**:
-  - Automated what-if scenario testing for planned road closures and emergency rerouting.
+- **Phase 3: Traffic Volume, Utilization & Congestion Metrics**:
+  - Capacity utilization ($V/C$).
+  - Dynamic BPR (Bureau of Public Roads) travel times under congestion.
+  - Congestion index & speed-flow metrics.
+- **Phase 4: OD Analysis & Bottleneck Identification**:
+  - Origin-Destination (OD) matrix generation from retained trajectory data.
+  - Critical corridor analysis and bottleneck detection.
+  - Counterfactual closure simulations.
 - **Phase 5: Mobility APIs & GIS Dashboard**:
   - REST/WebSocket APIs for mobility telemetry.
   - React/Mapbox/Leaflet interactive dashboard integration.
