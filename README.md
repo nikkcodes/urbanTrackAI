@@ -83,6 +83,34 @@ Phase 2 bridges probabilistic vehicle tracking with network-level road traffic a
 
 ---
 
+## Phase 3: Traffic Metrics & Intelligence Engine
+
+Phase 3 translates expected vehicle flows from Phase 2 into operational traffic intelligence:
+
+- **Capacity Utilization**:
+  - Phase 2 `expected_flow` is an expected vehicle-segment traversal count accumulated during its window, not vehicles/hour.
+  - Phase 3 computes $\text{hourly\_flow} = \text{expected\_flow} / \text{window duration in hours}$, then uses $\text{utilization\_ratio} = \text{hourly\_flow} / C$.
+  - `capacity_vph` is vehicles/hour. A missing window uses the explicit `default_aggregation_duration_hours` setting (default: 1 hour); a present window is parsed and validated.
+  - Explicitly protects against division by zero and rejects zero/negative/invalid capacities.
+- **Estimated Travel Time (BPR Model)**:
+  - Congested travel time: $t = t_0 \left(1 + \alpha (\text{hourly\_flow}/C)^\beta\right)$.
+  - Configurable parameters via `BPRParameters(alpha=0.15, beta=4.0)`.
+- **Congestion Score**:
+  - Normalized continuous delay fraction: $S = (t - t_0) / t = 1 - t_0 / t \in [0.0, 1.0)$.
+  - Derived directly from physical delay curves (not an AI heuristic).
+- **Congestion Levels**:
+  - Discrete Level of Service (LOS) classification: `FREE` ($< 0.70$), `MODERATE` ($0.70 \le u < 0.90$), `HEAVY` ($0.90 \le u < 1.10$), and `SEVERE` ($\ge 1.10$).
+  - Configurable via `CongestionThresholds`.
+- **Network Traffic Summary**:
+  - Aggregate statistics reporting expected vehicle-segment traversals, total graph roads, active flow corridors, simple road averages, and hourly-flow-weighted averages ($\sum(\text{hourly\_flow} \cdot t)/\sum \text{hourly\_flow}$ and $\sum(\text{hourly\_flow} \cdot u)/\sum \text{hourly\_flow}$).
+  - Safe zero-flow handling avoiding division by zero.
+- **Time-Window Traffic Metrics**:
+  - Partitioned evaluations across discrete temporal slices.
+- **Executable Demo (`run_phase3_demo.py`)**:
+  - End-to-end demonstration from synthetic city network and mock trajectories to segment metrics and network summary.
+
+---
+
 ## Quickstart
 
 ### Prerequisites
@@ -102,6 +130,11 @@ python run_demo.py
 Phase 2 Flow Aggregation Engine demo:
 ```powershell
 python run_phase2_demo.py
+```
+
+Phase 3 Traffic Intelligence Engine demo:
+```powershell
+python run_phase3_demo.py
 ```
 
 ### 3. Run Unit Tests
@@ -125,12 +158,16 @@ urbanTrackAI/
 │   │   ├── adapters.py            # Base and Mock trajectory adapters
 │   │   ├── aggregation.py         # ExpectedFlowAggregator
 │   │   └── models.py              # CandidateRoute, NormalizedTrajectory, RoadFlow
-│   └── mobility/                  # Phase 1: Mobility Engine
-│       ├── __init__.py            # Mobility engine public exports
-│       ├── config.py              # Routing parameters & unit constants
-│       ├── graph.py               # Directed MobilityGraph with closure support
-│       ├── models.py              # Validated Node and RoadSegment models
-│       └── routes.py              # Candidate route discovery & travel metrics
+│   ├── mobility/                  # Phase 1: Mobility Engine
+│   │   ├── __init__.py            # Mobility engine public exports
+│   │   ├── config.py              # Routing parameters & unit constants
+│   │   ├── graph.py               # Directed MobilityGraph with closure support
+│   │   ├── models.py              # Validated Node and RoadSegment models
+│   │   └── routes.py              # Candidate route discovery & travel metrics
+│   └── traffic/                   # Phase 3: Traffic Intelligence Engine
+│       ├── __init__.py            # Traffic intelligence public exports
+│       ├── metrics.py             # TrafficMetricsCalculator & BPR formulas
+│       └── models.py              # TrafficMetric, BPRParameters, NetworkTrafficSummary
 │
 ├── data/
 │   └── synthetic/
@@ -139,22 +176,27 @@ urbanTrackAI/
 │
 ├── docs/
 │   ├── member3_mobility.md        # Phase 1 technical architecture documentation
-│   └── member3_phase2.md          # Phase 2 flow aggregation documentation
+│   ├── member3_phase2.md          # Phase 2 flow aggregation documentation
+│   └── member3_phase3.md          # Phase 3 traffic intelligence documentation
 │
 ├── tests/
 │   ├── __init__.py
 │   ├── flow/                      # Phase 2 unit tests
 │   │   ├── __init__.py
 │   │   ├── test_adapters.py       # Trajectory adapter tests
-│   │   ├── test_aggregation.py    # Flow aggregation engine tests (14 required tests)
+│   │   ├── test_aggregation.py    # Flow aggregation engine tests
 │   │   └── test_models.py         # Trajectory and route model validation tests
-│   └── mobility/                  # Phase 1 unit tests
+│   ├── mobility/                  # Phase 1 unit tests
+│   │   ├── __init__.py
+│   │   ├── test_graph.py          # Unit tests for graph, nodes, roads, closures
+│   │   └── test_routes.py         # Unit tests for routing and travel-time metrics
+│   └── traffic/                   # Phase 3 unit tests
 │       ├── __init__.py
-│       ├── test_graph.py          # Unit tests for graph, nodes, roads, closures
-│       └── test_routes.py         # Unit tests for routing and travel-time metrics
+│       └── test_metrics.py        # Traffic metric, BPR, and summary tests
 │
 ├── run_demo.py                    # Phase 1 demonstration script
 ├── run_phase2_demo.py             # Phase 2 demonstration script
+├── run_phase3_demo.py             # Phase 3 demonstration script
 ├── requirements.txt               # Dependencies (networkx)
 ├── .env.example                   # Environment configuration template
 ├── .gitignore                     # Git ignore rules
@@ -165,10 +207,6 @@ urbanTrackAI/
 
 ## Roadmap: Subsequent Development Phases
 
-- **Phase 3: Traffic Volume, Utilization & Congestion Metrics**:
-  - Capacity utilization ($V/C$).
-  - Dynamic BPR (Bureau of Public Roads) travel times under congestion.
-  - Congestion index & speed-flow metrics.
 - **Phase 4: OD Analysis & Bottleneck Identification**:
   - Origin-Destination (OD) matrix generation from retained trajectory data.
   - Critical corridor analysis and bottleneck detection.
