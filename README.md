@@ -144,6 +144,8 @@ python run_phase4_demo.py
 
 Phase 5 Network Anomaly Detection is implemented as deterministic, evidence-based mobility-state comparison.
 
+Phase 6 Counterfactual Network Simulation is implemented as deterministic scenario-based decision support.
+
 ### 3. Run Unit Tests
 Execute the comprehensive test suite across all phases:
 ```powershell
@@ -211,6 +213,8 @@ urbanTrackAI/
 ├── run_phase2_demo.py             # Phase 2 demonstration script
 ├── run_phase3_demo.py             # Phase 3 demonstration script
 ├── run_phase4_demo.py             # Phase 4 demonstration script
+├── run_phase5_demo.py             # Phase 5 demonstration script
+├── run_phase6_demo.py             # Phase 6 demonstration script
 ├── requirements.txt               # Dependencies (networkx)
 ├── .env.example                   # Environment configuration template
 ├── .gitignore                     # Git ignore rules
