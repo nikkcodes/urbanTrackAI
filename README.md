@@ -142,6 +142,8 @@ Phase 4 Urban Mobility Intelligence demo:
 python run_phase4_demo.py
 ```
 
+Phase 5 Network Anomaly Detection is implemented as deterministic, evidence-based mobility-state comparison.
+
 ### 3. Run Unit Tests
 Execute the comprehensive test suite across all phases:
 ```powershell
