@@ -1,0 +1,22 @@
+"""Perception layer configuration."""
+
+CONFIDENCE_THRESHOLD = 0.55
+SUPPORTED_VIDEO_EXTENSIONS = (".mp4", ".mov", ".avi", ".mkv")
+VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
+ANNOTATION_COLOR = (0, 255, 0)
+LABEL_TEXT_COLOR = (0, 0, 0)
+LABEL_BACKGROUND_COLOR = (0, 255, 0)
+HUD_BACKGROUND_COLOR = (18, 25, 22)
+HUD_TEXT_COLOR = (255, 255, 255)
+HUD_ACCENT_COLOR = (0, 200, 120)
+HUD_BACKGROUND_ALPHA = 0.78
+REFERENCE_FRAME_WIDTH = 640
+REFERENCE_FRAME_HEIGHT = 480
+MIN_LINE_THICKNESS = 1
+MIN_FONT_SCALE = 0.5
+VEHICLE_COLORS = {
+    "car": (255, 0, 0),
+    "motorcycle": (0, 165, 255),
+    "bus": (0, 255, 255),
+    "truck": (255, 0, 255),
+}

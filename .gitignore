@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+
+# Python Cache
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Environment Variables
+.env
+
+# AI Model Weights
+*.pt
+
+# Generated Outputs
+data/output/
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Input videos
+data/input/*.mp4
