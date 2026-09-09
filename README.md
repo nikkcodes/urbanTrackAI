@@ -137,6 +137,11 @@ Phase 3 Traffic Intelligence Engine demo:
 python run_phase3_demo.py
 ```
 
+Phase 4 Urban Mobility Intelligence demo:
+```powershell
+python run_phase4_demo.py
+```
+
 ### 3. Run Unit Tests
 Execute the comprehensive test suite across all phases:
 ```powershell
@@ -164,10 +169,16 @@ urbanTrackAI/
 │   │   ├── graph.py               # Directed MobilityGraph with closure support
 │   │   ├── models.py              # Validated Node and RoadSegment models
 │   │   └── routes.py              # Candidate route discovery & travel metrics
-│   └── traffic/                   # Phase 3: Traffic Intelligence Engine
+│   ├── traffic/                   # Phase 3: Traffic Intelligence Engine
 │       ├── __init__.py            # Traffic intelligence public exports
 │       ├── metrics.py             # TrafficMetricsCalculator & BPR formulas
 │       └── models.py              # TrafficMetric, BPRParameters, NetworkTrafficSummary
+│   └── analytics/                 # Phase 4: Urban Mobility Intelligence
+│       ├── __init__.py             # Phase 4 public exports
+│       ├── models.py               # OD, bottleneck, network, and result models
+│       ├── od.py                   # OD and probabilistic route demand
+│       ├── bottlenecks.py          # Deterministic bottleneck ranking
+│       └── network.py              # HHI, shares, centrality, priorities
 │
 ├── data/
 │   └── synthetic/
@@ -197,6 +208,7 @@ urbanTrackAI/
 ├── run_demo.py                    # Phase 1 demonstration script
 ├── run_phase2_demo.py             # Phase 2 demonstration script
 ├── run_phase3_demo.py             # Phase 3 demonstration script
+├── run_phase4_demo.py             # Phase 4 demonstration script
 ├── requirements.txt               # Dependencies (networkx)
 ├── .env.example                   # Environment configuration template
 ├── .gitignore                     # Git ignore rules
