@@ -80,7 +80,7 @@ class NormalizedCandidateRoute:
         """Serialize candidate route to dictionary."""
         return {
             "nodes": list(self.nodes),
-            "probability": round(self.probability, 4),
+            "probability": round(self.probability, 6),
             "metadata": dict(self.metadata),
         }
 
@@ -167,14 +167,14 @@ class NormalizedTrajectory:
                 )
 
         # Validate probability distribution sum
-        self.validate_probabilities(tolerance=1e-4)
+        self.validate_probabilities(tolerance=1e-6)
 
-    def validate_probabilities(self, tolerance: float = 1e-4) -> None:
+    def validate_probabilities(self, tolerance: float = 1e-6) -> None:
         """
         Validate that candidate route probabilities sum to approximately 1.0.
 
         Args:
-            tolerance: Numerical tolerance for floating-point sum (default 1e-4).
+            tolerance: Numerical tolerance for floating-point sum (default 1e-6).
 
         Raises:
             ProbabilityValidationError: If total probability deviates from 1.0 beyond tolerance.
@@ -182,7 +182,7 @@ class NormalizedTrajectory:
         total_prob = sum(route.probability for route in self.candidate_routes)
         if abs(total_prob - 1.0) > tolerance:
             raise ProbabilityValidationError(
-                f"Trajectory '{self.track_id}' candidate route probabilities sum to {total_prob:.6f}, "
+                f"Trajectory '{self.track_id}' candidate route probabilities sum to {total_prob:.8f}, "
                 f"expected approximately 1.0 (tolerance: {tolerance})."
             )
 

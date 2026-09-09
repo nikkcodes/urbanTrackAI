@@ -41,24 +41,39 @@ class RoadEdge:
     speed_limit_kmh: float = 50.0
     expected_speed_kmh: float = 40.0
     one_way: bool = False
+    is_closed: bool = False
+    distance_km: Optional[float] = None
+    capacity_vph: Optional[float] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        d = {
             "road_id": self.road_id,
             "name": self.name,
             "from": self.from_node,
             "to": self.to_node,
+            "from_node": self.from_node,
+            "to_node": self.to_node,
             "distance_m": self.distance_m,
+            "distance_km": self.distance_km if self.distance_km is not None else round(self.distance_m / 1000.0, 3),
             "speed_limit_kmh": self.speed_limit_kmh,
+            "speed_limit_kmph": self.speed_limit_kmh,
             "expected_speed_kmh": self.expected_speed_kmh,
             "one_way": self.one_way,
+            "is_closed": self.is_closed,
         }
+        if self.capacity_vph is not None:
+            d["capacity_vph"] = self.capacity_vph
+        if self.metadata:
+            d["metadata"] = dict(self.metadata)
+        return d
 
 
 class RoadGraph:
     """
     Spatial Road Network Graph for vehicle trajectory inference.
     Supports camera-to-network association, candidate route generation, and travel time estimation.
+    Compatible with Member 3's city_network.json schema and internal Day-3 graph formats.
     """
 
     def __init__(self, metadata: Optional[Dict[str, Any]] = None) -> None:
@@ -76,12 +91,16 @@ class RoadGraph:
             self.adjacency[node.node_id] = []
 
     def add_edge(self, edge: RoadEdge) -> None:
-        """Add a road segment to the graph (supports one-way and bidirectional)."""
+        """Add a road segment to the graph (supports one-way, bidirectional, and closed roads)."""
         self.edges[edge.road_id] = edge
         if edge.from_node not in self.adjacency:
             self.adjacency[edge.from_node] = []
         if edge.to_node not in self.adjacency:
             self.adjacency[edge.to_node] = []
+
+        # If road is closed, do NOT add to active routing adjacency (matches Member 3 MobilityGraph)
+        if edge.is_closed:
+            return
 
         # Forward direction
         self.adjacency[edge.from_node].append((edge.to_node, edge.road_id, edge.distance_m, edge))
@@ -89,6 +108,48 @@ class RoadGraph:
         # Reverse direction if bidirectional
         if not edge.one_way:
             self.adjacency[edge.to_node].append((edge.from_node, edge.road_id, edge.distance_m, edge))
+
+    def close_road(self, road_id: str) -> bool:
+        """
+        Temporarily close a road segment and remove it from active routing adjacency.
+        Returns True if status changed, False if already closed.
+        """
+        if road_id not in self.edges:
+            raise KeyError(f"Road '{road_id}' does not exist in graph.")
+        edge = self.edges[road_id]
+        if edge.is_closed:
+            return False
+        edge.is_closed = True
+        self._rebuild_adjacency()
+        return True
+
+    def restore_road(self, road_id: str) -> bool:
+        """
+        Restore a previously closed road segment back into active routing adjacency.
+        Returns True if restored, False if already active.
+        """
+        if road_id not in self.edges:
+            raise KeyError(f"Road '{road_id}' does not exist in graph.")
+        edge = self.edges[road_id]
+        if not edge.is_closed:
+            return False
+        edge.is_closed = False
+        self._rebuild_adjacency()
+        return True
+
+    def _rebuild_adjacency(self) -> None:
+        """Rebuild active routing adjacency omitting closed road segments."""
+        self.adjacency = {nid: [] for nid in self.nodes}
+        for edge in self.edges.values():
+            if edge.is_closed:
+                continue
+            if edge.from_node not in self.adjacency:
+                self.adjacency[edge.from_node] = []
+            if edge.to_node not in self.adjacency:
+                self.adjacency[edge.to_node] = []
+            self.adjacency[edge.from_node].append((edge.to_node, edge.road_id, edge.distance_m, edge))
+            if not edge.one_way:
+                self.adjacency[edge.to_node].append((edge.from_node, edge.road_id, edge.distance_m, edge))
 
     def associate_camera(
         self,
@@ -252,28 +313,75 @@ class RoadGraph:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "RoadGraph":
-        """Construct RoadGraph from a dictionary representation."""
-        graph = cls(metadata=data.get("metadata", {}))
+        """
+        Construct RoadGraph from a dictionary representation.
+        Supports both Day-3 internal road graph format (with 'edges') and
+        Member 3's city_network.json format (with 'roads', 'distance_km', 'lat'/'lon', 'is_closed').
+        """
+        meta = dict(data.get("metadata", {}))
+        if "name" in data and not meta.get("network_name"):
+            meta["network_name"] = str(data["name"])
+        graph = cls(metadata=meta)
 
         for n in data.get("nodes", []):
+            nid = str(n.get("node_id") or n.get("id"))
+            lat = float(n["lat"] if "lat" in n else n["latitude"])
+            lon = float(n["lon"] if "lon" in n else n["longitude"])
+            name = str(n.get("name", nid))
             node = RoadNode(
-                node_id=str(n["id"]),
-                name=str(n.get("name", n["id"])),
-                latitude=float(n["latitude"]),
-                longitude=float(n["longitude"]),
+                node_id=nid,
+                name=name,
+                latitude=lat,
+                longitude=lon,
             )
             graph.add_node(node)
 
-        for e in data.get("edges", []):
+        # Support both Member 3 'roads' and Day 3 'edges'
+        raw_edges = data.get("roads") or data.get("edges") or []
+        for e in raw_edges:
+            rid = str(e["road_id"])
+            from_n = str(e.get("from_node") or e.get("from"))
+            to_n = str(e.get("to_node") or e.get("to"))
+
+            # Unit handling: distance_km vs distance_m
+            dist_km = float(e["distance_km"]) if "distance_km" in e else None
+            if dist_km is not None:
+                dist_m = dist_km * 1000.0
+            else:
+                dist_m = float(e.get("distance_m", 0.0))
+                dist_km = dist_m / 1000.0 if dist_m > 0 else 0.0
+
+            # Speed limit handling: speed_limit_kmph vs speed_limit_kmh
+            spd_limit = float(e.get("speed_limit_kmph") or e.get("speed_limit_kmh", 50.0))
+
+            # Expected speed / free-flow time handling
+            if "free_flow_time_min" in e and float(e["free_flow_time_min"]) > 0:
+                exp_speed = round(dist_km / (float(e["free_flow_time_min"]) / 60.0), 1)
+            else:
+                exp_speed = float(e.get("expected_speed_kmh", spd_limit * 0.8))
+
+            is_closed = bool(e.get("is_closed", False))
+            cap = float(e["capacity_vph"]) if "capacity_vph" in e else None
+
+            # In Member 3's 'roads', all segments are explicit directed edges (one_way=True)
+            if "roads" in data and "one_way" not in e:
+                one_way = True
+            else:
+                one_way = bool(e.get("one_way", False))
+
             edge = RoadEdge(
-                road_id=str(e["road_id"]),
-                name=str(e.get("name", e["road_id"])),
-                from_node=str(e["from"]),
-                to_node=str(e["to"]),
-                distance_m=float(e["distance_m"]),
-                speed_limit_kmh=float(e.get("speed_limit_kmh", 50.0)),
-                expected_speed_kmh=float(e.get("expected_speed_kmh", 40.0)),
-                one_way=bool(e.get("one_way", False)),
+                road_id=rid,
+                name=str(e.get("name", rid)),
+                from_node=from_n,
+                to_node=to_n,
+                distance_m=dist_m,
+                speed_limit_kmh=spd_limit,
+                expected_speed_kmh=exp_speed,
+                one_way=one_way,
+                is_closed=is_closed,
+                distance_km=dist_km,
+                capacity_vph=cap,
+                metadata=dict(e.get("metadata", {})),
             )
             graph.add_edge(edge)
 

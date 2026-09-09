@@ -442,14 +442,24 @@ $$\text{route demand} = \text{vehicle\_weight} \times \text{route\_probability}$
 
 ---
 
+## Shared Spatial Graph (`data/synthetic/city_network.json`)
+
+Member 3's validated spatial graph is directly ingested as the shared spatial source:
+- **14 Junctions (`J01` ... `J14`)**: North Gate Terminal, North Junction, Midtown Circle, Central Square, South Hub Terminal, etc.
+- **28 Directed Road Segments (`R01` ... `R28`)**: Expressways, arterials, bypasses, and urban connectors.
+- **Road Properties**: `from_node`, `to_node`, `distance_km` (automatically converted to `distance_m = distance_km * 1000.0`), `speed_limit_kmph`, `capacity_vph`, and `is_closed`.
+- **Closed Road Handling**: Closed segments (`is_closed: true`) are excluded from routing adjacency, matching Member 3's `MobilityGraph`.
+
+---
+
 ## Reproducing Demos & Tests
 
-### 1. Run Complete Unit Test Suite (72 tests)
+### 1. Run Complete Unit Test Suite (73 tests)
 ```bash
 python3 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-### 2. Run Member 3 Integration Contract Tests (14 tests)
+### 2. Run Member 3 Integration Contract Tests (15 tests)
 ```bash
 python3 -m unittest tests/test_member3_integration.py -v
 ```
@@ -474,6 +484,6 @@ python3 run_real_data.py
 ## Technical Honesty & Limitations
 
 1. **Uncalibrated Relative Likelihoods:** Candidate route scores are normalized relative likelihoods based on travel speed and path distance. They are **not** calibrated Bayesian posterior probabilities.
-2. **Synthetic Road Graph:** Because Nikhilesh's full city-scale road network is not yet checked in, Day 3 uses a deterministic, geometrically grounded synthetic road network in Hyderabad coordinate space (`data/roads/synthetic_road_graph.json`). It is not claimed to be live government GIS data.
+2. **Shared Spatial Graph:** The Day 3 trajectory inference engine uses Member 3's confirmed spatial graph (`data/synthetic/city_network.json`), preserving exact `J01`..`J14` and `R01`..`R28` identifiers and directed edge topology.
 3. **Kanishka Perception Feed Compatibility:** The current perception feed lacks persistent Re-ID embeddings, resulting in singletons from Day 2. Day 3 handles singletons safely ($d=0$, confidence=1.0) without fabricating artificial multi-camera trajectories.
 

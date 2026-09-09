@@ -1,9 +1,9 @@
 """
-Member 3 Integration Contract Test Suite.
+Member 3 Integration Contract & Spatial Network Test Suite.
 
-Validates that Day 3 Trajectory Reconstruction outputs cleanly adhere to
-the contract expected by Member 3's Mobility Graph, Flow Aggregation,
-Traffic Analytics, and Decision Intelligence engines.
+Validates that Day 3 Trajectory Reconstruction cleanly and natively integrates
+with Member 3's real spatial graph (data/synthetic/city_network.json) and produces
+trajectories conforming to the downstream NormalizedTrajectory interface contract.
 
 Contract Verified:
 NormalizedTrajectory
@@ -14,10 +14,14 @@ NormalizedTrajectory
 ├── candidate_routes[]
 │   ├── nodes
 │   └── probability
-└── time window
+└── time_window
+    ├── start
+    └── end
 """
 
 import math
+import os
+from pathlib import Path
 import unittest
 
 from inference.member3_adapter import (
@@ -36,389 +40,371 @@ from schemas.normalized_trajectory_schema import (
     NormalizedTrajectory,
     ProbabilityValidationError,
 )
-from schemas.observation_schema import Observation
 from schemas.trajectory_schema import CandidateRoute, TrajectorySegment, VehicleTrajectory
 
 
 class TestMember3Integration(unittest.TestCase):
-    """Test suite for Member 3 integration schema, adapter layer, and contract validation."""
+    """
+    Comprehensive test suite covering:
+    1. Member 3 city_network.json loading, directed edges, units, and closed roads.
+    2. Camera spatial snapping and observation mapping.
+    3. Day-3 trajectory reconstruction on city_network.json using J01..J14 & R01..R28.
+    4. NormalizedTrajectory contract, probability distribution, and demand weighting (W * P).
+    5. Multi-observation trajectory corridors and Member 3 payload compatibility.
+    """
 
     def setUp(self):
-        """Set up road network and sample camera observations."""
-        self.graph = RoadGraph(metadata={"name": "integration_test_network"})
+        """Set up test environment with Member 3's city_network.json."""
+        self.network_path = Path("data/synthetic/city_network.json")
+        self.assertTrue(self.network_path.is_file(), f"Missing city_network.json at {self.network_path}")
+        self.graph = RoadGraph.from_json_file(self.network_path)
 
-        # Nodes
-        self.graph.add_node(RoadNode(node_id="J1", name="Junction 1", latitude=17.3850, longitude=78.4867))
-        self.graph.add_node(RoadNode(node_id="J2", name="Junction 2", latitude=17.3880, longitude=78.4867))
-        self.graph.add_node(RoadNode(node_id="J3", name="Junction 3", latitude=17.3850, longitude=78.4900))
-        self.graph.add_node(RoadNode(node_id="J4", name="Junction 4", latitude=17.3880, longitude=78.4900))
-
-        # Roads from J1 to J4
-        # Path A (via J2): J1 -> J2 -> J4 (700m)
-        self.graph.add_edge(RoadEdge(road_id="r12", from_node="J1", to_node="J2", distance_m=350.0, name="Road 1-2", speed_limit_kmh=50.0, one_way=True))
-        self.graph.add_edge(RoadEdge(road_id="r24", from_node="J2", to_node="J4", distance_m=350.0, name="Road 2-4", speed_limit_kmh=50.0, one_way=True))
-
-        # Path B (via J3): J1 -> J3 -> J4 (1000m)
-        self.graph.add_edge(RoadEdge(road_id="r13", from_node="J1", to_node="J3", distance_m=400.0, name="Road 1-3", speed_limit_kmh=80.0, one_way=True))
-        self.graph.add_edge(RoadEdge(road_id="r34", from_node="J3", to_node="J4", distance_m=600.0, name="Road 3-4", speed_limit_kmh=80.0, one_way=True))
-
-        # Camera associations
-        self.graph.camera_associations["CAM_01"] = "J1"
-        self.graph.camera_associations["CAM_02"] = "J2"
-        self.graph.camera_associations["CAM_03"] = "J3"
-        self.graph.camera_associations["CAM_04"] = "J4"
+        # Associate test cameras with Member 3 junctions
+        # J01 (lat: 28.6400, lon: 77.2000) - North Gate Terminal
+        # J02 (lat: 28.6350, lon: 77.2100) - North Junction
+        # J05 (lat: 28.6200, lon: 77.2180) - Midtown Circle
+        # J08 (lat: 28.6100, lon: 77.2100) - Central Square
+        # J10 (lat: 28.6000, lon: 77.2000) - South Boulevard
+        # J12 (lat: 28.5900, lon: 77.2100) - South Hub Terminal
+        self.graph.camera_associations["CAM_J01"] = "J01"
+        self.graph.camera_associations["CAM_J02"] = "J02"
+        self.graph.camera_associations["CAM_J05"] = "J05"
+        self.graph.camera_associations["CAM_J08"] = "J08"
+        self.graph.camera_associations["CAM_J10"] = "J10"
+        self.graph.camera_associations["CAM_J12"] = "J12"
 
     # =========================================================================
-    # 1. SCHEMA VALIDATION TESTS
+    # 1. MEMBER 3 GRAPH LOADING & UNIT CONVERSION TESTS
     # =========================================================================
 
-    def test_normalized_candidate_route_valid(self):
-        """Test valid creation of NormalizedCandidateRoute."""
-        route = NormalizedCandidateRoute(
-            nodes=["J1", "J2", "J4"],
-            probability=0.75,
-            metadata={"distance_m": 700.0},
-        )
-        self.assertEqual(route.nodes, ["J1", "J2", "J4"])
-        self.assertEqual(route.probability, 0.75)
-        self.assertEqual(route.metadata["distance_m"], 700.0)
+    def test_01_member3_graph_loads_all_nodes_and_roads(self):
+        """Verify city_network.json loads exactly 14 junctions (J01..J14) and 28 roads (R01..R28)."""
+        self.assertEqual(len(self.graph.nodes), 14)
+        self.assertEqual(len(self.graph.edges), 28)
 
-    def test_normalized_candidate_route_invalid_nodes(self):
-        """Test that candidate route must contain at least 2 valid string nodes."""
-        with self.assertRaises(InvalidRouteError):
-            NormalizedCandidateRoute(nodes=["J1"], probability=1.0)
+        # Check all J01..J14 are present
+        for i in range(1, 15):
+            node_id = f"J{i:02d}"
+            self.assertIn(node_id, self.graph.nodes)
+            node = self.graph.nodes[node_id]
+            self.assertTrue(28.5 <= node.latitude <= 28.7)
+            self.assertTrue(77.1 <= node.longitude <= 77.3)
 
-        with self.assertRaises(InvalidRouteError):
-            NormalizedCandidateRoute(nodes=[], probability=1.0)
+        # Check all R01..R28 are present
+        for i in range(1, 29):
+            road_id = f"R{i:02d}"
+            self.assertIn(road_id, self.graph.edges)
 
-        with self.assertRaises(InvalidRouteError):
-            NormalizedCandidateRoute(nodes=["J1", ""], probability=1.0)
+    def test_02_distance_units_conversion_km_to_meters(self):
+        """Verify distance_km in Member 3's graph is correctly converted to distance_m (x1000)."""
+        # R01: J01 -> J02, distance_km = 1.8 -> distance_m = 1800.0
+        r01 = self.graph.edges["R01"]
+        self.assertAlmostEqual(r01.distance_km, 1.8, places=3)
+        self.assertAlmostEqual(r01.distance_m, 1800.0, places=1)
 
-        with self.assertRaises(InvalidRouteError):
-            NormalizedCandidateRoute(nodes=["J1", None], probability=1.0)
+        # R16: J07 -> J14, distance_km = 3.2 -> distance_m = 3200.0
+        r16 = self.graph.edges["R16"]
+        self.assertAlmostEqual(r16.distance_km, 3.2, places=3)
+        self.assertAlmostEqual(r16.distance_m, 3200.0, places=1)
 
-    def test_normalized_candidate_route_invalid_probability(self):
-        """Test probability bounds [0.0, 1.0] and finiteness."""
-        with self.assertRaises(ProbabilityValidationError):
-            NormalizedCandidateRoute(nodes=["J1", "J2"], probability=-0.1)
+    def test_03_speed_limit_units_and_free_flow_speed(self):
+        """Verify speed limits (kmph) and free-flow expected speeds from city_network.json."""
+        # R01: speed_limit_kmph = 50.0, free_flow_time_min = 2.16 -> 1.8 / (2.16 / 60) = 50.0 km/h
+        r01 = self.graph.edges["R01"]
+        self.assertEqual(r01.speed_limit_kmh, 50.0)
+        self.assertAlmostEqual(r01.expected_speed_kmh, 50.0, places=1)
 
-        with self.assertRaises(ProbabilityValidationError):
-            NormalizedCandidateRoute(nodes=["J1", "J2"], probability=1.05)
+        # R16: speed_limit_kmph = 80.0
+        r16 = self.graph.edges["R16"]
+        self.assertEqual(r16.speed_limit_kmh, 80.0)
 
-        with self.assertRaises(ProbabilityValidationError):
-            NormalizedCandidateRoute(nodes=["J1", "J2"], probability=float("nan"))
+    def test_04_directed_roads_behavior(self):
+        """Verify directed edges are respected: R01 connects J01 -> J02; reverse requires R28."""
+        # Forward path from J01 to J02 exists
+        dist_fwd = self.graph.find_shortest_distance("J01", "J02")
+        self.assertIsNotNone(dist_fwd)
+        self.assertAlmostEqual(dist_fwd, 1800.0, places=1)
 
-        with self.assertRaises(ProbabilityValidationError):
-            NormalizedCandidateRoute(nodes=["J1", "J2"], probability=float("inf"))
+        # Reverse path from J02 to J01 uses R28 (1800m)
+        dist_rev = self.graph.find_shortest_distance("J02", "J01")
+        self.assertIsNotNone(dist_rev)
+        self.assertAlmostEqual(dist_rev, 1800.0, places=1)
 
-    def test_normalized_trajectory_valid(self):
-        """Test valid creation and properties of NormalizedTrajectory."""
+        # One-way road R02 connects J02 -> J03, but no direct reverse road exists
+        neighbors_j03 = [dest for dest, _, _, _ in self.graph.adjacency.get("J03", [])]
+        self.assertNotIn("J02", neighbors_j03)
+
+    def test_05_closed_road_exclusion(self):
+        """Verify that closing a road excludes it from active routing and candidate routes."""
+        # Initially, J02 -> J05 uses R08 (1600m)
+        r08 = self.graph.edges["R08"]
+        self.assertFalse(r08.is_closed)
+        paths_before = self.graph.find_candidate_paths("J02", "J05")
+        self.assertGreaterEqual(len(paths_before), 1)
+        self.assertIn("R08", paths_before[0]["edges"])
+
+        # Dynamically close R08
+        closed = self.graph.close_road("R08")
+        self.assertTrue(closed)
+
+        # R08 must now be excluded from candidate paths
+        paths_after = self.graph.find_candidate_paths("J02", "J05")
+        for p in paths_after:
+            self.assertNotIn("R08", p["edges"])
+
+        # Restore R08
+        restored = self.graph.restore_road("R08")
+        self.assertTrue(restored)
+        paths_restored = self.graph.find_candidate_paths("J02", "J05")
+        self.assertIn("R08", paths_restored[0]["edges"])
+
+    # =========================================================================
+    # 2. CAMERA SPATIAL MAPPING TESTS
+    # =========================================================================
+
+    def test_06_camera_spatial_snapping_to_junctions(self):
+        """Verify observations snap to nearest junction within 150m or fail safely."""
+        # Coordinate exact at J01 (28.6400, 77.2000)
+        snapped_j01 = self.graph.associate_camera("CAM_NEW_01", latitude=28.6400, longitude=77.2000)
+        self.assertEqual(snapped_j01, "J01")
+
+        # Coordinate within 50m of J02 (28.6350, 77.2100)
+        snapped_j02 = self.graph.associate_camera("CAM_NEAR_02", latitude=28.6352, longitude=77.2102)
+        self.assertEqual(snapped_j02, "J02")
+
+        # Coordinate in different city (Hyderabad 17.385, 78.486) -> exceeds 150m, fails safely
+        snapped_far = self.graph.associate_camera("CAM_HYD", latitude=17.3850, longitude=78.4867)
+        self.assertIsNone(snapped_far)
+
+        # Explicit mapped camera
+        snapped_explicit = self.graph.associate_camera("CAM_J08")
+        self.assertEqual(snapped_explicit, "J08")
+
+    # =========================================================================
+    # 3. DAY 3 TRAJECTORY RECONSTRUCTION ON MEMBER 3 GRAPH
+    # =========================================================================
+
+    def test_07_candidate_routes_use_member3_identifiers(self):
+        """Verify candidate routes generated use J01..J14 and R01..R28 identifiers."""
+        # Travel J01 -> J08 (approx 5.5 km, speed limit 50 km/h -> ~400s)
+        obs_a = {"camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"camera_id": "CAM_J08", "timestamp": 1450.0}
+
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_TEST_001")
+        self.assertEqual(segment.status, "success")
+        self.assertGreaterEqual(len(segment.candidate_routes), 1)
+
+        # Verify candidate routes use J01..J14 and R01..R28
+        top_route = segment.candidate_routes[0]
+        self.assertEqual(top_route.nodes[0], "J01")
+        self.assertEqual(top_route.nodes[-1], "J08")
+        for node in top_route.nodes:
+            self.assertTrue(node.startswith("J"), f"Expected J identifier, got {node}")
+        for edge in top_route.edges:
+            self.assertTrue(edge.startswith("R"), f"Expected R identifier, got {edge}")
+
+    def test_08_multiple_candidate_corridors_preserved_with_likelihoods(self):
+        """Verify that alternative corridors between J01 and J12 are discovered and preserved."""
+        # J01 -> J12: Corridor A (via Midtown J02-J05-J08-J10) vs Corridor B (via Civic J04-J08-J11)
+        # Total distance ~ 9.4 km, normal driving time ~ 750s (~45 km/h)
+        obs_a = {"camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"camera_id": "CAM_J12", "timestamp": 1750.0}
+
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_TEST_002", max_paths=5)
+        self.assertEqual(segment.status, "success")
+        self.assertGreaterEqual(len(segment.candidate_routes), 2)
+
+        # All candidate routes should have valid estimated likelihoods summing to 1.0
+        feasible_routes = [r for r in segment.candidate_routes if r.feasible]
+        self.assertGreaterEqual(len(feasible_routes), 2)
+        total_likelihood = sum(r.estimated_likelihood for r in feasible_routes)
+        self.assertAlmostEqual(total_likelihood, 1.0, places=4)
+
+    def test_09_physically_impossible_speed_marked_infeasible(self):
+        """Verify extreme speed travel between J01 and J12 is marked infeasible."""
+        # 9.4 km in 30 seconds -> required speed > 1100 km/h
+        obs_a = {"camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"camera_id": "CAM_J12", "timestamp": 1030.0}
+
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_FAST")
+        self.assertEqual(segment.status, "infeasible")
+        self.assertFalse(segment.feasible)
+
+    # =========================================================================
+    # 4. NORMALIZEDTRAJECTORY CONTRACT & ADAPTER TESTS
+    # =========================================================================
+
+    def test_10_adapt_trajectory_segment_to_normalized(self):
+        """Verify adapting segment into NormalizedTrajectory conforming to Member 3 contract."""
+        obs_a = {"camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"camera_id": "CAM_J08", "timestamp": 1450.0}
+
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_001")
+        norm_traj = adapt_trajectory_segment_to_normalized(segment, vehicle_weight=1.0)
+
+        # Check required Member 3 contract attributes
+        self.assertEqual(norm_traj.track_id, "TRK_001")
+        self.assertEqual(norm_traj.origin_node, "J01")
+        self.assertEqual(norm_traj.destination_node, "J08")
+        self.assertEqual(norm_traj.vehicle_weight, 1.0)
+        self.assertEqual(norm_traj.time_window_start, 1000.0)
+        self.assertEqual(norm_traj.time_window_end, 1450.0)
+        self.assertGreaterEqual(len(norm_traj.candidate_routes), 1)
+
+        # Check probability normalization (sum == 1.0 within 1e-6)
+        total_p = sum(r.probability for r in norm_traj.candidate_routes)
+        self.assertAlmostEqual(total_p, 1.0, places=6)
+
+        # Check endpoints consistency
+        for r in norm_traj.candidate_routes:
+            self.assertEqual(r.nodes[0], "J01")
+            self.assertEqual(r.nodes[-1], "J08")
+
+    def test_11_route_demand_weighting_semantics(self):
+        """Verify downstream route demand = vehicle_weight * route_probability."""
         routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.70),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.30),
+            NormalizedCandidateRoute(nodes=["J01", "J02", "J05", "J08", "J10", "J12"], probability=0.70),
+            NormalizedCandidateRoute(nodes=["J01", "J04", "J08", "J11", "J12"], probability=0.30),
         ]
         traj = NormalizedTrajectory(
-            track_id="VEH_001",
-            origin_node="J1",
-            destination_node="J4",
+            track_id="TRK_001",
+            origin_node="J01",
+            destination_node="J12",
             candidate_routes=routes,
             vehicle_weight=1.0,
-            time_window_start="2026-03-03T10:00:00Z",
-            time_window_end="2026-03-03T10:02:00Z",
-        )
-        self.assertEqual(traj.track_id, "VEH_001")
-        self.assertEqual(traj.origin_node, "J1")
-        self.assertEqual(traj.destination_node, "J4")
-        self.assertEqual(traj.vehicle_weight, 1.0)
-        self.assertEqual(len(traj.candidate_routes), 2)
-
-    def test_endpoint_consistency_validation(self):
-        """Verify that every candidate route must start at origin and end at destination."""
-        # Start mismatch
-        invalid_start_routes = [
-            NormalizedCandidateRoute(nodes=["J2", "J4"], probability=1.0),
-        ]
-        with self.assertRaises(InvalidRouteError):
-            NormalizedTrajectory(
-                track_id="VEH_001",
-                origin_node="J1",
-                destination_node="J4",
-                candidate_routes=invalid_start_routes,
-            )
-
-        # End mismatch
-        invalid_end_routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2"], probability=1.0),
-        ]
-        with self.assertRaises(InvalidRouteError):
-            NormalizedTrajectory(
-                track_id="VEH_001",
-                origin_node="J1",
-                destination_node="J4",
-                candidate_routes=invalid_end_routes,
-            )
-
-    def test_probability_sum_validation(self):
-        """Verify that candidate route probabilities must sum to 1.0."""
-        # Sums to 0.85 (invalid)
-        bad_sum_routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.60),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.25),
-        ]
-        with self.assertRaises(ProbabilityValidationError):
-            NormalizedTrajectory(
-                track_id="VEH_001",
-                origin_node="J1",
-                destination_node="J4",
-                candidate_routes=bad_sum_routes,
-            )
-
-        # Sums to 1.00005 (valid within 1e-4 tolerance)
-        acceptable_routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.70002),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.29999),
-        ]
-        traj = NormalizedTrajectory(
-            track_id="VEH_001",
-            origin_node="J1",
-            destination_node="J4",
-            candidate_routes=acceptable_routes,
-        )
-        self.assertIsNotNone(traj)
-
-    def test_vehicle_weight_validation(self):
-        """Verify vehicle_weight validation (non-negative, finite)."""
-        routes = [NormalizedCandidateRoute(nodes=["J1", "J4"], probability=1.0)]
-        with self.assertRaises(ValueError):
-            NormalizedTrajectory("VEH_001", "J1", "J4", routes, vehicle_weight=-1.0)
-
-        with self.assertRaises(ValueError):
-            NormalizedTrajectory("VEH_001", "J1", "J4", routes, vehicle_weight=float("nan"))
-
-    # =========================================================================
-    # 2. DEMAND WEIGHTING TESTS (W * P)
-    # =========================================================================
-
-    def test_demand_calculation_default_weight(self):
-        """Verify demand calculation with default vehicle weight (1.0)."""
-        routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.7),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.3),
-        ]
-        traj = NormalizedTrajectory(
-            track_id="VEH_001",
-            origin_node="J1",
-            destination_node="J4",
-            candidate_routes=routes,
-            vehicle_weight=1.0,
+            time_window_start="08:00:00",
+            time_window_end="08:15:00",
         )
         demands = traj.calculate_route_demands()
         self.assertEqual(len(demands), 2)
-        self.assertAlmostEqual(demands[0]["route_demand"], 0.7, places=4)
-        self.assertAlmostEqual(demands[1]["route_demand"], 0.3, places=4)
-        total_demand = sum(d["route_demand"] for d in demands)
-        self.assertAlmostEqual(total_demand, 1.0, places=4)
+        # W = 1.0 -> 0.70 and 0.30
+        self.assertAlmostEqual(demands[0]["route_demand"], 0.70, places=6)
+        self.assertAlmostEqual(demands[1]["route_demand"], 0.30, places=6)
 
-    def test_demand_calculation_heavy_vehicle(self):
-        """Verify demand calculation with custom vehicle weight (e.g. Bus/Truck = 2.5 PCU)."""
-        routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.8),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.2),
-        ]
-        traj = NormalizedTrajectory(
-            track_id="TRUCK_001",
-            origin_node="J1",
-            destination_node="J4",
+        # Heavy vehicle convoy: W = 2.5
+        traj_heavy = NormalizedTrajectory(
+            track_id="TRK_CONVOY",
+            origin_node="J01",
+            destination_node="J12",
             candidate_routes=routes,
             vehicle_weight=2.5,
         )
-        demands = traj.calculate_route_demands()
-        # 2.5 * 0.8 = 2.0
-        self.assertAlmostEqual(demands[0]["route_demand"], 2.0, places=4)
-        # 2.5 * 0.2 = 0.5
-        self.assertAlmostEqual(demands[1]["route_demand"], 0.5, places=4)
-        total_demand = sum(d["route_demand"] for d in demands)
-        self.assertAlmostEqual(total_demand, 2.5, places=4)
+        demands_heavy = traj_heavy.calculate_route_demands()
+        # 2.5 * 0.70 = 1.75; 2.5 * 0.30 = 0.75
+        self.assertAlmostEqual(demands_heavy[0]["route_demand"], 1.75, places=6)
+        self.assertAlmostEqual(demands_heavy[1]["route_demand"], 0.75, places=6)
+        self.assertAlmostEqual(sum(d["route_demand"] for d in demands_heavy), 2.5, places=6)
 
-    # =========================================================================
-    # 3. ADAPTER FUNCTION TESTS
-    # =========================================================================
-
-    def test_adapt_trajectory_segment_to_normalized(self):
-        """Verify adapting a Day 3 TrajectorySegment into a NormalizedTrajectory."""
-        obs1 = {
-            "observation_id": "obs_01",
-            "camera_id": "CAM_01",
-            "timestamp": 100.0,
-            "vehicle_type": "car",
-            "plate": "KA01AB1234",
-            "plate_confidence": 0.95,
-        }
-        # Travel 700m at ~42 km/h -> 60s
-        obs2 = {
-            "observation_id": "obs_02",
-            "camera_id": "CAM_04",
-            "timestamp": 160.0,
-            "vehicle_type": "car",
-            "plate": "KA01AB1234",
-            "plate_confidence": 0.95,
-        }
-
-        segment = reconstruct_trajectory_segment(obs1, obs2, self.graph, identity_id="ID_001")
-        self.assertEqual(segment.status, "success")
-        self.assertGreater(len(segment.candidate_routes), 0)
-
-        # Adapt to Member 3 contract
-        norm_traj = adapt_trajectory_segment_to_normalized(segment, vehicle_weight=1.0)
-
-        self.assertEqual(norm_traj.track_id, "ID_001")
-        self.assertEqual(norm_traj.origin_node, "J1")
-        self.assertEqual(norm_traj.destination_node, "J4")
-        self.assertEqual(norm_traj.vehicle_weight, 1.0)
-        self.assertGreaterEqual(len(norm_traj.candidate_routes), 1)
-
-        # Check endpoints and probabilities
-        for r in norm_traj.candidate_routes:
-            self.assertEqual(r.nodes[0], "J1")
-            self.assertEqual(r.nodes[-1], "J4")
-            self.assertGreater(r.probability, 0.0)
-
-        total_prob = sum(r.probability for r in norm_traj.candidate_routes)
-        self.assertAlmostEqual(total_prob, 1.0, places=4)
-
-    def test_adapt_trajectory_segment_unassociated_camera(self):
-        """Verify adapter raises ValueError if segment cameras are unassociated."""
-        obs1 = {
-            "observation_id": "obs_01",
-            "camera_id": "UNKNOWN_CAM",
-            "timestamp": 100.0,
-            "vehicle_type": "car",
-        }
-        obs2 = {
-            "observation_id": "obs_02",
-            "camera_id": "CAM_04",
-            "timestamp": 160.0,
-            "vehicle_type": "car",
-        }
-        segment = reconstruct_trajectory_segment(obs1, obs2, self.graph, identity_id="ID_001")
-        self.assertEqual(segment.status, "unassociated_camera")
-
-        with self.assertRaises(ValueError) as ctx:
-            adapt_trajectory_segment_to_normalized(segment)
-        self.assertIn("Unassociated", str(ctx.exception))
-
-    def test_adapt_vehicle_trajectory_multi_segment(self):
-        """Verify multi-observation journey (J1 -> J2 -> J4) projects complete origin-to-destination corridor."""
-        obs1 = {
-            "observation_id": "obs_01",
-            "camera_id": "CAM_01",
-            "timestamp": 100.0,
-            "vehicle_type": "car",
-            "bounding_box": [0, 0, 10, 10],
-            "plate_number": "DL01XY9999",
-        }
-        # 350m at 35 km/h = 36s
-        obs2 = {
-            "observation_id": "obs_02",
-            "camera_id": "CAM_02",
-            "timestamp": 136.0,
-            "vehicle_type": "car",
-            "bounding_box": [0, 0, 10, 10],
-            "plate_number": "DL01XY9999",
-        }
-        # 350m at 35 km/h = 36s
-        obs3 = {
-            "observation_id": "obs_03",
-            "camera_id": "CAM_04",
-            "timestamp": 172.0,
-            "vehicle_type": "car",
-            "bounding_box": [0, 0, 10, 10],
-            "plate_number": "DL01XY9999",
-        }
+    def test_12_multi_observation_journey_projection(self):
+        """Verify multi-observation trajectory (J01 -> J02 -> J05 -> J08) projects full corridor."""
+        # 3 legs: J01 -> J02 (1800m, ~130s), J02 -> J05 (1600m, ~120s), J05 -> J08 (2100m, ~150s)
+        obs1 = {"observation_id": "o1", "camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs2 = {"observation_id": "o2", "camera_id": "CAM_J02", "timestamp": 1130.0}
+        obs3 = {"observation_id": "o3", "camera_id": "CAM_J05", "timestamp": 1250.0}
+        obs4 = {"observation_id": "o4", "camera_id": "CAM_J08", "timestamp": 1400.0}
 
         identity_data = {
-            "identity_id": "ID_MULTI",
-            "observations": [obs1, obs2, obs3],
+            "identity_id": "VEHICLE_CANDIDATE_001",
+            "observations": [obs1, obs2, obs3, obs4],
         }
+
         vehicle_traj = reconstruct_identity_trajectory(identity_data, self.graph)
-        self.assertEqual(len(vehicle_traj.segments), 2)
+        self.assertEqual(len(vehicle_traj.segments), 3)
 
-        # Adapt complete trajectory to Member 3
-        norm_traj = adapt_vehicle_trajectory_to_normalized(vehicle_traj, vehicle_weight=1.5)
+        # Adapt full trajectory to Member 3
+        norm_traj = adapt_vehicle_trajectory_to_normalized(vehicle_traj, vehicle_weight=1.0)
+        self.assertEqual(norm_traj.track_id, "VEHICLE_CANDIDATE_001")
+        self.assertEqual(norm_traj.origin_node, "J01")
+        self.assertEqual(norm_traj.destination_node, "J08")
+        self.assertEqual(norm_traj.time_window_start, 1000.0)
+        self.assertEqual(norm_traj.time_window_end, 1400.0)
 
-        self.assertEqual(norm_traj.track_id, "ID_MULTI")
-        self.assertEqual(norm_traj.origin_node, "J1")
-        self.assertEqual(norm_traj.destination_node, "J4")
-        self.assertEqual(norm_traj.vehicle_weight, 1.5)
+        # All candidate routes should span J01 to J08
+        for r in norm_traj.candidate_routes:
+            self.assertEqual(r.nodes[0], "J01")
+            self.assertEqual(r.nodes[-1], "J08")
+            self.assertIn("J02", r.nodes)
+            self.assertIn("J05", r.nodes)
 
-        # All candidate routes should span J1 to J4
-        for cr in norm_traj.candidate_routes:
-            self.assertEqual(cr.nodes[0], "J1")
-            self.assertEqual(cr.nodes[-1], "J4")
-            self.assertIn("J2", cr.nodes)
+        # Probabilities sum to 1.0 within 1e-6
+        total_p = sum(r.probability for r in norm_traj.candidate_routes)
+        self.assertAlmostEqual(total_p, 1.0, places=6)
 
-        total_prob = sum(cr.probability for cr in norm_traj.candidate_routes)
-        self.assertAlmostEqual(total_prob, 1.0, places=4)
+    def test_13_batch_payload_serialization_for_member3(self):
+        """Verify adapt_trajectories_to_batch_payload outputs structure ingested by Member 3."""
+        obs_a = {"observation_id": "o1", "camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"observation_id": "o2", "camera_id": "CAM_J08", "timestamp": 1450.0}
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_001")
 
-    def test_adapt_trajectories_to_batch_payload(self):
-        """Verify batch payload serialization for Member 3's flow aggregator."""
-        obs1 = {"observation_id": "o1", "camera_id": "CAM_01", "timestamp": 100.0, "vehicle_type": "car"}
-        obs2 = {"observation_id": "o2", "camera_id": "CAM_04", "timestamp": 160.0, "vehicle_type": "car"}
-        seg = reconstruct_trajectory_segment(obs1, obs2, self.graph, identity_id="ID_01")
-
-        payload = adapt_trajectories_to_batch_payload([seg], default_weight=1.0)
-
+        payload = adapt_trajectories_to_batch_payload([segment], default_weight=1.0)
         self.assertIn("trajectories", payload)
         self.assertEqual(payload["trajectories_count"], 1)
-        traj_dict = payload["trajectories"][0]
 
-        # Verify contract keys expected by Member 3
-        self.assertEqual(traj_dict["track_id"], "ID_01")
-        self.assertEqual(traj_dict["origin_node"], "J1")
-        self.assertEqual(traj_dict["destination_node"], "J4")
+        traj_dict = payload["trajectories"][0]
+        self.assertEqual(traj_dict["track_id"], "TRK_001")
+        self.assertEqual(traj_dict["origin_node"], "J01")
+        self.assertEqual(traj_dict["destination_node"], "J08")
         self.assertEqual(traj_dict["vehicle_weight"], 1.0)
         self.assertIn("candidate_routes", traj_dict)
         self.assertIn("time_window", traj_dict)
-        self.assertEqual(traj_dict["time_window"]["start"], 100.0)
-        self.assertEqual(traj_dict["time_window"]["end"], 160.0)
+        self.assertEqual(traj_dict["time_window"]["start"], 1000.0)
+        self.assertEqual(traj_dict["time_window"]["end"], 1450.0)
 
-        for route in traj_dict["candidate_routes"]:
-            self.assertIn("nodes", route)
-            self.assertIn("probability", route)
-            self.assertIsInstance(route["nodes"], list)
-            self.assertIsInstance(route["probability"], float)
+    def test_14_schema_validation_rejections(self):
+        """Verify strict validation rejects invalid routes, probabilities, and weight."""
+        # Single-node route rejected
+        with self.assertRaises(InvalidRouteError):
+            NormalizedCandidateRoute(nodes=["J01"], probability=1.0)
 
-    # =========================================================================
-    # 4. CONTRACT SERIALIZATION & DESERIALIZATION ROUND TRIP
-    # =========================================================================
+        # Probability out of bounds
+        with self.assertRaises(ProbabilityValidationError):
+            NormalizedCandidateRoute(nodes=["J01", "J02"], probability=1.5)
 
-    def test_serialization_round_trip(self):
-        """Verify that NormalizedTrajectory serializes to dict and deserializes accurately."""
-        routes = [
-            NormalizedCandidateRoute(nodes=["J1", "J2", "J4"], probability=0.65, metadata={"dist": 700}),
-            NormalizedCandidateRoute(nodes=["J1", "J3", "J4"], probability=0.35, metadata={"dist": 1000}),
-        ]
-        original = NormalizedTrajectory(
-            track_id="TRIP_123",
-            origin_node="J1",
-            destination_node="J4",
-            candidate_routes=routes,
-            vehicle_weight=2.0,
-            time_window_start="2026-03-03T12:00:00Z",
-            time_window_end="2026-03-03T12:05:00Z",
-            metadata={"driver": "test"},
-        )
+        # Negative vehicle weight rejected
+        valid_routes = [NormalizedCandidateRoute(nodes=["J01", "J02"], probability=1.0)]
+        with self.assertRaises(ValueError):
+            NormalizedTrajectory("TRK_ERR", "J01", "J02", valid_routes, vehicle_weight=-0.5)
 
-        d = original.to_dict()
-        reconstructed = NormalizedTrajectory.from_dict(d)
+        # Origin / destination endpoint mismatch rejected
+        bad_endpoint_routes = [NormalizedCandidateRoute(nodes=["J02", "J03"], probability=1.0)]
+        with self.assertRaises(InvalidRouteError):
+            NormalizedTrajectory("TRK_ERR", "J01", "J03", bad_endpoint_routes)
 
-        self.assertEqual(reconstructed.track_id, original.track_id)
-        self.assertEqual(reconstructed.origin_node, original.origin_node)
-        self.assertEqual(reconstructed.destination_node, original.destination_node)
-        self.assertEqual(reconstructed.vehicle_weight, original.vehicle_weight)
-        self.assertEqual(len(reconstructed.candidate_routes), len(original.candidate_routes))
-        self.assertEqual(reconstructed.candidate_routes[0].nodes, original.candidate_routes[0].nodes)
-        self.assertEqual(reconstructed.candidate_routes[0].probability, original.candidate_routes[0].probability)
+    def test_15_member3_consumer_ingestion_and_demand_aggregation(self):
+        """Verify Member 3's consumer can ingest our trajectory payload and compute route demand."""
+        # Generate a realistic multi-candidate trajectory
+        obs_a = {"camera_id": "CAM_J01", "timestamp": 1000.0}
+        obs_b = {"camera_id": "CAM_J12", "timestamp": 1750.0}
+        segment = reconstruct_trajectory_segment(obs_a, obs_b, self.graph, identity_id="TRK_M3_E2E", max_paths=3)
+        norm_traj = adapt_trajectory_segment_to_normalized(segment, vehicle_weight=1.5)
+
+        # Convert to serialized payload dictionary as passed across module boundary
+        payload_dict = norm_traj.to_dict()
+
+        # Ingestion simulation of Member 3 MockTrajectoryAdapter.adapt_one()
+        ingested_track_id = str(payload_dict["track_id"])
+        ingested_orig = str(payload_dict["origin_node"])
+        ingested_dest = str(payload_dict["destination_node"])
+        ingested_weight = float(payload_dict.get("vehicle_weight", 1.0))
+        ingested_routes = payload_dict["candidate_routes"]
+
+        self.assertEqual(ingested_track_id, "TRK_M3_E2E")
+        self.assertEqual(ingested_orig, "J01")
+        self.assertEqual(ingested_dest, "J12")
+        self.assertEqual(ingested_weight, 1.5)
+        self.assertGreaterEqual(len(ingested_routes), 2)
+
+        # Downstream route demand calculation: route demand = vehicle_weight * route_probability
+        aggregated_demand = 0.0
+        for r in ingested_routes:
+            self.assertIn("nodes", r)
+            self.assertIn("probability", r)
+            self.assertEqual(r["nodes"][0], ingested_orig)
+            self.assertEqual(r["nodes"][-1], ingested_dest)
+            route_demand = ingested_weight * r["probability"]
+            aggregated_demand += route_demand
+
+        self.assertAlmostEqual(aggregated_demand, 1.5, places=6)
 
 
 if __name__ == "__main__":

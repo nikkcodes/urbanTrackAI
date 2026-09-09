@@ -83,16 +83,16 @@ def adapt_trajectory_segment_to_normalized(
         norm_candidate_routes.append(
             NormalizedCandidateRoute(
                 nodes=nodes,
-                probability=round(prob, 4),
+                probability=round(prob, 6),
                 metadata=meta,
             )
         )
 
     # Adjust rounding discrepancy on highest probability route
     prob_sum = sum(cr.probability for cr in norm_candidate_routes)
-    diff = round(1.0 - prob_sum, 4)
+    diff = round(1.0 - prob_sum, 6)
     if abs(diff) > 1e-6 and norm_candidate_routes:
-        norm_candidate_routes[0].probability = round(norm_candidate_routes[0].probability + diff, 4)
+        norm_candidate_routes[0].probability = round(norm_candidate_routes[0].probability + diff, 6)
 
     metadata = {
         "confidence": segment.confidence,
@@ -227,16 +227,16 @@ def adapt_vehicle_trajectory_to_normalized(
         norm_candidate_routes.append(
             NormalizedCandidateRoute(
                 nodes=nodes,
-                probability=round(prob, 4),
+                probability=round(prob, 6),
                 metadata=meta,
             )
         )
 
     # Adjust rounding discrepancy on highest probability route
     prob_sum = sum(cr.probability for cr in norm_candidate_routes)
-    diff = round(1.0 - prob_sum, 4)
+    diff = round(1.0 - prob_sum, 6)
     if abs(diff) > 1e-6 and norm_candidate_routes:
-        norm_candidate_routes[0].probability = round(norm_candidate_routes[0].probability + diff, 4)
+        norm_candidate_routes[0].probability = round(norm_candidate_routes[0].probability + diff, 6)
 
     metadata = {
         "observations_count": trajectory.observations_count,
