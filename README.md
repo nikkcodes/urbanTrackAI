@@ -370,24 +370,101 @@ The Day 3 inference engine was verified against 12 core edge cases:
 
 ---
 
+# Day 3 Finalization & Member 3 Integration
+
+### End-to-End Team Pipeline Workflow:
+```text
+┌───────────────────────────────┐
+│           MEMBER 1            │
+│  Perception & Spatial Graph   │
+│  - Camera metadata            │
+│  - Road network graph (OSM)   │
+│  - Observation detections     │
+└──────────────┬────────────────┘
+               │ Observations + Road Graph
+               ▼
+┌───────────────────────────────┐
+│     MEMBER 2 (THIS REPO)      │
+│   Mobility Inference Engine   │
+│  - Pairwise Identity Fusion   │
+│  - Identity Graph Clustering  │
+│  - Candidate Route Generation │
+│  - Feasibility & Scoring      │
+│  - NormalizedTrajectory Adapt │
+└──────────────┬────────────────┘
+               │ NormalizedTrajectory Payloads
+               ▼
+┌───────────────────────────────┐
+│           MEMBER 3            │
+│ Decision Intelligence & Flow  │
+│  - Mobility Graph             │
+│  - Trajectory → Road Flow     │
+│  - BPR Congestion & HHI       │
+│  - OD Flow Analysis           │
+│  - Bottleneck & Simulation    │
+└───────────────────────────────┘
+```
+
+---
+
+## Member 3 Integration Contract (`NormalizedTrajectory`)
+
+Defined in [schemas/normalized_trajectory_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/normalized_trajectory_schema.py) and adapted via [inference/member3_adapter.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/member3_adapter.py):
+
+```text
+NormalizedTrajectory
+├── track_id            (str: unique vehicle identity or track identifier)
+├── origin_node         (str: starting road junction node ID)
+├── destination_node    (str: ending road junction node ID)
+├── vehicle_weight      (float: vehicle count / demand multiplier, default: 1.0)
+├── candidate_routes[]
+│   ├── nodes           (list[str]: ordered junction node IDs, length >= 2)
+│   ├── probability     (float: normalized relative likelihood in [0.0, 1.0])
+│   └── metadata        (dict: travel distance, speed limits, edge IDs)
+└── time_window
+    ├── start           (float | str: departure timestamp)
+    └── end             (float | str: arrival timestamp)
+```
+
+### Downstream Demand Semantics:
+Member 3 computes expected link traffic flow using:
+$$\text{route demand} = \text{vehicle\_weight} \times \text{route\_probability}$$
+
+### Decoupling Vehicle Weight vs Probability:
+- **`vehicle_weight`**: Represents physical vehicle demand volume or Passenger Car Unit (PCU) equivalence (e.g. `1.0` for passenger cars, `2.5` for heavy commercial vehicles or buses).
+- **`route_probability`**: Represents the normalized relative likelihood of route choice ($\sum_{i} P_i = 1.0$).
+- **Clean Separation**: Weight is strictly a demand multiplier; probability is strictly a routing likelihood.
+
+### Adapter Layer Functions:
+- `adapt_trajectory_segment_to_normalized(segment, vehicle_weight=1.0)`: Converts pairwise Day 3 `TrajectorySegment` into `NormalizedTrajectory`.
+- `adapt_vehicle_trajectory_to_normalized(trajectory, vehicle_weight=1.0)`: Converts multi-observation `VehicleTrajectory` (A $\rightarrow$ B $\rightarrow$ C $\rightarrow$ D) into origin-to-destination corridor routes with joint probabilities.
+- `adapt_trajectories_to_batch_payload(trajectories, default_weight=1.0)`: Generates batch JSON payload conforming to Member 3's flow aggregator.
+
+---
+
 ## Reproducing Demos & Tests
 
-### 1. Run Complete Unit Test Suite (58 tests)
+### 1. Run Complete Unit Test Suite (72 tests)
 ```bash
 python3 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-### 2. Run Day 3 End-to-End Validation
+### 2. Run Member 3 Integration Contract Tests (14 tests)
+```bash
+python3 -m unittest tests/test_member3_integration.py -v
+```
+
+### 3. Run Day 3 End-to-End Validation
 ```bash
 python3 tests/validate_day3_end_to_end.py
 ```
 
-### 3. Run Day 2 Synthetic Benchmark
+### 4. Run Day 2 Synthetic Benchmark (9 Scenarios)
 ```bash
 python3 run_benchmark.py
 ```
 
-### 4. Run Real Perception Evaluation (Kanishka's Feed)
+### 5. Run Real Perception Evaluation (Kanishka's Feed)
 ```bash
 python3 run_real_data.py
 ```
@@ -396,7 +473,7 @@ python3 run_real_data.py
 
 ## Technical Honesty & Limitations
 
-1. **Uncalibrated Relative Likelihoods:** Candidate route scores are normalized relative likelihoods based on travel speed and path distance. They are **not** Bayesian posterior probabilities.
+1. **Uncalibrated Relative Likelihoods:** Candidate route scores are normalized relative likelihoods based on travel speed and path distance. They are **not** calibrated Bayesian posterior probabilities.
 2. **Synthetic Road Graph:** Because Nikhilesh's full city-scale road network is not yet checked in, Day 3 uses a deterministic, geometrically grounded synthetic road network in Hyderabad coordinate space (`data/roads/synthetic_road_graph.json`). It is not claimed to be live government GIS data.
 3. **Kanishka Perception Feed Compatibility:** The current perception feed lacks persistent Re-ID embeddings, resulting in singletons from Day 2. Day 3 handles singletons safely ($d=0$, confidence=1.0) without fabricating artificial multi-camera trajectories.
 
