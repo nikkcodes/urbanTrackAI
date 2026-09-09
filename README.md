@@ -1,21 +1,41 @@
-# UrbanTrack AI - Identity Fusion Engine (Day 2 Complete)
+# UrbanTrack AI — Mobility Inference Engine (Days 1, 2 & 3 Complete)
 
-City-scale multi-camera vehicle trajectory inference system for **UrbanTrack AI**.
+City-scale multi-camera vehicle identity fusion and probabilistic trajectory reconstruction system for **UrbanTrack AI**.
 
 **Role**: Vivek — Mobility Inference Engineer (Member 2)  
-**Scope**: Cross-camera vehicle identity fusion, pairwise feasibility scoring, identity graph representation, and candidate identity clustering.
+**Scope**: End-to-end pipeline from perception ingestion and schema standardization (Day 1) to cross-camera identity fusion and identity graph clustering (Day 2) and road-network candidate trajectory reconstruction (Day 3).
 
 ---
 
-## Objective
+# Day 1: System Foundation & Schema Standardization (Day 1 Complete)
 
-Answer the core question:
+Foundation layer establishing observation data structures, camera coordinate mapping, spatio-temporal distance metrics, and similarity primitives.
+
+### Day 1 Deliverables & Architecture:
+- **Observation Schema ([schemas/observation_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/observation_schema.py)):** Standardized `Observation` dataclass supporting detection confidence, bounding boxes, variable-dimension appearance embeddings, license plates, and geographic coordinates.
+- **Camera Metadata Loader ([inference/observation_loader.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/observation_loader.py)):** Ingestion of camera locations ([data/cameras/camera_metadata.json](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/data/cameras/camera_metadata.json)) and perception feeds.
+- **Similarity & Distance Metrics ([inference/similarity.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/similarity.py)):**
+  - Appearance cosine similarity with dimension validation.
+  - License plate Levenshtein similarity with OCR error tolerance.
+  - Vehicle type compatibility matrix.
+  - Geographic Haversine distance.
+  - Epoch timestamp differences.
+- **Spatio-Temporal Feasibility Primitives:**
+  - [inference/spatial.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/spatial.py): Travel speed validation against city limits.
+  - [inference/temporal.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/temporal.py): Temporal order validation ($\Delta t \ge 0$).
+- **Day 1 Verification & Demo:**
+  - [demo.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/demo.py): End-to-end Day 1 demonstration script on sample feeds.
+  - [tests/test_observation.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_observation.py): Schema and serialization unit tests.
+  - [tests/test_similarity.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_similarity.py): Unit tests for all similarity and distance functions.
+
+---
+
+# Day 2: Identity Fusion Engine & Identity Graph (Day 2 Complete)
+
+Core cross-camera vehicle identity matcher answering:
 > *"Given two vehicle observations from different cameras, how likely is it that they represent the same physical vehicle?"*
 
----
-
-## System Architecture & Pipeline Flow
-
+### Day 2 Architecture & Pipeline Flow:
 ```text
 Kanishka Perception Feed (JSON)
            ↓
@@ -30,7 +50,7 @@ Kanishka Perception Feed (JSON)
 
 ---
 
-## Input Schemas
+## Day 2 Input Schemas
 
 ### 1. Vehicle Observation Input
 `schemas/observation_schema.py` standardizes vehicle perception feeds:
