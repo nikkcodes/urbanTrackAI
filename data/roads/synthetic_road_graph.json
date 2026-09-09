@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "network_name": "Hyderabad Core Urban Corridor (Synthetic Test Network)",
+    "description": "Deterministic synthetic road network created for Day 3 Trajectory Inference validation. Connects Day-2 camera locations with realistic arterial and bypass alternatives.",
+    "version": "1.0",
+    "is_synthetic": true
+  },
+  "nodes": [
+    {
+      "id": "junc_01",
+      "name": "MG Road Junction",
+      "latitude": 17.3850,
+      "longitude": 78.4867
+    },
+    {
+      "id": "junc_02",
+      "name": "Banjara Hills Circle",
+      "latitude": 17.3870,
+      "longitude": 78.4900
+    },
+    {
+      "id": "junc_03",
+      "name": "Jubilee Hills Checkpost",
+      "latitude": 17.3910,
+      "longitude": 78.4920
+    },
+    {
+      "id": "junc_04",
+      "name": "Hitech City Flyover",
+      "latitude": 17.3970,
+      "longitude": 78.4980
+    },
+    {
+      "id": "junc_05",
+      "name": "Gachibowli Ring Road",
+      "latitude": 17.4050,
+      "longitude": 78.5080
+    },
+    {
+      "id": "junc_06",
+      "name": "Western Bypass South",
+      "latitude": 17.3890,
+      "longitude": 78.4840
+    },
+    {
+      "id": "junc_07",
+      "name": "Northern Arterial Hub",
+      "latitude": 17.3940,
+      "longitude": 78.4870
+    }
+  ],
+  "edges": [
+    {
+      "road_id": "road_01",
+      "name": "MG Road Commercial Corridor",
+      "from": "junc_01",
+      "to": "junc_02",
+      "distance_m": 414.8,
+      "speed_limit_kmh": 50.0,
+      "expected_speed_kmh": 40.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_02",
+      "name": "Banjara-Jubilee Link",
+      "from": "junc_02",
+      "to": "junc_03",
+      "distance_m": 494.5,
+      "speed_limit_kmh": 50.0,
+      "expected_speed_kmh": 40.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_03",
+      "name": "Jubilee-Hitech Avenue",
+      "from": "junc_03",
+      "to": "junc_04",
+      "distance_m": 915.2,
+      "speed_limit_kmh": 60.0,
+      "expected_speed_kmh": 45.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_04",
+      "name": "Hitech-Gachibowli Expressway",
+      "from": "junc_04",
+      "to": "junc_05",
+      "distance_m": 1390.0,
+      "speed_limit_kmh": 80.0,
+      "expected_speed_kmh": 65.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_05",
+      "name": "Western Bypass Sector 1",
+      "from": "junc_01",
+      "to": "junc_06",
+      "distance_m": 520.0,
+      "speed_limit_kmh": 60.0,
+      "expected_speed_kmh": 50.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_06",
+      "name": "Western Bypass Sector 2",
+      "from": "junc_06",
+      "to": "junc_07",
+      "distance_m": 640.0,
+      "speed_limit_kmh": 60.0,
+      "expected_speed_kmh": 50.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_07",
+      "name": "Arterial Jubilee Spur",
+      "from": "junc_07",
+      "to": "junc_03",
+      "distance_m": 610.0,
+      "speed_limit_kmh": 50.0,
+      "expected_speed_kmh": 40.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_08",
+      "name": "Northern Express Radial",
+      "from": "junc_07",
+      "to": "junc_04",
+      "distance_m": 1210.0,
+      "speed_limit_kmh": 70.0,
+      "expected_speed_kmh": 60.0,
+      "one_way": false
+    },
+    {
+      "road_id": "road_09",
+      "name": "Banjara Diagonal Cut",
+      "from": "junc_02",
+      "to": "junc_07",
+      "distance_m": 830.0,
+      "speed_limit_kmh": 40.0,
+      "expected_speed_kmh": 35.0,
+      "one_way": false
+    }
+  ],
+  "camera_associations": {
+    "cam_01": "junc_01",
+    "cam_02": "junc_02",
+    "cam_03": "junc_03",
+    "cam_04": "junc_04",
+    "cam_05": "junc_05"
+  }
+}

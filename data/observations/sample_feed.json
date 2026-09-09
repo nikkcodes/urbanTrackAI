@@ -1,0 +1,32 @@
+[
+  {
+    "camera_id": "cam_01",
+    "frame_id": 120,
+    "timestamp_seconds": 4.0,
+    "track_id": "cam01_23",
+    "vehicle_type": "car",
+    "detection_confidence": 0.91,
+    "bbox": [120, 500, 420, 900],
+    "appearance_embedding": [0.12, -0.04, 0.31, 0.88]
+  },
+  {
+    "camera_id": "cam_02",
+    "frame_id": 1020,
+    "timestamp_seconds": 34.0,
+    "track_id": "cam02_08",
+    "vehicle_type": "car",
+    "detection_confidence": 0.94,
+    "bbox": [110, 480, 415, 890],
+    "appearance_embedding": [0.13, -0.03, 0.30, 0.87]
+  },
+  {
+    "camera_id": "cam_03",
+    "frame_id": 300,
+    "timestamp_seconds": 35.0,
+    "track_id": "cam03_99",
+    "vehicle_type": "bus",
+    "detection_confidence": 0.89,
+    "bbox": [50, 200, 300, 700],
+    "appearance_embedding": [-0.50, 0.80, 0.10, -0.20]
+  }
+]

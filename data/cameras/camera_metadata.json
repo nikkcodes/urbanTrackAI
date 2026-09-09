@@ -1,0 +1,17 @@
+{
+  "cam_01": {
+    "latitude": 17.3850,
+    "longitude": 78.4867,
+    "name": "MG Road Junction"
+  },
+  "cam_02": {
+    "latitude": 17.3870,
+    "longitude": 78.4900,
+    "name": "Banjara Hills Circle"
+  },
+  "cam_03": {
+    "latitude": 17.3910,
+    "longitude": 78.4920,
+    "name": "Jubilee Hills Checkpost"
+  }
+}
