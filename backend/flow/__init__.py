@@ -4,7 +4,7 @@ Provides normalized probabilistic trajectory representations, adapters,
 and the expected road flow aggregation engine.
 """
 
-from backend.flow.adapters import BaseTrajectoryAdapter, MockTrajectoryAdapter
+from backend.flow.adapters import BaseTrajectoryAdapter, Member2TrajectoryAdapter, MockTrajectoryAdapter
 from backend.flow.aggregation import ExpectedFlowAggregator
 from backend.flow.models import (
     CandidateRoute,
@@ -24,5 +24,6 @@ __all__ = [
     "InvalidRouteError",
     "BaseTrajectoryAdapter",
     "MockTrajectoryAdapter",
+    "Member2TrajectoryAdapter",
     "ExpectedFlowAggregator",
 ]

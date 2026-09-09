@@ -141,3 +141,88 @@ class MockTrajectoryAdapter(BaseTrajectoryAdapter):
             time_window_end=time_window_end,
             metadata=metadata,
         )
+
+
+class Member2TrajectoryAdapter(BaseTrajectoryAdapter):
+    """Adapt the Member-2 Day-3 normalized payload into the M3 contract.
+
+    This adapter preserves Member-2 route likelihood values as supplied. It
+    does not normalize or reinterpret them; ``NormalizedTrajectory`` remains
+    responsible for validating the probability distribution.
+    """
+
+    def adapt(self, raw_data: Union[Dict[str, Any], List[Dict[str, Any]], str, Path]) -> List[NormalizedTrajectory]:
+        """Adapt one payload, a trajectory list, or a JSON file."""
+        payload: Any = raw_data
+        if isinstance(raw_data, (str, Path)):
+            file_path = Path(raw_data)
+            if not file_path.exists():
+                raise FileNotFoundError(f"Member-2 trajectory file not found: {file_path}")
+            with open(file_path, "r", encoding="utf-8") as file:
+                payload = json.load(file)
+
+        if isinstance(payload, dict):
+            items = payload.get("trajectories")
+            if items is None:
+                items = [payload] if "track_id" in payload else []
+        elif isinstance(payload, list):
+            items = payload
+        else:
+            raise TypeError(f"Unsupported payload type for Member2TrajectoryAdapter: {type(payload)}")
+        if not isinstance(items, list):
+            raise TypeError("Member-2 'trajectories' must be a list")
+        return [self.adapt_one(item) for item in items]
+
+    def adapt_one(self, raw_item: Dict[str, Any]) -> NormalizedTrajectory:
+        """Adapt one Member-2 trajectory while preserving supported metadata."""
+        if not isinstance(raw_item, dict):
+            raise TypeError(f"Expected dict for trajectory item, got {type(raw_item)}")
+
+        raw_routes = raw_item.get("candidate_routes", [])
+        candidate_routes: List[CandidateRoute] = []
+        for route in raw_routes:
+            if not isinstance(route, dict):
+                raise TypeError(f"Expected Member-2 candidate route dict, got {type(route)}")
+            nodes = route.get("nodes")
+            if nodes is None:
+                raise KeyError(f"Candidate route missing 'nodes' in trajectory '{raw_item.get('track_id', '')}'")
+            route_metadata = dict(route.get("metadata", {}))
+            candidate_routes.append(
+                CandidateRoute(
+                    nodes=list(nodes),
+                    probability=float(route["probability"]),
+                    metadata=route_metadata,
+                )
+            )
+
+        start = raw_item.get("time_window_start")
+        end = raw_item.get("time_window_end")
+        time_window = raw_item.get("time_window")
+        if (start is None or end is None) and isinstance(time_window, dict):
+            start = time_window.get("start", start)
+            end = time_window.get("end", end)
+        if start is not None and end is not None:
+            try:
+                duration_seconds = float(end) - float(start)
+            except (TypeError, ValueError) as exc:
+                raise ValueError("Member-2 time-window boundaries must be numeric elapsed seconds") from exc
+            if duration_seconds <= 0.0:
+                raise ValueError("Member-2 time_window_end must be after time_window_start")
+        else:
+            duration_seconds = None
+
+        metadata = dict(raw_item.get("metadata", {}))
+        if duration_seconds is not None:
+            metadata["aggregation_duration_seconds"] = duration_seconds
+
+        return NormalizedTrajectory(
+            track_id=str(raw_item["track_id"]),
+            origin_node=str(raw_item["origin_node"]),
+            destination_node=str(raw_item["destination_node"]),
+            candidate_routes=candidate_routes,
+            vehicle_weight=float(raw_item["vehicle_weight"]),
+            timestamp=raw_item.get("timestamp"),
+            time_window_start=start,
+            time_window_end=end,
+            metadata=metadata,
+        )
