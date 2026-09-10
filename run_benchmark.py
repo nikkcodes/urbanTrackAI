@@ -178,4 +178,13 @@ def execute_benchmark():
 
 
 if __name__ == "__main__":
-    execute_benchmark()
+    import sys
+    if "--expanded" in sys.argv or "--all" in sys.argv:
+        execute_benchmark()
+        from inference.benchmark_suite import run_master_benchmark_suite
+        run_master_benchmark_suite(verbose=True)
+    else:
+        execute_benchmark()
+        print("\n[NOTE] To run the expanded 20-scenario benchmark + holdout + performance scaling:")
+        print("       python3 run_benchmark.py --expanded\n")
+

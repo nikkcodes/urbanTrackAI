@@ -45,6 +45,8 @@ class InferenceTrace:
                          Never claims evidence that does not exist.
         generated_at:    UNIX timestamp (float) recording when this trace was produced.
                          NOT a vehicle observation timestamp.
+        metadata:        Optional detailed dictionary containing structured provenance,
+                         hypothesis breakdowns, rejection reasons, and version info.
     """
 
     trace_id: str
@@ -56,10 +58,11 @@ class InferenceTrace:
     decision_score: float = 0.0
     explanation: str = ""
     generated_at: float = field(default_factory=time.time)
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a plain dictionary for JSON output or storage."""
-        return {
+        d: Dict[str, Any] = {
             "trace_id": self.trace_id,
             "entity_type": self.entity_type,
             "entity_id": self.entity_id,
@@ -70,6 +73,9 @@ class InferenceTrace:
             "explanation": self.explanation,
             "generated_at": round(self.generated_at, 6),
         }
+        if self.metadata:
+            d["metadata"] = dict(self.metadata)
+        return d
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "InferenceTrace":
@@ -84,6 +90,7 @@ class InferenceTrace:
             decision_score=float(data.get("decision_score", 0.0)),
             explanation=str(data.get("explanation", "")),
             generated_at=float(data.get("generated_at", 0.0)),
+            metadata=dict(data.get("metadata", {})),
         )
 
 
@@ -404,3 +411,165 @@ def build_sparse_gap_trace(
         explanation=explanation,
         generated_at=time.time(),
     )
+
+
+def build_global_trajectory_trace(
+    trajectory: Any,
+    global_hypotheses_result: Dict[str, Any],
+    trace_id: Optional[str] = None,
+    model_version: str = "2.0.0",
+) -> InferenceTrace:
+    """
+    Construct an InferenceTrace from a VehicleTrajectory and the output of
+    evaluate_global_trajectory_hypotheses().
+
+    Captures:
+      - Observations involved across segments
+      - Candidate, evaluated, surviving, and rejected hypotheses
+      - Rejection reasons (temporal, spatial, topological, or segment failure)
+      - Relative likelihoods (normalized among feasible hypotheses only)
+      - Evidence states per hypothesis
+      - Hard contradictions and local segment failures
+      - Missing and unavailable evidence markers
+      - Model/configuration version
+
+    Note: generated_at records the trace creation time, NEVER an observation timestamp.
+    """
+    traj_id = getattr(trajectory, "identity_id", None) or (
+        trajectory.get("identity_id") if isinstance(trajectory, dict) else "unknown_trajectory"
+    )
+    tid = trace_id or f"trace_global_traj_{traj_id}"
+
+    hyps = global_hypotheses_result.get("hypotheses", [])
+    feasible_count = int(global_hypotheses_result.get("feasible_count", 0))
+    best_id = global_hypotheses_result.get("best_hypothesis_id")
+    is_ambiguous = bool(global_hypotheses_result.get("ambiguous", False))
+
+    if feasible_count > 0 and not is_ambiguous:
+        decision = "feasible"
+    elif feasible_count > 0 and is_ambiguous:
+        decision = "ambiguous"
+    elif hyps:
+        decision = "rejected"
+    else:
+        decision = "insufficient_evidence"
+
+    # Score: relative likelihood of best hypothesis
+    best_hyp = next((h for h in hyps if h.get("hypothesis_id") == best_id), None)
+    if best_hyp:
+        score = float(best_hyp.get("relative_likelihood", 0.0))
+    else:
+        score = 0.0
+
+    # Collect observations involved
+    obs_involved: List[str] = []
+    segments = getattr(trajectory, "segments", []) or (
+        trajectory.get("segments", []) if isinstance(trajectory, dict) else []
+    )
+    for seg in segments:
+        s_obs = getattr(seg, "start_observation_id", None) or (
+            seg.get("start_observation_id") if isinstance(seg, dict) else None
+        )
+        e_obs = getattr(seg, "end_observation_id", None) or (
+            seg.get("end_observation_id") if isinstance(seg, dict) else None
+        )
+        if s_obs and s_obs not in obs_involved:
+            obs_involved.append(str(s_obs))
+        if e_obs and e_obs not in obs_involved:
+            obs_involved.append(str(e_obs))
+
+    # Evidence items
+    all_rejection_reasons: List[str] = []
+    all_contradictions: List[str] = []
+    all_missing: List[str] = []
+    all_unavailable: List[str] = []
+    all_local_failures: List[Dict[str, Any]] = []
+
+    for h in hyps:
+        for r in h.get("rejection_reasons", []):
+            if r not in all_rejection_reasons:
+                all_rejection_reasons.append(str(r))
+            if any(term in str(r).lower() for term in ("impossible", "contradict", "violation", "closed")):
+                if str(r) not in all_contradictions:
+                    all_contradictions.append(str(r))
+        for m in h.get("missing_evidence", []):
+            if str(m) not in all_missing:
+                all_missing.append(str(m))
+        for u in h.get("unavailable_evidence", []):
+            if str(u) not in all_unavailable:
+                all_unavailable.append(str(u))
+        for f in h.get("local_segment_failures", []):
+            all_local_failures.append(dict(f) if isinstance(f, dict) else {"failure": str(f)})
+
+    evidence_items: List[Dict[str, Any]] = [
+        {
+            "signal_type": "global_hypotheses_evaluation",
+            "status": "feasible" if feasible_count > 0 else "rejected",
+            "value": feasible_count,
+            "contribution": None,
+            "total_hypotheses": len(hyps),
+            "feasible_hypotheses": feasible_count,
+        },
+        {
+            "signal_type": "local_segment_consistency",
+            "status": "rejected" if all_local_failures else "feasible",
+            "value": len(all_local_failures),
+            "contribution": None,
+            "failures_count": len(all_local_failures),
+        },
+    ]
+
+    # Best hypothesis support ledger in evidence_items
+    if best_hyp and "support" in best_hyp:
+        supp = best_hyp["support"]
+        for mod in ("identity", "temporal", "spatial", "topology", "route"):
+            if mod in supp:
+                evidence_items.append({
+                    "signal_type": f"best_hypothesis_{mod}",
+                    "status": "available" if supp[mod] > 0 else "unavailable",
+                    "value": supp[mod],
+                    "contribution": None,
+                })
+
+    explanation_parts = [
+        f"Global trajectory {traj_id}: {len(hyps)} hypotheses evaluated, {feasible_count} feasible.",
+        f"Decision: {decision}.",
+    ]
+    if best_id:
+        explanation_parts.append(f"Selected best hypothesis: {best_id} (relative_likelihood={score:.4f}).")
+    if all_rejection_reasons:
+        explanation_parts.append(f"Rejections: {'; '.join(all_rejection_reasons[:3])}.")
+
+    metadata = {
+        "model_version": str(model_version),
+        "observations_involved": obs_involved,
+        "candidate_hypotheses_count": int(global_hypotheses_result.get("hypothesis_count", 0)),
+        "evaluated_hypotheses_count": len(hyps),
+        "surviving_hypotheses_count": feasible_count,
+        "rejected_hypotheses_count": len(hyps) - feasible_count,
+        "surviving_hypotheses": [str(h["hypothesis_id"]) for h in hyps if h.get("is_globally_feasible")],
+        "rejected_hypotheses": [str(h["hypothesis_id"]) for h in hyps if not h.get("is_globally_feasible")],
+        "rejection_reasons": all_rejection_reasons,
+        "relative_likelihoods": {str(h["hypothesis_id"]): float(h.get("relative_likelihood", 0.0)) for h in hyps},
+        "evidence_states": {str(h["hypothesis_id"]): h.get("support", {}) for h in hyps},
+        "contradictions": all_contradictions,
+        "missing_evidence": all_missing,
+        "unavailable_evidence": all_unavailable,
+        "local_segment_failures": all_local_failures,
+        "final_selected_hypothesis_id": str(best_id) if best_id else None,
+        "ranked_hypotheses": [str(h["hypothesis_id"]) for h in hyps],
+    }
+
+    return InferenceTrace(
+        trace_id=tid,
+        entity_type="trajectory_hypothesis",
+        entity_id=str(traj_id),
+        stage="trajectory",
+        evidence_items=evidence_items,
+        decision=decision,
+        decision_score=score,
+        explanation=" ".join(explanation_parts),
+        generated_at=time.time(),
+        metadata=metadata,
+    )
+

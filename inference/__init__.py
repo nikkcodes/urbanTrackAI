@@ -53,6 +53,15 @@ from .trajectory_engine import (
     reconstruct_trajectory_segment,
 )
 
+from .inference_trace import (
+    InferenceTrace,
+    build_cluster_trace,
+    build_global_trajectory_trace,
+    build_identity_pair_trace,
+    build_sparse_gap_trace,
+    build_trajectory_segment_trace,
+)
+
 __all__ = [
     "Observation",
     "CandidateRoute",
@@ -95,7 +104,14 @@ __all__ = [
     "detect_observation_gaps",
     "infer_sparse_gap",
     "infer_sparse_identity_trajectory",
+    "InferenceTrace",
+    "build_identity_pair_trace",
+    "build_cluster_trace",
+    "build_trajectory_segment_trace",
+    "build_sparse_gap_trace",
+    "build_global_trajectory_trace",
 ]
+
 
 
 

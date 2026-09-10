@@ -718,6 +718,35 @@ def score_trajectory_hypothesis(
         raw_support = 0.0
         feasibility_status = "infeasible"
 
+    # ------------------------------------------------------------------
+    # 5. Trajectory Hypothesis Evidence Ledger (Phase 10 & 11)
+    # ------------------------------------------------------------------
+    missing_evidence: List[str] = []
+    unavailable_evidence: List[str] = []
+    for s_i, s_obj in enumerate(segments):
+        t_ev = getattr(s_obj, "temporal_evidence", None) or {}
+        if not t_ev.get("comparable", False):
+            unavailable_evidence.append(f"seg{s_i + 1}_temporal")
+        if not getattr(s_obj, "candidate_routes", None):
+            missing_evidence.append(f"seg{s_i + 1}_routes")
+
+    local_segment_failures = [r for r in rejection_reasons if "seg" in r.lower()]
+
+    id_sup = 1.0
+    temp_sup = 1.0 if (is_globally_feasible and not unavailable_evidence) else (0.5 if unavailable_evidence else 0.0)
+    spat_sup = 1.0 if is_globally_feasible else 0.0
+    topo_sup = 1.0 if not any("topology" in c.lower() for c in contradictions) else 0.0
+
+    support_ledger = {
+        "identity": id_sup,
+        "temporal": temp_sup,
+        "spatial": spat_sup,
+        "topology": topo_sup,
+        "route": raw_support,
+    }
+
+    consistency_status = "consistent" if is_globally_feasible else ("contradictory" if contradictions else "infeasible")
+
     return {
         "feasibility_status": feasibility_status,
         "is_globally_feasible": is_globally_feasible,
@@ -726,8 +755,13 @@ def score_trajectory_hypothesis(
         "segment_count": n,
         "routes": [r.route_id for r in routes],
         "supporting_evidence": supporting_evidence,
+        "support": support_ledger,
         "contradictions": contradictions,
         "rejection_reasons": rejection_reasons,
+        "missing_evidence": missing_evidence,
+        "unavailable_evidence": unavailable_evidence,
+        "local_segment_failures": local_segment_failures,
+        "consistency_status": consistency_status,
         "consistency_info": {
             "all_segments_feasible": all(feasible_flags),
             "feasible_segment_count": sum(feasible_flags),
@@ -799,8 +833,8 @@ def evaluate_global_trajectory_hypotheses(
         for h in feasible_hyps:
             h["relative_likelihood"] = eq
 
-    # Sort: feasible first, then by likelihood
-    hypotheses.sort(key=lambda h: (h["is_globally_feasible"], h.get("relative_likelihood") or 0.0), reverse=True)
+    # Sort: feasible first, then by likelihood, then deterministically by route sequence
+    hypotheses.sort(key=lambda h: (h["is_globally_feasible"], h.get("relative_likelihood") or 0.0, str(h.get("routes", []))), reverse=True)
 
     best_id = hypotheses[0]["hypothesis_id"] if hypotheses else None
     ambiguous = False

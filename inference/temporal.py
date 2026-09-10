@@ -314,12 +314,17 @@ def temporal_feasibility(
                 "used_in_route_scoring": True,
             }
         else:
-            if id_a is not None and id_b is not None and id_a != id_b and frame_a is not None and frame_a == frame_b:
+            trk_a = getattr(obs_a, "track_id", obs_a.get("track_id") if isinstance(obs_a, dict) else None)
+            trk_b = getattr(obs_b, "track_id", obs_b.get("track_id") if isinstance(obs_b, dict) else None)
+            if (
+                (id_a is not None and id_b is not None and id_a != id_b and frame_a is not None and frame_a == frame_b)
+                or (trk_a is not None and trk_b is not None and trk_a != trk_b)
+            ):
                 return {
                     "feasibility_score": 0.0,
                     "delta_t_seconds": 0.0,
                     "status": "impossible_simultaneous_same_camera_distinct_bbox",
-                    "explanation": f"Simultaneous distinct detections in frame {frame_a} at camera {cam_a}.",
+                    "explanation": f"Simultaneous distinct detections/tracks ({trk_a or id_a} vs {trk_b or id_b}) at camera {cam_a}.",
                     "temporal_evidence": comp,
                     "timestamp_semantics": comp.get("timestamp_semantics"),
                     "time_reference_id": comp.get("time_reference_id"),

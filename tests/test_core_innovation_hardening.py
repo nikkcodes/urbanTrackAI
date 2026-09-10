@@ -52,10 +52,11 @@ from inference.trajectory_engine import (
 from inference.sparse_engine import infer_sparse_gap, evaluate_multigap_consistency
 from inference.inference_trace import (
     InferenceTrace,
-    build_identity_pair_trace,
     build_cluster_trace,
-    build_trajectory_segment_trace,
+    build_global_trajectory_trace,
+    build_identity_pair_trace,
     build_sparse_gap_trace,
+    build_trajectory_segment_trace,
 )
 from inference.road_graph import RoadGraph
 from schemas.trajectory_schema import CandidateRoute, TrajectorySegment, VehicleTrajectory
@@ -1068,5 +1069,204 @@ class TestX_RealKanishkaNoFabricatedMerge(unittest.TestCase):
                               f"not {sc.get('identity_confidence')}")
 
 
+# ---------------------------------------------------------------------------
+# Test Y: Contradiction-Aware Cluster Splitting
+# ---------------------------------------------------------------------------
+class TestY_ContradictionAwareClusterSplitting(unittest.TestCase):
+
+    def test_transitive_contradiction_cluster_splitting(self):
+        """
+        A-B strong, B-C strong, A-C impossible.
+        get_candidate_identities() maintains candidate clusters.
+        get_final_identity_hypotheses() splits contradictory clusters so A and C are separated.
+        """
+        emb = [0.1] * 64
+        # A: (12.9716, 77.5946) t=1000
+        # B: (12.9750, 77.5980) t=1060 (dist ~520m, 60s -> 31 km/h: feasible)
+        # C: (12.9751, 77.5981) t=1001 (dist ~15m from B, but t_C=1001 vs t_A=1000 -> 530m in 1s -> speed > 1900 km/h: IMPOSSIBLE!)
+        obs_a = _make_obs("Y_A", "cam1", 1000.0, embedding=emb, lat=12.9716, lon=77.5946)
+        obs_b = _make_obs("Y_B", "cam2", 1060.0, embedding=emb, lat=12.9750, lon=77.5980)
+        obs_c = _make_obs("Y_C", "cam3", 1001.0, embedding=emb, lat=12.9751, lon=77.5981)
+
+        graph = IdentityGraph(min_probability_threshold=0.70)
+        graph.build_graph([obs_a, obs_b, obs_c])
+
+        # Candidate identities contain the initial candidate component
+        cands = graph.get_candidate_identities()
+        self.assertGreater(len(cands), 0)
+
+        # Final hypotheses MUST split the cluster so A and C never co-exist in the same identity
+        finals = graph.get_final_identity_hypotheses()
+        self.assertGreaterEqual(len(finals), 2)
+
+        a_cluster = next((c for c in finals if "Y_A" in c["observation_ids"]), None)
+        self.assertIsNotNone(a_cluster)
+        self.assertNotIn("Y_C", a_cluster["observation_ids"], "A and C must be separated due to physical contradiction")
+
+
+# ---------------------------------------------------------------------------
+# Test Z: Evidence Provenance — No Hardcoded Claims
+# ---------------------------------------------------------------------------
+class TestZ_EvidenceProvenanceNoHardcodedClaims(unittest.TestCase):
+
+    def test_missing_evidence_not_claimed_as_supported(self):
+        """Observations without plates or appearance must not claim 'supported' in ledger or cluster."""
+        o1 = _make_obs("Z1", "cam1", 1000.0, plate=None, embedding=None)
+        o2 = _make_obs("Z2", "cam2", 1060.0, plate=None, embedding=None)
+
+        res = match_observations(o1, o2)
+        ledger = res.get("evidence_ledger", {})
+
+        self.assertEqual(ledger["plate"]["status"], "missing")
+        self.assertEqual(ledger["appearance"]["status"], "missing")
+        self.assertEqual(ledger["plate"]["source"], "missing")
+        self.assertIsNone(ledger["plate"]["confidence"])
+
+        # When plate is present, source must be actual_observation
+        o_p1 = _make_obs("Z3", "cam1", 1000.0, plate="KA01AB1234")
+        o_p2 = _make_obs("Z4", "cam2", 1060.0, plate="KA01AB1234")
+        res_p = match_observations(o_p1, o_p2)
+        self.assertEqual(res_p["evidence_ledger"]["plate"]["source"], "actual_observation")
+
+        graph = IdentityGraph()
+        graph.build_graph([o1, o2])
+        clusters = graph.get_candidate_identities()
+        for c in clusters:
+            summary = c.get("identity_evidence_summary", {})
+            self.assertNotEqual(summary.get("plate"), "supported", "Missing plate must never be reported as supported")
+            self.assertNotEqual(summary.get("appearance"), "supported", "Missing appearance must never be reported as supported")
+
+
+# ---------------------------------------------------------------------------
+# Test AA: Adaptive Plate Confidence Weighting
+# ---------------------------------------------------------------------------
+class TestAA_AdaptivePlateConfidence(unittest.TestCase):
+
+    def test_high_confidence_plate_increases_weight(self):
+        """Verified high OCR confidence gives more weight to plate evidence than low confidence."""
+        emb1 = [0.1] * 64
+        emb2 = [-0.1] * 64 # Low appearance similarity
+        plate = "KA05MN1234"
+
+        # High OCR confidence
+        o1_high = _make_obs("AA1", "cam1", 1000.0, plate=plate, embedding=emb1)
+        o1_high.plate_confidence = 0.95
+        o2_high = _make_obs("AA2", "cam2", 1060.0, plate=plate, embedding=emb2, lat=12.9750, lon=77.5980)
+        o2_high.plate_confidence = 0.95
+
+        # Low OCR confidence
+        o1_low = _make_obs("AA3", "cam1", 1000.0, plate=plate, embedding=emb1)
+        o1_low.plate_confidence = 0.20
+        o2_low = _make_obs("AA4", "cam2", 1060.0, plate=plate, embedding=emb2, lat=12.9750, lon=77.5980)
+        o2_low.plate_confidence = 0.20
+
+        res_high = match_observations(o1_high, o2_high)
+        res_low = match_observations(o1_low, o2_low)
+
+        p_high = float(res_high["same_vehicle_probability"])
+        p_low = float(res_low["same_vehicle_probability"])
+
+        self.assertGreater(p_high, p_low, "High OCR confidence should yield higher match score when plate matches")
+
+
+# ---------------------------------------------------------------------------
+# Test AB: Reference vs Optimized Graph Construction Equivalence
+# ---------------------------------------------------------------------------
+class TestAB_ReferenceVsOptimizedGraphEquivalence(unittest.TestCase):
+
+    def test_pruned_graph_matches_reference_implementation(self):
+        """Safe-pruned graph must produce semantically identical edges and clusters as reference O(N^2)."""
+        obs_list = []
+        for i in range(25):
+            v_type = "car" if i % 3 != 0 else "truck"
+            emb = [0.05 * (i % 5)] * 64 if i % 4 != 0 else None
+            plate = f"MH12AB{1000+i}" if i % 2 == 0 else None
+            obs = _make_obs(
+                f"AB_{i}",
+                f"cam_{i % 5}",
+                1000.0 + i * 20.0,
+                vehicle_type=v_type,
+                plate=plate,
+                embedding=emb,
+                lat=12.9700 + (i % 5) * 0.003,
+                lon=77.5900 + (i % 5) * 0.003,
+            )
+            obs_list.append(obs)
+
+        ref_graph = IdentityGraph()
+        ref_graph.build_graph_reference(obs_list)
+
+        opt_graph = IdentityGraph()
+        opt_graph.build_graph(obs_list, enable_pruning=True)
+
+        self.assertEqual(len(ref_graph.edges), len(opt_graph.edges), "Edge counts must match between reference and pruned")
+
+        ref_clusters = [c["observation_ids"] for c in ref_graph.get_candidate_identities()]
+        opt_clusters = [c["observation_ids"] for c in opt_graph.get_candidate_identities()]
+        self.assertEqual(ref_clusters, opt_clusters, "Candidate clusters must be semantically equivalent")
+
+
+# ---------------------------------------------------------------------------
+# Test AC: Global Trajectory Trace Verification
+# ---------------------------------------------------------------------------
+class TestAC_GlobalTrajectoryTraceVerification(unittest.TestCase):
+
+    def test_build_global_trajectory_trace_and_round_trip(self):
+        """build_global_trajectory_trace() must populate required provenance and round-trip via JSON."""
+        o1 = _make_obs("AC1", "cam1", 1000.0)
+        o2 = _make_obs("AC2", "cam2", 1060.0)
+        r1 = _make_route("r1", ["n1", "n2"], ["e1"], dist=800.0)
+        seg = _make_segment("seg_ac", o1, o2, routes=[r1])
+        traj = VehicleTrajectory(
+            identity_id="traj_AC",
+            observations_count=2,
+            cameras_visited=["cam1", "cam2"],
+            start_timestamp=1000.0,
+            end_timestamp=1060.0,
+            segments=[seg],
+        )
+        hyp_result = evaluate_global_trajectory_hypotheses(traj)
+        trace = build_global_trajectory_trace(traj, hyp_result, model_version="2.1.0")
+
+        self.assertIsInstance(trace, InferenceTrace)
+        self.assertEqual(trace.entity_type, "trajectory_hypothesis")
+        self.assertEqual(trace.entity_id, "traj_AC")
+        self.assertEqual(trace.metadata["model_version"], "2.1.0")
+        self.assertIn("AC1", trace.metadata["observations_involved"])
+        self.assertIn("AC2", trace.metadata["observations_involved"])
+        self.assertGreater(trace.generated_at, 1000000.0)
+
+        # JSON Round Trip
+        d = trace.to_dict()
+        import json
+        json_str = json.dumps(d)
+        restored_d = json.loads(json_str)
+        restored_trace = InferenceTrace.from_dict(restored_d)
+
+        self.assertEqual(restored_trace.trace_id, trace.trace_id)
+        self.assertEqual(restored_trace.metadata["model_version"], "2.1.0")
+        self.assertEqual(restored_trace.metadata["observations_involved"], trace.metadata["observations_involved"])
+
+
+# ---------------------------------------------------------------------------
+# Test AD: Master Benchmark Suite Execution
+# ---------------------------------------------------------------------------
+class TestAD_PerformanceBenchmarkSuite(unittest.TestCase):
+
+    def test_master_benchmark_suite_all_pass(self):
+        """20 controlled scenarios and 5 holdouts in the benchmark suite must all pass."""
+        from inference.benchmark_suite import run_master_benchmark_suite
+        report = run_master_benchmark_suite(verbose=False)
+
+        self.assertEqual(report["development_scenarios"]["pass_rate"], 1.0,
+                         f"All 20 dev scenarios must pass, got {report['development_scenarios']['passed']}/20")
+        self.assertEqual(report["holdout_scenarios"]["pass_rate"], 1.0,
+                         f"All 5 holdouts must pass, got {report['holdout_scenarios']['passed']}/5")
+        self.assertIn("N_19", report["performance"])
+        self.assertIn("N_100", report["performance"])
+        self.assertIn("N_200", report["performance"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
