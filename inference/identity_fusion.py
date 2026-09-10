@@ -187,6 +187,121 @@ def match_observations(
         config=config,
     )
 
+    # --- EVIDENCE LEDGER (Phase B) ---
+    # Classify each modality explicitly: missing | available | contradictory | invalid
+    # For feasibility axes: feasible | impossible | unavailable | unverified
+    # Contradiction is defined as the evidence being present AND actively arguing against a match
+    # (e.g., different valid plates), not simply a low score from an incomplete picture.
+
+    # Plate ledger
+    if obs_a.plate is None or obs_b.plate is None:
+        plate_ledger_status = "missing"
+        plate_ledger_value = None
+        plate_ledger_contribution = None
+    elif plate_score is not None:
+        # Both plates present: contradictory only when they are both non-empty strings
+        # and the normalized similarity is very low (OCR errors wouldn't push score < 0.3)
+        if plate_score < 0.30:
+            plate_ledger_status = "contradictory"
+        elif plate_score >= 0.90:
+            plate_ledger_status = "available"
+        else:
+            plate_ledger_status = "available"
+        plate_ledger_value = round(plate_score, 4)
+        plate_ledger_contribution = round(0.45 * plate_score, 4) if has_identity_evidence and app_score is not None else (round(plate_score, 4) if has_identity_evidence else None)
+    else:
+        plate_ledger_status = "invalid"
+        plate_ledger_value = None
+        plate_ledger_contribution = None
+
+    # Appearance ledger
+    if app_status == "missing":
+        app_ledger_status = "missing"
+        app_ledger_value = None
+        app_ledger_contribution = None
+    elif app_status in ("invalid", "invalid_mismatched"):
+        app_ledger_status = "invalid"
+        app_ledger_value = None
+        app_ledger_contribution = None
+    elif app_score is not None:
+        # Contradictory: embedding present and similarity very low but plate or type suggest match
+        app_ledger_status = "available"
+        app_ledger_value = round(app_score, 4)
+        app_ledger_contribution = round(0.55 * app_score, 4) if (has_identity_evidence and plate_score is not None) else round(app_score, 4)
+    else:
+        app_ledger_status = "unavailable"
+        app_ledger_value = None
+        app_ledger_contribution = None
+
+    # Vehicle type ledger — use existing status directly
+    type_ledger_status = type_status  # "compatible" | "incompatible" | "unknown"
+    type_ledger_value = type_score
+    type_ledger_contribution = round(0.30 * type_score, 4)
+
+    # Temporal ledger — map from t_status codes
+    _temporal_impossible_statuses = {
+        "impossible_negative_time", "impossible_simultaneous_different_cameras",
+        "impossible_simultaneous_same_camera_distinct_bbox",
+    }
+    _temporal_unavailable_statuses = {"unavailable", "different_cameras_no_shared_reference"}
+    if t_score is None and t_status in _temporal_unavailable_statuses:
+        temporal_ledger_status = "unavailable"
+        temporal_ledger_value = None
+    elif t_status in _temporal_impossible_statuses:
+        temporal_ledger_status = "impossible"
+        temporal_ledger_value = 0.0
+    elif t_score is not None and t_status in ("feasible", "same_camera", "same_camera_same_frame"):
+        temporal_ledger_status = "feasible"
+        temporal_ledger_value = round(float(t_score), 4)
+    elif t_score is not None:
+        temporal_ledger_status = "unverified"
+        temporal_ledger_value = round(float(t_score), 4)
+    else:
+        temporal_ledger_status = "unavailable"
+        temporal_ledger_value = None
+    temporal_ledger_contribution = round(0.70 * 0.5 * temporal_ledger_value, 4) if temporal_ledger_value is not None else None
+
+    # Spatial ledger
+    _spatial_impossible_statuses = {"impossible_speed", "physically_impossible_speed"}
+    if s_status in _spatial_impossible_statuses:
+        spatial_ledger_status = "impossible"
+    elif s_score > 0.0:
+        spatial_ledger_status = "feasible"
+    else:
+        spatial_ledger_status = "unavailable"
+    spatial_ledger_value = round(s_score, 4)
+    spatial_ledger_contribution = round(0.70 * 0.5 * s_score, 4)
+
+    evidence_ledger = {
+        "plate": {
+            "status": plate_ledger_status,
+            "value": plate_ledger_value,
+            "contribution": plate_ledger_contribution,
+        },
+        "appearance": {
+            "status": app_ledger_status,
+            "value": app_ledger_value,
+            "contribution": app_ledger_contribution,
+        },
+        "vehicle_type": {
+            "status": type_ledger_status,
+            "value": type_ledger_value,
+            "contribution": type_ledger_contribution,
+        },
+        "temporal": {
+            "status": temporal_ledger_status,
+            "value": temporal_ledger_value,
+            "contribution": temporal_ledger_contribution,
+            "delta_t_seconds": round(float(t_delta_sec), 2) if t_delta_sec is not None else None,
+        },
+        "spatial": {
+            "status": spatial_ledger_status,
+            "value": spatial_ledger_value,
+            "contribution": spatial_ledger_contribution,
+            "distance_meters": round(s_dist_m, 2),
+        },
+    }
+
     # Structured Output Payload (100% backward compatible with Day 2)
     return {
         "observation_a": obs_a.observation_id,
@@ -206,6 +321,7 @@ def match_observations(
             "geographic_distance_meters": round(s_dist_m, 2),
             "required_speed_kmh": round(float(s_speed_kmh), 2) if (s_speed_kmh is not None and s_speed_kmh != float("inf")) else (None if s_speed_kmh is None else "infinite"),
         },
+        "evidence_ledger": evidence_ledger,
         "same_vehicle_probability": estimated_prob,
         "explanation": explanation,
         "observation_reliability": {

@@ -517,7 +517,8 @@ def reconstruct_identity_trajectory(
 
     final_total_time = None if has_unavailable_time else total_time
 
-    return VehicleTrajectory(
+    # Phase E: Attach global trajectory hypothesis evaluation
+    trajectory = VehicleTrajectory(
         identity_id=ident_id,
         observations_count=n_obs,
         cameras_visited=cameras,
@@ -533,3 +534,307 @@ def reconstruct_identity_trajectory(
         reliability=traj_reliability,
         uncertainty=traj_uncertainty,
     )
+
+    # Evaluate global competing hypotheses and attach to metadata
+    global_hypotheses = evaluate_global_trajectory_hypotheses(trajectory, config=config)
+    trajectory.uncertainty = dict(trajectory.uncertainty or {})
+    trajectory.reliability = dict(trajectory.reliability or {})
+    # Store as metadata via a compatibility field — use uncertainty dict as carrier
+    if isinstance(trajectory.uncertainty, dict):
+        trajectory.uncertainty["global_hypotheses"] = global_hypotheses
+
+    return trajectory
+
+
+# ---------------------------------------------------------------------------
+# Phase E: Global Trajectory Hypothesis Engine
+# ---------------------------------------------------------------------------
+
+def _build_route_combinations(
+    segments: List[TrajectorySegment],
+    max_combinations: int = 32,
+) -> List[List[CandidateRoute]]:
+    """
+    Build feasible combinations of per-segment candidate routes.
+
+    For N segments each with K routes, generates N-tuples picking one route per segment.
+    Pruned to max_combinations to remain computationally tractable.
+    Only feasible routes from each segment enter the combination pool.
+
+    Returns: List of route-lists (one route per segment position).
+    """
+    import itertools
+
+    per_segment_feasible = []
+    for seg in segments:
+        feasible = [r for r in seg.candidate_routes if r.feasible]
+        if not feasible:
+            # Segment has no feasible routes: include infeasible best for completeness
+            if seg.candidate_routes:
+                feasible = [seg.candidate_routes[0]]
+            else:
+                feasible = []
+        per_segment_feasible.append(feasible)
+
+    if any(len(opts) == 0 for opts in per_segment_feasible):
+        return []
+
+    all_combos = list(itertools.product(*per_segment_feasible))
+
+    if len(all_combos) > max_combinations:
+        # Prune: keep combinations where cumulative raw_score is highest
+        def combo_score(combo: tuple) -> float:
+            return sum(r.raw_score for r in combo)
+        all_combos = sorted(all_combos, key=combo_score, reverse=True)[:max_combinations]
+
+    return [list(c) for c in all_combos]
+
+
+def score_trajectory_hypothesis(
+    routes: List[CandidateRoute],
+    segments: List[TrajectorySegment],
+    config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """
+    Evaluate a single complete trajectory hypothesis (one route per segment).
+
+    Applies segment constraints, sequence constraints, and global constraints
+    independently — never collapses into cumulative-average-only.
+
+    Returns a hypothesis dict with:
+        hypothesis_id, feasibility_status, supporting_evidence, contradictions,
+        rejection_reasons, consistency_info, raw_support, relative_likelihood (set later).
+    """
+    config = config or {}
+    max_speed = float(config.get("max_absolute_speed_kmh", 120.0))
+    speed_tol = float(config.get("speed_tolerance_factor", 1.25))
+
+    rejection_reasons: List[str] = []
+    supporting_evidence: List[str] = []
+    contradictions: List[str] = []
+    segment_scores: List[float] = []
+    is_globally_feasible = True
+
+    n = len(routes)
+
+    # ------------------------------------------------------------------
+    # 1. Segment-level constraints
+    # ------------------------------------------------------------------
+    for idx, (route, seg) in enumerate(zip(routes, segments)):
+        seg_label = f"seg{idx + 1}({seg.start_observation_id}→{seg.end_observation_id})"
+
+        if not route.feasible:
+            is_globally_feasible = False
+            rejection_reasons.append(
+                f"{seg_label}: route {route.route_id} infeasible — {route.feasibility_status}"
+            )
+            contradictions.append(f"{seg_label}: {route.feasibility_status}")
+            segment_scores.append(0.0)
+            continue
+
+        # Check that required speed does not exceed physical maximum
+        if route.required_speed_kmh is not None:
+            eff_max = min(route.speed_limit_kmh * speed_tol, max_speed)
+            if route.required_speed_kmh > eff_max:
+                is_globally_feasible = False
+                rejection_reasons.append(
+                    f"{seg_label}: required speed {route.required_speed_kmh:.1f} km/h > max {eff_max:.1f} km/h"
+                )
+                segment_scores.append(0.0)
+                continue
+
+        segment_scores.append(route.raw_score)
+        supporting_evidence.append(
+            f"{seg_label}: feasible at {route.required_speed_kmh:.1f} km/h "
+            f"({route.distance_meters:.0f}m, score={route.raw_score:.3f})"
+            if route.required_speed_kmh is not None
+            else f"{seg_label}: feasible (unverified temporal, score={route.raw_score:.3f})"
+        )
+
+    # ------------------------------------------------------------------
+    # 2. Sequence constraints: road continuity between segments
+    # ------------------------------------------------------------------
+    for idx in range(n - 1):
+        r_curr = routes[idx]
+        r_next = routes[idx + 1]
+        seg_curr = segments[idx]
+        seg_next = segments[idx + 1]
+        pair_label = f"boundary seg{idx + 1}→seg{idx + 2}"
+
+        # End node of current route must match start node of next route
+        # (both anchored to the same observed endpoint — shared observation)
+        end_node = r_curr.nodes[-1] if r_curr.nodes else None
+        start_node = r_next.nodes[0] if r_next.nodes else None
+
+        if end_node is not None and start_node is not None and end_node != start_node:
+            # Road topology break — this hypothesis has a structural gap
+            is_globally_feasible = False
+            rejection_reasons.append(
+                f"{pair_label}: road topology discontinuity — "
+                f"route ends at '{end_node}' but next begins at '{start_node}'"
+            )
+            contradictions.append(f"{pair_label}: topology_discontinuity")
+
+        # Temporal ordering: end timestamp of segment i must be <= start of i+1
+        t_end_curr = seg_curr.end_timestamp
+        t_start_next = seg_next.start_timestamp
+        if t_end_curr is not None and t_start_next is not None:
+            if t_end_curr > t_start_next:
+                is_globally_feasible = False
+                rejection_reasons.append(
+                    f"{pair_label}: temporal ordering violated — "
+                    f"t_end={t_end_curr:.1f}s > t_start_next={t_start_next:.1f}s"
+                )
+
+    # ------------------------------------------------------------------
+    # 3. Global constraints: isolated infeasible segment detection
+    #    A trajectory can have a reasonable cumulative average while
+    #    containing one physically impossible segment — detect it.
+    # ------------------------------------------------------------------
+    feasible_flags = [r.feasible for r in routes]
+    if n >= 3:
+        for idx, (flag, route) in enumerate(zip(feasible_flags, routes)):
+            if not flag:
+                # Isolated infeasibility while neighbours are feasible
+                left_ok = feasible_flags[idx - 1] if idx > 0 else False
+                right_ok = feasible_flags[idx + 1] if idx < n - 1 else False
+                if left_ok and right_ok:
+                    contradictions.append(
+                        f"Isolated infeasible segment at position {idx + 1}: "
+                        f"both adjacent segments are feasible, indicating localized constraint failure."
+                    )
+
+    # ------------------------------------------------------------------
+    # 4. Raw support score (normalized per-segment geometric mean if all feasible)
+    # ------------------------------------------------------------------
+    if is_globally_feasible and segment_scores and all(s > 0 for s in segment_scores):
+        log_sum = sum(math.log(s) for s in segment_scores)
+        raw_support = round(math.exp(log_sum / len(segment_scores)), 4)
+        feasibility_status = "feasible"
+    elif not any(s > 0 for s in segment_scores):
+        raw_support = 0.0
+        feasibility_status = "infeasible"
+    else:
+        raw_support = 0.0
+        feasibility_status = "infeasible"
+
+    return {
+        "feasibility_status": feasibility_status,
+        "is_globally_feasible": is_globally_feasible,
+        "raw_support": raw_support,
+        "relative_likelihood": None,  # Set by normalizer below
+        "segment_count": n,
+        "routes": [r.route_id for r in routes],
+        "supporting_evidence": supporting_evidence,
+        "contradictions": contradictions,
+        "rejection_reasons": rejection_reasons,
+        "consistency_info": {
+            "all_segments_feasible": all(feasible_flags),
+            "feasible_segment_count": sum(feasible_flags),
+            "infeasible_segment_count": n - sum(feasible_flags),
+        },
+    }
+
+
+def evaluate_global_trajectory_hypotheses(
+    trajectory: VehicleTrajectory,
+    config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """
+    Evaluate competing complete trajectory hypotheses for a VehicleTrajectory.
+
+    Constructs all feasible combinations of per-segment candidate routes,
+    evaluates each combination against segment + sequence + global constraints,
+    scores and ranks surviving hypotheses, and normalizes relative estimated
+    likelihoods among surviving feasible hypotheses only.
+
+    Key property: NEVER replaces per-segment constraint checking with
+    cumulative-average-speed shortcuts.
+
+    If only one feasible hypothesis remains: relative_likelihood = 1.0
+    This means "only surviving hypothesis under implemented constraints",
+    NOT "100% certain in the real world."
+
+    Returns a dict with:
+        hypothesis_count, feasible_count, hypotheses (ranked list),
+        best_hypothesis_id, ambiguous, uncertainty_sources.
+    """
+    segments = trajectory.segments
+    if not segments:
+        return {
+            "hypothesis_count": 0,
+            "feasible_count": 0,
+            "hypotheses": [],
+            "best_hypothesis_id": None,
+            "ambiguous": False,
+            "uncertainty_sources": ["no_segments"],
+        }
+
+    if len(segments) == 1:
+        # Single segment: global consistency = segment consistency
+        seg = segments[0]
+        feasible = [r for r in seg.candidate_routes if r.feasible]
+        hypotheses = []
+        for idx, route in enumerate(seg.candidate_routes):
+            h = score_trajectory_hypothesis([route], [seg], config=config)
+            h["hypothesis_id"] = f"H{idx + 1:02d}"
+            hypotheses.append(h)
+    else:
+        combos = _build_route_combinations(segments, max_combinations=int((config or {}).get("max_hypothesis_combinations", 64)))
+        hypotheses = []
+        for idx, route_combo in enumerate(combos):
+            h = score_trajectory_hypothesis(route_combo, segments, config=config)
+            h["hypothesis_id"] = f"H{idx + 1:02d}"
+            hypotheses.append(h)
+
+    # Normalize relative estimated likelihoods among feasible hypotheses
+    feasible_hyps = [h for h in hypotheses if h["is_globally_feasible"]]
+    total_raw = sum(h["raw_support"] for h in feasible_hyps)
+    if feasible_hyps and total_raw > 0:
+        for h in feasible_hyps:
+            h["relative_likelihood"] = round(h["raw_support"] / total_raw, 4)
+    elif feasible_hyps:
+        # Equal likelihood (all score zero — e.g. all temporally unverified)
+        eq = round(1.0 / len(feasible_hyps), 4)
+        for h in feasible_hyps:
+            h["relative_likelihood"] = eq
+
+    # Sort: feasible first, then by likelihood
+    hypotheses.sort(key=lambda h: (h["is_globally_feasible"], h.get("relative_likelihood") or 0.0), reverse=True)
+
+    best_id = hypotheses[0]["hypothesis_id"] if hypotheses else None
+    ambiguous = False
+    if len(feasible_hyps) >= 2:
+        top2 = sorted(feasible_hyps, key=lambda h: h.get("relative_likelihood") or 0.0, reverse=True)
+        diff = (top2[0].get("relative_likelihood") or 0.0) - (top2[1].get("relative_likelihood") or 0.0)
+        ambiguous = diff < 0.15  # Hypotheses are close in support
+
+    # Uncertainty sources
+    uncertainty_sources: List[str] = []
+    if len(feasible_hyps) > 1:
+        uncertainty_sources.append("multiple_feasible_route_combinations")
+    if ambiguous:
+        uncertainty_sources.append("ambiguous_top_hypotheses")
+    for seg in segments:
+        t_ev = (seg.temporal_evidence or {})
+        if not t_ev.get("comparable", False):
+            uncertainty_sources.append("unavailable_temporal_reference")
+            break
+    if not uncertainty_sources:
+        uncertainty_sources = ["none_detected"]
+
+    return {
+        "hypothesis_count": len(hypotheses),
+        "feasible_count": len(feasible_hyps),
+        "hypotheses": hypotheses,
+        "best_hypothesis_id": best_id,
+        "ambiguous": ambiguous,
+        "uncertainty_sources": list(dict.fromkeys(uncertainty_sources)),
+        "note": (
+            "relative_likelihood is normalized among feasible hypotheses only. "
+            "A single surviving hypothesis has relative_likelihood=1.0, meaning "
+            "it is the only surviving hypothesis under current constraints, "
+            "NOT that the system is 100% certain."
+        ),
+    }
+

@@ -657,3 +657,170 @@ def infer_sparse_identity_trajectory(
         uncertainty=traj_unc,
     )
 
+
+# ---------------------------------------------------------------------------
+# Phase F: Multi-Gap Sparse Hypothesis Consistency
+# ---------------------------------------------------------------------------
+
+def evaluate_multigap_consistency(
+    gaps: List[Any],
+    config: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """
+    Evaluate cross-gap consistency for a multi-gap sparse trajectory.
+
+    For a trajectory: Obs_A -> [GAP_1] -> Obs_B -> [GAP_2] -> Obs_C
+
+    Correct continuity condition:
+        GAP_1 ends at the OBSERVED state B (anchor).
+        GAP_2 begins at the OBSERVED state B (anchor).
+
+    We do NOT require intermediate nodes of GAP_1 and GAP_2 to be identical.
+    We check:
+        1. GAP_1 end_node == GAP_2 start_node (shared observed anchor node).
+        2. Top-ranked feasible route exit node of GAP_1 == entry node of GAP_2's top route.
+        3. Temporal continuity: t_end of GAP_1 <= t_start of GAP_2.
+
+    Args:
+        gaps: List of SparseObservationGap objects (ordered chronologically).
+        config: Optional configuration dictionary.
+
+    Returns:
+        Dict with is_globally_consistent, aligned_gap_count, conflicting_gap_count,
+        node_alignment_conflicts, temporal_conflicts, and per_boundary diagnostics.
+    """
+    config = config or {}
+    n = len(gaps)
+
+    if n < 2:
+        return {
+            "is_globally_consistent": True,
+            "aligned_gap_count": 0,
+            "conflicting_gap_count": 0,
+            "node_alignment_conflicts": [],
+            "temporal_conflicts": [],
+            "per_boundary": [],
+            "gap_count": n,
+            "note": "Single or zero gaps — no cross-gap boundary to evaluate.",
+        }
+
+    node_alignment_conflicts: List[Dict[str, Any]] = []
+    temporal_conflicts: List[Dict[str, Any]] = []
+    per_boundary: List[Dict[str, Any]] = []
+    aligned_count = 0
+    conflicting_count = 0
+
+    for i in range(n - 1):
+        gap_curr = gaps[i]
+        gap_next = gaps[i + 1]
+        boundary_label = f"gap{i + 1}->gap{i + 2}"
+
+        boundary_info: Dict[str, Any] = {
+            "boundary": boundary_label,
+            "gap_curr_id": getattr(gap_curr, "gap_id", f"gap_{i}"),
+            "gap_next_id": getattr(gap_next, "gap_id", f"gap_{i + 1}"),
+        }
+
+        # 1. Shared anchor node check
+        end_node_curr = getattr(gap_curr, "end_node_id", None)
+        start_node_next = getattr(gap_next, "start_node_id", None)
+        anchor_consistent = (
+            end_node_curr is not None
+            and start_node_next is not None
+            and end_node_curr == start_node_next
+        )
+        boundary_info["anchor_node_consistent"] = anchor_consistent
+
+        route_boundary_conflict = False
+
+        if not anchor_consistent and end_node_curr is not None and start_node_next is not None:
+            node_alignment_conflicts.append({
+                "boundary": boundary_label,
+                "conflict_type": "anchor_node_mismatch",
+                "gap_curr_end_node": end_node_curr,
+                "gap_next_start_node": start_node_next,
+                "description": (
+                    f"End node of gap {i + 1} ('{end_node_curr}') does not match "
+                    f"start node of gap {i + 2} ('{start_node_next}'). "
+                    f"Both should map to the same observed anchor junction."
+                ),
+            })
+            conflicting_count += 1
+
+        # 2. Top-route exit/entry alignment
+        feasible_curr = [r for r in (getattr(gap_curr, "candidate_routes", None) or []) if r.feasible]
+        feasible_next = [r for r in (getattr(gap_next, "candidate_routes", None) or []) if r.feasible]
+
+        if feasible_curr and feasible_next:
+            top_curr = feasible_curr[0]
+            top_next = feasible_next[0]
+            exit_node = top_curr.nodes[-1] if top_curr.nodes else None
+            entry_node = top_next.nodes[0] if top_next.nodes else None
+
+            if exit_node is not None and entry_node is not None:
+                if exit_node != entry_node:
+                    route_boundary_conflict = True
+                    node_alignment_conflicts.append({
+                        "boundary": boundary_label,
+                        "conflict_type": "route_exit_entry_node_mismatch",
+                        "gap_curr_top_route_exit_node": exit_node,
+                        "gap_next_top_route_entry_node": entry_node,
+                        "description": (
+                            f"Top feasible route of gap {i + 1} exits at '{exit_node}' "
+                            f"but top feasible route of gap {i + 2} enters at '{entry_node}'. "
+                            f"Route hypotheses disagree at the shared observed boundary."
+                        ),
+                    })
+                    conflicting_count += 1
+                else:
+                    boundary_info["route_boundary_status"] = "route_exit_entry_aligned"
+        else:
+            boundary_info["route_boundary_status"] = "no_feasible_route_at_boundary"
+
+        # 3. Temporal continuity
+        end_obs = getattr(gap_curr, "end_observation", None)
+        start_obs = getattr(gap_next, "start_observation", None)
+        t_end_curr = end_obs.get("timestamp_seconds") if isinstance(end_obs, dict) else None
+        t_start_next = start_obs.get("timestamp_seconds") if isinstance(start_obs, dict) else None
+
+        if t_end_curr is not None and t_start_next is not None:
+            if t_end_curr > t_start_next:
+                temporal_conflicts.append({
+                    "boundary": boundary_label,
+                    "t_end_curr": t_end_curr,
+                    "t_start_next": t_start_next,
+                    "delta": round(t_end_curr - t_start_next, 3),
+                    "description": (
+                        f"Temporal ordering conflict at {boundary_label}: "
+                        f"t_end={t_end_curr:.1f}s > t_start_next={t_start_next:.1f}s"
+                    ),
+                })
+                conflicting_count += 1
+            else:
+                boundary_info["temporal_continuity"] = "consistent"
+        else:
+            boundary_info["temporal_continuity"] = "unavailable"
+
+        if not route_boundary_conflict and anchor_consistent:
+            aligned_count += 1
+
+        per_boundary.append(boundary_info)
+
+    is_globally_consistent = (conflicting_count == 0)
+
+    return {
+        "is_globally_consistent": is_globally_consistent,
+        "aligned_gap_count": aligned_count,
+        "conflicting_gap_count": conflicting_count,
+        "node_alignment_conflicts": node_alignment_conflicts,
+        "temporal_conflicts": temporal_conflicts,
+        "per_boundary": per_boundary,
+        "gap_count": n,
+        "note": (
+            "Cross-gap continuity evaluated at shared observed boundaries. "
+            "GAP_1 ends at observed Obs_B; GAP_2 begins at observed Obs_B. "
+            "Intermediate route nodes within each gap are independent inferences. "
+            "Only anchor nodes and top-route boundary nodes are compared across gaps."
+        ),
+    }
+
