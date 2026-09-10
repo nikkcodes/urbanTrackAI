@@ -14,21 +14,21 @@ from .road_graph import RoadGraph
 
 def evaluate_route_feasibility_and_score(
     path_data: Dict[str, Any],
-    delta_t_seconds: float,
+    delta_t_seconds: Optional[float],
     shortest_distance_m: float,
     config: Optional[Dict[str, Any]] = None,
-) -> Tuple[bool, str, float, float, float]:
+) -> Tuple[bool, str, Optional[float], float, float]:
     """
     Evaluate road-aware feasibility and compute an explainable unnormalized route score.
 
     Args:
         path_data: Path dictionary containing edges, nodes, distance_m, speed_limit_kmh, etc.
-        delta_t_seconds: Observed time difference between observations (t_b - t_a).
+        delta_t_seconds: Observed time difference between observations (t_b - t_a), or None if unavailable.
         shortest_distance_m: Distance of the shortest candidate path in the network.
         config: Optional configuration settings (e.g. speed tolerance, weightings).
 
     Returns:
-        Tuple[bool, str, float, float, float]:
+        Tuple[bool, str, Optional[float], float, float]:
             (is_feasible, status_code, required_speed_kmh, raw_score, estimated_travel_time_s)
     """
     config = config or {}
@@ -39,6 +39,17 @@ def evaluate_route_feasibility_and_score(
 
     speed_tolerance_factor = float(config.get("speed_tolerance_factor", 1.25))  # Allow 25% over speed limit
     max_absolute_speed_kmh = float(config.get("max_absolute_speed_kmh", 120.0))
+
+    # When temporal evidence is unavailable:
+    if delta_t_seconds is None:
+        # Route cannot be verified temporally; retained as feasible_temporally_unverified
+        # based on valid road connectivity and topology.
+        # Scored purely on distance efficiency among candidates without fake speed.
+        if dist_m > 0:
+            dist_score = min(1.0, shortest_distance_m / dist_m)
+        else:
+            dist_score = 1.0
+        return (True, "feasible_temporally_unverified", None, dist_score, est_travel_time_s)
 
     # 1. Temporal Inversion (t_b < t_a)
     if delta_t_seconds < 0:
@@ -87,12 +98,15 @@ def evaluate_route_feasibility_and_score(
 
 
 def reconstruct_trajectory_segment(
-    obs_a: Union[Observation, Dict[str, Any]],
-    obs_b: Union[Observation, Dict[str, Any]],
-    road_graph: RoadGraph,
+    obs_a: Optional[Union[Observation, Dict[str, Any]]] = None,
+    obs_b: Optional[Union[Observation, Dict[str, Any]]] = None,
+    road_graph: Optional[RoadGraph] = None,
     identity_id: str = "vehicle_candidate",
     config: Optional[Dict[str, Any]] = None,
     max_paths: Optional[int] = None,
+    *,
+    start_obs: Optional[Union[Observation, Dict[str, Any]]] = None,
+    end_obs: Optional[Union[Observation, Dict[str, Any]]] = None,
 ) -> TrajectorySegment:
     """
     Reconstruct candidate trajectories between two sequential vehicle observations.
@@ -107,10 +121,19 @@ def reconstruct_trajectory_segment(
         identity_id: Vehicle identity identifier.
         config: Optional inference parameters (max_paths, ambiguity_threshold, etc.).
         max_paths: Optional override for maximum candidate paths to explore.
+        start_obs: Optional alias for obs_a.
+        end_obs: Optional alias for obs_b.
 
     Returns:
         TrajectorySegment: Segment hypothesis containing ranked candidate routes and uncertainty.
     """
+    obs_a = obs_a or start_obs
+    obs_b = obs_b or end_obs
+    if obs_a is None or obs_b is None:
+        raise ValueError("Both origin (obs_a/start_obs) and destination (obs_b/end_obs) observations must be provided.")
+    if road_graph is None:
+        raise ValueError("road_graph must be provided.")
+
     config = dict(config or {})
     if max_paths is not None:
         config["max_candidate_paths"] = max_paths
@@ -131,7 +154,22 @@ def reconstruct_trajectory_segment(
 
     id_a, cam_a, t_a, lat_a, lon_a = _extract(obs_a)
     id_b, cam_b, t_b, lat_b, lon_b = _extract(obs_b)
-    delta_t = t_b - t_a
+
+    from .temporal import check_temporal_comparability
+
+    cam_meta_source = None
+    if road_graph and hasattr(road_graph, "metadata") and road_graph.metadata:
+        cam_meta_source = road_graph.metadata
+    if config and "camera_metadata" in config:
+        cam_meta_source = config["camera_metadata"]
+
+    t_comp = check_temporal_comparability(obs_a, obs_b, camera_metadata=cam_meta_source)
+    if t_comp["comparable"]:
+        delta_t = t_comp["delta_seconds"]
+    elif t_comp["status"] == "invalid_negative_time":
+        delta_t = -1.0
+    else:
+        delta_t = None
 
     # Associate cameras with road network junctions
     node_a = road_graph.associate_camera(cam_a, latitude=lat_a, longitude=lon_a)
@@ -149,14 +187,15 @@ def reconstruct_trajectory_segment(
         time_difference_seconds=delta_t,
         start_node_id=node_a,
         end_node_id=node_b,
+        temporal_evidence=t_comp,
     )
 
     # Check Negative Time Difference (Reversed Timestamps)
-    if delta_t < 0:
+    if t_comp["status"] == "invalid_negative_time" or (delta_t is not None and delta_t < 0):
         segment.status = "infeasible"
         segment.is_ambiguous = False
         segment.ambiguity_reason = (
-            f"Negative time difference: Observation timestamps are reversed (Δt = {delta_t:.1f}s)."
+            f"Negative time difference: Observation timestamps are reversed ({t_comp.get('reason')})."
         )
         return segment
 
@@ -183,13 +222,18 @@ def reconstruct_trajectory_segment(
             distance_meters=0.0,
             estimated_travel_time_seconds=0.0,
             min_travel_time_seconds=0.0,
-            required_speed_kmh=0.0,
+            required_speed_kmh=0.0 if delta_t is not None else None,
             speed_limit_kmh=50.0,
             feasible=True,
             feasibility_status="stationary",
             estimated_likelihood=1.0,
             raw_score=1.0,
-            explanation=f"Stationary or loitering vehicle observed at same camera/junction (duration Δt = {delta_t:.1f}s).",
+            explanation=(
+                f"Stationary vehicle observed at same camera/junction (duration Δt = {delta_t:.1f}s)."
+                if delta_t is not None
+                else "Stationary vehicle observed at same junction (temporal duration unavailable)."
+            ),
+            temporal_evidence=t_comp,
         )
         segment.candidate_routes = [c_route]
         segment.confidence = 1.0
@@ -220,7 +264,7 @@ def reconstruct_trajectory_segment(
 
         # Construct explainable rationale
         if status == "temporal_inversion":
-            expl = f"Route rejected: Observation timestamps reversed (Δt = {delta_t:.1f}s)."
+            expl = f"Route rejected: Observation timestamps reversed ({t_comp.get('reason')})."
         elif status == "speed_limit_exceeded":
             expl = (
                 f"Route infeasible: Required speed of {req_speed:.1f} km/h over {dist_m:.1f}m in {delta_t:.1f}s "
@@ -228,6 +272,11 @@ def reconstruct_trajectory_segment(
             )
         elif status == "stationary_same_instant":
             expl = "Vehicle observed at same junction and instant."
+        elif status == "feasible_temporally_unverified":
+            expl = (
+                f"Route temporally unverified ({dist_m:.1f}m): Road connectivity and topology feasible, "
+                f"but cross-camera temporal evidence is unavailable ({t_comp.get('reason')})."
+            )
         else:
             expl = (
                 f"Feasible route ({dist_m:.1f}m): Required speed {req_speed:.1f} km/h is compatible with "
@@ -248,6 +297,7 @@ def reconstruct_trajectory_segment(
             estimated_likelihood=0.0,  # Will normalize below
             raw_score=raw_score,
             explanation=expl,
+            temporal_evidence=t_comp,
         )
         evaluated_routes.append(c_route)
 
@@ -290,6 +340,24 @@ def reconstruct_trajectory_segment(
         segment.is_ambiguous = False
         segment.ambiguity_reason = "All candidate routes between observations are physically infeasible."
 
+    # Day 5: Evaluate endpoint observation reliabilities and propagate uncertainty
+    from .reliability_engine import evaluate_observation_reliability, propagate_trajectory_uncertainty
+
+    obs_rel_a = evaluate_observation_reliability(obs_a, config=config)
+    obs_rel_b = evaluate_observation_reliability(obs_b, config=config)
+    traj_rel = propagate_trajectory_uncertainty(
+        trajectory_id=segment.segment_id,
+        obs_rel_a=obs_rel_a,
+        obs_rel_b=obs_rel_b,
+        candidate_routes=evaluated_routes,
+        is_gap=getattr(segment, "is_gap", False),
+        unobserved_intermediate_nodes=getattr(segment, "unobserved_intermediate_nodes", []),
+        gap_duration_seconds=segment.time_difference_seconds if getattr(segment, "is_gap", False) else None,
+        config=config,
+    )
+    segment.reliability = traj_rel.to_dict()
+    segment.uncertainty = traj_rel.to_dict()
+
     return segment
 
 
@@ -322,11 +390,10 @@ def reconstruct_identity_trajectory(
     # Sort observations chronologically
     sorted_obs = sorted(
         raw_obs_list,
-        key=lambda o: float(o.get("timestamp_seconds", o.get("timestamp", 0.0))),
+        key=lambda o: float(o.timestamp_seconds if isinstance(o, Observation) else o.get("timestamp_seconds", o.get("timestamp", 0.0))),
     )
 
     n_obs = len(sorted_obs)
-
     if n_obs == 0:
         return VehicleTrajectory(
             identity_id=ident_id,
@@ -340,18 +407,20 @@ def reconstruct_identity_trajectory(
             is_ambiguous=False,
         )
 
-    cameras = list(dict.fromkeys([str(o.get("camera_id", "")) for o in sorted_obs]))
-    t_start = float(sorted_obs[0].get("timestamp_seconds", sorted_obs[0].get("timestamp", 0.0)))
-    t_end = float(sorted_obs[-1].get("timestamp_seconds", sorted_obs[-1].get("timestamp", 0.0)))
+    cameras = list(dict.fromkeys([str(o.camera_id if isinstance(o, Observation) else o.get("camera_id", "")) for o in sorted_obs]))
+    t_start = float(sorted_obs[0].timestamp_seconds if isinstance(sorted_obs[0], Observation) else sorted_obs[0].get("timestamp_seconds", sorted_obs[0].get("timestamp", 0.0)))
+    t_end = float(sorted_obs[-1].timestamp_seconds if isinstance(sorted_obs[-1], Observation) else sorted_obs[-1].get("timestamp_seconds", sorted_obs[-1].get("timestamp", 0.0)))
     total_time = t_end - t_start
 
     # Single observation case (stationary / singleton)
     if n_obs == 1:
-        cam_single = sorted_obs[0].get("camera_id", "")
+        cam_single = cameras[0] if cameras else ""
+        lat_single = sorted_obs[0].latitude if isinstance(sorted_obs[0], Observation) else sorted_obs[0].get("latitude")
+        lon_single = sorted_obs[0].longitude if isinstance(sorted_obs[0], Observation) else sorted_obs[0].get("longitude")
         node_single = road_graph.associate_camera(
             cam_single,
-            latitude=sorted_obs[0].get("latitude"),
-            longitude=sorted_obs[0].get("longitude"),
+            latitude=lat_single,
+            longitude=lon_single,
         )
         return VehicleTrajectory(
             identity_id=ident_id,
@@ -367,40 +436,53 @@ def reconstruct_identity_trajectory(
             complete_route_nodes=[node_single] if node_single else [],
         )
 
-    # Multi-observation trajectory: reconstruct sequential transitions
+    # Reconstruct segments pairwise
     segments: List[TrajectorySegment] = []
-    complete_edges: List[str] = []
-    complete_nodes: List[str] = []
     total_dist = 0.0
+    total_time = 0.0
+    has_unavailable_time = False
+    cameras: List[str] = []
     conf_scores: List[float] = []
     any_ambiguous = False
+    all_route_edges: List[str] = []
+    all_route_nodes: List[str] = []
 
     for i in range(n_obs - 1):
-        obs_curr = sorted_obs[i]
-        obs_next = sorted_obs[i + 1]
+        obs_1 = sorted_obs[i]
+        obs_2 = sorted_obs[i + 1]
 
         seg = reconstruct_trajectory_segment(
-            obs_curr,
-            obs_next,
-            road_graph,
+            obs_a=obs_1,
+            obs_b=obs_2,
+            road_graph=road_graph,
             identity_id=ident_id,
             config=config,
         )
         segments.append(seg)
 
+        # Accumulate metrics
+        if seg.time_difference_seconds is not None:
+            total_time += seg.time_difference_seconds
+        else:
+            has_unavailable_time = True
+
+        if seg.start_camera_id and seg.start_camera_id not in cameras:
+            cameras.append(seg.start_camera_id)
+        if seg.end_camera_id and seg.end_camera_id not in cameras:
+            cameras.append(seg.end_camera_id)
+
         if seg.is_ambiguous:
             any_ambiguous = True
 
         if seg.most_likely_route is not None:
-            complete_edges.extend(seg.most_likely_route)
-            # Add nodes
+            # Avoid duplicate node transitions
             if seg.candidate_routes and seg.candidate_routes[0].nodes:
                 seg_nodes = seg.candidate_routes[0].nodes
-                if not complete_nodes:
-                    complete_nodes.extend(seg_nodes)
+                if not all_route_nodes:
+                    all_route_nodes.extend(seg_nodes)
                 else:
-                    # Avoid duplicating junction at segment boundaries
-                    complete_nodes.extend(seg_nodes[1:])
+                    all_route_nodes.extend(seg_nodes[1:])
+            all_route_edges.extend(seg.most_likely_route)
             total_dist += (seg.candidate_routes[0].distance_meters if seg.candidate_routes else 0.0)
             conf_scores.append(seg.confidence)
         else:
@@ -415,17 +497,39 @@ def reconstruct_identity_trajectory(
     else:
         overall_conf = 0.0
 
+    # Overall reliability and uncertainty
+    if segments:
+        avg_rel = sum((s.reliability or {}).get("overall_reliability", 0.80) for s in segments) / len(segments)
+        avg_unc = round(1.0 - avg_rel, 4)
+        traj_reliability = {
+            "overall_reliability": round(avg_rel, 4),
+            "overall_uncertainty": avg_unc,
+            "segments_count": len(segments),
+        }
+        traj_uncertainty = {
+            "overall_uncertainty": avg_unc,
+            "score": avg_unc,
+            "level": "low" if avg_unc <= 0.25 else ("moderate" if avg_unc <= 0.50 else ("high" if avg_unc <= 0.75 else "critical")),
+        }
+    else:
+        traj_reliability = {"overall_reliability": 1.0, "overall_uncertainty": 0.0}
+        traj_uncertainty = {"overall_uncertainty": 0.0, "score": 0.0, "level": "low"}
+
+    final_total_time = None if has_unavailable_time else total_time
+
     return VehicleTrajectory(
         identity_id=ident_id,
         observations_count=n_obs,
         cameras_visited=cameras,
         start_timestamp=t_start,
         end_timestamp=t_end,
-        total_time_seconds=total_time,
+        total_time_seconds=final_total_time,
         total_distance_meters=total_dist,
         overall_confidence=overall_conf,
         is_ambiguous=any_ambiguous,
         segments=segments,
-        complete_route_edges=complete_edges,
-        complete_route_nodes=complete_nodes,
+        complete_route_edges=all_route_edges,
+        complete_route_nodes=all_route_nodes,
+        reliability=traj_reliability,
+        uncertainty=traj_uncertainty,
     )

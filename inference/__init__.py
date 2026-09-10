@@ -2,6 +2,7 @@
 UrbanTrack AI Mobility Inference Engine module.
 """
 
+from schemas.gap_schema import SparseObservationGap
 from schemas.normalized_trajectory_schema import (
     InvalidRouteError,
     NormalizedCandidateRoute,
@@ -13,11 +14,24 @@ from schemas.trajectory_schema import CandidateRoute, TrajectorySegment, Vehicle
 from .identity_fusion import match_observations
 from .identity_graph import IdentityGraph
 from .member3_adapter import (
+    adapt_sparse_gap_to_normalized,
     adapt_trajectories_to_batch_payload,
     adapt_trajectory_segment_to_normalized,
     adapt_vehicle_trajectory_to_normalized,
 )
 from .observation_loader import load_camera_metadata, load_observations_from_json
+from schemas.reliability_schema import (
+    CameraReliability,
+    IdentityMatchReliability,
+    ObservationReliability,
+    TrajectoryReliability,
+)
+from .reliability_engine import (
+    evaluate_camera_reliability,
+    evaluate_identity_uncertainty,
+    evaluate_observation_reliability,
+    propagate_trajectory_uncertainty,
+)
 from .road_graph import RoadEdge, RoadGraph, RoadNode
 from .similarity import (
     appearance_similarity,
@@ -27,6 +41,11 @@ from .similarity import (
     vehicle_type_compatibility,
 )
 from .spatial import spatial_feasibility
+from .sparse_engine import (
+    detect_observation_gaps,
+    infer_sparse_gap,
+    infer_sparse_identity_trajectory,
+)
 from .temporal import temporal_feasibility
 from .trajectory_engine import (
     evaluate_route_feasibility_and_score,
@@ -39,12 +58,22 @@ __all__ = [
     "CandidateRoute",
     "TrajectorySegment",
     "VehicleTrajectory",
+    "SparseObservationGap",
     "NormalizedCandidateRoute",
     "NormalizedTrajectory",
     "ProbabilityValidationError",
     "InvalidRouteError",
+    "CameraReliability",
+    "ObservationReliability",
+    "IdentityMatchReliability",
+    "TrajectoryReliability",
+    "evaluate_camera_reliability",
+    "evaluate_observation_reliability",
+    "evaluate_identity_uncertainty",
+    "propagate_trajectory_uncertainty",
     "adapt_trajectory_segment_to_normalized",
     "adapt_vehicle_trajectory_to_normalized",
+    "adapt_sparse_gap_to_normalized",
     "adapt_trajectories_to_batch_payload",
     "load_camera_metadata",
     "load_observations_from_json",
@@ -63,5 +92,10 @@ __all__ = [
     "evaluate_route_feasibility_and_score",
     "reconstruct_trajectory_segment",
     "reconstruct_identity_trajectory",
+    "detect_observation_gaps",
+    "infer_sparse_gap",
+    "infer_sparse_identity_trajectory",
 ]
+
+
 

@@ -1,0 +1,357 @@
+{
+  "description": "Controlled Day 8 Counterfactual Traffic Simulation test scenarios for UrbanTrack AI",
+  "metadata": {
+    "evaluation_layer": "DAY_8_COUNTERFACTUAL_SIMULATION",
+    "framing": "UrbanTrack evaluates plausible network consequences under a specified hypothetical intervention."
+  },
+  "scenarios": {
+    "SCN_001_SINGLE_ROAD_CLOSURE": {
+      "scenario_id": "SCN_001",
+      "scenario_type": "ROAD_CLOSURE",
+      "description": "Hypothetical closure of collector road R07 (J01 -> J04).",
+      "affected_roads": ["R07"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Closure of R07 is a hypothetical intervention.",
+        "Displaced demand reallocates across surviving feasible candidate corridors."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_001",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1150.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.70,
+            "metadata": {"edges": ["R01", "R08"]}
+          },
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.30,
+            "metadata": {"edges": ["R07", "R18"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.92,
+          "trajectory_uncertainty": 0.08
+        }
+      }
+    },
+    "SCN_002_CAPACITY_REDUCTION": {
+      "scenario_id": "SCN_002",
+      "scenario_type": "CAPACITY_REDUCTION",
+      "description": "Hypothetical 50% capacity reduction on arterial road R01 (1600 -> 800 vph).",
+      "affected_roads": ["R01"],
+      "capacity_changes": {"R01": 800.0},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Capacity reduction reflects hypothetical lane maintenance.",
+        "Traffic allocation does not automatically reroute without an active assignment policy."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_002",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.95,
+          "trajectory_uncertainty": 0.05
+        }
+      }
+    },
+    "SCN_003_CAPACITY_INCREASE": {
+      "scenario_id": "SCN_003",
+      "scenario_type": "CAPACITY_INCREASE",
+      "description": "Hypothetical capacity expansion on collector road R07 (1400 -> 2800 vph).",
+      "affected_roads": ["R07"],
+      "capacity_changes": {"R07": 2800.0},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Capacity increase reflects hypothetical additional lanes.",
+        "Demand remains at baseline levels."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_003",
+        "origin_node": "J01",
+        "destination_node": "J04",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J04"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R07"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.90,
+          "trajectory_uncertainty": 0.10
+        }
+      }
+    },
+    "SCN_004_MULTIPLE_ROAD_CLOSURE": {
+      "scenario_id": "SCN_004",
+      "scenario_type": "MULTI_ROAD_CLOSURE",
+      "description": "Simultaneous hypothetical closure of R07, R09, and R18.",
+      "affected_roads": ["R07", "R09", "R18"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "All closures are evaluated simultaneously prior to rerouting.",
+        "Only routes free of all closed edges remain feasible."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_004",
+        "origin_node": "J01",
+        "destination_node": "J08",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1200.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J04", "J08"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R07", "R11"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J05", "J08"],
+            "probability": 0.30,
+            "metadata": {"edges": ["R01", "R08", "R09"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J03", "J06", "J08"],
+            "probability": 0.20,
+            "metadata": {"edges": ["R01", "R02", "R03", "R21"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.85,
+          "trajectory_uncertainty": 0.15
+        }
+      }
+    },
+    "SCN_005_NO_ALTERNATIVE_ROUTE": {
+      "scenario_id": "SCN_005",
+      "scenario_type": "MULTI_ROAD_CLOSURE",
+      "description": "Complete isolation of origin J01 by closing all egress links (R01, R07, R14).",
+      "affected_roads": ["R01", "R07", "R14"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "All egress links from J01 closed.",
+        "Zero alternative paths survive on the physical network."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_005",
+        "origin_node": "J01",
+        "destination_node": "J12",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1250.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05", "J08", "J10", "J12"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R08", "R09", "R12", "R13"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.88,
+          "trajectory_uncertainty": 0.12
+        }
+      }
+    },
+    "SCN_006_HIGH_DEMAND": {
+      "scenario_id": "SCN_006",
+      "scenario_type": "DEMAND_INCREASE",
+      "description": "Hypothetical 25% surge in network-wide demand (multiplier = 1.25).",
+      "affected_roads": [],
+      "capacity_changes": {},
+      "demand_multiplier": 1.25,
+      "assumptions": [
+        "Demand multiplier is a scenario hypothesis representing peak surge.",
+        "Physical vehicle weight scales proportionally for all routed demand."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_006",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 2.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.90,
+          "trajectory_uncertainty": 0.10
+        }
+      }
+    },
+    "SCN_007_AMBIGUOUS_TRAJECTORY": {
+      "scenario_id": "SCN_007",
+      "scenario_type": "ROAD_CLOSURE",
+      "description": "Ambiguous trajectory with 3 plausible routes; closure of primary route reallocates to remaining alternatives.",
+      "affected_roads": ["R07"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Original route probabilities are preserved intact as relative estimated likelihoods.",
+        "Counterfactual allocation probabilities renormalize strictly among surviving routes."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_007",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1200.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R07", "R18"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.30,
+            "metadata": {"edges": ["R01", "R08"]}
+          },
+          {
+            "nodes": ["J01", "J13", "J07", "J04", "J05"],
+            "probability": 0.20,
+            "metadata": {"edges": ["R14", "R15", "R20", "R18"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.75,
+          "trajectory_uncertainty": 0.25,
+          "is_ambiguous": true
+        }
+      }
+    },
+    "SCN_008_LOW_RELIABILITY": {
+      "scenario_id": "SCN_008",
+      "scenario_type": "ROAD_CLOSURE",
+      "description": "Trajectory with low evidence reliability (0.35); confirms reliability is NOT multiplied into physical demand.",
+      "affected_roads": ["R07"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Reliability represents evidence quality, not fractional vehicle demand.",
+        "Physical demand remains vehicle_weight * counterfactual_allocation_probability."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_008",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1150.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.60,
+            "metadata": {"edges": ["R07", "R18"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.40,
+            "metadata": {"edges": ["R01", "R08"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.35,
+          "trajectory_uncertainty": 0.65
+        }
+      }
+    },
+    "SCN_009_ROAD_RECOVERY": {
+      "scenario_id": "SCN_009",
+      "scenario_type": "ROAD_RECOVERY",
+      "description": "Restoration of previously closed road R07 back into active routing adjacency.",
+      "affected_roads": ["R07"],
+      "capacity_changes": {},
+      "demand_multiplier": 1.0,
+      "assumptions": [
+        "Baseline state has R07 initially closed.",
+        "Counterfactual state restores R07 availability."
+      ],
+      "baseline_modifications": {
+        "initial_closed_roads": ["R07"]
+      },
+      "trajectory": {
+        "track_id": "VEH_CF_009",
+        "origin_node": "J01",
+        "destination_node": "J04",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J04"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R07"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J05", "J08", "J04"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R01", "R08", "R09", "R11"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.90,
+          "trajectory_uncertainty": 0.10
+        }
+      }
+    },
+    "SCN_010_INVALID_SCENARIO": {
+      "scenario_id": "SCN_010",
+      "scenario_type": "ROAD_CLOSURE",
+      "description": "Invalid scenario referencing nonexistent road R999 and negative capacity.",
+      "affected_roads": ["R999"],
+      "capacity_changes": {"R999": -500.0},
+      "demand_multiplier": -1.0,
+      "assumptions": [
+        "Testing robust validation and explicit rejection of malformed inputs."
+      ],
+      "trajectory": {
+        "track_id": "VEH_CF_010",
+        "origin_node": "J01",
+        "destination_node": "J02",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.90,
+          "trajectory_uncertainty": 0.10
+        }
+      }
+    }
+  }
+}

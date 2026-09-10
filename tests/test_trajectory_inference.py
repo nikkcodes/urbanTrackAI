@@ -20,7 +20,11 @@ class TestTrajectoryInference(unittest.TestCase):
 
     def setUp(self):
         """Build a controlled synthetic road graph for deterministic testing."""
-        self.graph = RoadGraph(metadata={"name": "test_urban_network"})
+        self.graph = RoadGraph(metadata={
+            "name": "test_urban_network",
+            "timestamp_semantics": "synchronized",
+            "time_reference_id": "test_network_sync",
+        })
 
         # Nodes:
         # N1 (cam_01), N2 (cam_02), N3 (cam_03), N4 (cam_04), N5 (isolated)
@@ -137,7 +141,7 @@ class TestTrajectoryInference(unittest.TestCase):
             self.assertFalse(r.feasible)
 
     def test_case_e_same_camera_at_different_times(self):
-        """CASE E: Same camera observation at different times (stationary vehicle or loitering)."""
+        """CASE E: Same camera observation at different times (stationary vehicle)."""
         obs_a = {"camera_id": "cam_01", "timestamp": 100.0, "latitude": 17.3850, "longitude": 78.4867}
         obs_b = {"camera_id": "cam_01", "timestamp": 180.0, "latitude": 17.3850, "longitude": 78.4867}
 
@@ -198,7 +202,11 @@ class TestTrajectoryInference(unittest.TestCase):
     def test_case_j_two_routes_nearly_identical_feasibility_preserves_uncertainty(self):
         """CASE J: Two routes have nearly identical feasibility; uncertainty must be preserved."""
         # Create symmetric graph: N1 -> NA -> N4 (500m, 50km/h) and N1 -> NB -> N4 (500m, 50km/h)
-        sym_graph = RoadGraph(metadata={"name": "symmetric_network"})
+        sym_graph = RoadGraph(metadata={
+            "name": "symmetric_network",
+            "timestamp_semantics": "synchronized",
+            "time_reference_id": "test_network_sync",
+        })
         sym_graph.add_node(RoadNode(node_id="N1", name="J1", latitude=17.3850, longitude=78.4867))
         sym_graph.add_node(RoadNode(node_id="NA", name="JA", latitude=17.3870, longitude=78.4850))
         sym_graph.add_node(RoadNode(node_id="NB", name="JB", latitude=17.3870, longitude=78.4880))

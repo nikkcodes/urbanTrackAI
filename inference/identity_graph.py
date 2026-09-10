@@ -13,7 +13,7 @@ class IdentityGraph:
     Graph representation of vehicle observations and identity match probabilities.
 
     Nodes: Vehicle observations.
-    Edges: Estimated probability that two observations represent the same physical vehicle.
+    Edges: Pairwise candidate identity links formed when evidence score meets the configured threshold.
     """
 
     def __init__(self, min_probability_threshold: float = 0.70) -> None:
@@ -21,8 +21,9 @@ class IdentityGraph:
         Initialize the IdentityGraph.
 
         Args:
-            min_probability_threshold: Minimum match probability to form an edge between observations (default 0.70).
-                                       Requires strong identity match evidence to avoid transitive over-clustering.
+            min_probability_threshold: Configured identity-link threshold: 0.70 evidence score.
+                                       A decision parameter requiring sufficient evidence to avoid transitive over-clustering.
+                                       Note: This is an evidence-score decision threshold, not a calibrated probability.
         """
         self.min_threshold = min_probability_threshold
         self.nodes: Dict[str, Observation] = {}

@@ -1,5 +1,9 @@
 {
   "name": "MetroMetropolis_Synthetic_Network",
+  "metadata": {
+    "timestamp_semantics": "synchronized",
+    "time_reference_id": "metro_network_sync"
+  },
   "nodes": [
     {"node_id": "J01", "name": "North Gate Terminal", "lat": 28.6400, "lon": 77.2000, "metadata": {"zone": "north_entry", "cameras": 2}},
     {"node_id": "J02", "name": "North Junction", "lat": 28.6350, "lon": 77.2100, "metadata": {"zone": "arterial_split", "cameras": 3}},

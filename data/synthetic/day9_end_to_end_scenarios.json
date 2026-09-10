@@ -1,0 +1,210 @@
+{
+  "description": "Controlled Day 9 Full End-to-End Integration Test Scenarios for UrbanTrack AI",
+  "metadata": {
+    "dataset_type": "synthetic_controlled_test_data",
+    "evaluation_layer": "DAY_9_INTEGRATION_VALIDATION",
+    "framing": "Controlled synthetic data exercising the complete perception-to-counterfactual pipeline.",
+    "time_reference_id": "metro_network_sync"
+  },
+  "cameras": {
+    "CAM_J01": {
+      "camera_id": "CAM_J01",
+      "latitude": 28.6400,
+      "longitude": 77.2000,
+      "junction_id": "J01",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.95
+    },
+    "CAM_J02": {
+      "camera_id": "CAM_J02",
+      "latitude": 28.6350,
+      "longitude": 77.2100,
+      "junction_id": "J02",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.90
+    },
+    "CAM_J03": {
+      "camera_id": "CAM_J03",
+      "latitude": 28.6300,
+      "longitude": 77.2250,
+      "junction_id": "J03",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.92
+    },
+    "CAM_J04": {
+      "camera_id": "CAM_J04",
+      "latitude": 28.6250,
+      "longitude": 77.2050,
+      "junction_id": "J04",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.88
+    },
+    "CAM_J05": {
+      "camera_id": "CAM_J05",
+      "latitude": 28.6200,
+      "longitude": 77.2180,
+      "junction_id": "J05",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.89
+    },
+    "CAM_J08": {
+      "camera_id": "CAM_J08",
+      "latitude": 28.6100,
+      "longitude": 77.2100,
+      "junction_id": "J08",
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized",
+      "camera_reliability": 0.94
+    }
+  },
+  "observations": [
+    {
+      "observation_id": "OBS_VEH1_CAM1",
+      "camera_id": "CAM_J01",
+      "timestamp_seconds": 1000.0,
+      "timestamp": "2026-09-10T10:16:40Z",
+      "track_id": "cam01_trk_01",
+      "vehicle_type": "car",
+      "detection_confidence": 0.96,
+      "bbox": [100.0, 150.0, 250.0, 300.0],
+      "latitude": 28.6400,
+      "longitude": 77.2000,
+      "plate": "KA01AB1234",
+      "plate_confidence": 0.98,
+      "appearance_embedding": [0.82, 0.45, 0.12, 0.05, 0.31, 0.02, 0.11, 0.09],
+      "camera_reliability": 0.95,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_VEH1_CAM2",
+      "camera_id": "CAM_J02",
+      "timestamp_seconds": 1130.0,
+      "timestamp": "2026-09-10T10:18:50Z",
+      "track_id": "cam02_trk_07",
+      "vehicle_type": "car",
+      "detection_confidence": 0.95,
+      "bbox": [120.0, 140.0, 270.0, 290.0],
+      "latitude": 28.6350,
+      "longitude": 77.2100,
+      "plate": "KA01AB1234",
+      "plate_confidence": 0.97,
+      "appearance_embedding": [0.81, 0.46, 0.11, 0.06, 0.30, 0.03, 0.10, 0.08],
+      "camera_reliability": 0.90,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_VEH1_CAM3",
+      "camera_id": "CAM_J03",
+      "timestamp_seconds": 1262.0,
+      "timestamp": "2026-09-10T10:21:02Z",
+      "track_id": "cam03_trk_12",
+      "vehicle_type": "car",
+      "detection_confidence": 0.94,
+      "bbox": [90.0, 160.0, 240.0, 310.0],
+      "latitude": 28.6300,
+      "longitude": 77.2250,
+      "plate": "KA01AB1234",
+      "plate_confidence": 0.96,
+      "appearance_embedding": [0.83, 0.44, 0.13, 0.04, 0.32, 0.02, 0.12, 0.09],
+      "camera_reliability": 0.92,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_SPARSE_CAM1",
+      "camera_id": "CAM_J01",
+      "timestamp_seconds": 1000.0,
+      "timestamp": "2026-09-10T10:16:40Z",
+      "track_id": "cam01_trk_02",
+      "vehicle_type": "car",
+      "detection_confidence": 0.91,
+      "bbox": [300.0, 200.0, 450.0, 350.0],
+      "latitude": 28.6400,
+      "longitude": 77.2000,
+      "plate": "DL04CD5678",
+      "plate_confidence": 0.94,
+      "appearance_embedding": [0.15, 0.78, 0.32, 0.21, 0.05, 0.41, 0.18, 0.12],
+      "camera_reliability": 0.95,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_SPARSE_CAM5",
+      "camera_id": "CAM_J05",
+      "timestamp_seconds": 1256.0,
+      "timestamp": "2026-09-10T10:20:56Z",
+      "track_id": "cam05_trk_04",
+      "vehicle_type": "car",
+      "detection_confidence": 0.92,
+      "bbox": [280.0, 220.0, 430.0, 370.0],
+      "latitude": 28.6200,
+      "longitude": 77.2180,
+      "plate": "DL04CD5678",
+      "plate_confidence": 0.93,
+      "appearance_embedding": [0.14, 0.79, 0.31, 0.22, 0.06, 0.40, 0.19, 0.11],
+      "camera_reliability": 0.89,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_FAST_CAM1",
+      "camera_id": "CAM_J01",
+      "timestamp_seconds": 1000.0,
+      "timestamp": "2026-09-10T10:16:40Z",
+      "track_id": "cam01_trk_03",
+      "vehicle_type": "car",
+      "detection_confidence": 0.90,
+      "bbox": [50.0, 50.0, 150.0, 150.0],
+      "latitude": 28.6400,
+      "longitude": 77.2000,
+      "plate": "MH12XY9999",
+      "plate_confidence": 0.95,
+      "appearance_embedding": [0.50, 0.50, 0.50, 0.50, 0.10, 0.10, 0.10, 0.10],
+      "camera_reliability": 0.95,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    },
+    {
+      "observation_id": "OBS_FAST_CAM2",
+      "camera_id": "CAM_J02",
+      "timestamp_seconds": 1005.0,
+      "timestamp": "2026-09-10T10:16:45Z",
+      "track_id": "cam02_trk_09",
+      "vehicle_type": "car",
+      "detection_confidence": 0.89,
+      "bbox": [60.0, 60.0, 160.0, 160.0],
+      "latitude": 28.6350,
+      "longitude": 77.2100,
+      "plate": "MH12XY9999",
+      "plate_confidence": 0.93,
+      "appearance_embedding": [0.51, 0.49, 0.50, 0.51, 0.09, 0.11, 0.10, 0.09],
+      "camera_reliability": 0.90,
+      "time_reference_id": "metro_network_sync",
+      "timestamp_semantics": "synchronized"
+    }
+  ],
+  "counterfactual_scenario": {
+    "scenario_id": "SCN_DAY9_001",
+    "scenario_type": "ROAD_CLOSURE",
+    "description": "Hypothetical closure of collector road R07 (J01 -> J04).",
+    "affected_roads": ["R07"],
+    "capacity_changes": {},
+    "demand_multiplier": 1.0,
+    "assumptions": [
+      "Closure of R07 is a hypothetical intervention.",
+      "Displaced demand reallocates across surviving feasible candidate corridors (R01 + R08)."
+    ],
+    "metadata": {
+      "controlled_test": true,
+      "layer": "DAY_9_INTEGRATION_VALIDATION"
+    }
+  }
+}
+

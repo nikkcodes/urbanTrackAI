@@ -1,0 +1,140 @@
+{
+  "description": "UrbanTrack AI - Day 5 Camera Reliability and Uncertainty Propagation Test Scenarios",
+  "note": "CONTROLLED SYNTHETIC TEST FIXTURE - Evaluates Day 5 sensor trustworthiness, detection quality, match reliability, and trajectory uncertainty propagation on data/synthetic/city_network.json (J01-J14, R01-R28).",
+  "shared_road_graph": "data/synthetic/city_network.json",
+  "camera_profiles": {
+    "CAM_HIGH_RES": {
+      "camera_id": "CAM_HIGH_RES",
+      "junction_id": "J01",
+      "historical_uptime": 0.99,
+      "calibration_quality": 0.98,
+      "weather_degradation": 0.05,
+      "expected_camera_reliability_min": 0.90
+    },
+    "CAM_DEGRADED": {
+      "camera_id": "CAM_DEGRADED",
+      "junction_id": "J02",
+      "historical_uptime": 0.70,
+      "calibration_quality": 0.50,
+      "weather_degradation": 0.55,
+      "expected_camera_reliability_max": 0.45
+    },
+    "CAM_EXTREME_POOR": {
+      "camera_id": "CAM_EXTREME_POOR",
+      "junction_id": "J05",
+      "historical_uptime": 0.30,
+      "calibration_quality": 0.20,
+      "weather_degradation": 0.80,
+      "expected_camera_reliability_max": 0.25
+    }
+  },
+  "scenarios": [
+    {
+      "case_id": "CASE_01",
+      "name": "High-reliability camera + high-confidence observation (baseline high trust)",
+      "identity_id": "TRK_DAY5_01",
+      "camera_reliability": 0.95,
+      "ocr_confidence": 0.96,
+      "plate_text": "DL01AB1234",
+      "reid_similarity": 0.94,
+      "expected_observation_reliability_min": 0.85,
+      "expected_observation_uncertainty_max": 0.15
+    },
+    {
+      "case_id": "CASE_02",
+      "name": "Degraded camera (weather/blur) with lowered camera reliability",
+      "identity_id": "TRK_DAY5_02",
+      "camera_reliability": 0.35,
+      "ocr_confidence": 0.85,
+      "plate_text": "HR26CD5678",
+      "reid_similarity": 0.80,
+      "expected_observation_reliability_max": 0.60,
+      "expected_observation_uncertainty_min": 0.40
+    },
+    {
+      "case_id": "CASE_03",
+      "name": "OCR plate ambiguity (low confidence + ambiguous reading)",
+      "identity_id": "TRK_DAY5_03",
+      "camera_reliability": 0.90,
+      "ocr_confidence": 0.42,
+      "plate_text": "DL01AB123?",
+      "alternative_plates": ["DL01AB1238", "DL01AB1233"],
+      "reid_similarity": 0.85,
+      "expected_plate_penalty": true,
+      "expected_observation_reliability_max": 0.70
+    },
+    {
+      "case_id": "CASE_04",
+      "name": "Re-ID embedding degradation / low cosine similarity",
+      "identity_id": "TRK_DAY5_04",
+      "camera_reliability": 0.90,
+      "ocr_confidence": 0.0,
+      "plate_text": null,
+      "reid_similarity": 0.42,
+      "expected_match_uncertainty_min": 0.50
+    },
+    {
+      "case_id": "CASE_05",
+      "name": "Camera mismatch / calibration disparity between endpoints",
+      "identity_id": "TRK_DAY5_05",
+      "camera_a_reliability": 0.95,
+      "camera_b_reliability": 0.30,
+      "expected_endpoint_bottleneck": true,
+      "expected_segment_reliability_max": 0.65
+    },
+    {
+      "case_id": "CASE_06",
+      "name": "Sparse gap with reliable endpoints vs degraded endpoints",
+      "identity_id": "TRK_DAY5_06",
+      "origin": "J01",
+      "destination": "J08",
+      "delta_t_seconds": 450.0,
+      "reliable_cameras": {"cam_a": 0.95, "cam_b": 0.92},
+      "degraded_cameras": {"cam_a": 0.40, "cam_b": 0.35},
+      "expected_reliable_trajectory_greater_than_degraded": true
+    },
+    {
+      "case_id": "CASE_07",
+      "name": "High-uncertainty trajectory with multiple routes and degraded sensor",
+      "identity_id": "TRK_DAY5_07",
+      "origin": "J01",
+      "destination": "J08",
+      "delta_t_seconds": 650.0,
+      "camera_reliability": 0.45,
+      "min_candidate_routes": 3,
+      "expected_route_entropy_penalty": true,
+      "expected_overall_uncertainty_min": 0.45
+    },
+    {
+      "case_id": "CASE_08",
+      "name": "Missing metadata handling (no default 1.0 trust)",
+      "identity_id": "TRK_DAY5_08",
+      "camera_reliability": null,
+      "ocr_confidence": null,
+      "reid_similarity": null,
+      "expected_observation_reliability_max": 0.65,
+      "expected_no_perfect_trust_assertion": true
+    },
+    {
+      "case_id": "CASE_09",
+      "name": "Extreme degradation / untrusted observation",
+      "identity_id": "TRK_DAY5_09",
+      "camera_reliability": 0.12,
+      "ocr_confidence": 0.10,
+      "reid_similarity": 0.20,
+      "expected_observation_reliability_max": 0.25,
+      "expected_observation_uncertainty_min": 0.75
+    },
+    {
+      "case_id": "CASE_10",
+      "name": "Downstream route demand monotonicity under uncertainty",
+      "identity_id": "TRK_DAY5_10",
+      "vehicle_weight": 2.5,
+      "reliable_camera": 0.95,
+      "degraded_camera": 0.30,
+      "expected_weight_unchanged": 2.5,
+      "expected_route_demand_formula": "weight * probability",
+      "expected_uncertainty_isolated_in_metadata": true
+    }
+  ]
+}

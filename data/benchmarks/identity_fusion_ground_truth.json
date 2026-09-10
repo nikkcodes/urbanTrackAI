@@ -3,27 +3,37 @@
     "cam_01": {
       "latitude": 17.3850,
       "longitude": 78.4867,
-      "name": "MG Road Junction"
+      "name": "MG Road Junction",
+      "timestamp_semantics": "synchronized",
+      "time_reference_id": "city_benchmark_sync"
     },
     "cam_02": {
       "latitude": 17.3870,
       "longitude": 78.4900,
-      "name": "Banjara Hills Circle"
+      "name": "Banjara Hills Circle",
+      "timestamp_semantics": "synchronized",
+      "time_reference_id": "city_benchmark_sync"
     },
     "cam_03": {
       "latitude": 17.3910,
       "longitude": 78.4920,
-      "name": "Jubilee Hills Checkpost"
+      "name": "Jubilee Hills Checkpost",
+      "timestamp_semantics": "synchronized",
+      "time_reference_id": "city_benchmark_sync"
     },
     "cam_04": {
       "latitude": 17.3970,
       "longitude": 78.4980,
-      "name": "Hitech City Flyover"
+      "name": "Hitech City Flyover",
+      "timestamp_semantics": "synchronized",
+      "time_reference_id": "city_benchmark_sync"
     },
     "cam_05": {
       "latitude": 17.4050,
       "longitude": 78.5080,
-      "name": "Gachibowli Ring Road"
+      "name": "Gachibowli Ring Road",
+      "timestamp_semantics": "synchronized",
+      "time_reference_id": "city_benchmark_sync"
     }
   },
   "vehicle_ground_truth": {

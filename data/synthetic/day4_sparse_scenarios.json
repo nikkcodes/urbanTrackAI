@@ -1,0 +1,122 @@
+{
+  "description": "UrbanTrack AI - Day 4 Sparse / Missing-Camera Trajectory Inference Test Fixture",
+  "note": "CONTROLLED SYNTHETIC TEST DATA ONLY - Not real-world observations. Operates on data/synthetic/city_network.json (J01-J14, R01-R28).",
+  "shared_road_graph": "data/synthetic/city_network.json",
+  "camera_network": {
+    "CAM_J01": {"junction_id": "J01", "name": "North Gate Terminal", "latitude": 28.6400, "longitude": 77.2000},
+    "CAM_J02": {"junction_id": "J02", "name": "North Junction", "latitude": 28.6350, "longitude": 77.2100},
+    "CAM_J03": {"junction_id": "J03", "name": "Commercial Hub", "latitude": 28.6300, "longitude": 77.2250},
+    "CAM_J04": {"junction_id": "J04", "name": "Civic Center", "latitude": 28.6250, "longitude": 77.2050},
+    "CAM_J05": {"junction_id": "J05", "name": "Midtown Circle", "latitude": 28.6200, "longitude": 77.2180},
+    "CAM_J06": {"junction_id": "J06", "name": "Tech District", "latitude": 28.6150, "longitude": 77.2300},
+    "CAM_J07": {"junction_id": "J07", "name": "West Gateway", "latitude": 28.6200, "longitude": 77.1900},
+    "CAM_J08": {"junction_id": "J08", "name": "Central Square", "latitude": 28.6100, "longitude": 77.2100},
+    "CAM_J10": {"junction_id": "J10", "name": "South Boulevard", "latitude": 28.6000, "longitude": 77.2000},
+    "CAM_J11": {"junction_id": "J11", "name": "University Cross", "latitude": 28.5950, "longitude": 77.2200},
+    "CAM_J12": {"junction_id": "J12", "name": "South Hub Terminal", "latitude": 28.5900, "longitude": 77.2100}
+  },
+  "scenarios": [
+    {
+      "case_id": "CASE_01",
+      "name": "Two observations with multiple feasible hidden routes",
+      "identity_id": "TRK_CASE_01",
+      "obs_a": {"observation_id": "obs_c01_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c01_b", "camera_id": "CAM_J08", "timestamp_seconds": 1450.0},
+      "delta_t_seconds": 450.0,
+      "expected_status": "success",
+      "min_feasible_routes": 2,
+      "expected_is_ambiguous": true
+    },
+    {
+      "case_id": "CASE_02",
+      "name": "One feasible route and several impossible routes",
+      "identity_id": "TRK_CASE_02",
+      "obs_a": {"observation_id": "obs_c02_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c02_b", "camera_id": "CAM_J08", "timestamp_seconds": 1320.0},
+      "delta_t_seconds": 320.0,
+      "expected_status": "success",
+      "expected_feasible_routes_count": 1,
+      "expected_is_ambiguous": false
+    },
+    {
+      "case_id": "CASE_03",
+      "name": "A closed road removes an otherwise plausible route",
+      "identity_id": "TRK_CASE_03",
+      "obs_a": {"observation_id": "obs_c03_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c03_b", "camera_id": "CAM_J08", "timestamp_seconds": 1450.0},
+      "closed_road_id": "R11",
+      "expected_excluded_road": "R11",
+      "expected_status": "success"
+    },
+    {
+      "case_id": "CASE_04",
+      "name": "A one-way restriction removes reverse traversal",
+      "identity_id": "TRK_CASE_04",
+      "obs_a": {"observation_id": "obs_c04_a", "camera_id": "CAM_J03", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c04_b", "camera_id": "CAM_J02", "timestamp_seconds": 1200.0},
+      "one_way_checked_edge": "R02",
+      "expected_direct_reverse_blocked": true
+    },
+    {
+      "case_id": "CASE_05",
+      "name": "Very short time window makes longer routes impossible",
+      "identity_id": "TRK_CASE_05",
+      "obs_a": {"observation_id": "obs_c05_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c05_b", "camera_id": "CAM_J08", "timestamp_seconds": 1350.0},
+      "delta_t_seconds": 350.0,
+      "expected_feasible_routes_count": 1,
+      "expected_rejected_routes_count_min": 1
+    },
+    {
+      "case_id": "CASE_06",
+      "name": "Large time window allows multiple routes with uncertainty",
+      "identity_id": "TRK_CASE_06",
+      "obs_a": {"observation_id": "obs_c06_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c06_b", "camera_id": "CAM_J08", "timestamp_seconds": 1650.0},
+      "delta_t_seconds": 650.0,
+      "min_feasible_routes": 3
+    },
+    {
+      "case_id": "CASE_07",
+      "name": "Multiple observations with one missing intermediate segment",
+      "identity_id": "TRK_CASE_07",
+      "observations": [
+        {"observation_id": "obs_c07_1", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+        {"observation_id": "obs_c07_2", "camera_id": "CAM_J02", "timestamp_seconds": 1150.0},
+        {"observation_id": "obs_c07_3", "camera_id": "CAM_J08", "timestamp_seconds": 1500.0}
+      ],
+      "expected_segments_count": 2,
+      "expected_gaps_count": 1,
+      "gap_segment_index": 1
+    },
+    {
+      "case_id": "CASE_08",
+      "name": "Multiple missing intermediate observations across city",
+      "identity_id": "TRK_CASE_08",
+      "obs_a": {"observation_id": "obs_c08_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c08_b", "camera_id": "CAM_J12", "timestamp_seconds": 1800.0},
+      "delta_t_seconds": 800.0,
+      "min_unobserved_intermediate_nodes": 3
+    },
+    {
+      "case_id": "CASE_09",
+      "name": "No feasible route due to extreme speed requirement",
+      "identity_id": "TRK_CASE_09",
+      "obs_a": {"observation_id": "obs_c09_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c09_b", "camera_id": "CAM_J12", "timestamp_seconds": 1030.0},
+      "delta_t_seconds": 30.0,
+      "expected_status": "infeasible",
+      "expected_feasible": false
+    },
+    {
+      "case_id": "CASE_10",
+      "name": "Invalid or non-positive time interval",
+      "identity_id": "TRK_CASE_10",
+      "obs_a": {"observation_id": "obs_c10_a", "camera_id": "CAM_J01", "timestamp_seconds": 1000.0},
+      "obs_b": {"observation_id": "obs_c10_b", "camera_id": "CAM_J08", "timestamp_seconds": 950.0},
+      "delta_t_seconds": -50.0,
+      "expected_status": "temporal_inversion",
+      "expected_feasible": false
+    }
+  ]
+}

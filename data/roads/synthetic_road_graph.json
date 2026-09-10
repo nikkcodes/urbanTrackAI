@@ -3,7 +3,9 @@
     "network_name": "Hyderabad Core Urban Corridor (Synthetic Test Network)",
     "description": "Deterministic synthetic road network created for Day 3 Trajectory Inference validation. Connects Day-2 camera locations with realistic arterial and bypass alternatives.",
     "version": "1.0",
-    "is_synthetic": true
+    "is_synthetic": true,
+    "timestamp_semantics": "synchronized",
+    "time_reference_id": "hyderabad_core_sync"
   },
   "nodes": [
     {

@@ -37,6 +37,21 @@ def match_observations(
     config = config or {}
     max_speed_kmh = float(config.get("max_plausible_speed_kmh", 120.0))
 
+    if isinstance(obs_a, dict):
+        if "timestamp" not in obs_a:
+            t_sec = obs_a.get("timestamp_seconds", 0.0)
+            from datetime import datetime, timezone
+            obs_a = dict(obs_a)
+            obs_a["timestamp"] = datetime.fromtimestamp(t_sec, timezone.utc).isoformat()
+        obs_a = Observation.from_dict(obs_a)
+    if isinstance(obs_b, dict):
+        if "timestamp" not in obs_b:
+            t_sec = obs_b.get("timestamp_seconds", 0.0)
+            from datetime import datetime, timezone
+            obs_b = dict(obs_b)
+            obs_b["timestamp"] = datetime.fromtimestamp(t_sec, timezone.utc).isoformat()
+        obs_b = Observation.from_dict(obs_b)
+
     # Populate coordinates from camera metadata if missing on observations
     if camera_metadata:
         if obs_a.latitude is None and obs_a.camera_id in camera_metadata:
@@ -51,17 +66,17 @@ def match_observations(
     type_match = type_status == "compatible"
 
     # 2. Temporal Feasibility Evidence
-    t_res = temporal_feasibility(obs_a, obs_b)
-    t_score = float(t_res["feasibility_score"])
-    t_status = str(t_res["status"])
-    t_delta_sec = float(t_res["delta_t_seconds"])
+    t_res = temporal_feasibility(obs_a, obs_b, camera_metadata=camera_metadata)
+    t_score = t_res.get("feasibility_score")
+    t_status = str(t_res.get("status", "unavailable"))
+    t_delta_sec = t_res.get("delta_t_seconds")
 
     # 3. Spatial Feasibility Evidence
-    s_res = spatial_feasibility(obs_a, obs_b, max_plausible_speed_kmh=max_speed_kmh)
+    s_res = spatial_feasibility(obs_a, obs_b, max_plausible_speed_kmh=max_speed_kmh, camera_metadata=camera_metadata)
     s_score = float(s_res["feasibility_score"])
     s_status = str(s_res["status"])
     s_dist_m = float(s_res["distance_meters"])
-    s_speed_kmh = float(s_res["required_speed_kmh"])
+    s_speed_kmh = s_res.get("required_speed_kmh")
 
     # 4. Appearance Similarity Evidence
     app_score = None
@@ -96,10 +111,10 @@ def match_observations(
         rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type})."
     elif t_status in ("impossible_negative_time", "impossible_simultaneous_different_cameras", "impossible_simultaneous_same_camera_distinct_bbox"):
         is_rejected = True
-        rejection_reason = f"Physically impossible temporal alignment ({t_res['explanation']})."
+        rejection_reason = f"Physically impossible temporal alignment ({t_res.get('explanation')})."
     elif s_status in ("impossible_speed", "physically_impossible_speed"):
         is_rejected = True
-        rejection_reason = f"Physically impossible travel speed ({s_res['explanation']})."
+        rejection_reason = f"Physically impossible travel speed ({s_res.get('explanation')})."
 
     has_identity_evidence = (app_score is not None) or (plate_score is not None)
 
@@ -109,7 +124,11 @@ def match_observations(
         explanation = f"Match rejected (0.0): {rejection_reason}"
     else:
         # Baseline spatio-temporal and vehicle type feasibility (gating factor)
-        st_composite = (t_score + s_score) / 2.0
+        if t_score is not None:
+            st_composite = (float(t_score) + s_score) / 2.0
+        else:
+            # Temporal evidence unavailable: do not penalize or fabricate 0.5, use available spatial signal
+            st_composite = s_score
         feasibility_score = 0.70 * st_composite + 0.30 * type_score
 
         if has_identity_evidence:
@@ -143,12 +162,32 @@ def match_observations(
         if type_status != "unknown":
             reasons.append(f"vehicle types are {type_status} ({obs_a.vehicle_type} vs {obs_b.vehicle_type})")
 
-        if s_dist_m > 0 and t_delta_sec > 0:
+        if s_dist_m > 0 and t_delta_sec is not None and t_delta_sec > 0 and s_speed_kmh is not None:
             reasons.append(f"required travel speed is {s_speed_kmh:.1f} km/h over {s_dist_m:.1f}m in {t_delta_sec:.1f}s")
+        elif t_status == "unavailable":
+            reasons.append(f"cross-camera temporal evidence is unavailable ({t_res.get('reason')})")
 
         explanation = f"Estimated match probability is {estimated_prob:.2f}: " + ", ".join(reasons) + "."
 
-    # Structured Output Payload
+    # Day 5: Evaluate observation reliabilities and identity uncertainty
+    from .reliability_engine import evaluate_identity_uncertainty, evaluate_observation_reliability
+
+    rel_a = evaluate_observation_reliability(obs_a, camera_metadata=camera_metadata, config=config)
+    rel_b = evaluate_observation_reliability(obs_b, camera_metadata=camera_metadata, config=config)
+    id_rel = evaluate_identity_uncertainty(
+        {
+            "same_vehicle_probability": estimated_prob,
+            "evidence": {
+                "appearance_similarity": app_score,
+                "plate_similarity": plate_score,
+            },
+        },
+        rel_a,
+        rel_b,
+        config=config,
+    )
+
+    # Structured Output Payload (100% backward compatible with Day 2)
     return {
         "observation_a": obs_a.observation_id,
         "observation_b": obs_b.observation_id,
@@ -158,13 +197,27 @@ def match_observations(
             "identity_evidence_available": has_identity_evidence,
             "vehicle_type_match": type_match,
             "vehicle_type_status": type_status,
-            "temporal_feasibility": round(t_score, 4),
+            "temporal_feasibility": round(float(t_score), 4) if t_score is not None else None,
+            "temporal_status": t_status,
+            "temporal_evidence": t_res.get("temporal_evidence") or t_res,
             "spatial_feasibility": round(s_score, 4),
             "plate_similarity": round(plate_score, 4) if plate_score is not None else None,
-            "time_difference_seconds": round(t_delta_sec, 2),
+            "time_difference_seconds": round(float(t_delta_sec), 2) if t_delta_sec is not None else None,
             "geographic_distance_meters": round(s_dist_m, 2),
-            "required_speed_kmh": round(s_speed_kmh, 2) if s_speed_kmh != float("inf") else "infinite",
+            "required_speed_kmh": round(float(s_speed_kmh), 2) if (s_speed_kmh is not None and s_speed_kmh != float("inf")) else (None if s_speed_kmh is None else "infinite"),
         },
         "same_vehicle_probability": estimated_prob,
         "explanation": explanation,
+        "observation_reliability": {
+            "observation_a": rel_a.to_dict(),
+            "observation_b": rel_b.to_dict(),
+            "endpoint_reliability": round(id_rel.endpoint_reliability, 4),
+        },
+        "reliability": id_rel.to_dict(),
+        "uncertainty": round(id_rel.uncertainty, 4),
+        "uncertainty_details": {
+            "score": round(id_rel.uncertainty, 4),
+            "level": "low" if id_rel.uncertainty <= 0.25 else ("moderate" if id_rel.uncertainty <= 0.50 else ("high" if id_rel.uncertainty <= 0.75 else "critical")),
+            "explanation": id_rel.explanation,
+        },
     }

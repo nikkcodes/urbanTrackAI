@@ -39,11 +39,14 @@ def load_camera_metadata(
     metadata_map = {}
     for cam_id, meta in data.items():
         if isinstance(meta, dict):
-            metadata_map[str(cam_id)] = {
-                "latitude": float(meta["latitude"]) if "latitude" in meta else None,
-                "longitude": float(meta["longitude"]) if "longitude" in meta else None,
+            cam_dict = {
+                "latitude": float(meta["latitude"]) if "latitude" in meta and meta["latitude"] is not None else None,
+                "longitude": float(meta["longitude"]) if "longitude" in meta and meta["longitude"] is not None else None,
                 **{k: v for k, v in meta.items() if k not in ("latitude", "longitude")},
             }
+            if "clock_offset_seconds" in meta and meta["clock_offset_seconds"] is not None:
+                cam_dict["clock_offset_seconds"] = float(meta["clock_offset_seconds"])
+            metadata_map[str(cam_id)] = cam_dict
     return metadata_map
 
 
@@ -87,13 +90,24 @@ def load_observations_from_json(
     for item in raw_list:
         obs = Observation.from_json(item)
 
-        # Attach camera coordinates if missing on observation but available in camera_metadata
+        # Attach camera coordinates and metadata if available in camera_metadata
         if camera_metadata and obs.camera_id in camera_metadata:
             cam_meta = camera_metadata[obs.camera_id]
             if obs.latitude is None and cam_meta.get("latitude") is not None:
                 obs.latitude = cam_meta["latitude"]
             if obs.longitude is None and cam_meta.get("longitude") is not None:
                 obs.longitude = cam_meta["longitude"]
+            if obs.timestamp_semantics is None and cam_meta.get("timestamp_semantics") is not None:
+                obs.timestamp_semantics = cam_meta["timestamp_semantics"]
+            if obs.time_reference_id is None and cam_meta.get("time_reference_id") is not None:
+                obs.time_reference_id = cam_meta["time_reference_id"]
+            if obs.clock_offset_seconds is None and cam_meta.get("clock_offset_seconds") is not None:
+                obs.clock_offset_seconds = float(cam_meta["clock_offset_seconds"])
+
+        # For current Kanishka observations, if timestamp semantics are not explicitly present,
+        # assign "video_relative" because this is known from the finalized perception contract.
+        if obs.timestamp_semantics is None:
+            obs.timestamp_semantics = "video_relative"
 
         observations.append(obs)
 

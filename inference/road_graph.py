@@ -83,6 +83,7 @@ class RoadGraph:
         # adjacency: node_id -> list of (neighbor_node_id, road_id, distance_m, edge_obj)
         self.adjacency: Dict[str, List[Tuple[str, str, float, RoadEdge]]] = {}
         self.camera_associations: Dict[str, str] = {}
+        self._node_pair_to_edge: Dict[Tuple[str, str], RoadEdge] = {}
 
     def add_node(self, node: RoadNode) -> None:
         """Add a junction node to the graph."""
@@ -93,6 +94,10 @@ class RoadGraph:
     def add_edge(self, edge: RoadEdge) -> None:
         """Add a road segment to the graph (supports one-way, bidirectional, and closed roads)."""
         self.edges[edge.road_id] = edge
+        self._node_pair_to_edge[(edge.from_node, edge.to_node)] = edge
+        if not edge.one_way:
+            self._node_pair_to_edge[(edge.to_node, edge.from_node)] = edge
+
         if edge.from_node not in self.adjacency:
             self.adjacency[edge.from_node] = []
         if edge.to_node not in self.adjacency:
@@ -108,6 +113,10 @@ class RoadGraph:
         # Reverse direction if bidirectional
         if not edge.one_way:
             self.adjacency[edge.to_node].append((edge.from_node, edge.road_id, edge.distance_m, edge))
+
+    def get_edge_by_nodes(self, from_node: str, to_node: str) -> Optional[RoadEdge]:
+        """Get the RoadEdge connecting from_node to to_node, if present."""
+        return self._node_pair_to_edge.get((from_node, to_node))
 
     def close_road(self, road_id: str) -> bool:
         """
@@ -136,6 +145,11 @@ class RoadGraph:
         edge.is_closed = False
         self._rebuild_adjacency()
         return True
+
+    def is_road_closed(self, road_id: str) -> bool:
+        """Check if a road segment is currently marked as closed."""
+        edge = self.edges.get(road_id)
+        return edge.is_closed if edge is not None else False
 
     def _rebuild_adjacency(self) -> None:
         """Rebuild active routing adjacency omitting closed road segments."""

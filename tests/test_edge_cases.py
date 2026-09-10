@@ -16,9 +16,9 @@ from inference import (
 class TestEdgeCases(unittest.TestCase):
     def setUp(self) -> None:
         self.camera_metadata = {
-            "cam_01": {"latitude": 17.3850, "longitude": 78.4867},
-            "cam_02": {"latitude": 17.3870, "longitude": 78.4900},
-            "cam_03": {"latitude": 17.3950, "longitude": 78.5000},
+            "cam_01": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},
+            "cam_02": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},
+            "cam_03": {"latitude": 17.3950, "longitude": 78.5000, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},
         }
 
     # Edge Case 1: Clear same-vehicle match

@@ -1,0 +1,371 @@
+{
+  "dataset_metadata": {
+    "name": "UrbanTrack AI - Day 7 Synthetic Anomaly Scenarios",
+    "description": "Controlled benchmark dataset for evaluating vehicle, road, and network anomaly detection and data quality validation",
+    "data_source": "synthetic",
+    "network_reference": "data/synthetic/city_network.json",
+    "total_scenarios": 12
+  },
+  "baseline_config": {
+    "source": "synthetic",
+    "expected_travel_times": {
+      "J01->J03": 180.0,
+      "J01->J05": 240.0,
+      "J04->J08": 200.0,
+      "J02->J10": 300.0
+    },
+    "expected_routes": {
+      "J01->J03": ["J01", "J02", "J03"],
+      "J01->J05": ["J01", "J02", "J05"],
+      "J04->J08": ["J04", "J08"]
+    },
+    "expected_road_demand_vph": {
+      "R01": 500.0,
+      "R02": 450.0,
+      "R08": 600.0,
+      "R11": 400.0
+    },
+    "expected_road_utilization": {
+      "R01": 0.3125,
+      "R02": 0.2500,
+      "R08": 0.5000,
+      "R11": 0.2667
+    },
+    "speed_limits": {
+      "R01": 50.0,
+      "R02": 50.0,
+      "R08": 60.0,
+      "R11": 60.0
+    },
+    "tolerance_factors": {
+      "travel_time_elevated_ratio": 0.40,
+      "travel_time_high_ratio": 0.80,
+      "travel_time_extreme_ratio": 1.50,
+      "route_deviation_dissimilarity": 0.50,
+      "max_physical_speed_kmh": 120.0
+    }
+  },
+  "scenarios": {
+    "case1_normal_vehicle": {
+      "name": "Case 1: Normal Vehicle Movement",
+      "description": "Trajectory matches expected baseline travel time and expected route corridor",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_NORM_01",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1180.0},
+        "metadata": {"reliability": 0.88, "uncertainty": 0.12}
+      },
+      "expected_outcome": {
+        "is_anomalous": false,
+        "data_quality_status": "valid",
+        "severity": "normal",
+        "priority": "normal"
+      }
+    },
+    "case2_slow_travel_time": {
+      "name": "Case 2: Slow Travel Time Anomaly",
+      "description": "Inferred travel time is 3.5x baseline (630s vs 180s) representing substantial travel-time deviation",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_SLOW_02",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1630.0},
+        "metadata": {"reliability": 0.85, "uncertainty": 0.15}
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "triggered_signals": ["travel_time_deviation"],
+        "severity": "high_priority",
+        "priority": "high_priority"
+      }
+    },
+    "case3_impossible_speed": {
+      "name": "Case 3: Impossible Speed Anomaly",
+      "description": "Vehicle traverses 909m in 10s (327 km/h), exceeding physical vehicle limits",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_FAST_03",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1010.0},
+        "metadata": {"reliability": 0.90, "uncertainty": 0.10}
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "triggered_signals": ["physical_inconsistency"],
+        "severity": "high_priority"
+      }
+    },
+    "case4_route_deviation": {
+      "name": "Case 4: Route Deviation Anomaly",
+      "description": "Vehicle takes alternative corridor [J01, J06, J07, J03] differing from expected corridor [J01, J02, J03]",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_DEV_04",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J06", "J07", "J03"],
+            "probability": 0.95,
+            "metadata": {"edges": ["R05", "R06", "R07"], "distance_m": 1770.0}
+          },
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 0.05,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1240.0},
+        "metadata": {"reliability": 0.82, "uncertainty": 0.18}
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "triggered_signals": ["route_deviation"],
+        "severity": "investigate"
+      }
+    },
+    "case5_road_over_capacity": {
+      "name": "Case 5: Road Over-Capacity Anomaly",
+      "description": "Road segment R01 has expected demand exceeding physical design capacity (utilization > 1.0)",
+      "data_source": "synthetic",
+      "road_metric": {
+        "road_id": "R01",
+        "from_node": "J01",
+        "to_node": "J02",
+        "expected_demand_in_window": 1800.0,
+        "capacity_vph": 1600.0,
+        "expected_demand_vph": 1800.0,
+        "utilization_ratio": 1.125,
+        "is_hourly_rate_valid": true,
+        "duration_seconds": 3600.0,
+        "status": "over_capacity"
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "triggered_signals": ["road_over_capacity"],
+        "severity": "high_priority"
+      }
+    },
+    "case6_high_demand_road": {
+      "name": "Case 6: Elevated Demand Anomaly",
+      "description": "Road segment R08 has demand 2.2x baseline demand",
+      "data_source": "synthetic",
+      "road_metric": {
+        "road_id": "R08",
+        "from_node": "J02",
+        "to_node": "J05",
+        "expected_demand_in_window": 1320.0,
+        "capacity_vph": 1800.0,
+        "expected_demand_vph": 1320.0,
+        "utilization_ratio": 0.7333,
+        "is_hourly_rate_valid": true,
+        "duration_seconds": 3600.0,
+        "status": "moderate"
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "triggered_signals": ["high_demand_deviation"],
+        "severity": "investigate"
+      }
+    },
+    "case7_multi_signal": {
+      "name": "Case 7: Multi-Signal Vehicle Anomaly",
+      "description": "Vehicle exhibits both substantial travel time deviation (2.5x baseline) and significant route corridor deviation",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_MULTI_07",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J06", "J07", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R05", "R06", "R07"], "distance_m": 1770.0}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1450.0},
+        "metadata": {"reliability": 0.88, "uncertainty": 0.12}
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "signal_count": 2,
+        "severity": "high_priority",
+        "priority": "high_priority"
+      }
+    },
+    "case8_ambiguous_route_anomaly": {
+      "name": "Case 8: Ambiguous Route Anomaly",
+      "description": "Candidate routes are ambiguous (0.43 vs 0.31 vs 0.26); anomaly engine must preserve uncertainty",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_AMBIG_08",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J06", "J07", "J03"],
+            "probability": 0.43,
+            "metadata": {"edges": ["R05", "R06", "R07"], "distance_m": 1770.0}
+          },
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 0.31,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          },
+          {
+            "nodes": ["J01", "J04", "J03"],
+            "probability": 0.26,
+            "metadata": {"edges": ["R03", "R04"], "distance_m": 1200.0}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1180.0},
+        "metadata": {"is_ambiguous": true, "reliability": 0.80, "uncertainty": 0.20}
+      },
+      "expected_outcome": {
+        "preserves_ambiguity": true,
+        "data_quality_status": "valid",
+        "severity": "watch"
+      }
+    },
+    "case9_low_reliability_anomaly": {
+      "name": "Case 9: Low Reliability Anomaly",
+      "description": "Trajectory has substantial travel time deviation (3x baseline) but low camera reliability (0.25); priority adjusted to WATCH",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_LOWREL_09",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1540.0},
+        "metadata": {"reliability": 0.25, "uncertainty": 0.75}
+      },
+      "expected_outcome": {
+        "is_anomalous": true,
+        "data_quality_status": "valid",
+        "severity": "high_priority",
+        "priority": "watch"
+      }
+    },
+    "case10_missing_baseline": {
+      "name": "Case 10: Missing Baseline Handling",
+      "description": "Trajectory operates between nodes J09 and J14 where no baseline is configured; signal marked unavailable and severity is INSUFFICIENT_EVIDENCE, NOT normal",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_NOBASE_10",
+        "origin_node": "J09",
+        "destination_node": "J14",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J09", "J10", "J14"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R20", "R25"], "distance_m": 1100.0}
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1200.0},
+        "metadata": {"reliability": 0.85, "uncertainty": 0.15}
+      },
+      "expected_outcome": {
+        "is_anomalous": false,
+        "travel_time_available": false,
+        "data_quality_status": "incomplete",
+        "severity": "insufficient_evidence",
+        "priority": "normal"
+      }
+    },
+    "case11_invalid_trajectory": {
+      "name": "Case 11: Invalid Input / Temporal Inversion",
+      "description": "Trajectory has end timestamp before start timestamp (delta_t < 0); marked as invalid input, not a behavioral anomaly",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_INVERT_11",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"], "distance_m": 909.3}
+          }
+        ],
+        "time_window": {"start": 1200.0, "end": 1000.0},
+        "metadata": {"reliability": 0.80, "uncertainty": 0.20}
+      },
+      "expected_outcome": {
+        "is_anomalous": false,
+        "data_quality_status": "invalid",
+        "severity": "invalid_input",
+        "priority": "data_quality_review"
+      }
+    },
+    "case12_missing_evidence_normal": {
+      "name": "Case 12: Missing Optional Fields Evaluates as Normal",
+      "description": "Trajectory lacks optional metadata fields; travel time matches baseline so evaluates as normal without false alerts",
+      "data_source": "synthetic",
+      "trajectory": {
+        "track_id": "VEH_D7_MISSING_12",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0
+          }
+        ],
+        "time_window": {"start": 1000.0, "end": 1180.0}
+      },
+      "expected_outcome": {
+        "is_anomalous": false,
+        "data_quality_status": "valid",
+        "severity": "normal",
+        "priority": "normal"
+      }
+    }
+  }
+}

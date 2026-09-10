@@ -19,9 +19,9 @@ class TestIdentityFusion(unittest.TestCase):
     def setUp(self) -> None:
         """Set up camera metadata and baseline coordinates."""
         self.camera_metadata = {
-            "cam_01": {"latitude": 17.3850, "longitude": 78.4867},  # Origin
-            "cam_02": {"latitude": 17.3870, "longitude": 78.4900},  # ~410m away
-            "cam_03": {"latitude": 17.3950, "longitude": 78.5000},  # ~1.7km away
+            "cam_01": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},  # Origin
+            "cam_02": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},  # ~410m away
+            "cam_03": {"latitude": 17.3950, "longitude": 78.5000, "timestamp_semantics": "synchronized", "time_reference_id": "city_benchmark_sync"},  # ~1.7km away
         }
 
     def test_case_1_same_vehicle_high_match_probability(self):

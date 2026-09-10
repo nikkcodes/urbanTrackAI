@@ -1,0 +1,372 @@
+{
+  "description": "Controlled Day 6 Mobility Analytics test cases for UrbanTrack AI",
+  "scenarios": {
+    "case1_single_clear_route": {
+      "name": "Case 1: Single Clear Route",
+      "description": "One vehicle with one route with probability 1.0",
+      "trajectory": {
+        "track_id": "VEH_CASE_01",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1100.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.95,
+          "trajectory_uncertainty": 0.05
+        }
+      },
+      "expected": {
+        "road_demands": {"R01": 1.0, "R02": 1.0},
+        "od_pairs": {"J01->J03": 1.0}
+      }
+    },
+    "case2_two_routes": {
+      "name": "Case 2: Two Routes",
+      "description": "One vehicle with two candidate routes (0.7 and 0.3)",
+      "trajectory": {
+        "track_id": "VEH_CASE_02",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1150.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.70,
+            "metadata": {"edges": ["R01", "R08"]}
+          },
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.30,
+            "metadata": {"edges": ["R07", "R18"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.88,
+          "trajectory_uncertainty": 0.12
+        }
+      },
+      "expected": {
+        "road_demands": {"R01": 0.70, "R08": 0.70, "R07": 0.30, "R18": 0.30},
+        "od_pairs": {"J01->J05": 1.0}
+      }
+    },
+    "case3_shared_road": {
+      "name": "Case 3: Shared Road",
+      "description": "Two candidate routes share initial road segment R01",
+      "trajectory": {
+        "track_id": "VEH_CASE_03",
+        "origin_node": "J01",
+        "destination_node": "J08",
+        "vehicle_weight": 1.0,
+        "time_window_start": 1000.0,
+        "time_window_end": 1200.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05", "J08"],
+            "probability": 0.60,
+            "metadata": {"edges": ["R01", "R08", "R09"]}
+          },
+          {
+            "nodes": ["J01", "J02", "J03", "J06", "J08"],
+            "probability": 0.40,
+            "metadata": {"edges": ["R01", "R02", "R03", "R21"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.90,
+          "trajectory_uncertainty": 0.10
+        }
+      },
+      "expected": {
+        "road_demands": {
+          "R01": 1.00,
+          "R08": 0.60,
+          "R09": 0.60,
+          "R02": 0.40,
+          "R03": 0.40,
+          "R21": 0.40
+        },
+        "od_pairs": {"J01->J08": 1.0}
+      }
+    },
+    "case4_heavy_vehicle": {
+      "name": "Case 4: Heavy Vehicle",
+      "description": "Vehicle with physical weight 2.5 (PCU factor)",
+      "trajectory": {
+        "track_id": "VEH_CASE_04_TRUCK",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 2.5,
+        "time_window_start": 1050.0,
+        "time_window_end": 1150.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"]}
+          }
+        ],
+        "metadata": {
+          "vehicle_type": "truck",
+          "trajectory_reliability": 0.92,
+          "trajectory_uncertainty": 0.08
+        }
+      },
+      "expected": {
+        "road_demands": {"R01": 2.5, "R02": 2.5},
+        "od_pairs": {"J01->J03": 2.5}
+      }
+    },
+    "case5_multiple_vehicles": {
+      "name": "Case 5: Multiple Vehicles",
+      "description": "Multiple distinct trajectories aggregating on the network",
+      "trajectories": [
+        {
+          "track_id": "VEH_05_A",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": 1.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J03"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R01", "R02"]}
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_05_B",
+          "origin_node": "J01",
+          "destination_node": "J05",
+          "vehicle_weight": 2.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J05"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R01", "R08"]}
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_05_C",
+          "origin_node": "J02",
+          "destination_node": "J05",
+          "vehicle_weight": 1.5,
+          "candidate_routes": [
+            {
+              "nodes": ["J02", "J05"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R08"]}
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "road_demands": {
+          "R01": 3.0,
+          "R02": 1.0,
+          "R08": 3.5
+        }
+      }
+    },
+    "case6_different_od_pairs": {
+      "name": "Case 6: Different OD Pairs",
+      "description": "Trajectories spanning different origin-destination pairs",
+      "trajectories": [
+        {
+          "track_id": "VEH_06_A",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": 1.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J03"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R01", "R02"]}
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_06_B",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": 2.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J03"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R01", "R02"]}
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_06_C",
+          "origin_node": "J04",
+          "destination_node": "J08",
+          "vehicle_weight": 1.5,
+          "candidate_routes": [
+            {
+              "nodes": ["J04", "J08"],
+              "probability": 1.0,
+              "metadata": {"edges": ["R11"]}
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "od_demands": {
+          "J01->J03": 3.0,
+          "J04->J08": 1.5
+        }
+      }
+    },
+    "case7_closed_road": {
+      "name": "Case 7: Closed Road",
+      "description": "Route referencing a closed road is excluded from valid flow allocation",
+      "trajectory": {
+        "track_id": "VEH_CASE_07",
+        "origin_node": "J01",
+        "destination_node": "J03",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J03"],
+            "probability": 1.0,
+            "metadata": {"edges": ["R01", "R02"]}
+          }
+        ]
+      },
+      "closed_road_id": "R02"
+    },
+    "case8_ambiguous_trajectory": {
+      "name": "Case 8: Ambiguous Trajectory",
+      "description": "Equal likelihood alternative corridors (0.50 / 0.50)",
+      "trajectory": {
+        "track_id": "VEH_CASE_08_AMB",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R01", "R08"]}
+          },
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R07", "R18"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.85,
+          "trajectory_uncertainty": 0.35,
+          "is_ambiguous": true
+        }
+      },
+      "expected": {
+        "road_demands": {
+          "R01": 0.50,
+          "R08": 0.50,
+          "R07": 0.50,
+          "R18": 0.50
+        }
+      }
+    },
+    "case9_low_reliability": {
+      "name": "Case 9: Low Reliability Independence",
+      "description": "Same physical vehicle and routes as Case 8, but degraded Day 5 reliability",
+      "trajectory": {
+        "track_id": "VEH_CASE_09_LOW_REL",
+        "origin_node": "J01",
+        "destination_node": "J05",
+        "vehicle_weight": 1.0,
+        "candidate_routes": [
+          {
+            "nodes": ["J01", "J02", "J05"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R01", "R08"]}
+          },
+          {
+            "nodes": ["J01", "J04", "J05"],
+            "probability": 0.50,
+            "metadata": {"edges": ["R07", "R18"]}
+          }
+        ],
+        "metadata": {
+          "trajectory_reliability": 0.20,
+          "trajectory_uncertainty": 0.80,
+          "is_ambiguous": true
+        }
+      },
+      "expected": {
+        "road_demands": {
+          "R01": 0.50,
+          "R08": 0.50,
+          "R07": 0.50,
+          "R18": 0.50
+        },
+        "reliability_recorded": 0.20
+      }
+    },
+    "case10_invalid_inputs": {
+      "name": "Case 10: Invalid Inputs",
+      "description": "Malformed trajectories that must be safely validated without crashing",
+      "invalid_trajectories": [
+        {
+          "track_id": "VEH_10_NEG_WEIGHT",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": -2.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J03"],
+              "probability": 1.0
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_10_UNKNOWN_NODE",
+          "origin_node": "J99",
+          "destination_node": "J03",
+          "vehicle_weight": 1.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J99", "J02", "J03"],
+              "probability": 1.0
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_10_INVALID_PROB_SUM",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": 1.0,
+          "candidate_routes": [
+            {
+              "nodes": ["J01", "J02", "J03"],
+              "probability": 0.25
+            }
+          ]
+        },
+        {
+          "track_id": "VEH_10_EMPTY_ROUTES",
+          "origin_node": "J01",
+          "destination_node": "J03",
+          "vehicle_weight": 1.0,
+          "candidate_routes": []
+        }
+      ]
+    }
+  }
+}

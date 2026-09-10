@@ -1,9 +1,9 @@
-# UrbanTrack AI — Mobility Inference Engine (Days 1, 2 & 3 Complete)
+# UrbanTrack AI — Mobility Inference Engine (Days 1, 2, 3 & 4 Complete)
 
-City-scale multi-camera vehicle identity fusion and probabilistic trajectory reconstruction system for **UrbanTrack AI**.
+City-scale multi-camera vehicle identity fusion, probabilistic trajectory reconstruction, and sparse missing-camera trajectory inference for **UrbanTrack AI**.
 
 **Role**: Vivek — Mobility Inference Engineer (Member 2)  
-**Scope**: End-to-end pipeline from perception ingestion and schema standardization (Day 1) to cross-camera identity fusion and identity graph clustering (Day 2) and road-network candidate trajectory reconstruction (Day 3).
+**Scope**: End-to-end pipeline from perception ingestion (Day 1) to cross-camera identity fusion (Day 2), road-network trajectory reconstruction (Day 3), and sparse missing-camera hidden route inference (Day 4).
 
 ---
 
@@ -287,7 +287,7 @@ For vehicle identities with $>2$ observations ($A \rightarrow B \rightarrow C \r
 - Reconstructs each segment independently against the road network.
 - Concatenates edges and junction nodes into `complete_route_edges` and `complete_route_nodes`.
 - Evaluates overall trajectory confidence using geometric mean of segment confidences.
-- Handles stationary/loitering cases ($d = 0$, $A \rightarrow A$) cleanly without path search.
+- Handles stationary vehicle cases ($d = 0$, $A \rightarrow A$) cleanly without path search.
 
 ---
 
@@ -452,38 +452,155 @@ Member 3's validated spatial graph is directly ingested as the shared spatial so
 
 ---
 
+# Day 4: Sparse / Missing-Camera Trajectory Inference (Day 4 Complete)
+
+Reasoning about vehicle movement across unobserved intervals (gaps) between sightings of the same cross-camera vehicle identity without synthesizing fake observation records.
+
+### Core Architecture & Guiding Principles:
+1. **Zero Observation Fabrication**: If cameras along an intermediate corridor did not observe the vehicle, the system **never** creates synthetic observation records claiming they did.
+2. **Explicit Gap Representation**: An unobserved interval is represented as:
+   - Observed endpoints (Start Observation $A$ and Later Observation $B$)
+   - Unobserved interval duration ($\Delta t = T_B - T_A$)
+   - Set of candidate hidden routes through the road network
+   - Road-aware temporal feasibility & relative estimated likelihoods
+   - Uncertainty & ambiguity surfacing
+3. **Reused Day-3 Spatial Machinery**: Directly traverses Member 3's shared graph (`data/synthetic/city_network.json`), strictly respecting directed road constraints, one-way traps, closed roads (`is_closed: true`), distance, and speed limits.
+4. **Member 3 Backward Compatibility**: Adapted directly into `NormalizedTrajectory` with Day-4 metadata (`gap_detected`, `gap_duration_seconds`, `observed_endpoints`, `inferred_segment`, `inference_reason`, `gap_state`, `observations_used`).
+
+### Deliverables & Modules:
+- **Gap Schema ([schemas/gap_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/gap_schema.py)):** `SparseObservationGap` dataclass.
+- **Sparse Inference Engine ([inference/sparse_engine.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/sparse_engine.py)):**
+  - `detect_observation_gaps(observations, road_graph)`: Classifies intervals into direct single-hop, stationary, or unobserved gap.
+  - `infer_sparse_gap(obs_a, obs_b, road_graph, ...)`: Infers candidate hidden routes, calculates required speeds, rejects impossible corridors, normalizes relative likelihoods, and detects routing ambiguity.
+  - `infer_sparse_identity_trajectory(identity_data, road_graph, ...)`: Evaluates multi-observation vehicle journeys with mixed direct and unobserved intervals.
+- **Member 3 Adapter Extension ([inference/member3_adapter.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/member3_adapter.py)):**
+  - `adapt_sparse_gap_to_normalized(gap, vehicle_weight=1.0)`: Converts a `SparseObservationGap` into Member 3's `NormalizedTrajectory`.
+- **Day 4 Test Scenarios Fixture ([data/synthetic/day4_sparse_scenarios.json](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/data/synthetic/day4_sparse_scenarios.json)):** Controlled synthetic test fixture covering Cases 1 through 10.
+- **Day 4 Test Suite ([tests/test_day4_sparse_inference.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_day4_sparse_inference.py)):** 15 focused tests validating gap detection, Cases 1–10, zero observation fabrication, and Member-3 contract compatibility.
+
+---
+
+# Day 5: Camera Reliability & Uncertainty Propagation (Day 5 Complete)
+
+Principled framework for tracking sensor trust, detection quality, and uncertainty without conflating sensor quality with behavioral deviation or probability of guilt.
+
+### Core Architecture & Semantic Separations:
+1. **Camera Reliability ($R_{cam} \in [0.1, 1.0]$)**: Historical sensor performance and environmental conditions.
+2. **Observation Reliability**: Sensor-level trust combining camera reliability, detection confidence, and physical verification.
+3. **Identity Match Likelihood**: Spatio-temporal and visual feature compatibility across cameras.
+4. **Trajectory Reliability & Uncertainty**: Explicit separation of measurement trust from candidate route ambiguity.
+
+---
+
+# Day 6: City Mobility Graph & Traffic Flow (Day 6 Complete)
+
+Aggregates individual vehicle trajectories into city-scale network flow dynamics and macro mobility metrics.
+
+### Core Capabilities:
+1. **Flow Conservation & Normalization**: Fractional route allocation conserving total vehicle weight ($\sum P(r) = 1.0$).
+2. **Time-Windowed Demand**: Normalized hourly demand rate ($\text{vph}$) based on explicit time-window durations.
+3. **Road Capacity & Utilization**: Empirical volume-to-capacity metrics evaluated against physical road design specifications.
+4. **Network Centrality & Bottlenecks**: Betweenness centrality combined with utilization to flag macro network bottlenecks.
+
+---
+
+# Day 7: City-Scale Anomaly Detection & Investigation (Day 7 Complete & Locked)
+
+Multi-dimensional anomaly detection and operational investigation reasoning over reconstructed trajectories, candidate route hypotheses, road utilization, and network topology.
+
+### Core Operating Principle:
+> **"An anomaly indicates deviation from a configured behavioral, physical, or network baseline. It does not establish intent, wrongdoing, or causality."**
+
+### Explicit Conceptual Separations:
+UrbanTrack AI strictly enforces that:
+$$\text{INVALID DATA} \neq \text{PHYSICAL INCONSISTENCY} \neq \text{BEHAVIORAL ANOMALY} \neq \text{INVESTIGATION PRIORITY}$$
+
+1. **Data Quality (`DATA_QUALITY`, `TEMPORAL_INCONSISTENCY`)**:
+   - Malformed fields, missing required schemas, non-numeric timestamps, or inverted time intervals ($\Delta t < 0$) are categorized as `INVALID_INPUT` / `DataQualityStatus.INVALID`.
+   - **Never** interpreted as a vehicle behaving anomalously; processing is safely halted with zero fabricated behavioral scores.
+2. **Physical Inconsistency (`PHYSICAL_INCONSISTENCY`)**:
+   - Travel speeds exceeding physical boundaries (e.g. $> 120\text{ km/h}$ for urban vehicles across candidate corridors).
+   - Reflects physical impossibility rather than driver behavior.
+3. **Network Constraint Inconsistency (`NETWORK_CONSTRAINT_INCONSISTENCY`)**:
+   - An inferred route traversing a closed road segment is flagged as: *"The inferred route is incompatible with the current road-network state."*
+   - **Never** implies suspicious intent or wrongdoing.
+4. **Behavioral Anomaly (`BEHAVIORAL_ANOMALY`)**:
+   - Substantial travel-time deviation from configured origin-destination baselines ($T_{meas} \gg T_{base}$ or $T_{meas} \ll T_{base}$).
+   - Route corridor divergence from expected historical paths.
+   - Evaluated **only** when a valid, comparable baseline exists. If no baseline is available, the status is explicitly set to `INSUFFICIENT_EVIDENCE`.
+5. **Network Anomaly (`NETWORK_ANOMALY`)**:
+   - Segments where expected demand substantially exceeds designed capacity ($utilization > 1.0$).
+   - High betweenness centrality combined with high utilization is categorized as a **network bottleneck candidate**, distinct from vehicle behavior.
+6. **Separation of Anomaly Score, Reliability, and Uncertainty**:
+   - `overall_score \in [0, 1]` represents normalized deviation magnitude (NOT a probability of crime, guilt, or event occurrence).
+   - Sensor reliability and route uncertainty are preserved independently to inform operational triage:
+     - *High Anomaly + High Reliability* $\to$ Stronger investigation candidate (`HIGH_PRIORITY` / `INVESTIGATE`).
+     - *High Anomaly + Low Reliability* $\to$ Requires verification before action (`WATCH`).
+     - *Low Anomaly + High Reliability* $\to$ Confidently normal (`NORMAL`).
+     - *Low Anomaly + Low Reliability* $\to$ Insufficient evidence (`INSUFFICIENT_EVIDENCE`).
+7. **Preservation of Route Ambiguity**:
+   - Competing candidate route hypotheses (e.g. probabilities $0.43, 0.31, 0.26$) remain explicitly ambiguous; top-route selection is never treated as certainty.
+8. **Removal of Overclaimed Terminology**:
+   - Pejorative or speculative labels ("loitering", "unexpected stop", "suspicious", "criminal", "stolen", "malicious") are banned from the codebase and reports. Replaced with neutral, factual descriptions ("substantial travel-time deviation", "travel time substantially exceeds configured baseline", "investigation candidate").
+
+---
+
 ## Reproducing Demos & Tests
 
-### 1. Run Complete Unit Test Suite (73 tests)
+### 1. Run Complete Unit Test Suite (159 tests across Days 1–7)
 ```bash
 python3 -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-### 2. Run Member 3 Integration Contract Tests (15 tests)
+### 2. Run Day 7 Anomaly Detection Test Suite (20 tests)
+```bash
+python3 -m unittest tests/test_day7_anomaly.py -v
+```
+
+### 3. Run Day 6 City Mobility Test Suite (17 tests)
+```bash
+python3 -m unittest tests/test_day6_mobility.py -v
+```
+
+### 4. Run Day 5 Reliability & Uncertainty Test Suite (17 tests)
+```bash
+python3 -m unittest tests/test_day5_reliability.py -v
+```
+
+### 5. Run Day 4 Sparse / Missing-Camera Test Suite (15 tests)
+```bash
+python3 -m unittest tests/test_day4_sparse_inference.py -v
+```
+
+### 6. Run Member 3 Integration Contract Tests (15 tests)
 ```bash
 python3 -m unittest tests/test_member3_integration.py -v
 ```
 
-### 3. Run Day 3 End-to-End Validation
+### 7. Run Day 3 End-to-End Validation
 ```bash
 python3 tests/validate_day3_end_to_end.py
 ```
 
-### 4. Run Day 2 Synthetic Benchmark (9 Scenarios)
+### 8. Run Day 2 Synthetic Benchmark (9 Scenarios)
 ```bash
 python3 run_benchmark.py
 ```
 
-### 5. Run Real Perception Evaluation (Kanishka's Feed)
+### 9. Run Real Perception Evaluation (Kanishka's Feed)
 ```bash
 python3 run_real_data.py
 ```
 
 ---
 
-## Technical Honesty & Limitations
+## Technical Honesty, Semantics & Limitations
 
-1. **Uncalibrated Relative Likelihoods:** Candidate route scores are normalized relative likelihoods based on travel speed and path distance. They are **not** calibrated Bayesian posterior probabilities.
-2. **Shared Spatial Graph:** The Day 3 trajectory inference engine uses Member 3's confirmed spatial graph (`data/synthetic/city_network.json`), preserving exact `J01`..`J14` and `R01`..`R28` identifiers and directed edge topology.
-3. **Kanishka Perception Feed Compatibility:** The current perception feed lacks persistent Re-ID embeddings, resulting in singletons from Day 2. Day 3 handles singletons safely ($d=0$, confidence=1.0) without fabricating artificial multi-camera trajectories.
+1. **Identity Scoring Semantics:** The identity engine uses **multimodal evidence-based identity scoring**. Edges in the identity graph are formed when pairwise evidence meets the configured decision threshold (`0.70` evidence score). These values are normalized relative evidence scores and are **not** statistically calibrated probabilities or Bayesian posteriors.
+2. **Normalized Route Likelihoods, Not Probabilities:** Candidate route scores represent normalized relative estimated likelihoods among feasible corridors given network geometry and speed limits. The schema field `probability` is preserved for interface compatibility, but does not represent a calibrated statistical probability.
+3. **Route-Distribution Entropy vs Reliability:** Route Shannon entropy measures dispersion/ambiguity across competing feasible routes. Sensor and observation reliability are heuristic estimates of evidence trustworthiness and are conceptually distinct from entropy.
+4. **Physical Demand Conservation:** Road flow is modeled as $\text{vehicle\_weight } (W) \times \text{route\_allocation } (P_i)$. Reliability is **never** multiplied into physical traffic demand. Demand conservation is validated at the trajectory allocation level ($\sum P_i \approx 1.0$).
+5. **Counterfactual Simulation:** Counterfactual modeling is hypothetical network scenario analysis (evaluating how currently modeled demand reallocates across surviving feasible corridors under an explicit intervention). It is **not** an exact future prediction or traffic forecast.
+6. **Kanishka Perception Feed Compatibility:** In the evaluated Kanishka perception feed (2,503 records processed in this run), cross-camera vehicle re-identification appearance embeddings and license plates are unavailable. In this validation run, no fabricated identity links, routes, traffic demand, or anomalies were introduced from unavailable perception evidence; observations remained separately identified rather than forcefully merged.
+7. **Production Readiness:** Hackathon/demo-ready; production deployment requires authoritative camera geolocation and GIS junction mapping, hardware shared time synchronization, metric camera calibration, production-validated road capacities, and privacy/governance infrastructure.
 
