@@ -843,16 +843,32 @@ def evaluate_global_trajectory_hypotheses(
         diff = (top2[0].get("relative_likelihood") or 0.0) - (top2[1].get("relative_likelihood") or 0.0)
         ambiguous = diff < 0.15  # Hypotheses are close in support
 
-    # Uncertainty sources
+    # Calculate route distribution dispersion (Shannon entropy)
+    shannon_entropy = 0.0
+    normalized_route_dispersion = 0.0
+    if len(feasible_hyps) > 1:
+        probs = [h.get("relative_likelihood") or 0.0 for h in feasible_hyps if (h.get("relative_likelihood") or 0.0) > 0.0]
+        s_prob = sum(probs)
+        if s_prob > 0:
+            norm_p = [p / s_prob for p in probs]
+            shannon_entropy = -sum(p * math.log2(p) for p in norm_p)
+            max_entropy = math.log2(len(feasible_hyps))
+            if max_entropy > 0:
+                normalized_route_dispersion = round(shannon_entropy / max_entropy, 4)
+            shannon_entropy = round(shannon_entropy, 4)
+
+    # Uncertainty sources with explicit provenance
     uncertainty_sources: List[str] = []
     if len(feasible_hyps) > 1:
-        uncertainty_sources.append("multiple_feasible_route_combinations")
+        uncertainty_sources.append(
+            f"route_ambiguity: {len(feasible_hyps)} feasible corridors remain with dispersion {normalized_route_dispersion:.2f}"
+        )
     if ambiguous:
-        uncertainty_sources.append("ambiguous_top_hypotheses")
+        uncertainty_sources.append("ambiguous_top_hypotheses: competing route likelihoods are within 0.15")
     for seg in segments:
         t_ev = (seg.temporal_evidence or {})
         if not t_ev.get("comparable", False):
-            uncertainty_sources.append("unavailable_temporal_reference")
+            uncertainty_sources.append("unavailable_temporal_reference: cross-camera clock synchronization unverified")
             break
     if not uncertainty_sources:
         uncertainty_sources = ["none_detected"]
@@ -863,6 +879,8 @@ def evaluate_global_trajectory_hypotheses(
         "hypotheses": hypotheses,
         "best_hypothesis_id": best_id,
         "ambiguous": ambiguous,
+        "route_entropy_bits": shannon_entropy,
+        "normalized_route_dispersion": normalized_route_dispersion,
         "uncertainty_sources": list(dict.fromkeys(uncertainty_sources)),
         "note": (
             "relative_likelihood is normalized among feasible hypotheses only. "

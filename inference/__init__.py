@@ -53,6 +53,8 @@ from .trajectory_engine import (
     reconstruct_trajectory_segment,
 )
 
+from .candidate_generation import CandidateGenerationReport, CandidateGenerator
+
 from .inference_trace import (
     InferenceTrace,
     build_cluster_trace,
@@ -104,6 +106,8 @@ __all__ = [
     "detect_observation_gaps",
     "infer_sparse_gap",
     "infer_sparse_identity_trajectory",
+    "CandidateGenerator",
+    "CandidateGenerationReport",
     "InferenceTrace",
     "build_identity_pair_trace",
     "build_cluster_trace",

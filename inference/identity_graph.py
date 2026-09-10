@@ -98,6 +98,8 @@ class IdentityGraph:
         self.edges: List[Dict[str, Any]] = []
         self.adjacency: Dict[str, List[Tuple[str, float]]] = {}
         self.rejected_merges: List[Dict[str, Any]] = []
+        self.rejection_summary: Dict[str, int] = {}
+        self.pair_rejections: Dict[Tuple[str, str], Dict[str, Any]] = {}
 
     def add_observation(self, obs: Observation) -> None:
         """Add an observation node to the graph."""
@@ -158,6 +160,12 @@ class IdentityGraph:
                 if enable_pruning:
                     # 1. Missing identity evidence on both observations when threshold > 0.50
                     if self.min_threshold > 0.50 and not (has_id_a or has_id_b):
+                        self._record_rejection(
+                            obs_a.observation_id, obs_b.observation_id,
+                            "pruned_missing_identity_evidence",
+                            "Missing identity evidence on both observations with threshold > 0.50.",
+                            0.0,
+                        )
                         continue
 
                     # 2. Incompatible vehicle types (when both types are known, non-empty, and incompatible)
@@ -165,6 +173,12 @@ class IdentityGraph:
                         from .similarity import vehicle_type_compatibility
                         _, v_stat = vehicle_type_compatibility(obs_a.vehicle_type, obs_b.vehicle_type)
                         if v_stat == "incompatible":
+                            self._record_rejection(
+                                obs_a.observation_id, obs_b.observation_id,
+                                "pruned_incompatible_vehicle_type",
+                                f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}).",
+                                0.0,
+                            )
                             continue
 
                     # 3. Physically impossible speed over known coordinates
@@ -181,9 +195,21 @@ class IdentityGraph:
                                 dist_m = geographic_distance(obs_a.latitude, obs_a.longitude, obs_b.latitude, obs_b.longitude)
                                 speed_kmh = (dist_m / dt) * 3.6
                                 if speed_kmh > max_speed_kmh:
+                                    self._record_rejection(
+                                        obs_a.observation_id, obs_b.observation_id,
+                                        "pruned_impossible_speed",
+                                        f"Physically impossible speed ({speed_kmh:.1f} km/h > {max_speed_kmh:.1f} km/h).",
+                                        0.0,
+                                    )
                                     continue
                             elif obs_a.camera_id != obs_b.camera_id:
                                 # Simultaneous on different cameras with shared clock
+                                self._record_rejection(
+                                    obs_a.observation_id, obs_b.observation_id,
+                                    "pruned_simultaneous_different_cameras",
+                                    f"Simultaneous observations on different cameras ({obs_a.camera_id} vs {obs_b.camera_id}).",
+                                    0.0,
+                                )
                                 continue
 
                 # Ensure chronological ordering A -> B for pairwise evaluation
@@ -209,6 +235,15 @@ class IdentityGraph:
                     self.edges.append(edge_data)
                     self.adjacency[obs_a.observation_id].append((obs_b.observation_id, prob))
                     self.adjacency[obs_b.observation_id].append((obs_a.observation_id, prob))
+                else:
+                    expl = match_result.get("explanation", "")
+                    if prob < self.min_threshold:
+                        tag = "below_threshold"
+                        reason = f"Estimated probability {prob:.4f} is below configured threshold {self.min_threshold:.2f}. {expl}"
+                    else:
+                        tag = "insufficient_identity_evidence"
+                        reason = f"Probability {prob:.4f} meets threshold but lacked positive identity evidence (both plate & appearance missing/invalid)."
+                    self._record_rejection(obs_a.observation_id, obs_b.observation_id, tag, reason, prob)
 
         # Deterministic sorting of adjacency lists: decreasing by probability, then neighbor ID
         for nid in self.adjacency:
@@ -384,23 +419,35 @@ class IdentityGraph:
                         )
                         contradictory_edges.append(pair_key)
 
-                # Physical speed contradiction across all pairs
+                # Physical speed & simultaneous contradiction across all pairs
                 if (
                     obs_i.latitude is not None and obs_i.longitude is not None
                     and obs_j.latitude is not None and obs_j.longitude is not None
                 ):
                     t_ij = check_temporal_comparability(obs_i, obs_j, camera_metadata=camera_metadata)
-                    if t_ij.get("comparable") and t_ij.get("delta_seconds", 0) > 0:
-                        dt_ij = t_ij["delta_seconds"]
-                        from .similarity import geographic_distance
-                        d_ij = geographic_distance(obs_i.latitude, obs_i.longitude, obs_j.latitude, obs_j.longitude)
-                        sp_ij = (d_ij / dt_ij) * 3.6
-                        if sp_ij > max_speed_kmh:
+                    if t_ij.get("comparable"):
+                        dt_ij = abs(float(t_ij.get("delta_seconds", 0.0)))
+                        if dt_ij == 0.0 and obs_i.camera_id != obs_j.camera_id:
                             violations.append(
-                                f"Physically impossible speed between {obs_i.observation_id} and {obs_j.observation_id}: "
-                                f"{sp_ij:.1f} km/h exceeds limit ({max_speed_kmh:.1f} km/h)."
+                                f"Physically impossible simultaneous observation at different cameras: "
+                                f"{obs_i.observation_id} ({obs_i.camera_id}) vs {obs_j.observation_id} ({obs_j.camera_id})."
                             )
                             contradictory_edges.append(pair_key)
+                        elif dt_ij > 0.0:
+                            from .similarity import geographic_distance
+                            d_ij = geographic_distance(obs_i.latitude, obs_i.longitude, obs_j.latitude, obs_j.longitude)
+                            sp_ij = (d_ij / dt_ij) * 3.6
+                            if sp_ij > max_speed_kmh:
+                                violations.append(
+                                    f"Physically impossible speed between {obs_i.observation_id} and {obs_j.observation_id}: "
+                                    f"{sp_ij:.1f} km/h exceeds limit ({max_speed_kmh:.1f} km/h)."
+                                )
+                                contradictory_edges.append(pair_key)
+                    elif t_ij.get("status") == "invalid_negative_time":
+                        violations.append(
+                            f"Temporal inversion between {obs_i.observation_id} and {obs_j.observation_id}."
+                        )
+                        contradictory_edges.append(pair_key)
 
         # De-duplicate edges
         contradictory_edges = sorted(list(set(contradictory_edges)))
@@ -764,6 +811,140 @@ class IdentityGraph:
             camera_metadata=camera_metadata, config=config, resolve_contradictions=True
         )
 
+    def _record_rejection(
+        self,
+        obs_a_id: str,
+        obs_b_id: str,
+        stage: str,
+        reason: str,
+        prob: float = 0.0,
+    ) -> None:
+        """Record a rejected observation pair in the rejection ledger and summary counters."""
+        self.rejection_summary[stage] = self.rejection_summary.get(stage, 0) + 1
+        if len(self.pair_rejections) < 10000:
+            pair_key = (min(obs_a_id, obs_b_id), max(obs_a_id, obs_b_id))
+            self.pair_rejections[pair_key] = {
+                "source": min(obs_a_id, obs_b_id),
+                "target": max(obs_a_id, obs_b_id),
+                "rejection_stage": stage,
+                "reason": reason,
+                "probability": round(float(prob), 4),
+            }
+
+    def get_rejection_summary(self) -> Dict[str, Any]:
+        """Return structured summary statistics of why observation pairs were rejected."""
+        return {
+            "total_rejected_pairs": sum(self.rejection_summary.values()),
+            "breakdown": dict(sorted(self.rejection_summary.items())),
+            "rejection_ledger_sample_count": len(self.pair_rejections),
+        }
+
+    def explain_non_merge(
+        self,
+        obs_id_a: str,
+        obs_id_b: str,
+        camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
+        config: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Explain why two observations were or were not merged into the same vehicle identity hypothesis.
+
+        Provides a transparent, evidence-grounded non-merge explanation:
+        - Checks if already merged in final hypotheses.
+        - Checks if candidates were merged then split by contradiction-aware clustering.
+        - Checks if direct edge was rejected due to threshold, physical infeasibility, or type mismatch.
+        """
+        if obs_id_a not in self.nodes or obs_id_b not in self.nodes:
+            missing = [nid for nid in (obs_id_a, obs_id_b) if nid not in self.nodes]
+            return {
+                "obs_id_a": obs_id_a,
+                "obs_id_b": obs_id_b,
+                "merged": False,
+                "rejection_stage": "unknown_observation",
+                "reason": f"Observation(s) {missing} not present in graph.",
+                "same_vehicle_probability": 0.0,
+            }
+
+        final_hyps = self.get_final_identity_hypotheses(camera_metadata=camera_metadata, config=config)
+        for hyp in final_hyps:
+            m_ids = hyp.get("observation_ids", [])
+            if obs_id_a in m_ids and obs_id_b in m_ids:
+                return {
+                    "obs_id_a": obs_id_a,
+                    "obs_id_b": obs_id_b,
+                    "merged": True,
+                    "identity_id": hyp.get("identity_id"),
+                    "rejection_stage": "none",
+                    "reason": "Observations are merged into the same vehicle identity hypothesis.",
+                    "same_vehicle_probability": hyp.get("identity_confidence"),
+                    "admission_status": hyp.get("admission_status"),
+                }
+
+        # Check candidate clusters to see if they were together before contradiction splitting
+        candidates = self.get_candidate_identities(camera_metadata=camera_metadata, config=config, resolve_contradictions=False)
+        was_in_candidate_cluster = False
+        cand_identity_id = None
+        for cand in candidates:
+            c_ids = cand.get("observation_ids", [])
+            if obs_id_a in c_ids and obs_id_b in c_ids:
+                was_in_candidate_cluster = True
+                cand_identity_id = cand.get("identity_id")
+                break
+
+        pair_key = (min(obs_id_a, obs_id_b), max(obs_id_a, obs_id_b))
+        if was_in_candidate_cluster:
+            reasons = []
+            for rm in self.rejected_merges:
+                if (rm.get("source") in (obs_id_a, obs_id_b)) or (rm.get("target") in (obs_id_a, obs_id_b)):
+                    reasons.append(rm.get("reason", "Contradiction detected"))
+            split_reason = reasons[0] if reasons else "Separated during contradiction-aware cluster resolution to maintain global physical/identity consistency."
+            return {
+                "obs_id_a": obs_id_a,
+                "obs_id_b": obs_id_b,
+                "merged": False,
+                "rejection_stage": "cluster_contradiction_split",
+                "candidate_cluster_id": cand_identity_id,
+                "reason": split_reason,
+                "explanation": (
+                    f"Observations {obs_id_a} and {obs_id_b} shared a candidate connected component, "
+                    f"but were split because merging them would violate global cluster consistency: {split_reason}"
+                ),
+            }
+
+        # If recorded in pair_rejections:
+        if pair_key in self.pair_rejections:
+            rec = self.pair_rejections[pair_key]
+            return {
+                "obs_id_a": obs_id_a,
+                "obs_id_b": obs_id_b,
+                "merged": False,
+                "rejection_stage": rec["rejection_stage"],
+                "reason": rec["reason"],
+                "same_vehicle_probability": rec.get("probability", 0.0),
+            }
+
+        # Otherwise evaluate on-demand
+        obs_a = self.nodes[obs_id_a]
+        obs_b = self.nodes[obs_id_b]
+        if obs_a.timestamp_seconds > obs_b.timestamp_seconds:
+            eval_a, eval_b = obs_b, obs_a
+        else:
+            eval_a, eval_b = obs_a, obs_b
+
+        match_res = match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config)
+        prob = float(match_res.get("same_vehicle_probability", 0.0))
+        reason = match_res.get("explanation", "")
+        stage = "below_threshold" if prob < self.min_threshold else "evaluated"
+        return {
+            "obs_id_a": obs_id_a,
+            "obs_id_b": obs_id_b,
+            "merged": False,
+            "rejection_stage": stage,
+            "reason": reason,
+            "same_vehicle_probability": prob,
+            "evidence": match_res.get("evidence"),
+        }
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert graph structure to a serializable dictionary representation."""
         return {
@@ -774,6 +955,7 @@ class IdentityGraph:
             "edges": self.edges,
             "candidate_identities": self.get_candidate_identities(),
             "final_identity_hypotheses": self.get_final_identity_hypotheses(),
+            "rejection_summary": self.get_rejection_summary(),
         }
 
 

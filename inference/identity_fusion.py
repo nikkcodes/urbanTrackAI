@@ -98,8 +98,12 @@ def match_observations(
         app_status = "missing"
 
     # 5. License Plate Evidence (if available)
+    clean_plate_a = "".join(c for c in str(obs_a.plate or "").upper() if c.isalnum())
+    clean_plate_b = "".join(c for c in str(obs_b.plate or "").upper() if c.isalnum())
+    is_strong_plate_contradiction = False
     plate_score = None
     plate_confidence = None
+
     if obs_a.plate is not None and obs_b.plate is not None:
         plate_score = plate_similarity(obs_a.plate, obs_b.plate)
         if obs_a.plate_confidence is not None and obs_b.plate_confidence is not None:
@@ -108,6 +112,12 @@ def match_observations(
             except (ValueError, TypeError):
                 plate_confidence = None
 
+        # P0 #3: Strong plate contradiction vs possible OCR variation
+        conf_a = float(obs_a.plate_confidence) if obs_a.plate_confidence is not None else 1.0
+        conf_b = float(obs_b.plate_confidence) if obs_b.plate_confidence is not None else 1.0
+        if len(clean_plate_a) >= 4 and len(clean_plate_b) >= 4 and conf_a >= 0.50 and conf_b >= 0.50 and plate_score < 0.35:
+            is_strong_plate_contradiction = True
+
     # --- HARD REJECTION / PHYSICAL IMPOSSIBILITY RULES ---
     is_rejected = False
     rejection_reason = ""
@@ -115,6 +125,9 @@ def match_observations(
     if type_status == "incompatible":
         is_rejected = True
         rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type})."
+    elif is_strong_plate_contradiction:
+        is_rejected = True
+        rejection_reason = f"Strong license plate contradiction ({obs_a.plate} vs {obs_b.plate}, similarity {plate_score:.2f} < 0.35 with verified OCR)."
     elif t_status in ("impossible_negative_time", "impossible_simultaneous_different_cameras", "impossible_simultaneous_same_camera_distinct_bbox"):
         is_rejected = True
         rejection_reason = f"Physically impossible temporal alignment ({t_res.get('explanation')})."
@@ -140,7 +153,7 @@ def match_observations(
         if has_identity_evidence:
             # Combine available identity features (appearance and/or plate)
             if app_score is not None and plate_score is not None:
-                # Phase 3: Adaptive weighting if actual OCR confidence is provided
+                # Adaptive weighting if actual OCR confidence is provided
                 if plate_confidence is not None:
                     # Scale plate contribution by verified OCR confidence [0.30, 0.60]
                     w_plate = 0.30 + 0.30 * plate_confidence
@@ -158,7 +171,9 @@ def match_observations(
         else:
             # Identity evidence unavailable (missing/invalid appearance and no plate):
             # Spatio-temporal feasibility alone gives unconfirmed candidate score (max 0.50)
-            estimated_prob = feasibility_score * 0.50
+            # CRITICAL: Without positive identity evidence, this score represents unconfirmed candidate status.
+            unconf_score = float(config.get("missing_evidence_score", 0.50))
+            estimated_prob = feasibility_score * unconf_score
 
         estimated_prob = round(max(0.0, min(1.0, estimated_prob)), 4)
 
