@@ -32,6 +32,7 @@ class VehicleDetector:
 
         self.confidence_threshold = confidence_threshold
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self._frame_count = 0
 
         if self.__class__._model is None:
             self.__class__._model = YOLO("yolov8s.pt")
@@ -49,14 +50,14 @@ class VehicleDetector:
         Returns:
             A list of vehicle observations with type, confidence, and bounding box.
         """
+        self._frame_count += 1
         results = self.__class__._model.track(
-            frame,
-            conf=self.confidence_threshold,
-            classes=list(self._vehicle_class_ids),
-            device=self.device,
+            source=frame,
+            tracker="perception/bytetrack_urban.yaml",
             persist=True,
-            tracker="bytetrack.yaml",
             verbose=False,
+            device=self.device,
+            classes=list(self._vehicle_class_ids),
         )
         detections: list[dict[str, str | float | int | list[int]]] = []
 
@@ -70,6 +71,9 @@ class VehicleDetector:
                 result.boxes.conf.tolist(),
                 result.boxes.xyxy.tolist(),
             ):
+                if confidence < self.confidence_threshold:
+                    continue
+
                 vehicle_type = self._vehicle_class_ids.get(int(class_id))
                 if vehicle_type is None:
                     continue
@@ -82,5 +86,15 @@ class VehicleDetector:
                         "bbox": [int(coordinate) for coordinate in box],
                     }
                 )
+
+        if self._frame_count % 100 == 0:
+            motorcycle_count = sum(
+                detection["vehicle_type"] == "motorcycle"
+                for detection in detections
+            )
+            print(
+                f"Frame {self._frame_count} | Active tracks: {len(detections)} | "
+                f"Motorcycles tracked: {motorcycle_count}"
+            )
 
         return detections

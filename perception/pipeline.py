@@ -21,6 +21,11 @@ from .config import (
     LABEL_FONT_SCALE_LIMITS,
     LABEL_BACKGROUND_COLOR,
     MIN_LINE_THICKNESS,
+    OCR_CACHE_FRAMES,
+    OCR_CONF_THRESHOLD,
+    PLATE_BOX_COLOR,
+    PLATE_CONF_THRESHOLD,
+    PLATE_LABEL_COLOR,
     REFERENCE_FRAME_HEIGHT,
     REFERENCE_FRAME_WIDTH,
     SYSTEM_TITLE,
@@ -34,6 +39,8 @@ from .config import (
 )
 from .vehicle_detector import VehicleDetector
 from .video_loader import VideoLoader
+from .plate_detector import PlateDetector
+from .plate_ocr import read_plate
 
 
 class PerceptionPipeline:
@@ -43,6 +50,7 @@ class PerceptionPipeline:
         """Initialize the video loader and vehicle detector."""
         self._video_loader = VideoLoader()
         self._vehicle_detector = VehicleDetector(CONFIDENCE_THRESHOLD)
+        self._plate_detector = PlateDetector()
 
     def process(
         self,
@@ -73,8 +81,13 @@ class PerceptionPipeline:
         observations_file.parent.mkdir(parents=True, exist_ok=True)
         writer: cv2.VideoWriter | None = None
         frame_count = 0
-        observations: list[dict[str, str | float | int | list[int]]] = []
-        camera_id = CAMERA_ID
+        observations: list[dict[str, str | float | int | list[int] | None]] = []
+        camera_id = CAMERA_ID if CAMERA_ID else None
+        total_plate_detections = 0
+        total_ocr_successes = 0
+        total_ocr_failures = 0
+        ocr_cache: dict[int, dict[str, str | float | int]] = {}
+        ocr_last_attempt: dict[int, int] = {}
         track_history: dict[int, list[tuple[int, int]]] = {}
         inactive_track_age: dict[int, int] = {}
         track_colors: dict[int, tuple[int, int, int]] = {}
@@ -101,6 +114,17 @@ class PerceptionPipeline:
                     break
 
                 detections = self._vehicle_detector.detect(frame)
+                plate_count = self._attach_plate_detections(frame, detections)
+                ocr_success, ocr_failed, _ocr_debug = self._attach_plate_ocr(
+                    frame,
+                    detections,
+                    frame_count,
+                    ocr_cache,
+                    ocr_last_attempt,
+                )
+                total_plate_detections += plate_count
+                total_ocr_successes += ocr_success
+                total_ocr_failures += ocr_failed
                 active_track_ids = set()
                 for detection in detections:
                     track_id = int(detection["track_id"])
@@ -122,20 +146,56 @@ class PerceptionPipeline:
                         inactive_track_age.pop(track_id, None)
                         track_colors.pop(track_id, None)
                 for detection in detections:
+                    vehicle_bbox = [
+                        int(coordinate)
+                        for coordinate in cast(list[int], detection["bbox"])
+                    ]
+                    plate_bbox_value = detection["plate_bbox"]
+                    plate_bbox = (
+                        [
+                            int(coordinate)
+                            for coordinate in cast(list[int], plate_bbox_value)
+                        ]
+                        if plate_bbox_value is not None
+                        else None
+                    )
+                    x1, y1, x2, y2 = vehicle_bbox
+                    plate_confidence = (
+                        float(detection["plate_confidence"])
+                        if plate_bbox is not None
+                        else None
+                    )
+                    ocr_text = str(detection["plate_text"])
+                    ocr_confidence = float(detection["ocr_confidence"])
+                    ocr_succeeded = (
+                        ocr_text != "UNKNOWN"
+                        and ocr_confidence >= OCR_CONF_THRESHOLD
+                    )
                     observations.append(
                         {
                             "camera_id": camera_id,
-                            "frame_id": frame_count,
-                            "timestamp_seconds": frame_count / fps,
+                            "frame_number": frame_count,
+                            "timestamp": frame_count / fps,
                             "track_id": int(detection["track_id"]),
                             "vehicle_type": str(detection["vehicle_type"]),
-                            "confidence": float(detection["confidence"]),
-                            "bbox": [
-                                int(coordinate)
-                                for coordinate in cast(
-                                    list[int], detection["bbox"]
-                                )
+                            "detection_confidence": float(detection["confidence"]),
+                            "bbox": vehicle_bbox,
+                            "trajectory_point": [
+                                (x1 + x2) // 2,
+                                y2,
                             ],
+                            "plate_bbox": plate_bbox,
+                            "plate_confidence": plate_confidence,
+                            "plate_text": (
+                                ocr_text if ocr_succeeded else None
+                            ),
+                            "ocr_confidence": (
+                                ocr_confidence if ocr_succeeded else None
+                            ),
+                            "appearance_embedding": None,
+                            "latitude": None,
+                            "longitude": None,
+                            "camera_reliability": None,
                         }
                     )
                 self._draw_info_overlay(
@@ -145,6 +205,9 @@ class PerceptionPipeline:
                     frame_count / fps,
                     fps,
                     detections,
+                    plate_count,
+                    ocr_success,
+                    ocr_failed,
                 )
                 self._draw_detections(
                     frame,
@@ -155,8 +218,6 @@ class PerceptionPipeline:
                 )
                 writer.write(frame)
                 frame_count += 1
-                if frame_count % 100 == 0:
-                    print(f"Processed {frame_count} frames")
         finally:
             self._video_loader.release()
             if writer is not None:
@@ -165,7 +226,155 @@ class PerceptionPipeline:
         with observations_file.open("w", encoding="utf-8") as file:
             json.dump(observations, file, indent=4)
 
+        print(f"Observations exported: {frame_count} frames")
+        print(f"Vehicles exported: {len(observations)}")
+        print(f"Plate detections: {total_plate_detections}")
+        print(f"OCR successes: {total_ocr_successes}")
+        print(f"OCR failures: {total_ocr_failures}")
+
         return frame_count
+
+    def _attach_plate_detections(
+        self,
+        frame: np.ndarray,
+        detections: list[dict[str, str | float | int | list[int]]],
+    ) -> int:
+        """Detect the strongest plate in each vehicle crop and attach its box."""
+        plate_count = 0
+        frame_height, frame_width = frame.shape[:2]
+        for detection in detections:
+            x1, y1, x2, y2 = cast(list[int], detection["bbox"])
+            crop_x1 = max(0, min(frame_width, x1))
+            crop_y1 = max(0, min(frame_height, y1))
+            crop_x2 = max(crop_x1, min(frame_width, x2))
+            crop_y2 = max(crop_y1, min(frame_height, y2))
+            crop = frame[crop_y1:crop_y2, crop_x1:crop_x2]
+            detection["plate_bbox"] = None
+            detection["plate_confidence"] = None
+            if crop.size == 0:
+                continue
+
+            plates = [
+                plate
+                for plate in self._plate_detector.detect(crop)
+                if float(plate["confidence"]) >= PLATE_CONF_THRESHOLD
+            ]
+            if not plates:
+                continue
+
+            plate = max(plates, key=lambda item: float(item["confidence"]))
+            plate_x1, plate_y1, plate_x2, plate_y2 = cast(
+                list[int], plate["bbox"]
+            )
+            detection["plate_bbox"] = [
+                crop_x1 + int(plate_x1),
+                crop_y1 + int(plate_y1),
+                crop_x1 + int(plate_x2),
+                crop_y1 + int(plate_y2),
+            ]
+            detection["plate_confidence"] = float(plate["confidence"])
+            plate_count += 1
+        return plate_count
+
+    def _attach_plate_ocr(
+        self,
+        frame: np.ndarray,
+        detections: list[dict[str, str | float | int | list[int]]],
+        frame_number: int,
+        ocr_cache: dict[int, dict[str, str | float | int]],
+        ocr_last_attempt: dict[int, int],
+    ) -> tuple[int, int, dict[str, str | float | int | bool]]:
+        """Read eligible plate crops, reusing stable per-track OCR results."""
+        success_count = 0
+        failed_count = 0
+        debug: dict[str, str | float | int | bool] = {
+            "track_id": 0,
+            "plate_text": "UNKNOWN",
+            "confidence": 0.0,
+            "cache_updated": False,
+        }
+        frame_height, frame_width = frame.shape[:2]
+        eligible_types = {"car", "bus", "truck", "auto"}
+        for detection in detections:
+            track_id = int(detection["track_id"])
+            debug["track_id"] = track_id
+            detection["plate_text"] = "UNKNOWN"
+            detection["ocr_confidence"] = 0.0
+            plate_bbox = detection.get("plate_bbox")
+            vehicle_type = str(detection["vehicle_type"]).lower()
+            if not isinstance(plate_bbox, list):
+                continue
+            if vehicle_type not in eligible_types:
+                failed_count += 1
+                continue
+
+            cached = ocr_cache.get(track_id)
+            cache_is_fresh = (
+                cached is not None
+                and frame_number - int(cached["last_seen_frame"]) < OCR_CACHE_FRAMES
+            )
+            last_attempt = ocr_last_attempt.get(track_id)
+            retry_is_due = (
+                last_attempt is None
+                or frame_number - last_attempt >= OCR_CACHE_FRAMES
+            )
+            if cache_is_fresh or not retry_is_due:
+                ocr_result = cached
+            else:
+                plate_x1, plate_y1, plate_x2, plate_y2 = cast(list[int], plate_bbox)
+                crop_x1 = max(0, min(frame_width, plate_x1))
+                crop_y1 = max(0, min(frame_height, plate_y1))
+                crop_x2 = max(crop_x1, min(frame_width, plate_x2))
+                crop_y2 = max(crop_y1, min(frame_height, plate_y2))
+                crop = frame[crop_y1:crop_y2, crop_x1:crop_x2]
+                result = read_plate(crop)
+                ocr_last_attempt[track_id] = frame_number
+                candidate_text = str(result["text"])
+                candidate_confidence = float(result["confidence"])
+                cache_updated = False
+                if (
+                    candidate_text != "UNKNOWN"
+                    and candidate_confidence >= OCR_CONF_THRESHOLD
+                    and (
+                        cached is None
+                        or candidate_confidence > float(cached["ocr_confidence"])
+                    )
+                ):
+                    ocr_cache[track_id] = {
+                        "plate_text": candidate_text,
+                        "ocr_confidence": candidate_confidence,
+                        "last_seen_frame": frame_number,
+                    }
+                    cache_updated = True
+                if cache_updated or not bool(debug["cache_updated"]):
+                    debug = {
+                        "track_id": track_id,
+                        "plate_text": candidate_text,
+                        "confidence": candidate_confidence,
+                        "cache_updated": cache_updated,
+                    }
+                ocr_result = ocr_cache.get(track_id, cached)
+
+            if ocr_result is None:
+                ocr_result = {
+                    "plate_text": "UNKNOWN",
+                    "ocr_confidence": 0.0,
+                }
+
+            detection["plate_text"] = str(ocr_result["plate_text"])
+            detection["ocr_confidence"] = float(ocr_result["ocr_confidence"])
+            if debug["plate_text"] == "UNKNOWN" and detection["plate_text"] != "UNKNOWN":
+                debug["track_id"] = track_id
+                debug["plate_text"] = detection["plate_text"]
+                debug["confidence"] = detection["ocr_confidence"]
+            if (
+                detection["plate_text"] != "UNKNOWN"
+                and float(ocr_result["ocr_confidence"]) >= OCR_CONF_THRESHOLD
+            ):
+                success_count += 1
+            else:
+                failed_count += 1
+        return success_count, failed_count, debug
 
     @staticmethod
     def _find_input_video(input_directory: Path) -> Path | None:
@@ -187,11 +396,14 @@ class PerceptionPipeline:
     @staticmethod
     def _draw_info_overlay(
         frame: np.ndarray,
-        camera_id: str,
+        camera_id: str | None,
         frame_number: int,
         timestamp: float,
         fps: float,
         detections: list[dict[str, str | float | int | list[int]]],
+        plate_count: int,
+        ocr_success: int,
+        ocr_failed: int,
     ) -> None:
         """Draw current camera and tracking statistics in a translucent panel."""
         frame_height, frame_width = frame.shape[:2]
@@ -231,6 +443,9 @@ class PerceptionPipeline:
             f"Buses: {counts['bus']}",
             f"Trucks: {counts['truck']}",
             f"Motorcycles: {counts['motorcycle']}",
+            f"Plates Detected: {plate_count}",
+            f"OCR Success: {ocr_success}",
+            f"OCR Failed: {ocr_failed}",
         ]
         text_sizes = [
             cv2.getTextSize(
@@ -333,6 +548,73 @@ class PerceptionPipeline:
             vehicle_type = cast(str, detection["vehicle_type"])
             confidence = float(detection["confidence"])
             vehicle_color = VEHICLE_COLORS.get(vehicle_type, LABEL_BACKGROUND_COLOR)
+            plate_bbox = detection.get("plate_bbox")
+            if isinstance(plate_bbox, list):
+                plate_x1, plate_y1, plate_x2, plate_y2 = cast(list[int], plate_bbox)
+                plate_width = max(1, plate_x2 - plate_x1)
+                plate_text = str(detection.get("plate_text", "UNKNOWN"))
+                plate_font_scale = max(0.6, plate_width / 80.0)
+                plate_line_thickness = 3
+                (plate_text_width, plate_text_height), plate_baseline = (
+                    cv2.getTextSize(
+                        plate_text,
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        plate_font_scale,
+                        plate_line_thickness,
+                    )
+                )
+                cv2.rectangle(
+                    frame,
+                    (plate_x1, plate_y1),
+                    (plate_x2, plate_y2),
+                    PLATE_BOX_COLOR,
+                    plate_line_thickness,
+                    cv2.LINE_AA,
+                )
+                plate_label_padding = 4
+                plate_label_width = plate_text_width + plate_label_padding * 2
+                plate_label_height = (
+                    plate_text_height
+                    + plate_baseline
+                    + plate_label_padding * 2
+                )
+                plate_label_x = min(
+                    max(0, (plate_x1 + plate_x2 - plate_label_width) // 2),
+                    max(0, frame_width - plate_label_width),
+                )
+                plate_label_top = plate_y1 - plate_label_height - 2
+                if plate_label_top < 0:
+                    plate_label_top = min(
+                        frame_height - plate_label_height,
+                        plate_y2 + 2,
+                    )
+                plate_label_bottom = min(
+                    frame_height - 1,
+                    plate_label_top + plate_label_height,
+                )
+                PerceptionPipeline._draw_rounded_rectangle(
+                    frame,
+                    (plate_label_x, plate_label_top),
+                    (
+                        min(frame_width - 1, plate_label_x + plate_label_width),
+                        plate_label_bottom,
+                    ),
+                    (20, 20, 20),
+                    max(2, round(plate_label_height * 0.2)),
+                )
+                cv2.putText(
+                    frame,
+                    plate_text,
+                    (
+                        plate_label_x + plate_label_padding,
+                        plate_label_top + plate_label_padding + plate_text_height,
+                    ),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    plate_font_scale,
+                    PLATE_LABEL_COLOR,
+                    plate_line_thickness,
+                    cv2.LINE_AA,
+                )
             label = f"ID {track_id} • {vehicle_type.upper()} • {confidence:.2f}"
             (text_width, text_height), baseline = cv2.getTextSize(
                 label,
