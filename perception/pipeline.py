@@ -10,6 +10,7 @@ import numpy as np
 
 from .config import (
     CAMERA_ID,
+    CAMERA_METADATA,
     CONFIDENCE_THRESHOLD,
     HUD_ACCENT_COLOR,
     HUD_BACKGROUND_COLOR,
@@ -41,6 +42,7 @@ from .vehicle_detector import VehicleDetector
 from .video_loader import VideoLoader
 from .plate_detector import PlateDetector
 from .plate_ocr import read_plate
+from .camera_calibration import CameraCalibration
 
 
 class PerceptionPipeline:
@@ -51,6 +53,10 @@ class PerceptionPipeline:
         self._video_loader = VideoLoader()
         self._vehicle_detector = VehicleDetector(CONFIDENCE_THRESHOLD)
         self._plate_detector = PlateDetector()
+        calibration_metadata = (
+            CAMERA_METADATA.get(CAMERA_ID, {}) if CAMERA_ID else {}
+        )
+        self._camera_calibration = CameraCalibration(calibration_metadata)
 
     def process(
         self,
@@ -83,6 +89,9 @@ class PerceptionPipeline:
         frame_count = 0
         observations: list[dict[str, str | float | int | list[int] | None]] = []
         camera_id = CAMERA_ID if CAMERA_ID else None
+        configured_camera_metadata = (
+            CAMERA_METADATA.get(camera_id, {}) if camera_id else {}
+        )
         total_plate_detections = 0
         total_ocr_successes = 0
         total_ocr_failures = 0
@@ -98,6 +107,13 @@ class PerceptionPipeline:
             frame_size = self._video_loader.get_frame_size()
             if fps <= 0:
                 raise OSError(f"Unable to determine FPS for video: {input_path}")
+
+            print(
+                f"Camera calibrated: "
+                f"{self._camera_calibration.camera_calibrated}"
+            )
+            if self._camera_calibration.homography_valid:
+                print("Homography matrix loaded.")
 
             writer = cv2.VideoWriter(
                 str(output_file),
@@ -171,19 +187,38 @@ class PerceptionPipeline:
                         ocr_text != "UNKNOWN"
                         and ocr_confidence >= OCR_CONF_THRESHOLD
                     )
+                    trajectory_point = [(x1 + x2) // 2, y2]
+                    ground_plane_position = (
+                        self._camera_calibration.transform_to_ground(
+                            trajectory_point
+                        )
+                        if self._camera_calibration.camera_calibrated
+                        else None
+                    )
                     observations.append(
                         {
                             "camera_id": camera_id,
+                            "camera_metadata": {
+                                "camera_calibrated": self._camera_calibration.camera_calibrated,
+                                "homography_valid": self._camera_calibration.homography_valid,
+                                "latitude": configured_camera_metadata.get("latitude"),
+                                "longitude": configured_camera_metadata.get("longitude"),
+                                "road_segment_id": configured_camera_metadata.get(
+                                    "road_segment_id"
+                                ),
+                                "junction_id": configured_camera_metadata.get(
+                                    "junction_id"
+                                ),
+                            },
                             "frame_number": frame_count,
                             "timestamp": frame_count / fps,
                             "track_id": int(detection["track_id"]),
                             "vehicle_type": str(detection["vehicle_type"]),
                             "detection_confidence": float(detection["confidence"]),
                             "bbox": vehicle_bbox,
-                            "trajectory_point": [
-                                (x1 + x2) // 2,
-                                y2,
-                            ],
+                            "trajectory_point": trajectory_point,
+                            "ground_plane_position": ground_plane_position,
+                            "position_confidence": None,
                             "plate_bbox": plate_bbox,
                             "plate_confidence": plate_confidence,
                             "plate_text": (
@@ -193,8 +228,6 @@ class PerceptionPipeline:
                                 ocr_confidence if ocr_succeeded else None
                             ),
                             "appearance_embedding": None,
-                            "latitude": None,
-                            "longitude": None,
                             "camera_reliability": None,
                         }
                     )
