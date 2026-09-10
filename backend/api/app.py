@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -36,21 +36,143 @@ class EngineContext:
     anomaly_result: Any
 
 
+def _build_baseline_trajectories(
+    trajectories: List[NormalizedTrajectory],
+) -> List[NormalizedTrajectory]:
+    """Create a deterministic synthetic normal-state baseline.
+
+    The baseline is derived from the same real synthetic trajectories.
+    It represents a normal mobility state with slightly different
+    route preferences and demand weights.
+
+    This is synthetic evaluation data, not fabricated production telemetry.
+    """
+
+    baseline: List[NormalizedTrajectory] = []
+
+    for index, trajectory in enumerate(trajectories):
+        # Keep most trips unchanged so the baseline remains realistic.
+        if index % 3 != 0 or len(trajectory.candidate_routes) < 2:
+            baseline.append(trajectory)
+            continue
+
+        routes = list(trajectory.candidate_routes)
+
+        # Shift part of the probability mass from the preferred route
+        # toward the second-best candidate route.
+        shift = min(routes[0].probability * 0.30, 0.25)
+
+        routes[0] = replace(
+            routes[0],
+            probability=routes[0].probability - shift,
+        )
+
+        routes[1] = replace(
+            routes[1],
+            probability=routes[1].probability + shift,
+        )
+
+        # Slightly reduce demand for selected baseline trips.
+        baseline_weight = trajectory.vehicle_weight * 0.75
+
+        baseline.append(
+            replace(
+                trajectory,
+                candidate_routes=routes,
+                vehicle_weight=baseline_weight,
+            )
+        )
+
+    return baseline
+
+
 def _build_context() -> EngineContext:
     graph = MobilityGraph.load_from_json(CITY_NETWORK_PATH)
-    trajectories = MockTrajectoryAdapter().adapt(TRAJECTORIES_PATH)
-    flow_result = ExpectedFlowAggregator(graph).aggregate(trajectories, include_zero_flow_roads=False)
-    metrics = TrafficMetricsCalculator(graph=graph).calculate_metrics(flow_result)
-    phase4_result = UrbanMobilityAnalyzer().analyze(flow_result, metrics, graph, top_n=5)
-    snapshot = MobilitySnapshot.from_phase4_result(
+
+    trajectories = MockTrajectoryAdapter().adapt(
+        TRAJECTORIES_PATH
+    )
+
+    flow_result = ExpectedFlowAggregator(graph).aggregate(
+        trajectories,
+        include_zero_flow_roads=False,
+    )
+
+    metrics = TrafficMetricsCalculator(
+        graph=graph
+    ).calculate_metrics(flow_result)
+
+    phase4_result = UrbanMobilityAnalyzer().analyze(
+        flow_result,
+        metrics,
+        graph,
+        top_n=5,
+    )
+
+    # Current observed synthetic state.
+    current_snapshot = MobilitySnapshot.from_phase4_result(
         snapshot_id="api-current",
         result=phase4_result,
         graph=graph,
         aggregation_duration_hours=1.0,
-        metadata={"source": "synthetic", "api": True},
+        metadata={
+            "source": "synthetic",
+            "api": True,
+            "state": "current",
+        },
     )
-    anomaly_result = AnomalyDetector().compare(snapshot, snapshot, graph)
-    return EngineContext(graph, trajectories, flow_result, metrics, phase4_result, anomaly_result)
+
+    # Deterministic synthetic normal-state baseline.
+    baseline_trajectories = _build_baseline_trajectories(
+        trajectories
+    )
+
+    baseline_flow_result = ExpectedFlowAggregator(
+        graph
+    ).aggregate(
+        baseline_trajectories,
+        include_zero_flow_roads=False,
+    )
+
+    baseline_metrics = TrafficMetricsCalculator(
+        graph=graph
+    ).calculate_metrics(
+        baseline_flow_result
+    )
+
+    baseline_phase4_result = UrbanMobilityAnalyzer().analyze(
+        baseline_flow_result,
+        baseline_metrics,
+        graph,
+        top_n=5,
+    )
+
+    baseline_snapshot = MobilitySnapshot.from_phase4_result(
+        snapshot_id="api-baseline",
+        result=baseline_phase4_result,
+        graph=graph,
+        aggregation_duration_hours=1.0,
+        metadata={
+            "source": "synthetic",
+            "api": True,
+            "state": "baseline",
+        },
+    )
+
+    anomaly_result = AnomalyDetector().compare(
+        baseline_snapshot,
+        current_snapshot,
+        graph,
+    )
+
+    return EngineContext(
+        graph=graph,
+        trajectories=trajectories,
+        flow_result=flow_result,
+        metrics=metrics,
+        phase4_result=phase4_result,
+        anomaly_result=anomaly_result,
+    )
 
 
 _context: Optional[EngineContext] = None
@@ -58,12 +180,16 @@ _context: Optional[EngineContext] = None
 
 def get_context() -> EngineContext:
     global _context
+
     if _context is None:
         _context = _build_context()
+
     return _context
 
 
-def _trajectory_dict(trajectory: NormalizedTrajectory) -> Dict[str, Any]:
+def _trajectory_dict(
+    trajectory: NormalizedTrajectory,
+) -> Dict[str, Any]:
     return trajectory.to_dict()
 
 
@@ -102,40 +228,73 @@ def _simulation_dict(result: Any) -> Dict[str, Any]:
 app = FastAPI(
     title="UrbanTrackAI Member 3 API",
     version="7.0.0",
-    description="Thin REST adapter over the existing synthetic Member 3 mobility engines.",
+    description=(
+        "Thin REST adapter over the existing synthetic "
+        "Member 3 mobility engines."
+    ),
 )
 
 
 @app.get("/api/health")
 def health() -> Dict[str, str]:
-    return {"status": "ok", "engine": "operational"}
+    return {
+        "status": "ok",
+        "engine": "operational",
+    }
 
 
 @app.get("/api/network")
 def network() -> Dict[str, Any]:
     context = get_context()
+
     return {
         "name": context.graph.name,
-        "nodes": [node.to_dict() for node in sorted(context.graph.all_nodes(), key=lambda item: item.node_id)],
-        "roads": [road.to_dict() for road in sorted(context.graph.all_roads(include_closed=True), key=lambda item: item.road_id)],
+        "nodes": [
+            node.to_dict()
+            for node in sorted(
+                context.graph.all_nodes(),
+                key=lambda item: item.node_id,
+            )
+        ],
+        "roads": [
+            road.to_dict()
+            for road in sorted(
+                context.graph.all_roads(
+                    include_closed=True
+                ),
+                key=lambda item: item.road_id,
+            )
+        ],
     }
 
 
 @app.get("/api/traffic")
 def traffic() -> Dict[str, Any]:
     context = get_context()
+
     return {
-        "metrics": [metric.to_dict() for metric in context.metrics],
-        "evaluated_roads_count": len(context.metrics),
-        "time_window_start": context.flow_result.time_window_start,
-        "time_window_end": context.flow_result.time_window_end,
+        "metrics": [
+            metric.to_dict()
+            for metric in context.metrics
+        ],
+        "evaluated_roads_count": len(
+            context.metrics
+        ),
+        "time_window_start": (
+            context.flow_result.time_window_start
+        ),
+        "time_window_end": (
+            context.flow_result.time_window_end
+        ),
     }
 
 
 @app.get("/api/analytics/od")
 def od_analytics() -> Dict[str, Any]:
     context = get_context()
+
     od = context.phase4_result.od_analysis
+
     return {
         "total_demand": od.total_demand,
         "trajectory_count": od.trajectory_count,
@@ -144,58 +303,115 @@ def od_analytics() -> Dict[str, Any]:
                 "origin": pair.origin,
                 "destination": pair.destination,
                 "demand": pair.demand,
-                "time_window_start": pair.time_window_start,
-                "time_window_end": pair.time_window_end,
+                "time_window_start": (
+                    pair.time_window_start
+                ),
+                "time_window_end": (
+                    pair.time_window_end
+                ),
             }
             for pair in od.matrix.pairs
         ],
-        "route_demands": [_route_demand_dict(route) for route in context.phase4_result.route_demands],
+        "route_demands": [
+            _route_demand_dict(route)
+            for route in context.phase4_result.route_demands
+        ],
     }
 
 
 @app.get("/api/analytics/bottlenecks")
 def bottlenecks() -> Dict[str, Any]:
     context = get_context()
-    return {"bottlenecks": [_bottleneck_dict(item) for item in context.phase4_result.bottlenecks]}
+
+    return {
+        "bottlenecks": [
+            _bottleneck_dict(item)
+            for item in context.phase4_result.bottlenecks
+        ]
+    }
 
 
 @app.get("/api/anomalies")
 def anomalies() -> Dict[str, Any]:
-    return _anomaly_dict(get_context().anomaly_result)
+    return _anomaly_dict(
+        get_context().anomaly_result
+    )
 
 
 @app.get("/api/trajectories")
 def trajectories() -> Dict[str, Any]:
     context = get_context()
-    return {"trajectories": [_trajectory_dict(item) for item in context.trajectories]}
+
+    return {
+        "trajectories": [
+            _trajectory_dict(item)
+            for item in context.trajectories
+        ]
+    }
 
 
 @app.get("/api/trajectories/{track_id}")
-def trajectory(track_id: str) -> Dict[str, Any]:
+def trajectory(
+    track_id: str,
+) -> Dict[str, Any]:
+
     for item in get_context().trajectories:
         if item.track_id == track_id:
             return _trajectory_dict(item)
-    raise HTTPException(status_code=404, detail=f"Trajectory '{track_id}' not found")
+
+    raise HTTPException(
+        status_code=404,
+        detail=f"Trajectory '{track_id}' not found",
+    )
 
 
 @app.post("/api/simulation")
-def simulation(request: SimulationRequest) -> Dict[str, Any]:
+def simulation(
+    request: SimulationRequest,
+) -> Dict[str, Any]:
+
     context = get_context()
+
     try:
         scenario = Scenario(
             scenario_id=request.scenario_id,
             name=request.name,
             description=request.description,
-            closed_road_ids=tuple(request.closed_road_ids),
-            capacity_modifications_vph=dict(request.capacity_modifications_vph),
-            speed_modifications_kmph=dict(request.speed_modifications_kmph),
+            closed_road_ids=tuple(
+                request.closed_road_ids
+            ),
+            capacity_modifications_vph=dict(
+                request.capacity_modifications_vph
+            ),
+            speed_modifications_kmph=dict(
+                request.speed_modifications_kmph
+            ),
         )
-        trajectories = [item for item in context.trajectories if item.time_window_start == "08:00:00"]
+
+        trajectories = [
+            item
+            for item in context.trajectories
+            if item.time_window_start == "08:00:00"
+        ]
+
         result = CounterfactualSimulationEngine(
             aggregation_duration_hours=0.25,
             time_window_start="08:00:00",
             time_window_end="08:15:00",
-        ).simulate(context.graph, trajectories, scenario)
+        ).simulate(
+            context.graph,
+            trajectories,
+            scenario,
+        )
+
         return _simulation_dict(result)
-    except (KeyError, TypeError, ValueError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    except (
+        KeyError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
