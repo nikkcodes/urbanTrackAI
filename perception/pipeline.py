@@ -14,6 +14,7 @@ from .config import (
     CAMERA_ID,
     CAMERA_METADATA,
     CONFIDENCE_THRESHOLD,
+    EXPORT_TRACK_EMBEDDINGS,
     HUD_ACCENT_COLOR,
     HUD_BACKGROUND_COLOR,
     HUD_FONT_SCALE_LIMITS,
@@ -24,6 +25,7 @@ from .config import (
     LABEL_FONT_SCALE_LIMITS,
     LABEL_BACKGROUND_COLOR,
     MIN_LINE_THICKNESS,
+    MIN_REID_CROP_SIZE,
     OCR_CACHE_FRAMES,
     OCR_CONF_THRESHOLD,
     PLATE_BOX_COLOR,
@@ -31,6 +33,9 @@ from .config import (
     PLATE_LABEL_COLOR,
     REFERENCE_FRAME_HEIGHT,
     REFERENCE_FRAME_WIDTH,
+    REID_EMBEDDING_DIM,
+    REID_MODEL_NAME,
+    REID_MODEL_WEIGHTS,
     SYSTEM_TITLE,
     SUPPORTED_VIDEO_EXTENSIONS,
     TRAIL_GAP_PIXELS,
@@ -46,6 +51,7 @@ from .plate_detector import PlateDetector
 from .plate_ocr import read_plate
 from .camera_calibration import CameraCalibration
 from .camera_metrics import CameraMetrics
+from .reid_extractor import ReIDExtractor
 
 
 def _average_metric(frames: list[dict[str, object]], key: str) -> float:
@@ -58,7 +64,7 @@ class PerceptionPipeline:
     """Read video, detect vehicles, annotate frames, and write output."""
 
     def __init__(self) -> None:
-        """Initialize the video loader and vehicle detector."""
+        """Initialize the video loader, vehicle detector, and Re-ID extractor."""
         self._video_loader = VideoLoader()
         self._vehicle_detector = VehicleDetector(CONFIDENCE_THRESHOLD)
         self._plate_detector = PlateDetector()
@@ -66,6 +72,9 @@ class PerceptionPipeline:
             CAMERA_METADATA.get(CAMERA_ID, {}) if CAMERA_ID else {}
         )
         self._camera_calibration = CameraCalibration(calibration_metadata)
+        self._reid = ReIDExtractor() if EXPORT_TRACK_EMBEDDINGS else None
+        self._track_embeddings: dict[int, tuple[list[float] | None, float | None]] = {}
+        self._embedding_failures: int = 0
 
     def process(
         self,
@@ -115,6 +124,8 @@ class PerceptionPipeline:
         track_history: dict[int, list[tuple[int, int]]] = {}
         inactive_track_age: dict[int, int] = {}
         track_colors: dict[int, tuple[int, int, int]] = {}
+        self._track_embeddings = {}
+        self._embedding_failures = 0
 
         try:
             self._video_loader.open(input_path)
@@ -226,6 +237,20 @@ class PerceptionPipeline:
                         cleaned_plate_number = None
                     centroid = [(x1 + x2) // 2, y2]
                     track_id = int(detection["track_id"])
+
+                    if EXPORT_TRACK_EMBEDDINGS and self._reid is not None:
+                        if track_id not in self._track_embeddings:
+                            frame_h, frame_w = frame.shape[:2]
+                            crop_x1 = max(0, min(frame_w, x1))
+                            crop_y1 = max(0, min(frame_h, y1))
+                            crop_x2 = max(crop_x1, min(frame_w, x2))
+                            crop_y2 = max(crop_y1, min(frame_h, y2))
+                            vehicle_crop = frame[crop_y1:crop_y2, crop_x1:crop_x2]
+                            emb, quality = self._reid.extract(vehicle_crop)
+                            self._track_embeddings[track_id] = (emb, quality)
+                            if emb is None:
+                                self._embedding_failures += 1
+
                     current_centroid = (centroid[0], centroid[1])
                     previous_centroid = previous_centroids.get(track_id)
                     if previous_centroid is None:
@@ -283,6 +308,9 @@ class PerceptionPipeline:
                     vehicles.append(
                         {
                             "track_id": track_id,
+                            "embedding_id": track_id,
+                            "reid_model": f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}",
+                            "embedding_dim": REID_EMBEDDING_DIM,
                             "vehicle_type": str(detection["vehicle_type"]),
                             "confidence": float(detection["confidence"]),
                             "bbox": vehicle_bbox,
@@ -358,9 +386,13 @@ class PerceptionPipeline:
                 if velocity_count
                 else 0.0
             )
+            track_id = int(record["track_id"])
+            appearance_emb, emb_quality = self._track_embeddings.get(
+                track_id, (None, None)
+            )
             trajectory_exports.append(
                 {
-                    "track_id": int(record["track_id"]),
+                    "track_id": track_id,
                     "vehicle_type": str(record["vehicle_type"]),
                     "start_frame": start_frame,
                     "end_frame": end_frame,
@@ -368,6 +400,10 @@ class PerceptionPipeline:
                     "trajectory": points,
                     "trajectory_length": len(points),
                     "average_velocity_px": round(average_velocity, 2),
+                    "appearance_embedding": appearance_emb,
+                    "embedding_quality": emb_quality,
+                    "embedding_dim": REID_EMBEDDING_DIM,
+                    "reid_model": f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}",
                 }
             )
         with trajectories_file.open("w", encoding="utf-8") as file:
@@ -449,6 +485,12 @@ class PerceptionPipeline:
             if total_ocr_attempts
             else 0.0
         )
+        embeddings_generated = sum(
+            1 for emb, _ in self._track_embeddings.values() if emb is not None
+        )
+        embedding_failures = sum(
+            1 for emb, _ in self._track_embeddings.values() if emb is None
+        )
         perception_summary_file = Path("data/output/perception_summary.json")
         with perception_summary_file.open("w", encoding="utf-8") as file:
             json.dump(
@@ -476,6 +518,10 @@ class PerceptionPipeline:
                     "ocr_success_count": total_ocr_successes,
                     "ocr_failure_count": total_ocr_failures,
                     "ocr_success_rate": round(success_rate, 2),
+                    "reid_model": f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}",
+                    "embedding_dimension": REID_EMBEDDING_DIM,
+                    "embeddings_generated": embeddings_generated,
+                    "embedding_generation_failures": embedding_failures,
                     "average_camera_reliability": (
                         sum(reliability_values) / len(reliability_values)
                         if reliability_values
@@ -534,6 +580,11 @@ class PerceptionPipeline:
         print(f"Trajectories exported: {len(trajectory_exports)} tracks")
         print(f"Average trajectory length: {average_trajectory_length} points")
         print(f"JSON saved: {trajectories_file}")
+        reid_model_str = f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}"
+        print(f"Re-ID model: {reid_model_str}")
+        print(f"Embedding dimension: {REID_EMBEDDING_DIM}")
+        print(f"Embeddings generated: {embeddings_generated}")
+        print(f"Embeddings failed: {embedding_failures}")
         average_reliability = (
             sum(float(item["reliability"]) for item in camera_metric_frames)
             / len(camera_metric_frames)
