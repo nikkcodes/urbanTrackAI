@@ -208,6 +208,9 @@ class CandidateGenerator:
                     ea, eb = ob, oa
                 else:
                     ea, eb = oa, ob
+                t_comp = check_temporal_comparability(ea, eb, camera_metadata=self.camera_metadata)
+                if t_comp.get("comparable", False) and float(t_comp.get("delta_seconds", 0.0)) > self.max_time_window_seconds:
+                    continue
                 res = match_observations(ea, eb, camera_metadata=self.camera_metadata, config=self.config)
                 p = float(res.get("same_vehicle_probability", 0.0))
                 has_id = res.get("evidence", {}).get("identity_evidence_available", True)

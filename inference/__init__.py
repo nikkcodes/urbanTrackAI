@@ -54,6 +54,14 @@ from .trajectory_engine import (
 )
 
 from .candidate_generation import CandidateGenerationReport, CandidateGenerator
+from .tracklet_engine import (
+    Tracklet,
+    aggregate_observations_into_tracklets,
+    aggregate_plate_votes,
+    match_tracklets,
+    pool_embeddings,
+)
+from .similarity import evaluate_reid_distribution, validate_and_normalize_embedding
 
 from .inference_trace import (
     InferenceTrace,
@@ -108,6 +116,13 @@ __all__ = [
     "infer_sparse_identity_trajectory",
     "CandidateGenerator",
     "CandidateGenerationReport",
+    "Tracklet",
+    "aggregate_observations_into_tracklets",
+    "aggregate_plate_votes",
+    "pool_embeddings",
+    "match_tracklets",
+    "validate_and_normalize_embedding",
+    "evaluate_reid_distribution",
     "InferenceTrace",
     "build_identity_pair_trace",
     "build_cluster_trace",

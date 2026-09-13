@@ -6,7 +6,7 @@ appearance embedding cosine similarity, vehicle type compatibility, temporal gap
 
 from datetime import datetime
 import math
-from typing import List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from schemas.observation_schema import Observation
 
@@ -111,6 +111,130 @@ def appearance_similarity(
     cos_sim = dot_product / (norm1 * norm2)
     # Clip cosine similarity to [0.0, 1.0] for identity similarity estimation
     return max(0.0, min(1.0, cos_sim))
+
+
+def validate_and_normalize_embedding(
+    embedding: Optional[List[float]],
+    expected_dim: Optional[int] = None,
+) -> Optional[List[float]]:
+    """
+    Validate and L2-normalize a vehicle appearance feature vector (e.g. OSNet embedding).
+
+    Handles:
+        - Rejection of None, empty, non-sequence types
+        - Enforcement of expected dimension if specified (e.g. 512 for OSNet)
+        - Rejection of NaN, Infinity, or non-numeric elements
+        - Rejection of all-zero vectors
+        - Unit L2 normalization: v / ||v||_2
+
+    Returns:
+        Optional[List[float]]: L2-normalized vector or None if invalid.
+    """
+    if embedding is None or not isinstance(embedding, (list, tuple)):
+        return None
+
+    if len(embedding) == 0:
+        return None
+
+    if expected_dim is not None and len(embedding) != expected_dim:
+        return None
+
+    try:
+        clean = [float(x) for x in embedding]
+    except (ValueError, TypeError):
+        return None
+
+    if any(math.isnan(x) or math.isinf(x) for x in clean):
+        return None
+
+    norm = math.sqrt(sum(x * x for x in clean))
+    if norm <= 1e-12:
+        return None
+
+    return [x / norm for x in clean]
+
+
+def evaluate_reid_distribution(
+    same_vehicle_pairs: List[Tuple[List[float], List[float]]],
+    diff_vehicle_pairs: List[Tuple[List[float], List[float]]],
+    threshold_step: float = 0.02,
+) -> Dict[str, Any]:
+    """
+    Evaluate same-vehicle vs different-vehicle appearance similarity distributions on development data.
+    Finds the optimal operating threshold that maximizes F1 score on the development split.
+    """
+    same_scores = []
+    for e1, e2 in same_vehicle_pairs:
+        s = appearance_similarity(e1, e2)
+        if s is not None:
+            same_scores.append(s)
+
+    diff_scores = []
+    for e1, e2 in diff_vehicle_pairs:
+        s = appearance_similarity(e1, e2)
+        if s is not None:
+            diff_scores.append(s)
+
+    def stats(scores: List[float]) -> Dict[str, float]:
+        if not scores:
+            return {"count": 0, "mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0}
+        n = len(scores)
+        mean = sum(scores) / n
+        var = sum((x - mean) ** 2 for x in scores) / n
+        return {
+            "count": n,
+            "mean": round(mean, 4),
+            "std": round(math.sqrt(var), 4),
+            "min": round(min(scores), 4),
+            "max": round(max(scores), 4),
+        }
+
+    same_stats = stats(same_scores)
+    diff_stats = stats(diff_scores)
+
+    optimal_candidates = []
+    best_f1 = -1.0
+    t = 0.10
+    while t <= 0.95:
+        tp = sum(1 for s in same_scores if s >= t)
+        fn = sum(1 for s in same_scores if s < t)
+        fp = sum(1 for s in diff_scores if s >= t)
+        tn = sum(1 for s in diff_scores if s < t)
+
+        prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        rec = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+
+        metrics = {
+            "threshold": round(t, 2),
+            "precision": round(prec, 4),
+            "recall": round(rec, 4),
+            "f1": round(f1, 4),
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "tn": tn,
+        }
+
+        if f1 > best_f1 + 1e-6:
+            best_f1 = f1
+            optimal_candidates = [metrics]
+        elif abs(f1 - best_f1) <= 1e-6:
+            optimal_candidates.append(metrics)
+
+        t += threshold_step
+
+    # Select the midpoint of the optimal plateau to maximize margin from both error boundaries
+    best_metrics = optimal_candidates[len(optimal_candidates) // 2] if optimal_candidates else {}
+    best_threshold = best_metrics.get("threshold", 0.70)
+
+    return {
+        "same_vehicle_distribution": same_stats,
+        "different_vehicle_distribution": diff_stats,
+        "operating_threshold": best_threshold,
+        "optimal_metrics": best_metrics,
+        "distribution_separation": round(same_stats["mean"] - diff_stats["mean"], 4),
+    }
 
 
 def vehicle_type_compatibility(
