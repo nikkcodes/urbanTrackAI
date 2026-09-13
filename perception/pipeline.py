@@ -1,6 +1,8 @@
 """Video perception pipeline orchestration."""
 
 import json
+import re
+from datetime import datetime, timezone
 from os import PathLike
 from pathlib import Path
 from typing import cast
@@ -43,6 +45,13 @@ from .video_loader import VideoLoader
 from .plate_detector import PlateDetector
 from .plate_ocr import read_plate
 from .camera_calibration import CameraCalibration
+from .camera_metrics import CameraMetrics
+
+
+def _average_metric(frames: list[dict[str, object]], key: str) -> float:
+    """Average a numeric metric across processed frames."""
+    values = [float(frame[key]) for frame in frames]
+    return sum(values) / len(values) if values else 0.0
 
 
 class PerceptionPipeline:
@@ -85,16 +94,22 @@ class PerceptionPipeline:
         output_file.parent.mkdir(parents=True, exist_ok=True)
         observations_file = Path("data/output/observations.json")
         observations_file.parent.mkdir(parents=True, exist_ok=True)
+        trajectories_file = Path("data/output/trajectories.json")
+        camera_metrics_file = Path("data/output/camera_metrics.json")
         writer: cv2.VideoWriter | None = None
         frame_count = 0
-        observations: list[dict[str, str | float | int | list[int] | None]] = []
-        camera_id = CAMERA_ID if CAMERA_ID else None
+        frame_observations: list[dict[str, object]] = []
+        camera_metric_frames: list[dict[str, object]] = []
+        trajectory_records: dict[int, dict[str, object]] = {}
+        previous_centroids: dict[int, tuple[int, int]] = {}
+        camera_id = CAMERA_ID
         configured_camera_metadata = (
             CAMERA_METADATA.get(camera_id, {}) if camera_id else {}
         )
         total_plate_detections = 0
         total_ocr_successes = 0
         total_ocr_failures = 0
+        total_ocr_attempts = 0
         ocr_cache: dict[int, dict[str, str | float | int]] = {}
         ocr_last_attempt: dict[int, int] = {}
         track_history: dict[int, list[tuple[int, int]]] = {}
@@ -130,6 +145,14 @@ class PerceptionPipeline:
                     break
 
                 detections = self._vehicle_detector.detect(frame)
+                frame_metrics = CameraMetrics.compute(frame, detections)
+                camera_metric_frames.append(
+                    {
+                        "frame_number": frame_count,
+                        "timestamp": self._format_timestamp(frame_count / fps),
+                        **frame_metrics,
+                    }
+                )
                 plate_count = self._attach_plate_detections(frame, detections)
                 ocr_success, ocr_failed, _ocr_debug = self._attach_plate_ocr(
                     frame,
@@ -152,15 +175,18 @@ class PerceptionPipeline:
                         str(detection["vehicle_type"]), LABEL_BACKGROUND_COLOR
                     )
                     points = track_history.setdefault(track_id, [])
-                    points.append(center)
+                    if not points or points[-1] != center:
+                        points.append(center)
                     if len(points) > TRAIL_LENGTH:
                         del points[:-TRAIL_LENGTH]
+                vehicles: list[dict[str, object]] = []
                 for track_id in set(track_history) - active_track_ids:
                     inactive_track_age[track_id] = inactive_track_age.get(track_id, 0) + 1
                     if inactive_track_age[track_id] > INACTIVE_TRACK_MEMORY:
                         del track_history[track_id]
                         inactive_track_age.pop(track_id, None)
                         track_colors.pop(track_id, None)
+                        previous_centroids.pop(track_id, None)
                 for detection in detections:
                     vehicle_bbox = [
                         int(coordinate)
@@ -187,50 +213,102 @@ class PerceptionPipeline:
                         ocr_text != "UNKNOWN"
                         and ocr_confidence >= OCR_CONF_THRESHOLD
                     )
-                    trajectory_point = [(x1 + x2) // 2, y2]
+                    cleaned_plate_number = re.sub(
+                        r"[^A-Z0-9]",
+                        "",
+                        ocr_text.upper(),
+                    )
+                    if (
+                        not ocr_succeeded
+                        or cleaned_plate_number == "UNKNOWN"
+                        or len(cleaned_plate_number) < 6
+                    ):
+                        cleaned_plate_number = None
+                    centroid = [(x1 + x2) // 2, y2]
+                    track_id = int(detection["track_id"])
+                    current_centroid = (centroid[0], centroid[1])
+                    previous_centroid = previous_centroids.get(track_id)
+                    if previous_centroid is None:
+                        velocity_vector = [0, 0]
+                        velocity_px = 0.0
+                        direction = "stationary"
+                    else:
+                        delta_x = current_centroid[0] - previous_centroid[0]
+                        delta_y = current_centroid[1] - previous_centroid[1]
+                        velocity_vector = [delta_x, delta_y]
+                        velocity_px = round(
+                            float(np.hypot(delta_x, delta_y)),
+                            2,
+                        )
+                        if velocity_px < 2.0:
+                            direction = "stationary"
+                        elif abs(delta_y) > abs(delta_x):
+                            direction = "southbound" if delta_y > 0 else "northbound"
+                        else:
+                            direction = "eastbound" if delta_x > 0 else "westbound"
+                    previous_centroids[track_id] = current_centroid
+                    trajectory_record = trajectory_records.setdefault(
+                        track_id,
+                        {
+                            "track_id": track_id,
+                            "vehicle_type": str(detection["vehicle_type"]),
+                            "start_frame": frame_count,
+                            "end_frame": frame_count,
+                            "trajectory": [],
+                            "velocity_sum": 0.0,
+                            "velocity_count": 0,
+                        },
+                    )
+                    trajectory_points = cast(
+                        list[list[int]], trajectory_record["trajectory"]
+                    )
+                    if not trajectory_points or trajectory_points[-1] != centroid:
+                        trajectory_points.append(centroid)
+                        if len(trajectory_points) > TRAIL_LENGTH:
+                            del trajectory_points[:-TRAIL_LENGTH]
+                    trajectory_record["end_frame"] = frame_count
+                    trajectory_record["velocity_sum"] = float(
+                        trajectory_record["velocity_sum"]
+                    ) + velocity_px
+                    trajectory_record["velocity_count"] = int(
+                        trajectory_record["velocity_count"]
+                    ) + 1
                     ground_plane_position = (
                         self._camera_calibration.transform_to_ground(
-                            trajectory_point
+                            centroid
                         )
                         if self._camera_calibration.camera_calibrated
                         else None
                     )
-                    observations.append(
+                    vehicles.append(
                         {
-                            "camera_id": camera_id,
-                            "camera_metadata": {
-                                "camera_calibrated": self._camera_calibration.camera_calibrated,
-                                "homography_valid": self._camera_calibration.homography_valid,
-                                "latitude": configured_camera_metadata.get("latitude"),
-                                "longitude": configured_camera_metadata.get("longitude"),
-                                "road_segment_id": configured_camera_metadata.get(
-                                    "road_segment_id"
-                                ),
-                                "junction_id": configured_camera_metadata.get(
-                                    "junction_id"
-                                ),
-                            },
-                            "frame_number": frame_count,
-                            "timestamp": frame_count / fps,
-                            "track_id": int(detection["track_id"]),
+                            "track_id": track_id,
                             "vehicle_type": str(detection["vehicle_type"]),
-                            "detection_confidence": float(detection["confidence"]),
+                            "confidence": float(detection["confidence"]),
                             "bbox": vehicle_bbox,
-                            "trajectory_point": trajectory_point,
-                            "ground_plane_position": ground_plane_position,
-                            "position_confidence": None,
+                            "centroid": centroid,
+                            "velocity_px": velocity_px,
+                            "velocity_vector": velocity_vector,
+                            "direction": direction,
                             "plate_bbox": plate_bbox,
                             "plate_confidence": plate_confidence,
-                            "plate_text": (
-                                ocr_text if ocr_succeeded else None
+                            "plate_number": (
+                                cleaned_plate_number
                             ),
-                            "ocr_confidence": (
+                            "plate_text_confidence": (
                                 ocr_confidence if ocr_succeeded else None
                             ),
-                            "appearance_embedding": None,
-                            "camera_reliability": None,
                         }
                     )
+                frame_observations.append(
+                    {
+                        "frame_number": frame_count,
+                        "timestamp": self._format_timestamp(frame_count / fps),
+                        "fps": fps,
+                        "vehicle_count": len(vehicles),
+                        "vehicles": vehicles,
+                    }
+                )
                 self._draw_info_overlay(
                     frame,
                     camera_id,
@@ -241,6 +319,7 @@ class PerceptionPipeline:
                     plate_count,
                     ocr_success,
                     ocr_failed,
+                    float(frame_metrics["reliability"]),
                 )
                 self._draw_detections(
                     frame,
@@ -257,15 +336,234 @@ class PerceptionPipeline:
                 writer.release()
 
         with observations_file.open("w", encoding="utf-8") as file:
-            json.dump(observations, file, indent=4)
+            json.dump(
+                {
+                    "camera_id": camera_id,
+                    "video_name": input_file.name,
+                    "frames_processed": frame_count,
+                    "frames": frame_observations,
+                },
+                file,
+                indent=4,
+            )
+
+        trajectory_exports: list[dict[str, object]] = []
+        for record in trajectory_records.values():
+            start_frame = int(record["start_frame"])
+            end_frame = int(record["end_frame"])
+            points = cast(list[list[int]], record["trajectory"])
+            velocity_count = int(record["velocity_count"])
+            average_velocity = (
+                float(record["velocity_sum"]) / velocity_count
+                if velocity_count
+                else 0.0
+            )
+            trajectory_exports.append(
+                {
+                    "track_id": int(record["track_id"]),
+                    "vehicle_type": str(record["vehicle_type"]),
+                    "start_frame": start_frame,
+                    "end_frame": end_frame,
+                    "duration_frames": end_frame - start_frame + 1,
+                    "trajectory": points,
+                    "trajectory_length": len(points),
+                    "average_velocity_px": round(average_velocity, 2),
+                }
+            )
+        with trajectories_file.open("w", encoding="utf-8") as file:
+            json.dump(trajectory_exports, file, indent=4)
+
+        camera_metrics_export = [
+            {
+                **metric_frame,
+                "vehicle_density": f"{float(metric_frame['vehicle_density']):.6f}",
+            }
+            for metric_frame in camera_metric_frames
+        ]
+        with camera_metrics_file.open("w", encoding="utf-8") as file:
+            json.dump(
+                {
+                    "camera_id": camera_id,
+                    "video_name": input_file.name,
+                    "frame_width": frame_size[0],
+                    "frame_height": frame_size[1],
+                    "frames_processed": frame_count,
+                    "frames": camera_metrics_export,
+                },
+                file,
+                indent=4,
+            )
+
+        unique_track_ids = {
+            int(vehicle["track_id"])
+            for frame in frame_observations
+            for vehicle in cast(list[dict[str, object]], frame["vehicles"])
+        }
+        vehicle_counts: dict[str, int] = {}
+        total_vehicle_observations = 0
+        frames_with_plates = 0
+        frames_with_ocr_success = 0
+        frame_track_counts: list[int] = []
+        speeds: list[float] = []
+        for frame in frame_observations:
+            vehicles = cast(list[dict[str, object]], frame["vehicles"])
+            frame_track_counts.append(len(vehicles))
+            frame_has_plate = False
+            frame_has_ocr_success = False
+            for vehicle in vehicles:
+                total_vehicle_observations += 1
+                vehicle_type = str(vehicle["vehicle_type"])
+                vehicle_counts[vehicle_type] = vehicle_counts.get(vehicle_type, 0) + 1
+                plate_bbox = vehicle.get("plate_bbox")
+                if plate_bbox is not None:
+                    frame_has_plate = True
+                plate_number = vehicle.get("plate_number")
+                if plate_number is not None:
+                    frame_has_ocr_success = True
+                speeds.append(float(vehicle["velocity_px"]))
+            frames_with_plates += int(frame_has_plate)
+            frames_with_ocr_success += int(frame_has_ocr_success)
+
+        for vehicle_type in ("car", "bus", "truck", "motorcycle", "auto"):
+            vehicle_counts.setdefault(vehicle_type, 0)
+        unique_vehicle_counts: dict[str, int] = {}
+        for record in trajectory_records.values():
+            vehicle_type = str(record["vehicle_type"])
+            unique_vehicle_counts[vehicle_type] = (
+                unique_vehicle_counts.get(vehicle_type, 0) + 1
+            )
+        for vehicle_type in ("car", "bus", "truck", "motorcycle", "auto"):
+            unique_vehicle_counts.setdefault(vehicle_type, 0)
+        longest_track = max(
+            trajectory_exports,
+            key=lambda record: int(record["trajectory_length"]),
+            default=None,
+        )
+        reliability_values = [
+            float(frame["reliability"]) for frame in camera_metric_frames
+        ]
+        total_ocr_attempts = total_plate_detections
+        total_ocr_failures = max(0, total_ocr_attempts - total_ocr_successes)
+        success_rate = (
+            (total_ocr_successes / total_ocr_attempts) * 100
+            if total_ocr_attempts
+            else 0.0
+        )
+        perception_summary_file = Path("data/output/perception_summary.json")
+        with perception_summary_file.open("w", encoding="utf-8") as file:
+            json.dump(
+                {
+                    "camera_id": camera_id,
+                    "video_name": input_file.name,
+                    "frame_width": frame_size[0],
+                    "frame_height": frame_size[1],
+                    "frames_processed": frame_count,
+                    "duration_seconds": frame_count / fps if fps else 0.0,
+                    "average_fps": fps,
+                    "processing_device": self._vehicle_detector.device,
+                    "processing_timestamp": datetime.now(timezone.utc).isoformat(),
+                    "unique_tracks": len(unique_track_ids),
+                    "active_tracks_peak": max(frame_track_counts, default=0),
+                    "average_tracks_per_frame": (
+                        sum(frame_track_counts) / len(frame_track_counts)
+                        if frame_track_counts
+                        else 0.0
+                    ),
+                    "vehicle_counts": vehicle_counts,
+                    "unique_vehicle_counts": unique_vehicle_counts,
+                    "plates_detected": total_plate_detections,
+                    "ocr_attempts": total_ocr_attempts,
+                    "ocr_success_count": total_ocr_successes,
+                    "ocr_failure_count": total_ocr_failures,
+                    "ocr_success_rate": round(success_rate, 2),
+                    "average_camera_reliability": (
+                        sum(reliability_values) / len(reliability_values)
+                        if reliability_values
+                        else 0.0
+                    ),
+                    "minimum_camera_reliability": min(reliability_values, default=0.0),
+                    "maximum_camera_reliability": max(reliability_values, default=0.0),
+                    "average_brightness": _average_metric(camera_metric_frames, "brightness"),
+                    "average_blur_score": _average_metric(camera_metric_frames, "blur_score"),
+                    "average_occlusion_ratio": _average_metric(
+                        camera_metric_frames, "occlusion_ratio"
+                    ),
+                    "average_vehicle_speed_px": (
+                        sum(speeds) / len(speeds) if speeds else 0.0
+                    ),
+                    "longest_trajectory_track_id": (
+                        int(longest_track["track_id"]) if longest_track else None
+                    ),
+                    "longest_trajectory_points": (
+                        int(longest_track["trajectory_length"]) if longest_track else 0
+                    ),
+                    "average_trajectory_length": (
+                        sum(int(record["trajectory_length"]) for record in trajectory_exports)
+                        / len(trajectory_exports)
+                        if trajectory_exports
+                        else 0.0
+                    ),
+                    "frames_with_no_vehicles": sum(count == 0 for count in frame_track_counts),
+                    "frames_with_plates": frames_with_plates,
+                    "frames_with_ocr_success": frames_with_ocr_success,
+                    "total_vehicle_observations": total_vehicle_observations,
+                },
+                file,
+                indent=4,
+            )
 
         print(f"Observations exported: {frame_count} frames")
-        print(f"Vehicles exported: {len(observations)}")
+        vehicles_exported = sum(
+            int(frame["vehicle_count"]) for frame in frame_observations
+        )
+        print(f"Vehicles exported: {vehicles_exported}")
+        print(f"JSON saved: {observations_file}")
         print(f"Plate detections: {total_plate_detections}")
         print(f"OCR successes: {total_ocr_successes}")
         print(f"OCR failures: {total_ocr_failures}")
+        print(f"Motion vectors exported for {vehicles_exported} vehicle observations.")
+        average_trajectory_length = (
+            round(
+                sum(len(cast(list[list[int]], record["trajectory"]))
+                    for record in trajectory_records.values())
+                / len(trajectory_records)
+            )
+            if trajectory_records
+            else 0
+        )
+        print(f"Trajectories exported: {len(trajectory_exports)} tracks")
+        print(f"Average trajectory length: {average_trajectory_length} points")
+        print(f"JSON saved: {trajectories_file}")
+        average_reliability = (
+            sum(float(item["reliability"]) for item in camera_metric_frames)
+            / len(camera_metric_frames)
+            if camera_metric_frames
+            else 0.0
+        )
+        print(f"Camera metrics exported: {len(camera_metric_frames)} frames")
+        print(f"Average camera reliability: {average_reliability:.2f}")
+        print(f"JSON saved: {camera_metrics_file}")
+        print("Perception summary exported.")
+        print(f"Unique tracks: {len(unique_track_ids)}")
+        print(
+            "Average camera reliability: "
+            f"{sum(reliability_values) / len(reliability_values):.2f}"
+            if reliability_values
+            else "Average camera reliability: 0.00"
+        )
+        print(f"OCR success rate: {success_rate:.2f}")
+        print(f"Summary saved: {perception_summary_file}")
 
         return frame_count
+
+    @staticmethod
+    def _format_timestamp(timestamp_seconds: float) -> str:
+        """Format video time as HH:MM:SS.mmm."""
+        total_milliseconds = round(timestamp_seconds * 1000)
+        hours, remainder = divmod(total_milliseconds, 3_600_000)
+        minutes, remainder = divmod(remainder, 60_000)
+        seconds, milliseconds = divmod(remainder, 1_000)
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}.{milliseconds:03d}"
 
     def _attach_plate_detections(
         self,
@@ -362,7 +660,7 @@ class PerceptionPipeline:
                 crop = frame[crop_y1:crop_y2, crop_x1:crop_x2]
                 result = read_plate(crop)
                 ocr_last_attempt[track_id] = frame_number
-                candidate_text = str(result["text"])
+                candidate_text = str(result["plate_number"])
                 candidate_confidence = float(result["confidence"])
                 cache_updated = False
                 if (
@@ -411,20 +709,21 @@ class PerceptionPipeline:
 
     @staticmethod
     def _find_input_video(input_directory: Path) -> Path | None:
-        """Return the first supported input video in alphabetical order."""
+        """Return the only video or the newest supported input video."""
         if not input_directory.is_dir():
             return None
 
-        videos = sorted(
-            (
-                path
-                for path in input_directory.iterdir()
-                if path.is_file()
-                and path.suffix.lower() in SUPPORTED_VIDEO_EXTENSIONS
-            ),
-            key=lambda path: path.name.lower(),
+        videos = [
+            path
+            for path in input_directory.iterdir()
+            if path.is_file()
+            and path.suffix.lower() in SUPPORTED_VIDEO_EXTENSIONS
+        ]
+        return max(
+            videos,
+            key=lambda path: (path.stat().st_mtime, path.name.lower()),
+            default=None,
         )
-        return videos[0] if videos else None
 
     @staticmethod
     def _draw_info_overlay(
@@ -437,6 +736,7 @@ class PerceptionPipeline:
         plate_count: int,
         ocr_success: int,
         ocr_failed: int,
+        camera_health: float,
     ) -> None:
         """Draw current camera and tracking statistics in a translucent panel."""
         frame_height, frame_width = frame.shape[:2]
@@ -479,6 +779,7 @@ class PerceptionPipeline:
             f"Plates Detected: {plate_count}",
             f"OCR Success: {ocr_success}",
             f"OCR Failed: {ocr_failed}",
+            f"Camera Health: {camera_health:.2f}",
         ]
         text_sizes = [
             cv2.getTextSize(
@@ -525,6 +826,13 @@ class PerceptionPipeline:
             HUD_ACCENT_COLOR,
             line_thickness,
         )
+        health_color = (
+            (0, 200, 0)
+            if camera_health >= 0.80
+            else (0, 220, 220)
+            if camera_health >= 0.60
+            else (0, 0, 255)
+        )
         for line_number, line in enumerate(lines):
             text_y = title_y + padding + (line_number + 1) * line_height
             cv2.putText(
@@ -533,7 +841,7 @@ class PerceptionPipeline:
                 (padding, text_y),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 font_scale,
-                HUD_TEXT_COLOR,
+                health_color if line.startswith("Camera Health:") else HUD_TEXT_COLOR,
                 line_thickness,
                 cv2.LINE_AA,
             )
@@ -615,12 +923,9 @@ class PerceptionPipeline:
                     max(0, (plate_x1 + plate_x2 - plate_label_width) // 2),
                     max(0, frame_width - plate_label_width),
                 )
-                plate_label_top = plate_y1 - plate_label_height - 2
-                if plate_label_top < 0:
-                    plate_label_top = min(
-                        frame_height - plate_label_height,
-                        plate_y2 + 2,
-                    )
+                plate_label_top = plate_y2 + 2
+                if plate_label_top + plate_label_height > frame_height:
+                    plate_label_top = max(0, plate_y1 - plate_label_height - 2)
                 plate_label_bottom = min(
                     frame_height - 1,
                     plate_label_top + plate_label_height,

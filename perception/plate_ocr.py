@@ -30,9 +30,9 @@ class PlateOCR:
                 )
 
     def read_plate(self, plate_crop: np.ndarray) -> dict[str, str | float]:
-        """Return raw text, validated cleaned text, and OCR confidence."""
+        """Return cleaned plate number and OCR confidence."""
         if plate_crop.size == 0 or self.__class__._unavailable:
-            return {"raw_text": "", "text": "UNKNOWN", "confidence": 0.0}
+            return {"plate_number": "UNKNOWN", "confidence": 0.0}
 
         processed = self._preprocess(plate_crop)
         results = self.__class__._reader.readtext(
@@ -42,7 +42,7 @@ class PlateOCR:
             allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         )
         if not results:
-            return {"raw_text": "", "text": "UNKNOWN", "confidence": 0.0}
+            return {"plate_number": "UNKNOWN", "confidence": 0.0}
 
         best_result = max(results, key=lambda result: float(result[2]))
         raw_text = str(best_result[1])
@@ -50,7 +50,7 @@ class PlateOCR:
         text = self._clean_text(raw_text)
         if confidence < config.OCR_CONF_THRESHOLD or not self._is_valid_plate(text):
             text = "UNKNOWN"
-        return {"raw_text": raw_text, "text": text, "confidence": confidence}
+        return {"plate_number": text, "confidence": confidence}
 
     @staticmethod
     def _preprocess(plate_crop: np.ndarray) -> np.ndarray:
