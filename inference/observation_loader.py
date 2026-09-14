@@ -112,3 +112,134 @@ def load_observations_from_json(
         observations.append(obs)
 
     return observations
+
+
+def load_member1_perception_feed(
+    tracks_path: Union[str, Path] = "data/member1_perception/cam_001/track_embeddings.json",
+    telemetry_path: Optional[Union[str, Path]] = "data/member1_perception/cam_001/camera_telemetry.json",
+    raw_detections_path: Optional[Union[str, Path]] = "data/member1_perception/cam_001/raw_frame_detections.json",
+    camera_id: str = "CAM_001",
+    fps: float = 30.0,
+    camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> List[Observation]:
+    """
+    Load real Member 1 perception outputs (YOLOv8 + ByteTrack + OSNet Re-ID + Telemetry)
+    into standardized UrbanTrack Observation instances.
+
+    Fuses multi-frame OCR outputs using confidence-weighted character consensus voting,
+    attaches 512-dimensional OSNet appearance embeddings, and integrates frame-level
+    camera reliability and sensor telemetry.
+
+    Returns:
+        List[Observation]: Standardized observations ready for Member 2 identity fusion.
+    """
+    from datetime import datetime
+    from .tracklet_engine import aggregate_plate_votes
+
+    p_tracks = Path(tracks_path)
+    if not p_tracks.is_file():
+        raise FileNotFoundError(f"Member 1 track embeddings file not found: {tracks_path}")
+
+    with open(p_tracks, "r", encoding="utf-8") as f:
+        tracks = json.load(f)
+
+    # Load frame-level telemetry if present
+    telemetry_by_frame = {}
+    if telemetry_path:
+        p_tel = Path(telemetry_path)
+        if p_tel.is_file():
+            with open(p_tel, "r", encoding="utf-8") as f:
+                tel_data = json.load(f)
+                frame_list = tel_data.get("frames", []) if isinstance(tel_data, dict) else tel_data
+                for fr in frame_list:
+                    if isinstance(fr, dict) and "frame_number" in fr:
+                        telemetry_by_frame[int(fr["frame_number"])] = fr
+
+    # Aggregate plate detections per track if raw detections are provided
+    plates_by_track: Dict[int, List[Observation]] = {}
+    bboxes_by_track: Dict[int, List[float]] = {}
+    if raw_detections_path:
+        p_raw = Path(raw_detections_path)
+        if p_raw.is_file():
+            with open(p_raw, "r", encoding="utf-8") as f:
+                raw_data = json.load(f)
+                raw_frames = raw_data.get("frames", []) if isinstance(raw_data, dict) else raw_data
+                for fr in raw_frames:
+                    fnum = int(fr.get("frame_number", 0))
+                    for v in fr.get("vehicles", []):
+                        tid = v.get("track_id")
+                        if tid is None:
+                            continue
+                        tid = int(tid)
+                        if tid not in bboxes_by_track and "bbox" in v:
+                            bboxes_by_track[tid] = [float(x) for x in v["bbox"]]
+
+                        p = v.get("plate_number")
+                        if p and p != "None" and str(p).strip():
+                            conf = v.get("plate_confidence") or v.get("plate_text_confidence") or 0.80
+                            if tid not in plates_by_track:
+                                plates_by_track[tid] = []
+                            plates_by_track[tid].append(
+                                Observation(
+                                    camera_id=camera_id,
+                                    frame_id=fnum,
+                                    timestamp_seconds=float(fnum) / fps,
+                                    plate=str(p).strip(),
+                                    plate_confidence=float(conf),
+                                )
+                            )
+
+    # Attach camera coordinates if available
+    cam_meta = camera_metadata.get(camera_id, {}) if camera_metadata else {}
+    lat = cam_meta.get("latitude")
+    lon = cam_meta.get("longitude")
+
+    observations: List[Observation] = []
+    for t in tracks:
+        track_id = int(t["track_id"])
+        start_frame = int(t.get("start_frame", 0))
+        ts_sec = round(float(start_frame) / fps, 4)
+
+        # Consensus plate voting across track sightings
+        consensus_plate = None
+        consensus_conf = None
+        if track_id in plates_by_track:
+            consensus_plate, consensus_conf, _ = aggregate_plate_votes(plates_by_track[track_id])
+
+        # Extract telemetry for this frame
+        tel = telemetry_by_frame.get(start_frame, {})
+        cam_rel = float(tel.get("reliability", 0.52)) if "reliability" in tel else None
+        det_conf = float(tel.get("detection_confidence_mean", 0.85)) if "detection_confidence_mean" in tel else 0.85
+
+        traj_pts = t.get("trajectory", [])
+        first_pt = traj_pts[0] if traj_pts else None
+        avg_vel = float(t.get("average_velocity_px", 0.0)) if t.get("average_velocity_px") is not None else None
+
+        obs = Observation(
+            observation_id=f"{camera_id}_trk_{track_id:03d}",
+            camera_id=camera_id,
+            timestamp=datetime.fromtimestamp(max(ts_sec, 0.0)),
+            timestamp_seconds=ts_sec,
+            frame_id=start_frame,
+            track_id=str(track_id),
+            vehicle_type=str(t.get("vehicle_type", "car")).lower(),
+            detection_confidence=det_conf,
+            bbox=bboxes_by_track.get(track_id),
+            appearance_embedding=t.get("appearance_embedding"),
+            plate=consensus_plate,
+            plate_confidence=consensus_conf,
+            latitude=lat,
+            longitude=lon,
+            trajectory_point=first_pt,
+            pixel_speed=avg_vel,
+            local_track_history=traj_pts if traj_pts else None,
+            timestamp_semantics="video_relative",
+            time_reference_id=camera_id,
+            camera_reliability=cam_rel,
+        )
+        observations.append(obs)
+
+    # Sort observations deterministically by timestamp and track_id
+    observations.sort(key=lambda o: (o.timestamp_seconds, o.observation_id))
+    return observations
+

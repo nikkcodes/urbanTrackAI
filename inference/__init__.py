@@ -19,7 +19,11 @@ from .member3_adapter import (
     adapt_trajectory_segment_to_normalized,
     adapt_vehicle_trajectory_to_normalized,
 )
-from .observation_loader import load_camera_metadata, load_observations_from_json
+from .observation_loader import (
+    load_camera_metadata,
+    load_member1_perception_feed,
+    load_observations_from_json,
+)
 from schemas.reliability_schema import (
     CameraReliability,
     IdentityMatchReliability,
