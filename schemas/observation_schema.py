@@ -110,6 +110,7 @@ class Observation:
     time_reference_id: Optional[str] = None
     clock_offset_seconds: Optional[float] = None
     time_uncertainty_seconds: Optional[float] = None
+    source_provenance: Optional[Dict[str, Any]] = None
 
     @property
     def coordinate_system(self) -> str:
@@ -148,6 +149,7 @@ class Observation:
         time_reference_id: Optional[str] = None,
         clock_offset_seconds: Optional[float] = None,
         time_uncertainty_seconds: Optional[float] = None,
+        source_provenance: Optional[Dict[str, Any]] = None,
     ) -> None:
         # Handle signature resolution for backwards compatibility
         if camera_id is not None:
@@ -366,6 +368,13 @@ class Observation:
         else:
             self.time_uncertainty_seconds = None
 
+        if source_provenance is not None:
+            if not isinstance(source_provenance, dict):
+                raise TypeError("source_provenance must be a dictionary or None.")
+            self.source_provenance = dict(source_provenance)
+        else:
+            self.source_provenance = None
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert Observation to dictionary representation."""
         ts_str = self.timestamp.isoformat() if self.timestamp else None
@@ -415,6 +424,8 @@ class Observation:
             d["clock_offset_seconds"] = self.clock_offset_seconds
         if self.time_uncertainty_seconds is not None:
             d["time_uncertainty_seconds"] = self.time_uncertainty_seconds
+        if self.source_provenance is not None:
+            d["source_provenance"] = self.source_provenance
         return d
 
     def to_json(self, indent: Optional[int] = None) -> str:
@@ -489,6 +500,7 @@ class Observation:
             time_reference_id=time_ref_id,
             clock_offset_seconds=clock_offset,
             time_uncertainty_seconds=time_unc,
+            source_provenance=data.get("source_provenance"),
         )
 
     @classmethod

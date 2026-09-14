@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "camera_id": "CAM_001",
+  "video_name": "traffics.mp4",
+  "created_at": "2026-09-14T13:58:00Z",
+  "description": "Authoritative raw perception artifacts from Member 1 (YOLOv8 + ByteTrack + OSNet Re-ID + Telemetry)",
+  "artifacts": {
+    "raw_frame_detections.json": {
+      "sha256": "d7a8548b7d508888f28cf121227ce668c8b09cd49e4554388c07cf6d2aa642bb",
+      "size_bytes": 3623838,
+      "record_count": 613,
+      "path": "data/member1_perception/cam_001/raw/raw_frame_detections.json"
+    },
+    "trajectories.json": {
+      "sha256": "897c8156f1958f64f6026a7b779175fededd3e61b33f3d7b9290e13742425ee1",
+      "size_bytes": 702364,
+      "record_count": 39,
+      "path": "data/member1_perception/cam_001/raw/trajectories.json"
+    },
+    "track_embeddings.json": {
+      "sha256": "897c8156f1958f64f6026a7b779175fededd3e61b33f3d7b9290e13742425ee1",
+      "size_bytes": 702364,
+      "record_count": 39,
+      "path": "data/member1_perception/cam_001/raw/track_embeddings.json"
+    },
+    "camera_telemetry.json": {
+      "sha256": "1956936aab00bacf32b269c0fcaf45240a8004ecf3061425fe1ddbe8ac4dd900",
+      "size_bytes": 203850,
+      "record_count": 613,
+      "path": "data/member1_perception/cam_001/raw/camera_telemetry.json"
+    },
+    "video_summary.json": {
+      "sha256": "d73f77896bd70f4b2343542b0d57197180f3812c740a0be43255d0434c1cfe0a",
+      "size_bytes": 1633,
+      "record_count": 37,
+      "path": "data/member1_perception/cam_001/raw/video_summary.json"
+    }
+  }
+}

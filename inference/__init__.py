@@ -65,7 +65,7 @@ from .tracklet_engine import (
     match_tracklets,
     pool_embeddings,
 )
-from .similarity import evaluate_reid_distribution, validate_and_normalize_embedding
+from .similarity import evaluate_reid_distribution, evaluate_reid_only_baseline, validate_and_normalize_embedding
 
 from .inference_trace import (
     InferenceTrace,
@@ -133,6 +133,7 @@ __all__ = [
     "build_trajectory_segment_trace",
     "build_sparse_gap_trace",
     "build_global_trajectory_trace",
+    "evaluate_reid_only_baseline",
 ]
 
 

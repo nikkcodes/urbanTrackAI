@@ -381,3 +381,115 @@ def geographic_distance(
     c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
 
     return R * c
+
+
+def evaluate_reid_only_baseline(
+    observations: List[Observation],
+    ground_truth_clusters: Dict[str, List[str]],
+    threshold: float = 0.70,
+) -> Dict[str, Any]:
+    """
+    Evaluate pure Re-ID baseline (appearance cosine similarity ONLY) on observations.
+    Explicitly excludes plate, temporal, spatial, vehicle type, and camera reliability evidence.
+
+    Args:
+        observations: List of Observation instances carrying appearance_embedding vectors.
+        ground_truth_clusters: Ground truth mapping {vehicle_id: [obs_id1, obs_id2, ...]}.
+        threshold: Operating cosine similarity threshold for positive match.
+
+    Returns:
+        Dict[str, Any]: Standard evaluation dictionary reporting precision, recall, F1,
+                        false merge rate, false split rate, cluster purity, and pairwise counts.
+    """
+    from collections import Counter
+    obs_map = {o.observation_id: o for o in observations}
+    all_obs_ids = sorted(obs_map.keys())
+    n = len(all_obs_ids)
+
+    # Build ground-truth pairs
+    gt_same_pairs: Set[Tuple[str, str]] = set()
+    for v_id, member_ids in ground_truth_clusters.items():
+        valid_members = [m for m in member_ids if m in obs_map]
+        for i in range(len(valid_members)):
+            for j in range(i + 1, len(valid_members)):
+                gt_same_pairs.add((min(valid_members[i], valid_members[j]), max(valid_members[i], valid_members[j])))
+
+    all_pairs: List[Tuple[str, str]] = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            all_pairs.append((all_obs_ids[i], all_obs_ids[j]))
+
+    gt_diff_pairs = set(all_pairs) - gt_same_pairs
+
+    # Pure Re-ID evaluation: ONLY appearance_similarity, zero other signals
+    predicted_edges: Set[Tuple[str, str]] = set()
+
+    for u, v in all_pairs:
+        oa, ob = obs_map[u], obs_map[v]
+        if oa.appearance_embedding and ob.appearance_embedding:
+            sim = appearance_similarity(oa.appearance_embedding, ob.appearance_embedding)
+            if sim is not None and sim >= threshold:
+                predicted_edges.add((u, v))
+
+    tp = len(predicted_edges & gt_same_pairs)
+    fp = len(predicted_edges - gt_same_pairs)
+    fn = len(gt_same_pairs - predicted_edges)
+    tn = len(gt_diff_pairs - predicted_edges)
+
+    precision = (tp / (tp + fp)) if (tp + fp) > 0 else 1.0
+    recall = (tp / (tp + fn)) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+
+    false_merge_rate = (fp / len(gt_diff_pairs)) if gt_diff_pairs else 0.0
+    false_split_rate = (fn / len(gt_same_pairs)) if gt_same_pairs else 0.0
+
+    # Connected components clustering for purity
+    parent = {oid: oid for oid in all_obs_ids}
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for u, v in predicted_edges:
+        ru, rv = find(u), find(v)
+        if ru != rv:
+            parent[rv] = ru
+
+    pred_clusters: Dict[str, Set[str]] = {}
+    for oid in all_obs_ids:
+        r = find(oid)
+        if r not in pred_clusters:
+            pred_clusters[r] = set()
+        pred_clusters[r].add(oid)
+
+    gt_mapping = {}
+    for v_id, o_ids in ground_truth_clusters.items():
+        for oid in o_ids:
+            gt_mapping[oid] = v_id
+
+    purity_sum = 0
+    for r, members in pred_clusters.items():
+        class_counts = Counter(gt_mapping.get(m, "unknown") for m in members)
+        purity_sum += class_counts.most_common(1)[0][1]
+
+    cluster_purity = (purity_sum / n) if n > 0 else 1.0
+
+    return {
+        "model": "osnet_x0_25_msmt17",
+        "threshold": threshold,
+        "observations_count": n,
+        "total_pairs_evaluated": len(all_pairs),
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tn": tn,
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "false_merge_rate": round(false_merge_rate, 4),
+        "false_split_rate": round(false_split_rate, 4),
+        "cluster_purity": round(cluster_purity, 4),
+        "clusters_formed_count": len(pred_clusters),
+        "predicted_edges_count": len(predicted_edges),
+    }

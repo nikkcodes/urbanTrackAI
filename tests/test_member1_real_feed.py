@@ -113,10 +113,94 @@ class TestMember1RealFeed(unittest.TestCase):
         graph = IdentityGraph(min_probability_threshold=0.65)
         graph.build_graph(self.observations)
         clusters = graph.get_candidate_identities()
-
-        # Should form candidate clusters without error
         self.assertGreater(len(clusters), 0)
         self.assertLessEqual(len(clusters), 39)
+
+    def test_08_source_provenance_and_semantics(self):
+        """Verify each observation contains full traceable provenance and image semantics."""
+        for obs in self.observations:
+            self.assertEqual(obs.timestamp_semantics, "video_relative")
+            self.assertEqual(obs.time_reference_id, "CAM_001")
+            self.assertEqual(obs.point_coordinate_system, "image")
+            self.assertIsNone(obs.latitude)
+            self.assertIsNone(obs.longitude)
+
+            # Check provenance tracking
+            prov = obs.source_provenance
+            self.assertIsNotNone(prov)
+            self.assertIn("source_file", prov)
+            self.assertEqual(prov["camera_id"], "CAM_001")
+            self.assertEqual(prov["embedding_dimension"], 512)
+            self.assertEqual(prov["reid_model"], "osnet_x0_25_msmt17")
+
+            # Verify image coordinates bounds (4K video 3840x2160)
+            if obs.trajectory_point:
+                self.assertGreaterEqual(obs.trajectory_point[0], 0.0)
+                self.assertLessEqual(obs.trajectory_point[0], 3840.0)
+                self.assertGreaterEqual(obs.trajectory_point[1], 0.0)
+                self.assertLessEqual(obs.trajectory_point[1], 2160.0)
+
+            # Pixel speed must be non-negative
+            if obs.pixel_speed is not None:
+                self.assertGreaterEqual(obs.pixel_speed, 0.0)
+
+    def test_09_manifest_sha256_integrity(self):
+        """Verify raw perception files match the SHA-256 hashes in manifest.json."""
+        import hashlib
+        import json
+
+        manifest_path = Path("data/member1_perception/cam_001/manifest.json")
+        if not manifest_path.is_file():
+            self.skipTest("manifest.json not present")
+
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+
+        for fname, meta in manifest.get("artifacts", {}).items():
+            fpath = Path(meta["path"])
+            if not fpath.is_file():
+                alt = Path(f"data/member1_perception/cam_001/{fname}")
+                if alt.is_file():
+                    fpath = alt
+                else:
+                    continue
+            with open(fpath, "rb") as bf:
+                actual_hash = hashlib.sha256(bf.read()).hexdigest()
+            self.assertEqual(actual_hash, meta["sha256"], f"SHA-256 mismatch for {fname}")
+
+    def test_10_reid_only_baseline_execution(self):
+        """Verify evaluate_reid_only_baseline runs cleanly on real Member 1 feed."""
+        from inference.similarity import evaluate_reid_only_baseline
+
+        # Ground truth: Track 65 and Track 94 are known re-entry of the same vehicle
+        gt_clusters = {
+            "VEH_MH0ZFX9484": ["CAM_001_trk_065", "CAM_001_trk_094"]
+        }
+        res = evaluate_reid_only_baseline(self.observations, gt_clusters, threshold=0.60)
+        self.assertIn("precision", res)
+        self.assertIn("recall", res)
+        self.assertIn("f1", res)
+        self.assertIn("false_merge_rate", res)
+        self.assertIn("cluster_purity", res)
+        self.assertEqual(res["model"], "osnet_x0_25_msmt17")
+        self.assertEqual(res["observations_count"], 39)
+
+    def test_11_canonical_scoring_and_decision_states(self):
+        """Verify canonical same_vehicle_score and tri-state decision states."""
+        o65 = self.obs_map.get("CAM_001_trk_065")
+        o94 = self.obs_map.get("CAM_001_trk_094")
+        o1 = self.obs_map.get("CAM_001_trk_001")
+        o2 = self.obs_map.get("CAM_001_trk_002")
+
+        res_same = match_observations(o65, o94)
+        self.assertIn("same_vehicle_score", res_same)
+        self.assertIn("identity_evidence_score", res_same)
+        self.assertIn("decision_state", res_same)
+        self.assertIn(res_same["decision_state"], ("CONFIRMED", "AMBIGUOUS"))
+
+        res_diff = match_observations(o1, o2)
+        self.assertEqual(res_diff["same_vehicle_score"], 0.0)
+        self.assertEqual(res_diff["decision_state"], "REJECTED")
 
 
 if __name__ == "__main__":

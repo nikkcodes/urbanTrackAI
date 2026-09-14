@@ -392,6 +392,13 @@ def match_observations(
         },
         "evidence_ledger": evidence_ledger,
         "same_vehicle_probability": estimated_prob,
+        "same_vehicle_score": estimated_prob,
+        "identity_evidence_score": estimated_prob,
+        "decision_state": "CONFIRMED" if estimated_prob >= float(config.get("confirmed_threshold", 0.75)) else ("AMBIGUOUS" if estimated_prob >= float(config.get("ambiguous_threshold", 0.40)) else "REJECTED"),
+        "operating_thresholds": {
+            "confirmed": float(config.get("confirmed_threshold", 0.75)),
+            "ambiguous": float(config.get("ambiguous_threshold", 0.40)),
+        },
         "explanation": explanation,
         "observation_reliability": {
             "observation_a": rel_a.to_dict(),
