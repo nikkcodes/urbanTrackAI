@@ -23,6 +23,7 @@ from .observation_loader import (
     load_camera_metadata,
     load_member1_perception_feed,
     load_observations_from_json,
+    verify_raw_data_integrity,
 )
 from schemas.reliability_schema import (
     CameraReliability,
@@ -57,7 +58,7 @@ from .trajectory_engine import (
     reconstruct_trajectory_segment,
 )
 
-from .candidate_generation import CandidateGenerationReport, CandidateGenerator
+from .candidate_generation import CandidateGenerationReport, CandidateGenerator, benchmark_candidate_scaling
 from .tracklet_engine import (
     Tracklet,
     aggregate_observations_into_tracklets,
@@ -66,6 +67,10 @@ from .tracklet_engine import (
     pool_embeddings,
 )
 from .similarity import evaluate_reid_distribution, evaluate_reid_only_baseline, validate_and_normalize_embedding
+
+from .adversarial_suite import run_adversarial_suite
+from .ablation_study import run_ablation_study
+from .degradation_benchmark import run_full_degradation_benchmark
 
 from .inference_trace import (
     InferenceTrace,
@@ -77,6 +82,9 @@ from .inference_trace import (
 )
 
 __all__ = [
+    "run_adversarial_suite",
+    "run_ablation_study",
+    "run_full_degradation_benchmark",
     "Observation",
     "CandidateRoute",
     "TrajectorySegment",
@@ -100,6 +108,8 @@ __all__ = [
     "adapt_trajectories_to_batch_payload",
     "load_camera_metadata",
     "load_observations_from_json",
+    "load_member1_perception_feed",
+    "verify_raw_data_integrity",
     "plate_similarity",
     "appearance_similarity",
     "vehicle_type_compatibility",
@@ -120,6 +130,7 @@ __all__ = [
     "infer_sparse_identity_trajectory",
     "CandidateGenerator",
     "CandidateGenerationReport",
+    "benchmark_candidate_scaling",
     "Tracklet",
     "aggregate_observations_into_tracklets",
     "aggregate_plate_votes",

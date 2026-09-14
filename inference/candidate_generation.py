@@ -93,33 +93,47 @@ class CandidateGenerator:
             "missing_identity_evidence": 0,
         }
 
+        import bisect
+
         # Deterministic chronological sort: (timestamp_seconds, observation_id)
         sorted_obs = sorted(observations, key=lambda o: (o.timestamp_seconds, o.observation_id))
         n = len(sorted_obs)
         candidates: List[Tuple[Observation, Observation]] = []
 
+        if n < 2:
+            return candidates, rejection_counts
+
+        # Extract indexed sorted timestamps for sub-linear window boundary lookup
+        timestamps = [o.timestamp_seconds for o in sorted_obs]
+
+        # 1. Indexed retrieval using temporal window bisect search
         for i in range(n):
             obs_a = sorted_obs[i]
+            t_a = obs_a.timestamp_seconds
             has_id_a = (obs_a.appearance_embedding is not None and len(obs_a.appearance_embedding) > 0) or (obs_a.plate is not None)
             clean_plate_a = "".join(c for c in str(obs_a.plate or "").upper() if c.isalnum())
             conf_a = float(obs_a.plate_confidence) if obs_a.plate_confidence is not None else 1.0
 
-            for j in range(i + 1, n):
+            # Find upper bound index in O(log N) using bisect_right
+            horizon_limit = t_a + self.max_time_window_seconds
+            upper_bound_idx = bisect.bisect_right(timestamps, horizon_limit)
+
+            # Count pruned pairs beyond temporal horizon
+            pruned_beyond_horizon = n - upper_bound_idx
+            if pruned_beyond_horizon > 0:
+                rejection_counts["temporal_horizon_exceeded"] += pruned_beyond_horizon
+
+            # Only iterate through temporally plausible candidate window [i + 1, upper_bound_idx)
+            for j in range(i + 1, upper_bound_idx):
                 obs_b = sorted_obs[j]
                 has_id_b = (obs_b.appearance_embedding is not None and len(obs_b.appearance_embedding) > 0) or (obs_b.plate is not None)
 
-                # 1. Temporal window indexing:
-                # If clocks are shared or synchronized, time cannot exceed max_time_window_seconds.
-                # Since array is sorted, any subsequent observation k > j will also exceed window.
+                # Temporal comparability check
                 t_check = check_temporal_comparability(obs_a, obs_b, camera_metadata=self.camera_metadata)
                 is_sync = t_check.get("comparable", False)
 
                 if is_sync:
                     dt = float(t_check.get("delta_seconds", 0.0))
-                    if dt > self.max_time_window_seconds:
-                        # Can break inner loop because sorted_obs[k].timestamp_seconds >= sorted_obs[j].timestamp_seconds
-                        rejection_counts["temporal_horizon_exceeded"] += (n - j)
-                        break
 
                     # Simultaneous on different cameras
                     if dt == 0.0 and obs_a.camera_id != obs_b.camera_id:
@@ -235,3 +249,105 @@ class CandidateGenerator:
             semantic_equivalence_verified=semantic_equivalent,
             rejection_breakdown=rejection_breakdown,
         )
+
+
+def benchmark_candidate_scaling(
+    counts: Optional[List[int]] = None,
+    base_observations: Optional[List[Observation]] = None,
+) -> Dict[str, Any]:
+    """
+    Benchmark naive brute-force O(N^2) pair generation vs indexed candidate retrieval.
+    Measures pair reduction, candidate recall, true exclusions, and runtime across scale levels.
+
+    Args:
+        counts: List of observation counts to evaluate (default [100, 250, 500, 1000]).
+        base_observations: Optional template observations to replicate/scale.
+
+    Returns:
+        Dict[str, Any]: Benchmark summary dictionary reporting per-N scaling metrics.
+    """
+    import random
+    from datetime import datetime
+
+    if counts is None:
+        counts = [50, 100, 250, 500]
+
+    results = []
+    generator = CandidateGenerator(max_speed_kmh=120.0, max_time_window_seconds=1800.0)
+
+    vehicle_types = ["car", "truck", "bus", "motorcycle"]
+
+    for n in counts:
+        # Generate synthetic test observations with realistic temporal spread across 4 cameras
+        test_obs = []
+        for i in range(n):
+            cam_idx = (i % 4) + 1
+            t_sec = float(i * 12.0)  # 12s spacing
+            vtype = vehicle_types[i % len(vehicle_types)]
+            emb = [random.uniform(-0.1, 0.1) for _ in range(8)]
+            plate = f"KA01TEST{i % 20:02d}" if (i % 3 != 0) else None
+            test_obs.append(
+                Observation(
+                    observation_id=f"SCALE_OBS_{i:04d}",
+                    camera_id=f"CAM_{cam_idx:02d}",
+                    timestamp=datetime.fromtimestamp(1000.0 + t_sec),
+                    timestamp_seconds=1000.0 + t_sec,
+                    vehicle_type=vtype,
+                    plate=plate,
+                    plate_confidence=0.90 if plate else None,
+                    appearance_embedding=emb,
+                    timestamp_semantics="synchronized",
+                    time_reference_id="city_network_sync",
+                )
+            )
+
+        total_pairs = (n * (n - 1)) // 2
+
+        # 1. Naive enumeration runtime
+        t0 = time.perf_counter()
+        naive_pairs = []
+        for i in range(n):
+            for j in range(i + 1, n):
+                naive_pairs.append((test_obs[i], test_obs[j]))
+        naive_ms = (time.perf_counter() - t0) * 1000.0
+
+        # 2. Indexed retrieval runtime
+        t1 = time.perf_counter()
+        candidates, breakdown = generator.generate_candidates(test_obs)
+        indexed_ms = (time.perf_counter() - t1) * 1000.0
+
+        candidate_count = len(candidates)
+        reduction_pct = ((total_pairs - candidate_count) / total_pairs * 100.0) if total_pairs > 0 else 0.0
+
+        # Candidate recall verification: ensure no temporally plausible identical plate is excluded
+        candidate_pair_ids = set((min(a.observation_id, b.observation_id), max(a.observation_id, b.observation_id)) for a, b in candidates)
+        true_matches_total = 0
+        true_matches_found = 0
+        for oa, ob in naive_pairs:
+            if oa.plate and ob.plate and oa.plate == ob.plate and abs(oa.timestamp_seconds - ob.timestamp_seconds) <= 1800.0:
+                true_matches_total += 1
+                pid = (min(oa.observation_id, ob.observation_id), max(oa.observation_id, ob.observation_id))
+                if pid in candidate_pair_ids:
+                    true_matches_found += 1
+
+        candidate_recall = (true_matches_found / true_matches_total * 100.0) if true_matches_total > 0 else 100.0
+        speedup = (naive_ms / indexed_ms) if indexed_ms > 0 else 1.0
+
+        results.append({
+            "n_observations": n,
+            "theoretical_pairs": total_pairs,
+            "candidates_generated": candidate_count,
+            "pruned_pairs": total_pairs - candidate_count,
+            "reduction_pct": round(reduction_pct, 2),
+            "candidate_recall_pct": round(candidate_recall, 2),
+            "naive_enumeration_ms": round(naive_ms, 2),
+            "indexed_retrieval_ms": round(indexed_ms, 2),
+            "speedup_factor": round(speedup, 2),
+        })
+
+    return {
+        "benchmark_name": "candidate_generation_scaling",
+        "timestamp": datetime.now().isoformat(),
+        "evaluations": results,
+    }
+

@@ -98,6 +98,8 @@ def appearance_similarity(
     try:
         v1 = [float(x) for x in emb1]
         v2 = [float(x) for x in emb2]
+        if any(math.isnan(x) or math.isinf(x) for x in v1) or any(math.isnan(x) or math.isinf(x) for x in v2):
+            return None
     except (ValueError, TypeError):
         return None
 
@@ -385,8 +387,9 @@ def geographic_distance(
 
 def evaluate_reid_only_baseline(
     observations: List[Observation],
-    ground_truth_clusters: Dict[str, List[str]],
+    ground_truth_clusters: Optional[Dict[str, List[str]]] = None,
     threshold: float = 0.70,
+    ground_truth_type: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Evaluate pure Re-ID baseline (appearance cosine similarity ONLY) on observations.
@@ -394,8 +397,10 @@ def evaluate_reid_only_baseline(
 
     Args:
         observations: List of Observation instances carrying appearance_embedding vectors.
-        ground_truth_clusters: Ground truth mapping {vehicle_id: [obs_id1, obs_id2, ...]}.
+        ground_truth_clusters: Optional ground truth mapping {vehicle_id: [obs_id1, obs_id2, ...]}.
+                               If None, weak ground truth is derived from multi-frame consensus plates.
         threshold: Operating cosine similarity threshold for positive match.
+        ground_truth_type: Declared ground truth type (HUMAN_ANNOTATED, WEAK_LABEL, etc.).
 
     Returns:
         Dict[str, Any]: Standard evaluation dictionary reporting precision, recall, F1,
@@ -405,6 +410,22 @@ def evaluate_reid_only_baseline(
     obs_map = {o.observation_id: o for o in observations}
     all_obs_ids = sorted(obs_map.keys())
     n = len(all_obs_ids)
+
+    # Derive weak ground truth from consensus plates if independent ground truth is not provided
+    actual_gt_type = ground_truth_type
+    if ground_truth_clusters is None:
+        actual_gt_type = "WEAK_LABEL"
+        derived_gt: Dict[str, List[str]] = {}
+        singleton_idx = 1
+        for o in observations:
+            if o.plate:
+                derived_gt.setdefault(f"PLATE_{o.plate}", []).append(o.observation_id)
+            else:
+                derived_gt[f"SINGLETON_{singleton_idx}"] = [o.observation_id]
+                singleton_idx += 1
+        ground_truth_clusters = derived_gt
+    elif actual_gt_type is None:
+        actual_gt_type = "HUMAN_ANNOTATED"
 
     # Build ground-truth pairs
     gt_same_pairs: Set[Tuple[str, str]] = set()
@@ -477,6 +498,7 @@ def evaluate_reid_only_baseline(
 
     return {
         "model": "osnet_x0_25_msmt17",
+        "ground_truth_type": actual_gt_type,
         "threshold": threshold,
         "observations_count": n,
         "total_pairs_evaluated": len(all_pairs),

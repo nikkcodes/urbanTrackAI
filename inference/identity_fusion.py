@@ -175,6 +175,16 @@ def match_observations(
             unconf_score = float(config.get("missing_evidence_score", 0.50))
             estimated_prob = feasibility_score * unconf_score
 
+        # Attenuate evidence if camera reliability is severely impaired (< 0.50) per Phase 14
+        cam_rel_a = (getattr(obs_a, "camera_reliability", None) or 
+                     (camera_metadata or {}).get(obs_a.camera_id, {}).get("reliability", 1.0))
+        cam_rel_b = (getattr(obs_b, "camera_reliability", None) or 
+                     (camera_metadata or {}).get(obs_b.camera_id, {}).get("reliability", 1.0))
+        min_cam_rel = min(float(cam_rel_a if cam_rel_a is not None else 1.0),
+                          float(cam_rel_b if cam_rel_b is not None else 1.0))
+        if min_cam_rel < 0.50:
+            estimated_prob = 0.50 + min_cam_rel * (estimated_prob - 0.50)
+
         estimated_prob = round(max(0.0, min(1.0, estimated_prob)), 4)
 
         # Generate human-readable explanation

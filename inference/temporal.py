@@ -103,13 +103,13 @@ def check_temporal_comparability(
     meta_b = _get_camera_meta(cam_b, camera_metadata)
 
     if meta_a:
-        sem_a = sem_a or meta_a.get("timestamp_semantics")
-        ref_a = ref_a or meta_a.get("time_reference_id")
+        sem_a = meta_a.get("timestamp_semantics") or sem_a
+        ref_a = meta_a.get("time_reference_id") or ref_a
         if offset_a is None and "clock_offset_seconds" in meta_a:
             offset_a = float(meta_a["clock_offset_seconds"]) if meta_a["clock_offset_seconds"] is not None else None
     if meta_b:
-        sem_b = sem_b or meta_b.get("timestamp_semantics")
-        ref_b = ref_b or meta_b.get("time_reference_id")
+        sem_b = meta_b.get("timestamp_semantics") or sem_b
+        ref_b = meta_b.get("time_reference_id") or ref_b
         if offset_b is None and "clock_offset_seconds" in meta_b:
             offset_b = float(meta_b["clock_offset_seconds"]) if meta_b["clock_offset_seconds"] is not None else None
 

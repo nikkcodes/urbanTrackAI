@@ -90,11 +90,12 @@ class Observation:
     track_id: Optional[str] = None
     vehicle_type: Optional[str] = None
     detection_confidence: Optional[float] = None
+    frame_detection_confidence_mean: Optional[float] = None
     bbox: Optional[List[float]] = None
 
     # Member 1 Perception Fields
     trajectory_point: Optional[List[float]] = None
-    point_type: str = "vehicle_footpoint"
+    point_type: str = "image_space_trajectory_point"
     point_coordinate_system: str = "image"
     heading_angle: Optional[float] = None
     heading_coordinate_system: str = "image"
@@ -132,10 +133,11 @@ class Observation:
         track_id: Optional[str] = None,
         vehicle_type: Optional[str] = None,
         detection_confidence: Optional[float] = None,
+        frame_detection_confidence_mean: Optional[float] = None,
         bbox: Optional[List[float]] = None,
         observation_id: Optional[str] = None,
         trajectory_point: Optional[List[float]] = None,
-        point_type: str = "vehicle_footpoint",
+        point_type: str = "image_space_trajectory_point",
         point_coordinate_system: str = "image",
         heading_angle: Optional[float] = None,
         heading_coordinate_system: str = "image",
@@ -264,6 +266,16 @@ class Observation:
         else:
             self.detection_confidence = None
 
+        if frame_detection_confidence_mean is not None:
+            if not isinstance(frame_detection_confidence_mean, (int, float)):
+                raise TypeError("frame_detection_confidence_mean must be a number or None.")
+            val_mean = float(frame_detection_confidence_mean)
+            if not (0.0 <= val_mean <= 1.0):
+                raise ValueError(f"frame_detection_confidence_mean must be between 0.0 and 1.0, got {val_mean}.")
+            self.frame_detection_confidence_mean = val_mean
+        else:
+            self.frame_detection_confidence_mean = None
+
         if bbox is not None:
             if not isinstance(bbox, (list, tuple)) or len(bbox) != 4:
                 raise ValueError("bbox must be a list or tuple of 4 numbers [x1, y1, x2, y2].")
@@ -390,6 +402,7 @@ class Observation:
             "track_id": self.track_id,
             "vehicle_type": self.vehicle_type,
             "detection_confidence": self.detection_confidence,
+            "frame_detection_confidence_mean": self.frame_detection_confidence_mean,
             "bbox": self.bbox,
             "appearance_embedding": self.appearance_embedding,
             "latitude": self.latitude,
@@ -452,9 +465,10 @@ class Observation:
         det_conf = data.get("detection_confidence")
         if det_conf is None and "confidence" in data:
             det_conf = data.get("confidence")
+        frame_det_conf = data.get("frame_detection_confidence_mean")
 
         traj_pt = data.get("trajectory_point")
-        pt_type = data.get("point_type", "vehicle_footpoint")
+        pt_type = data.get("point_type", "image_space_trajectory_point")
         pt_coord_sys = data.get("point_coordinate_system") or data.get("coordinate_system", "image")
         head_angle = data.get("heading_angle")
         head_coord_sys = data.get("heading_coordinate_system", "image")
@@ -484,6 +498,7 @@ class Observation:
             track_id=data.get("track_id"),
             vehicle_type=data.get("vehicle_type"),
             detection_confidence=det_conf,
+            frame_detection_confidence_mean=frame_det_conf,
             bbox=data.get("bbox"),
             trajectory_point=traj_pt,
             point_type=pt_type,

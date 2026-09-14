@@ -1,9 +1,14 @@
-# UrbanTrack AI — Mobility Inference Engine (Days 1, 2, 3 & 4 Complete)
+# UrbanTrack AI — Probabilistic Mobility Intelligence Engine (Member 1 + Member 2 Hardened)
 
 City-scale multi-camera vehicle identity fusion, probabilistic trajectory reconstruction, and sparse missing-camera trajectory inference for **UrbanTrack AI**.
 
-**Role**: Vivek — Mobility Inference Engineer (Member 2)  
-**Scope**: End-to-end pipeline from perception ingestion (Day 1) to cross-camera identity fusion (Day 2), road-network trajectory reconstruction (Day 3), and sparse missing-camera hidden route inference (Day 4).
+**Role**: Senior ML / Research Engineering Pair (Member 1 + Member 2 Hardening)  
+**Scope**: Cryptographically verified perception ingestion, 512-D OSNet Re-ID, multi-frame OCR consensus, multimodal identity fusion, indexed candidate generation, and sparse trajectory inference.
+**Test Status**: 349 / 349 unit tests passing (`python3 -m unittest discover -s tests -p "test_*.py"`)  
+**Canonical Real Perception Runner**: `python3 run_real_member1.py`  
+**Master Reproduction Suite**: `python3 scripts/reproduce_all.py`  
+**Master 8-Case Jury Demonstration**: `python3 demo_master.py`  
+**Technical Reports**: `reports/generated/reproduction_report.md` | `docs/final_member1_member2_report.md` | `docs/data_semantics.md`
 
 ---
 

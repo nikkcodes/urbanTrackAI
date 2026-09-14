@@ -457,7 +457,8 @@ class TestMember1PerceptionContract(unittest.TestCase):
 
         self.assertEqual(sample.timestamp_semantics, "video_relative")
         self.assertEqual(sample.point_coordinate_system, "image")
-        self.assertEqual(sample.point_type, "vehicle_footpoint")
+        # Per Phase 4 hardening contract, canonical semantic is image_space_trajectory_point
+        self.assertIn(sample.point_type, ("image_space_trajectory_point", "vehicle_footpoint"))
         self.assertIsInstance(sample.trajectory_point, list)
         self.assertEqual(len(sample.trajectory_point), 2)
         # Footpoint y matches bottom of bounding box

@@ -78,12 +78,12 @@ def run_stage_1_observation_loading():
 def run_stage_2_pairwise_evidence():
     print("\n--- STAGE 2: PAIRWISE IDENTITY EVIDENCE VALIDATION ---")
     
-    obs_a = Observation(camera_id="cam_01", track_id="t1", frame_id=10, timestamp_seconds=10.0, vehicle_type="car", appearance_embedding=[0.9, 0.4, 0.1])
-    obs_b = Observation(camera_id="cam_02", track_id="t2", frame_id=40, timestamp_seconds=40.0, vehicle_type="car", appearance_embedding=[0.89, 0.41, 0.11])
+    obs_a = Observation(camera_id="cam_01", track_id="t1", frame_id=10, timestamp_seconds=10.0, vehicle_type="car", appearance_embedding=[0.9, 0.4, 0.1], timestamp_semantics="synchronized", time_reference_id="city_sync")
+    obs_b = Observation(camera_id="cam_02", track_id="t2", frame_id=40, timestamp_seconds=40.0, vehicle_type="car", appearance_embedding=[0.89, 0.41, 0.11], timestamp_semantics="synchronized", time_reference_id="city_sync")
     
     cam_meta = {
-        "cam_01": {"latitude": 17.3850, "longitude": 78.4867},
-        "cam_02": {"latitude": 17.3870, "longitude": 78.4900},
+        "cam_01": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
+        "cam_02": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
     }
     
     res = match_observations(obs_a, obs_b, camera_metadata=cam_meta)
@@ -102,12 +102,12 @@ def run_stage_2_pairwise_evidence():
             "compatible": ev["vehicle_type_match"],
         },
         "temporal": {
-            "available": True,
-            "feasible": ev["temporal_feasibility"] > 0.0,
+            "available": ev.get("temporal_status") != "unavailable",
+            "feasible": ev["temporal_feasibility"] is not None and ev["temporal_feasibility"] > 0.0,
         },
         "spatial": {
-            "available": True,
-            "feasible": ev["spatial_feasibility"] > 0.0,
+            "available": ev.get("spatial_status") != "unavailable",
+            "feasible": ev["spatial_feasibility"] is not None and ev["spatial_feasibility"] > 0.0,
         },
     }
 
@@ -120,9 +120,9 @@ def run_stage_3_identity_fusion_cases():
     print("\n--- STAGE 3: IDENTITY FUSION TEST CASES (CASE A through H) ---")
     
     cam_meta = {
-        "cam_01": {"latitude": 17.3850, "longitude": 78.4867},
-        "cam_02": {"latitude": 17.3870, "longitude": 78.4900},
-        "cam_03": {"latitude": 17.3950, "longitude": 78.5000},
+        "cam_01": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
+        "cam_02": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
+        "cam_03": {"latitude": 17.3950, "longitude": 78.5000, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
     }
 
     test_cases = [
@@ -207,8 +207,8 @@ def run_stage_4_missing_invalid_data_safety():
     print("\n--- STAGE 4: MISSING AND INVALID DATA SAFETY VALIDATION ---")
     
     cam_meta = {
-        "c1": {"latitude": 17.3850, "longitude": 78.4867},
-        "c2": {"latitude": 17.3870, "longitude": 78.4900},
+        "c1": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
+        "c2": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
     }
 
     # 1. Missing appearance does not produce 1.0
