@@ -1,18 +1,15 @@
 """
-UrbanTrack AI — Ablation Study Runner.
+UrbanTrack AI — Clean Modality Ablation Study Runner (Phase 10 Hardened).
 
-Quantifies the empirical contribution of each evidence modality across 6 tiers:
-Tier A: Plate Only
-Tier B: Re-ID Only
-Tier C: Plate + Re-ID
-Tier D: Plate + Re-ID + Temporal Feasibility
-Tier E: Plate + Re-ID + Temporal + Spatial Feasibility
-Tier F: Full UrbanTrack (Multi-Modal Fusion + All-Pairs Contradiction Resolution)
+Evaluates 6 strictly isolated evidence tiers on identical datasets, identical ground truth,
+and identical decision threshold methodology without silent fallbacks between modalities.
 
-Metrics Computed:
-- Precision, Recall, F1
-- False Merges, False Splits
-- Cluster Purity
+Tier A: Re-ID Only (OSNet appearance cosine similarity alone)
+Tier B: Plate Only (License plate string similarity alone)
+Tier C: Re-ID + Plate (Fixed equal fusion; no fallback to unimodal when one is missing)
+Tier D: Re-ID + Plate + Temporal (Adds temporal order and cross-camera simultaneity checks)
+Tier E: Re-ID + Plate + Spatial (Adds spatial speed limit bounds)
+Tier F: Full UrbanTrack (Multimodal fusion + vehicle type + camera reliability + contradiction logic)
 """
 
 from collections import Counter
@@ -25,7 +22,8 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from schemas.observation_schema import Observation
 from .identity_fusion import match_observations
 from .identity_graph import IdentityGraph
-from .similarity import appearance_similarity, plate_similarity
+from .similarity import appearance_similarity, plate_similarity, geographic_distance
+from .temporal import check_temporal_comparability
 
 
 def run_ablation_study(
@@ -36,12 +34,13 @@ def run_ablation_study(
 ) -> Dict[str, Any]:
     """
     Execute empirical ablation across all 6 tiers on a ground-truth observation set.
+    Ensures zero silent fallbacks across tiers.
     """
     obs_map = {o.observation_id: o for o in observations}
     all_obs_ids = sorted(obs_map.keys())
     n = len(all_obs_ids)
 
-    # Build ground truth pairs
+    # Build ground truth same/different pairs
     gt_same_pairs: Set[Tuple[str, str]] = set()
     for veh_id, o_ids in ground_truth_clusters.items():
         present_ids = [oid for oid in o_ids if oid in obs_map]
@@ -56,189 +55,205 @@ def run_ablation_study(
             all_pairs.append((min(all_obs_ids[i], all_obs_ids[j]), max(all_obs_ids[i], all_obs_ids[j])))
 
     gt_diff_pairs = set(all_pairs) - gt_same_pairs
+    total_pairs_count = len(all_pairs)
 
     tiers = [
-        "A_plate_only",
-        "B_reid_only",
-        "C_plate_and_reid",
-        "D_plate_reid_temporal",
-        "E_plate_reid_temporal_spatial",
+        "A_reid_only",
+        "B_plate_only",
+        "C_reid_and_plate",
+        "D_reid_plate_temporal",
+        "E_reid_plate_spatial",
         "F_full_urbantrack",
     ]
 
     tier_descriptions = {
-        "A_plate_only": "Plate string similarity only (no Re-ID, kinematics, or spatial constraints)",
-        "B_reid_only": "Re-ID appearance cosine similarity only (no plate or kinematics)",
-        "C_plate_and_reid": "Plate + Re-ID feature fusion (no temporal/spatial physical constraints)",
-        "D_plate_reid_temporal": "Plate + Re-ID + Temporal order & synchronization checks",
-        "E_plate_reid_temporal_spatial": "Plate + Re-ID + Spatio-temporal speed bounds (naive transitive clustering)",
-        "F_full_urbantrack": "Full Multi-Modal Evidence Fusion + All-Pairs Contradiction Resolution",
+        "A_reid_only": "OSNet appearance cosine similarity only (no plate, kinematics, or spatial constraints)",
+        "B_plate_only": "License plate string similarity only (no Re-ID, kinematics, or spatial constraints)",
+        "C_reid_and_plate": "Re-ID + Plate fixed 50/50 fusion (strictly zero unimodal fallback if one modality is absent)",
+        "D_reid_plate_temporal": "Re-ID + Plate + Temporal order & cross-camera simultaneity gating",
+        "E_reid_plate_spatial": "Re-ID + Plate + Spatial travel speed feasibility gating (<= 120 km/h)",
+        "F_full_urbantrack": "Full UrbanTrack (Multimodal fusion + vehicle type compatibility + camera reliability + contradiction logic)",
     }
 
     tier_results = {}
 
     for tier in tiers:
         predicted_edges: Set[Tuple[str, str]] = set()
+        eligible_pairs_count = 0
 
-        if tier == "A_plate_only":
-            for u, v in all_pairs:
-                oa, ob = obs_map[u], obs_map[v]
-                if oa.plate is not None and ob.plate is not None:
-                    p_sim = plate_similarity(oa.plate, ob.plate)
-                    if p_sim >= threshold:
-                        predicted_edges.add((u, v))
-
-        elif tier == "B_reid_only":
+        if tier == "A_reid_only":
             for u, v in all_pairs:
                 oa, ob = obs_map[u], obs_map[v]
                 if oa.appearance_embedding and ob.appearance_embedding:
+                    eligible_pairs_count += 1
                     a_sim = appearance_similarity(oa.appearance_embedding, ob.appearance_embedding)
                     if a_sim is not None and a_sim >= threshold:
                         predicted_edges.add((u, v))
 
-        elif tier == "C_plate_and_reid":
+        elif tier == "B_plate_only":
+            for u, v in all_pairs:
+                oa, ob = obs_map[u], obs_map[v]
+                if oa.plate is not None and ob.plate is not None:
+                    eligible_pairs_count += 1
+                    p_sim = plate_similarity(oa.plate, ob.plate)
+                    if p_sim >= threshold:
+                        predicted_edges.add((u, v))
+
+        elif tier == "C_reid_and_plate":
             for u, v in all_pairs:
                 oa, ob = obs_map[u], obs_map[v]
                 has_plate = oa.plate is not None and ob.plate is not None
-                has_reid = oa.appearance_embedding and ob.appearance_embedding
-                if has_plate and has_reid:
-                    p_sim = plate_similarity(oa.plate, ob.plate)
-                    a_sim = appearance_similarity(oa.appearance_embedding, ob.appearance_embedding) or 0.0
-                    score = 0.5 * p_sim + 0.5 * a_sim
-                elif has_plate:
-                    score = plate_similarity(oa.plate, ob.plate)
-                elif has_reid:
-                    score = appearance_similarity(oa.appearance_embedding, ob.appearance_embedding) or 0.0
-                else:
-                    score = 0.0
+                has_reid = bool(oa.appearance_embedding and ob.appearance_embedding)
+                if has_plate or has_reid:
+                    eligible_pairs_count += 1
+                p_sim = plate_similarity(oa.plate, ob.plate) if has_plate else 0.0
+                a_sim = (appearance_similarity(oa.appearance_embedding, ob.appearance_embedding) or 0.0) if has_reid else 0.0
+                # Strict 50/50 fusion without fallback to 1.0 weight
+                score = 0.5 * p_sim + 0.5 * a_sim
                 if score >= threshold:
                     predicted_edges.add((u, v))
 
-        elif tier == "D_plate_reid_temporal":
+        elif tier == "D_reid_plate_temporal":
             for u, v in all_pairs:
                 oa, ob = obs_map[u], obs_map[v]
-                # Check temporal ordering
+                has_plate = oa.plate is not None and ob.plate is not None
+                has_reid = bool(oa.appearance_embedding and ob.appearance_embedding)
+                if has_plate or has_reid:
+                    eligible_pairs_count += 1
+
+                # Temporal check
                 if oa.timestamp_seconds > ob.timestamp_seconds:
                     ea, eb = ob, oa
                 else:
                     ea, eb = oa, ob
-                from .temporal import temporal_feasibility
-                tf = temporal_feasibility(ea, eb, camera_metadata=camera_metadata)
-                t_status = tf.get("status", "unavailable")
-                if t_status in ("impossible_negative_time", "impossible_simultaneous_different_cameras"):
-                    continue
+                t_comp = check_temporal_comparability(ea, eb, camera_metadata=camera_metadata)
+                if t_comp.get("comparable"):
+                    dt = float(t_comp.get("delta_seconds", 0.0))
+                    if dt == 0.0 and ea.camera_id != eb.camera_id:
+                        # Impossible simultaneous on distinct cameras
+                        continue
+                    if dt < 0.0 and ea.camera_id == eb.camera_id:
+                        # Impossible negative elapsed time on same camera
+                        continue
 
-                # Combine plate and reid
-                has_plate = ea.plate is not None and eb.plate is not None
-                has_reid = ea.appearance_embedding and eb.appearance_embedding
-                if has_plate and has_reid:
-                    score = 0.5 * plate_similarity(ea.plate, eb.plate) + 0.5 * (appearance_similarity(ea.appearance_embedding, eb.appearance_embedding) or 0.0)
-                elif has_plate:
-                    score = plate_similarity(ea.plate, eb.plate)
-                elif has_reid:
-                    score = appearance_similarity(ea.appearance_embedding, eb.appearance_embedding) or 0.0
-                else:
-                    score = 0.0
-
+                p_sim = plate_similarity(oa.plate, ob.plate) if has_plate else 0.0
+                a_sim = (appearance_similarity(oa.appearance_embedding, ob.appearance_embedding) or 0.0) if has_reid else 0.0
+                score = 0.5 * p_sim + 0.5 * a_sim
                 if score >= threshold:
                     predicted_edges.add((u, v))
 
-        elif tier == "E_plate_reid_temporal_spatial":
-            # Uses match_observations but naive connected-components without contradiction splitting
-            graph_e = IdentityGraph(min_probability_threshold=threshold)
-            for obs in observations:
-                graph_e.add_observation(obs)
-            graph_e.build_graph(observations, camera_metadata=camera_metadata)
-            # Naive connected components (resolve_contradictions=False)
-            candidate_clusters = graph_e.get_candidate_identities(camera_metadata=camera_metadata, resolve_contradictions=False)
-            for cand in candidate_clusters:
+        elif tier == "E_reid_plate_spatial":
+            for u, v in all_pairs:
+                oa, ob = obs_map[u], obs_map[v]
+                has_plate = oa.plate is not None and ob.plate is not None
+                has_reid = bool(oa.appearance_embedding and ob.appearance_embedding)
+                if has_plate or has_reid:
+                    eligible_pairs_count += 1
+
+                # Spatial speed check
+                if oa.latitude is not None and oa.longitude is not None and ob.latitude is not None and ob.longitude is not None:
+                    dist_m = geographic_distance(oa.latitude, oa.longitude, ob.latitude, ob.longitude)
+                    dt = abs(oa.timestamp_seconds - ob.timestamp_seconds)
+                    if dt > 0:
+                        speed_kmh = (dist_m / dt) * 3.6
+                        if speed_kmh > 120.0:
+                            continue
+
+                p_sim = plate_similarity(oa.plate, ob.plate) if has_plate else 0.0
+                a_sim = (appearance_similarity(oa.appearance_embedding, ob.appearance_embedding) or 0.0) if has_reid else 0.0
+                score = 0.5 * p_sim + 0.5 * a_sim
+                if score >= threshold:
+                    predicted_edges.add((u, v))
+
+        elif tier == "F_full_urbantrack":
+            graph_f = IdentityGraph(min_probability_threshold=threshold)
+            graph_f.build_graph(observations, camera_metadata=camera_metadata)
+            clusters = graph_f.get_candidate_identities(camera_metadata=camera_metadata, resolve_contradictions=True)
+            eligible_pairs_count = total_pairs_count
+            for cand in clusters:
                 c_ids = cand.get("observation_ids", [])
                 for i in range(len(c_ids)):
                     for j in range(i + 1, len(c_ids)):
                         predicted_edges.add((min(c_ids[i], c_ids[j]), max(c_ids[i], c_ids[j])))
 
-        elif tier == "F_full_urbantrack":
-            # Full system with contradiction resolution
-            graph_f = IdentityGraph(min_probability_threshold=threshold)
-            for obs in observations:
-                graph_f.add_observation(obs)
-            graph_f.build_graph(observations, camera_metadata=camera_metadata)
-            final_clusters = graph_f.get_final_identity_hypotheses(camera_metadata=camera_metadata)
-            for clus in final_clusters:
-                c_ids = clus.get("observation_ids", [])
-                for i in range(len(c_ids)):
-                    for j in range(i + 1, len(c_ids)):
-                        predicted_edges.add((min(c_ids[i], c_ids[j]), max(c_ids[i], c_ids[j])))
-
-        # Compute Pairwise Metrics
+        # Compute classification metrics against ground truth
         tp = len(predicted_edges & gt_same_pairs)
-        fp = len(predicted_edges - gt_same_pairs)
+        fp = len(predicted_edges & gt_diff_pairs)
         fn = len(gt_same_pairs - predicted_edges)
         tn = len(gt_diff_pairs - predicted_edges)
 
-        precision = (tp / (tp + fp)) if (tp + fp) > 0 else 1.0
+        precision = (tp / (tp + fp)) if (tp + fp) > 0 else 0.0
         recall = (tp / (tp + fn)) if (tp + fn) > 0 else 0.0
         f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
+        false_merge_rate = (fp / len(gt_diff_pairs)) if len(gt_diff_pairs) > 0 else 0.0
+        false_split_rate = (fn / len(gt_same_pairs)) if len(gt_same_pairs) > 0 else 0.0
 
-        false_merge_rate = (fp / len(gt_diff_pairs)) if gt_diff_pairs else 0.0
-        false_split_rate = (fn / len(gt_same_pairs)) if gt_same_pairs else 0.0
-
-        # Compute Cluster Purity via connected components of predicted_edges
-        parent = {oid: oid for oid in all_obs_ids}
-        def find(x):
-            while parent[x] != x:
-                parent[x] = parent[parent[x]]
-                x = parent[x]
-            return x
-
+        # Connected component clustering for purity calculation
+        adj: Dict[str, Set[str]] = {oid: set() for oid in all_obs_ids}
         for u, v in predicted_edges:
-            ru, rv = find(u), find(v)
-            if ru != rv:
-                parent[rv] = ru
+            adj[u].add(v)
+            adj[v].add(u)
 
-        pred_clusters: Dict[str, Set[str]] = {}
+        visited: Set[str] = set()
+        clusters_found = []
         for oid in all_obs_ids:
-            r = find(oid)
-            if r not in pred_clusters:
-                pred_clusters[r] = set()
-            pred_clusters[r].add(oid)
+            if oid not in visited:
+                comp = set()
+                q = [oid]
+                visited.add(oid)
+                while q:
+                    curr = q.pop()
+                    comp.add(curr)
+                    for nxt in adj[curr]:
+                        if nxt not in visited:
+                            visited.add(nxt)
+                            q.append(nxt)
+                clusters_found.append(comp)
 
-        # Ground truth mapping: obs_id -> ground_truth_vehicle_id
-        gt_mapping = {}
-        for v_id, o_ids in ground_truth_clusters.items():
+        # Ground truth mapping: obs_id -> true vehicle_id
+        obs_to_gt = {}
+        for veh_id, o_ids in ground_truth_clusters.items():
             for oid in o_ids:
-                gt_mapping[oid] = v_id
+                obs_to_gt[oid] = veh_id
 
-        # Cluster purity: sum of max class counts in each predicted cluster / total observations
-        purity_sum = 0
-        for r, members in pred_clusters.items():
-            class_counts = Counter(gt_mapping.get(m, "unknown") for m in members)
-            purity_sum += class_counts.most_common(1)[0][1]
+        # Cluster purity: sum of majority ground truth count / total observations
+        total_pure_obs = 0
+        for comp in clusters_found:
+            labels = [obs_to_gt[oid] for oid in comp if oid in obs_to_gt]
+            if labels:
+                most_common_cnt = Counter(labels).most_common(1)[0][1]
+                total_pure_obs += most_common_cnt
+            else:
+                total_pure_obs += len(comp)
 
-        cluster_purity = (purity_sum / n) if n > 0 else 1.0
+        purity = (total_pure_obs / n) if n > 0 else 0.0
+        coverage = (eligible_pairs_count / total_pairs_count * 100.0) if total_pairs_count > 0 else 100.0
 
         tier_results[tier] = {
-            "name": tier,
-            "description": tier_descriptions[tier],
-            "pairwise": {
-                "tp": tp,
-                "fp": fp,
-                "fn": fn,
-                "tn": tn,
-                "precision": round(precision, 4),
-                "recall": round(recall, 4),
-                "f1": round(f1, 4),
-                "false_merge_rate": round(false_merge_rate, 4),
-                "false_split_rate": round(false_split_rate, 4),
-            },
-            "clusters_formed_count": len(pred_clusters),
-            "cluster_purity": round(cluster_purity, 4),
+            "tier_name": tier,
+            "description": tier_descriptions.get(tier, ""),
+            "evaluated_pairs": total_pairs_count,
+            "eligible_pairs": eligible_pairs_count,
+            "coverage_pct": round(coverage, 2),
+            "tp": tp,
+            "fp": fp,
+            "tn": tn,
+            "fn": fn,
+            "precision": round(precision, 4),
+            "recall": round(recall, 4),
+            "f1_score": round(f1, 4),
+            "false_merge_rate": round(false_merge_rate, 4),
+            "false_split_rate": round(false_split_rate, 4),
+            "cluster_count": len(clusters_found),
+            "cluster_purity": round(purity, 4),
         }
 
     return {
-        "observations_evaluated": n,
-        "total_pairs": len(all_pairs),
-        "ground_truth_same_pairs": len(gt_same_pairs),
-        "ground_truth_diff_pairs": len(gt_diff_pairs),
+        "benchmark_name": "modality_ablation_study",
+        "threshold": threshold,
+        "n_observations": n,
+        "total_pairs": total_pairs_count,
+        "gt_same_pairs": len(gt_same_pairs),
+        "gt_diff_pairs": len(gt_diff_pairs),
         "tiers": tier_results,
     }

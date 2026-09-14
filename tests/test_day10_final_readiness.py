@@ -97,7 +97,7 @@ class TestDay10FinalReadiness(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.network_path = PROJECT_ROOT / "data" / "synthetic" / "city_network.json"
         cls.scenario_path = PROJECT_ROOT / "data" / "synthetic" / "day9_end_to_end_scenarios.json"
-        cls.real_feed_path = PROJECT_ROOT / "data" / "observations" / "kanishka_traffic.json"
+        cls.real_feed_path = PROJECT_ROOT / "data" / "legacy" / "kanishka_traffic.json"
 
         cls.road_graph = RoadGraph.from_json_file(cls.network_path)
         for i in range(1, 9):

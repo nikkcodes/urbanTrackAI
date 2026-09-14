@@ -654,18 +654,16 @@ class TestDay6MobilityAnalytics(unittest.TestCase):
 
     def test_audit_10_real_data_no_fabrication(self) -> None:
         """Audit 10: Verify real data pipeline refuses to fabricate cross-camera trajectories."""
-        from inference import load_observations_from_json, IdentityGraph
-        real_file = Path("data/observations/kanishka_traffic.json")
-        camera_metadata = {"traffic": {"latitude": 17.3850, "longitude": 78.4867}}
-        observations = load_observations_from_json(real_file, camera_metadata=camera_metadata)
+        from inference import load_member1_perception_feed, IdentityGraph
+        observations = load_member1_perception_feed()
 
-        self.assertEqual(len(observations), 2503)
+        self.assertEqual(len(observations), 39)
 
-        graph = IdentityGraph(min_probability_threshold=0.70)
-        graph.build_graph(observations, camera_metadata=camera_metadata)
+        graph = IdentityGraph(min_probability_threshold=0.75)
+        graph.build_graph(observations)
         candidate_identities = graph.get_candidate_identities()
 
-        self.assertEqual(len(candidate_identities), 2503)
+        self.assertEqual(len(candidate_identities), 39)
         multi_cams = [c for c in candidate_identities if len(c.get("observation_ids", [])) > 1]
         self.assertEqual(len(multi_cams), 0)
 

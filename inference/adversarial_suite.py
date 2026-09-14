@@ -40,6 +40,7 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
             "cam_01": {"latitude": 17.3850, "longitude": 78.4867, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
             "cam_02": {"latitude": 17.3870, "longitude": 78.4900, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
             "cam_03": {"latitude": 17.4000, "longitude": 78.5100, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
+            "cam_04": {"latitude": 17.3990, "longitude": 78.5050, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
             "cam_low_rel": {"latitude": 17.3855, "longitude": 78.4870, "reliability": 0.15, "timestamp_semantics": "synchronized", "time_reference_id": "city_sync"},
         }
 
@@ -261,9 +262,23 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
         "passed": r15["decision_state"] != "CONFIRMED",
     })
 
+    # 16. Missing camera / sparse network corridor transition
+    o16_a = Observation(camera_id="cam_01", timestamp_seconds=100.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867)
+    o16_b = Observation(camera_id="cam_04", timestamp_seconds=280.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.3990, longitude=78.5050)
+    r16 = match_observations(o16_a, o16_b, camera_metadata=camera_metadata)
+    scenarios.append({
+        "id": "ADV_16",
+        "name": "Missing camera corridor transition (Zero fabricated sightings)",
+        "expected_state": ["CONFIRMED"],
+        "actual_state": r16["decision_state"],
+        "score": r16["same_vehicle_score"],
+        "explanation": r16["explanation"],
+        "passed": r16["decision_state"] == "CONFIRMED" and r16["same_vehicle_score"] >= 0.75,
+    })
+
     passed_count = sum(1 for s in scenarios if s["passed"])
     return {
-        "suite": "ADVERSARIAL_15_SCENARIOS",
+        "suite": "ADVERSARIAL_16_SCENARIOS",
         "total_scenarios": len(scenarios),
         "passed_count": passed_count,
         "pass_rate": round(passed_count / len(scenarios), 4),

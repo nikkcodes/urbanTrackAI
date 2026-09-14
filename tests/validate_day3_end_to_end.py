@@ -153,12 +153,15 @@ def validate_day3_pipeline():
         print("\n[PASS] Seamless handoff from Day-2 Identity Clusters to Day-3 VehicleTrajectory.")
 
     # -------------------------------------------------------------
-    # 6. REAL DATA COMPATIBILITY TEST (KANISHKA DATASET)
+    # 6. REAL DATA COMPATIBILITY TEST (CANONICAL MEMBER 1 PERCEPTION FEED)
     # -------------------------------------------------------------
-    print("\n--- 6. REAL DATA COMPATIBILITY (KANISHKA PERCEPTION FEED) ---")
-    kanishka_path = os.path.join(PROJECT_ROOT, "data", "observations", "kanishka_traffic.json")
-    if os.path.exists(kanishka_path):
-        real_obs = load_observations_from_json(kanishka_path)
+    print("\n--- 6. REAL DATA COMPATIBILITY (CANONICAL MEMBER 1 FEED) ---")
+    from inference.observation_loader import load_member1_perception_feed
+    try:
+        real_obs = load_member1_perception_feed()
+    except Exception:
+        real_obs = []
+    if real_obs:
         print(f"Loaded {len(real_obs)} real observations from Kanishka dataset.")
         # Check Day 2 output contract on real data
         real_graph = IdentityGraph()

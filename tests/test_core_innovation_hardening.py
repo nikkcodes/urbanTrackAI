@@ -1013,7 +1013,7 @@ class TestX_RealKanishkaNoFabricatedMerge(unittest.TestCase):
         All observations must be unconfirmed singletons or local clusters only.
         """
         import json
-        kanishka_path = "data/observations/kanishka_traffic.json"
+        kanishka_path = "data/legacy/kanishka_traffic.json"
 
         if not os.path.exists(kanishka_path):
             self.skipTest(f"Real data file not found: {kanishka_path}")

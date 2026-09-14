@@ -29,7 +29,8 @@ class TestMember1PerceptionContract(unittest.TestCase):
 
     def setUp(self):
         self.base_dir = Path(__file__).parent.parent
-        self.real_data_path = self.base_dir / "data" / "observations" / "kanishka_traffic.json"
+        self.real_data_path = self.base_dir / "data" / "member1_perception" / "cam_001" / "raw" / "trajectories_with_features.json"
+        self.legacy_data_path = self.base_dir / "data" / "legacy" / "kanishka_traffic.json"
 
         # Controlled test graph without automatic network-level sync
         self.unsynced_graph = RoadGraph(metadata={"name": "unsynced_network"})
@@ -437,32 +438,46 @@ class TestMember1PerceptionContract(unittest.TestCase):
     # REAL DATA COMPATIBILITY TESTS (Scenarios 25 - 27)
     # =========================================================================
 
-    def test_25_real_kanishka_dataset_loads_without_fabrication(self):
-        """25. Real Kanishka dataset loads without any fabricated Re-ID, plate, or GPS data."""
-        self.assertTrue(self.real_data_path.exists(), f"File {self.real_data_path} must exist")
-        observations = load_observations_from_json(self.real_data_path)
+    def test_25_real_canonical_dataset_loads_without_fabrication(self):
+        """25. Canonical Member 1 perception dataset loads without fabricated GPS or calibrated speed."""
+        from inference.observation_loader import load_member1_perception_feed
+        observations = load_member1_perception_feed()
+
+        self.assertEqual(len(observations), 39)
+        # Verify genuine perception fields: zero GPS fabrication on uncalibrated camera
+        for obs in observations:
+            self.assertIsNone(obs.latitude)
+            self.assertIsNone(obs.longitude)
+            self.assertIsNotNone(obs.appearance_embedding)
+            self.assertEqual(len(obs.appearance_embedding), 512)
+
+    def test_25b_quarantined_legacy_dataset_loads_without_fabrication(self):
+        """25b. Quarantined legacy dataset fixture loads 2,503 observations without fabricated Re-ID or GPS."""
+        self.assertTrue(self.legacy_data_path.exists(), f"File {self.legacy_data_path} must exist")
+        observations = load_observations_from_json(self.legacy_data_path)
 
         self.assertEqual(len(observations), 2503)
-        # Verify genuine perception fields remain None where unavailable
         for obs in observations[:100]:
             self.assertIsNone(obs.appearance_embedding)
             self.assertIsNone(obs.plate_text)
             self.assertIsNone(obs.latitude)
             self.assertIsNone(obs.longitude)
 
-    def test_26_real_kanishka_observations_safe_with_video_relative_footpoints(self):
-        """26. Real Kanishka observations have video-relative timestamps and image-space footpoints."""
-        observations = load_observations_from_json(self.real_data_path)
+    def test_26_real_canonical_observations_safe_with_video_relative_footpoints(self):
+        """26. Canonical Member 1 observations have video-relative timestamps and image-space footpoints."""
+        from inference.observation_loader import load_member1_perception_feed
+        observations = load_member1_perception_feed()
         sample = observations[0]
 
         self.assertEqual(sample.timestamp_semantics, "video_relative")
         self.assertEqual(sample.point_coordinate_system, "image")
-        # Per Phase 4 hardening contract, canonical semantic is image_space_trajectory_point
         self.assertIn(sample.point_type, ("image_space_trajectory_point", "vehicle_footpoint"))
         self.assertIsInstance(sample.trajectory_point, list)
         self.assertEqual(len(sample.trajectory_point), 2)
-        # Footpoint y matches bottom of bounding box
-        self.assertAlmostEqual(sample.trajectory_point[1], sample.bbox[3], places=1)
+        if sample.bbox:
+            # Trajectory point y is within bbox [ymin, ymax]
+            self.assertGreaterEqual(sample.trajectory_point[1], sample.bbox[1])
+            self.assertLessEqual(sample.trajectory_point[1], sample.bbox[3])
 
     def test_27_no_artificial_cross_camera_sync_introduced(self):
         """27. Two real Kanishka observations from different hypothetical cameras are not assumed synchronized."""

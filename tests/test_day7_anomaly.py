@@ -445,17 +445,13 @@ class TestDay7AnomalyDetection(unittest.TestCase):
         self.assertIn("vehicle_anomalies", json_str)
         self.assertIn("VEH_D7_SLOW_02", json_str)
 
-    # 20. Real Kanishka Data Feed Non-Fabrication
+    # 20. Real Perception Data Feed Non-Fabrication
     def test_real_kanishka_data_no_fabricated_anomalies(self) -> None:
-        real_obs_path = self.base_dir / "data" / "observations" / "kanishka_traffic.json"
-        with open(real_obs_path, "r", encoding="utf-8") as rf:
-            real_data = json.load(rf)
+        from inference.observation_loader import load_member1_perception_feed
+        observations = load_member1_perception_feed()
+        self.assertEqual(len(observations), 39)
 
-        self.assertEqual(len(real_data), 2503)
-        missing_embeddings = sum(1 for o in real_data if not o.get("appearance_embedding"))
-        self.assertEqual(missing_embeddings, 2503)
-
-        # No multi-camera trajectories exist -> 0 fabricated anomalies
+        # Invariant: single camera observations produce 0 cross-camera multi-cam trajectories -> 0 fabricated anomalies
         multi_cam_trajectories: list[NormalizedTrajectory] = []
         report = self.engine.run_investigation(multi_cam_trajectories)
         self.assertEqual(report.summary["total_trajectories_evaluated"], 0)

@@ -87,7 +87,7 @@ class TestDay9EndToEndIntegration(unittest.TestCase):
         self.assertGreaterEqual(len(obs_list), 7)
 
         # Stage 2: Identity Fusion
-        id_graph = IdentityGraph(min_probability_threshold=0.70)
+        id_graph = IdentityGraph(min_probability_threshold=0.75)
         id_graph.build_graph(obs_list, camera_metadata=self.scenario_data.get("cameras"))
         clusters = id_graph.get_candidate_identities()
         self.assertGreaterEqual(len(clusters), 4)
@@ -235,7 +235,7 @@ class TestDay9IdentityRobustness(unittest.TestCase):
             appearance_embedding=[0.8] * 8,
             timestamp_semantics="synchronized",
         )
-        id_graph = IdentityGraph(min_probability_threshold=0.70)
+        id_graph = IdentityGraph(min_probability_threshold=0.75)
         id_graph.build_graph([obs1, obs2])
         clusters = id_graph.get_candidate_identities()
         self.assertEqual(len(clusters), 1)
@@ -302,7 +302,7 @@ class TestDay9IdentityRobustness(unittest.TestCase):
         # Without identity evidence, probability is 0.50 (ambiguous unconfirmed), below 0.70 threshold
         self.assertEqual(match_res["same_vehicle_probability"], 0.50)
 
-        id_graph = IdentityGraph(min_probability_threshold=0.70)
+        id_graph = IdentityGraph(min_probability_threshold=0.75)
         id_graph.build_graph([obs1, obs2])
         clusters = id_graph.get_candidate_identities()
         self.assertEqual(len(clusters), 2, "Unconfirmed observations must remain isolated singletons")
@@ -409,7 +409,7 @@ class TestDay9MixedQualityAndMissingData(unittest.TestCase):
         self.assertEqual(len(invalid), 1, "Vehicle E should be caught as invalid input")
         self.assertEqual(len(processed), 6, "Valid records should be successfully loaded")
 
-        id_graph = IdentityGraph(min_probability_threshold=0.70)
+        id_graph = IdentityGraph(min_probability_threshold=0.75)
         id_graph.build_graph(processed)
         clusters = id_graph.get_candidate_identities()
 
@@ -620,24 +620,19 @@ class TestDay9SerializationFidelity(unittest.TestCase):
 
 
 class TestDay9RealDataSafetyBoundary(unittest.TestCase):
-    """Verify real-data zero-fabrication safety invariants on Kanishka's dataset."""
+    """Verify real-data zero-fabrication safety invariants on canonical perception dataset."""
 
     def test_real_data_produces_isolated_singletons_without_fabrication(self):
-        """Real Kanishka observations lacking Re-ID & plates must safely remain singletons."""
-        real_data_path = PROJECT_ROOT / "data" / "observations" / "kanishka_traffic.json"
-        if not real_data_path.is_file():
-            self.skipTest("Real dataset not present")
+        """Canonical Member 1 observations without cross-camera links safely remain single-camera clusters."""
+        from inference.observation_loader import load_member1_perception_feed
+        obs_list = load_member1_perception_feed()
 
-        with open(real_data_path, "r", encoding="utf-8") as f:
-            raw_data = json.load(f)
-
-        obs_list = load_observations_from_json(raw_data[:20])  # Evaluate first 20 observations
-        id_graph = IdentityGraph(min_probability_threshold=0.70)
+        id_graph = IdentityGraph(min_probability_threshold=0.75)
         id_graph.build_graph(obs_list)
         clusters = id_graph.get_candidate_identities()
 
-        # Invariant: Insufficient identity evidence must NOT produce fabricated merges
-        self.assertEqual(len(clusters), len(obs_list), "Real data lacking Re-ID/plate evidence must safely remain isolated singletons")
+        # Invariant: Single-camera observations without cross-camera matches produce zero false multi-camera merges
+        self.assertEqual(len(clusters), len(obs_list), "Single camera real data must safely remain distinct tracklet clusters")
         for c in clusters:
             self.assertEqual(len(c["member_observations"]), 1)
 

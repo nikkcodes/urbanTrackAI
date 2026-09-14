@@ -148,102 +148,52 @@ class IdentityGraph:
 
         max_speed_kmh = float(config.get("max_plausible_speed_kmh", 120.0))
 
-        for i in range(n):
-            obs_a = obs_list[i]
-            has_id_a = (obs_a.appearance_embedding is not None and len(obs_a.appearance_embedding) > 0) or (obs_a.plate is not None)
+        if enable_pruning:
+            from .candidate_generation import CandidateGenerator
+            generator = CandidateGenerator(
+                max_speed_kmh=max_speed_kmh,
+                min_probability_threshold=self.min_threshold,
+                camera_metadata=camera_metadata,
+                config=config,
+            )
+            candidate_pairs, rejection_counts = generator.generate_candidates(obs_list)
+            pair_iterable = candidate_pairs
+        else:
+            pair_iterable = [(obs_list[i], obs_list[j]) for i in range(n) for j in range(i + 1, n)]
 
-            for j in range(i + 1, n):
-                obs_b = obs_list[j]
-                has_id_b = (obs_b.appearance_embedding is not None and len(obs_b.appearance_embedding) > 0) or (obs_b.plate is not None)
+        for obs_a, obs_b in pair_iterable:
+            # Ensure chronological ordering A -> B for pairwise evaluation
+            if obs_a.timestamp_seconds > obs_b.timestamp_seconds:
+                eval_a, eval_b = obs_b, obs_a
+            else:
+                eval_a, eval_b = obs_a, obs_b
 
-                # Safe deterministic pruning: only prune when mathematically/physically impossible to match
-                if enable_pruning:
-                    # 1. Missing identity evidence on both observations when threshold > 0.50
-                    if self.min_threshold > 0.50 and not (has_id_a or has_id_b):
-                        self._record_rejection(
-                            obs_a.observation_id, obs_b.observation_id,
-                            "pruned_missing_identity_evidence",
-                            "Missing identity evidence on both observations with threshold > 0.50.",
-                            0.0,
-                        )
-                        continue
+            match_result = match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config)
+            prob = float(match_result["same_vehicle_probability"])
+            has_id_ev = match_result.get("evidence", {}).get("identity_evidence_available", True)
 
-                    # 2. Incompatible vehicle types (when both types are known, non-empty, and incompatible)
-                    if obs_a.vehicle_type and obs_b.vehicle_type:
-                        from .similarity import vehicle_type_compatibility
-                        _, v_stat = vehicle_type_compatibility(obs_a.vehicle_type, obs_b.vehicle_type)
-                        if v_stat == "incompatible":
-                            self._record_rejection(
-                                obs_a.observation_id, obs_b.observation_id,
-                                "pruned_incompatible_vehicle_type",
-                                f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}).",
-                                0.0,
-                            )
-                            continue
-
-                    # 3. Physically impossible speed over known coordinates
-                    if (
-                        obs_a.latitude is not None and obs_a.longitude is not None
-                        and obs_b.latitude is not None and obs_b.longitude is not None
-                    ):
-                        from .temporal import check_temporal_comparability
-                        t_check = check_temporal_comparability(obs_a, obs_b, camera_metadata=camera_metadata)
-                        if t_check.get("comparable"):
-                            dt = abs(t_check.get("delta_seconds", 0.0))
-                            if dt > 0:
-                                from .similarity import geographic_distance
-                                dist_m = geographic_distance(obs_a.latitude, obs_a.longitude, obs_b.latitude, obs_b.longitude)
-                                speed_kmh = (dist_m / dt) * 3.6
-                                if speed_kmh > max_speed_kmh:
-                                    self._record_rejection(
-                                        obs_a.observation_id, obs_b.observation_id,
-                                        "pruned_impossible_speed",
-                                        f"Physically impossible speed ({speed_kmh:.1f} km/h > {max_speed_kmh:.1f} km/h).",
-                                        0.0,
-                                    )
-                                    continue
-                            elif obs_a.camera_id != obs_b.camera_id:
-                                # Simultaneous on different cameras with shared clock
-                                self._record_rejection(
-                                    obs_a.observation_id, obs_b.observation_id,
-                                    "pruned_simultaneous_different_cameras",
-                                    f"Simultaneous observations on different cameras ({obs_a.camera_id} vs {obs_b.camera_id}).",
-                                    0.0,
-                                )
-                                continue
-
-                # Ensure chronological ordering A -> B for pairwise evaluation
-                if obs_a.timestamp_seconds > obs_b.timestamp_seconds:
-                    eval_a, eval_b = obs_b, obs_a
+            # Form edge only if probability meets threshold AND positive identity evidence is present
+            if prob >= self.min_threshold and has_id_ev:
+                edge_data = {
+                    "source": obs_a.observation_id,
+                    "target": obs_b.observation_id,
+                    "probability": prob,
+                    "evidence": match_result["evidence"],
+                    "evidence_ledger": match_result.get("evidence_ledger"),
+                    "explanation": match_result["explanation"],
+                }
+                self.edges.append(edge_data)
+                self.adjacency[obs_a.observation_id].append((obs_b.observation_id, prob))
+                self.adjacency[obs_b.observation_id].append((obs_a.observation_id, prob))
+            else:
+                expl = match_result.get("explanation", "")
+                if prob < self.min_threshold:
+                    tag = "below_threshold"
+                    reason = f"Estimated probability {prob:.4f} is below configured threshold {self.min_threshold:.2f}. {expl}"
                 else:
-                    eval_a, eval_b = obs_a, obs_b
-
-                match_result = match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config)
-                prob = float(match_result["same_vehicle_probability"])
-                has_id_ev = match_result.get("evidence", {}).get("identity_evidence_available", True)
-
-                # Form edge only if probability meets threshold AND positive identity evidence is present
-                if prob >= self.min_threshold and has_id_ev:
-                    edge_data = {
-                        "source": obs_a.observation_id,
-                        "target": obs_b.observation_id,
-                        "probability": prob,
-                        "evidence": match_result["evidence"],
-                        "evidence_ledger": match_result.get("evidence_ledger"),
-                        "explanation": match_result["explanation"],
-                    }
-                    self.edges.append(edge_data)
-                    self.adjacency[obs_a.observation_id].append((obs_b.observation_id, prob))
-                    self.adjacency[obs_b.observation_id].append((obs_a.observation_id, prob))
-                else:
-                    expl = match_result.get("explanation", "")
-                    if prob < self.min_threshold:
-                        tag = "below_threshold"
-                        reason = f"Estimated probability {prob:.4f} is below configured threshold {self.min_threshold:.2f}. {expl}"
-                    else:
-                        tag = "insufficient_identity_evidence"
-                        reason = f"Probability {prob:.4f} meets threshold but lacked positive identity evidence (both plate & appearance missing/invalid)."
-                    self._record_rejection(obs_a.observation_id, obs_b.observation_id, tag, reason, prob)
+                    tag = "insufficient_identity_evidence"
+                    reason = f"Probability {prob:.4f} meets threshold but lacked positive identity evidence (both plate & appearance missing/invalid)."
+                self._record_rejection(obs_a.observation_id, obs_b.observation_id, tag, reason, prob)
 
         # Deterministic sorting of adjacency lists: decreasing by probability, then neighbor ID
         for nid in self.adjacency:
