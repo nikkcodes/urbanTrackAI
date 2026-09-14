@@ -246,6 +246,13 @@ def run_ablation_study(
             "false_split_rate": round(false_split_rate, 4),
             "cluster_count": len(clusters_found),
             "cluster_purity": round(purity, 4),
+            "pairwise": {
+                "false_merge_rate": round(false_merge_rate, 4),
+                "false_split_rate": round(false_split_rate, 4),
+                "precision": round(precision, 4),
+                "recall": round(recall, 4),
+                "f1_score": round(f1, 4),
+            },
         }
 
     return {

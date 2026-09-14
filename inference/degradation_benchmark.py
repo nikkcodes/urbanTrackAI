@@ -94,6 +94,8 @@ def evaluate_plate_dropout_curve(
             "actual_dropped_count": dropped_count,
             "tp": tp,
             "fp": fp,
+            "false_merges": fp,
+            "false_splits": fn,
             "fn": fn,
             "tn": tn,
             "precision": round(prec, 4),
@@ -177,6 +179,8 @@ def evaluate_reid_dropout_curve(
             "actual_dropped_count": dropped_count,
             "tp": tp,
             "fp": fp,
+            "false_merges": fp,
+            "false_splits": fn,
             "fn": fn,
             "tn": tn,
             "precision": round(prec, 4),
@@ -283,6 +287,10 @@ def run_full_degradation_benchmark(
         "plate_dropout_curve": plate_results,
         "reid_dropout_curve": reid_results,
         "camera_reliability_curve": reliability_results,
+        "camera_network_dropout_curve": reliability_results,
         "measured_max_false_merge_rate": round(max_fmr, 4),
         "dynamic_conclusion": dynamic_conclusion,
     }
+
+# Backwards compatibility alias
+evaluate_camera_network_dropout = evaluate_camera_reliability_attenuation

@@ -351,3 +351,171 @@ def benchmark_candidate_scaling(
         "evaluations": results,
     }
 
+
+
+def benchmark_end_to_end_scalability(
+    counts: Optional[List[int]] = None,
+    repetitions: int = 3,
+) -> Dict[str, Any]:
+    """
+    Fair end-to-end scalability benchmark comparing:
+    1. Baseline Naive Pipeline: All N*(N-1)/2 pairs -> IdentityFusion -> IdentityGraph construction
+    2. Optimized Production Pipeline: CandidateGenerator -> Candidate IdentityFusion -> IdentityGraph construction
+
+    Measures median and p95 runtimes across both candidate generation, fusion, and graph assembly.
+    """
+    import random
+    import statistics
+    from datetime import datetime
+    from .identity_graph import IdentityGraph
+
+    if counts is None:
+        counts = [50, 100, 200, 500]
+
+    vehicle_types = ['car', 'truck', 'bus', 'motorcycle']
+    evaluations = []
+
+    for n in counts:
+        # Build synthetic observations
+        test_obs = []
+        for i in range(n):
+            cam_idx = (i % 4) + 1
+            t_sec = float(i * 10.0)
+            vtype = vehicle_types[i % len(vehicle_types)]
+            emb = [random.uniform(-0.1, 0.1) for _ in range(8)]
+            plate = f'KA01TEST{i % 20:02d}' if (i % 3 != 0) else None
+            test_obs.append(
+                Observation(
+                    observation_id=f'E2E_OBS_{i:04d}',
+                    camera_id=f'CAM_{cam_idx:02d}',
+                    timestamp=datetime.fromtimestamp(1000.0 + t_sec),
+                    timestamp_seconds=1000.0 + t_sec,
+                    vehicle_type=vtype,
+                    plate=plate,
+                    plate_confidence=0.90 if plate else None,
+                    appearance_embedding=emb,
+                    timestamp_semantics='synchronized',
+                    time_reference_id='city_network_sync',
+                )
+            )
+
+        total_pairs = (n * (n - 1)) // 2
+
+        # 1. Baseline Full Pipeline Repetitions
+        base_runtimes = []
+        base_fusion_runtimes = []
+        base_graph_runtimes = []
+        base_fused_count = 0
+        base_edges = 0
+
+        for _ in range(repetitions):
+            t_start = time.perf_counter()
+            # Naive pair enumeration
+            pairs = [(test_obs[i], test_obs[j]) for i in range(n) for j in range(i + 1, n)]
+            t_fusion_start = time.perf_counter()
+            fused_res = [match_observations(a, b) for a, b in pairs]
+            t_fusion = (time.perf_counter() - t_fusion_start) * 1000.0
+
+            t_graph_start = time.perf_counter()
+            g_base = IdentityGraph(min_probability_threshold=0.75)
+            g_base.build_graph_reference(test_obs)
+            _ = g_base.get_candidate_identities()
+            t_graph = (time.perf_counter() - t_graph_start) * 1000.0
+            t_total = (time.perf_counter() - t_start) * 1000.0
+
+            base_runtimes.append(t_total)
+            base_fusion_runtimes.append(t_fusion)
+            base_graph_runtimes.append(t_graph)
+            base_fused_count = len(pairs)
+            base_edges = len(g_base.edges)
+
+        # 2. Optimized Candidate Pipeline Repetitions
+        opt_runtimes = []
+        opt_gen_runtimes = []
+        opt_fusion_runtimes = []
+        opt_graph_runtimes = []
+        candidates_count = 0
+        opt_edges = 0
+
+        generator = CandidateGenerator(max_speed_kmh=120.0, max_time_window_seconds=1800.0)
+
+        for _ in range(repetitions):
+            t_start = time.perf_counter()
+            t_gen_start = time.perf_counter()
+            candidates, _ = generator.generate_candidates(test_obs)
+            t_gen = (time.perf_counter() - t_gen_start) * 1000.0
+
+            t_fusion_start = time.perf_counter()
+            fused_res = [match_observations(a, b) for a, b in candidates]
+            t_fusion = (time.perf_counter() - t_fusion_start) * 1000.0
+
+            t_graph_start = time.perf_counter()
+            g_opt = IdentityGraph(min_probability_threshold=0.75)
+            g_opt.build_graph(test_obs)
+            _ = g_opt.get_candidate_identities()
+            t_graph = (time.perf_counter() - t_graph_start) * 1000.0
+            t_total = (time.perf_counter() - t_start) * 1000.0
+
+            opt_runtimes.append(t_total)
+            opt_gen_runtimes.append(t_gen)
+            opt_fusion_runtimes.append(t_fusion)
+            opt_graph_runtimes.append(t_graph)
+            candidates_count = len(candidates)
+            opt_edges = len(g_opt.edges)
+
+        # Calculate candidate recall of true identical plates within plausible window
+        candidate_pair_ids = set((min(a.observation_id, b.observation_id), max(a.observation_id, b.observation_id)) for a, b in candidates)
+        true_matches_total = 0
+        true_matches_found = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                oa, ob = test_obs[i], test_obs[j]
+                if oa.plate and ob.plate and oa.plate == ob.plate and abs(oa.timestamp_seconds - ob.timestamp_seconds) <= 1800.0:
+                    true_matches_total += 1
+                    pid = (min(oa.observation_id, ob.observation_id), max(oa.observation_id, ob.observation_id))
+                    if pid in candidate_pair_ids:
+                        true_matches_found += 1
+
+        candidate_recall = (true_matches_found / true_matches_total * 100.0) if true_matches_total > 0 else 100.0
+        pruned_pairs = total_pairs - candidates_count
+        reduction_pct = (pruned_pairs / total_pairs * 100.0) if total_pairs > 0 else 0.0
+
+        base_med = statistics.median(base_runtimes)
+        opt_med = statistics.median(opt_runtimes)
+        base_p95 = sorted(base_runtimes)[int(0.95 * len(base_runtimes))]
+        opt_p95 = sorted(opt_runtimes)[int(0.95 * len(opt_runtimes))]
+        speedup = (base_med / opt_med) if opt_med > 0 else 1.0
+
+        evaluations.append({
+            'n_observations': n,
+            'theoretical_pairs': total_pairs,
+            'candidates_generated': candidates_count,
+            'pruned_pairs': pruned_pairs,
+            'reduction_pct': round(reduction_pct, 2),
+            'candidate_recall_pct': round(candidate_recall, 2),
+            'baseline_pipeline': {
+                'total_runtime_median_ms': round(base_med, 2),
+                'total_runtime_p95_ms': round(base_p95, 2),
+                'fusion_runtime_median_ms': round(statistics.median(base_fusion_runtimes), 2),
+                'graph_runtime_median_ms': round(statistics.median(base_graph_runtimes), 2),
+                'fused_pairs_count': base_fused_count,
+                'final_edges': base_edges,
+            },
+            'optimized_pipeline': {
+                'total_runtime_median_ms': round(opt_med, 2),
+                'total_runtime_p95_ms': round(opt_p95, 2),
+                'candidate_gen_median_ms': round(statistics.median(opt_gen_runtimes), 2),
+                'fusion_runtime_median_ms': round(statistics.median(opt_fusion_runtimes), 2),
+                'graph_runtime_median_ms': round(statistics.median(opt_graph_runtimes), 2),
+                'fused_pairs_count': candidates_count,
+                'final_edges': opt_edges,
+            },
+            'speedup_factor': round(speedup, 2),
+        })
+
+    return {
+        'benchmark_name': 'fair_end_to_end_scalability_benchmark',
+        'repetitions': repetitions,
+        'timestamp': datetime.now().isoformat(),
+        'evaluations': evaluations,
+    }

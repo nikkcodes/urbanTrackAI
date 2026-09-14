@@ -58,7 +58,7 @@ from .trajectory_engine import (
     reconstruct_trajectory_segment,
 )
 
-from .candidate_generation import CandidateGenerationReport, CandidateGenerator, benchmark_candidate_scaling
+from .candidate_generation import CandidateGenerationReport, CandidateGenerator, benchmark_candidate_scaling, benchmark_end_to_end_scalability
 from .tracklet_engine import (
     Tracklet,
     aggregate_observations_into_tracklets,
@@ -131,6 +131,7 @@ __all__ = [
     "CandidateGenerator",
     "CandidateGenerationReport",
     "benchmark_candidate_scaling",
+    "benchmark_end_to_end_scalability",
     "Tracklet",
     "aggregate_observations_into_tracklets",
     "aggregate_plate_votes",
