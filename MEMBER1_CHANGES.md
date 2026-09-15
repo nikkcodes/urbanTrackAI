@@ -266,3 +266,72 @@ them in separate files means:
   repeated on every frame.
 - Downstream consumers can load camera context once, independently of
   the streaming observation data.
+
+## Synthetic Benchmark Dataset
+
+A separate synthetic degradation generator
+(`perception/synthetic_degradation.py`) produces degraded copies of the
+real perception observations for benchmarking downstream identity fusion.
+It is **only for benchmarking** and is completely isolated from the real
+perception outputs.
+
+### Purpose
+
+Member 1 exports only local, camera-local observations. To stress-test
+Member 2's identity fusion, this module applies controlled, reversible
+degradations to copies of the real data -- it never fabricates detections,
+plates, embeddings, or GPS values, and it only removes or weakens existing
+observed information.
+
+### Separation from real data
+
+- Real outputs live in `data/output/` (`observations.json`,
+  `trajectories.json`, `camera_metrics.json`, `perception_summary.json`).
+- Synthetic outputs live in `data/synthetic_output/`
+  (`observations_degraded.json`, `trajectories_degraded.json`,
+  `degradation_summary.json`).
+- The generator never writes to `data/output/` and never modifies the real
+  perception pipeline, YOLO, ByteTrack, OCR, Re-ID, trajectory generation,
+  or camera metrics.
+
+### Supported degradation types
+
+- **Missing plate** — `plate_number` and `plate_text_confidence` set to
+  `null`; `plate_bbox` may remain.
+- **OCR failure** — `plate_number` and `ocr_confidence` set to `null`.
+- **Low OCR confidence** — detected text preserved, confidence reduced.
+- **Missing Re-ID embedding** — `appearance_embedding` and
+  `embedding_quality` set to `null` for selected tracks.
+- **Occluded vehicle** — `occluded: true`; detection confidence reduced to
+  a configurable bound.
+- **Detection confidence degradation** — confidence lowered, always kept
+  within `[0, 1]`.
+- **Track fragmentation** — selected observations removed from a track
+  while preserving `track_id`, making it discontinuous.
+- **Dropped frames** — complete frame observations removed by a
+  configurable probability.
+- **Camera outage** — all observations removed for configurable frame
+  ranges, recorded in the summary.
+
+### Provenance
+
+Every degraded observation carries `synthetic: true` and a
+`degradation_tags` list (e.g. `["missing_plate", "occlusion"]`). Multiple
+degradations may coexist. Real observations never contain these fields.
+
+### Reproducibility using seeds
+
+Generation is driven by `random.Random(seed)`. Running twice with the same
+seed produces byte-identical degraded outputs; only the summary's
+`generation_timestamp` differs. CLI:
+
+```
+python -m perception.synthetic_degradation --seed 42
+```
+
+### Configuration
+
+Degradation probabilities live in `perception/config.py` under
+`SYNTHETIC_*`. `SYNTHETIC_ENABLE` defaults to `True`; the rates are
+conservative (`0.02`–`0.10`) so generation is lightweight by default.
+Synthetic outputs are **not** real observations.
