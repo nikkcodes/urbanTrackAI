@@ -62,23 +62,27 @@ OCR_MODEL = "easyocr"
 FPS_SOURCE = "video_metadata"
 
 # Synthetic degradation benchmark configuration.
-# Disabled by default to ensure the real perception pipeline always exports
-# genuine observations unless synthetic benchmark generation is explicitly enabled.
-SYNTHETIC_ENABLE = False
+# Enabled by default; rates are conservative (0.02-0.10) so generation is
+# lightweight. Synthetic outputs never affect the real perception outputs
+# in data/output/.
+SYNTHETIC_ENABLE = True
 
 SYNTHETIC_INPUT_DIR = "data/output"
 SYNTHETIC_OUTPUT_DIR = "data/synthetic_output"
 
-# Default probabilities (all disabled until enabled for benchmarking)
-SYNTHETIC_DROP_FRAME_RATE = 0.0
-SYNTHETIC_MISSING_PLATE_RATE = 0.0
-SYNTHETIC_OCR_FAILURE_RATE = 0.0
-SYNTHETIC_LOW_OCR_RATE = 0.0
-SYNTHETIC_MISSING_REID_RATE = 0.0
-SYNTHETIC_OCCLUSION_RATE = 0.0
-SYNTHETIC_CONFIDENCE_DEGRADATION_RATE = 0.0
-SYNTHETIC_TRACK_FRAGMENT_RATE = 0.0
-SYNTHETIC_CAMERA_OUTAGE_RATE = 0.0
+# Conservative benchmark settings
+SYNTHETIC_DROP_FRAME_RATE = 0.05
+SYNTHETIC_MISSING_PLATE_RATE = 0.10
+SYNTHETIC_OCR_FAILURE_RATE = 0.00
+SYNTHETIC_LOW_OCR_RATE = 0.08
+SYNTHETIC_MISSING_REID_RATE = 0.08
+SYNTHETIC_OCCLUSION_RATE = 0.08
+SYNTHETIC_CONFIDENCE_DEGRADATION_RATE = 0.00
+SYNTHETIC_TRACK_FRAGMENT_RATE = 0.05
+SYNTHETIC_CAMERA_OUTAGE_RATE = 0.02
+SYNTHETIC_OCCLUSION_CONFIDENCE_MIN = 0.10
+SYNTHETIC_OCCLUSION_CONFIDENCE_MAX = 0.40
+SYNTHETIC_CONFIDENCE_DEGRADATION_MIN = 0.30
 
 SYNTHETIC_OCCLUSION_CONFIDENCE_MIN = 0.10
 SYNTHETIC_OCCLUSION_CONFIDENCE_MAX = 0.40

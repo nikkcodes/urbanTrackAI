@@ -1,3 +1,9 @@
+**Version:** Member 1 Interface v1.0 (SIH 2026 Freeze)
+
+**Module Owner:** Member 1 – Perception Layer
+
+**Last Updated:** September 2026
+
 # MEMBER1 CHANGES — Observation Schema + Provenance
 
 Ticket A: strengthen the observation schema and provenance layer without
@@ -331,7 +337,44 @@ python -m perception.synthetic_degradation --seed 42
 
 ### Configuration
 
-Degradation probabilities live in `perception/config.py` under
-`SYNTHETIC_*`. `SYNTHETIC_ENABLE` defaults to `True`; the rates are
-conservative (`0.02`–`0.10`) so generation is lightweight by default.
-Synthetic outputs are **not** real observations.
+Synthetic benchmark generation is **disabled by default** in `perception/config.py`.
+
+`SYNTHETIC_ENABLE` must be explicitly set to `True` before running:
+
+```bash
+python -m perception.synthetic_degradation --seed 42
+```
+
+All degradation probabilities default to `0.0` in the repository to ensure the real perception pipeline always exports genuine observations unless benchmark generation is intentionally enabled.
+
+## Integration Contract (Member 1 → Member 2)
+
+Member 1 exports camera-local perception observations only.
+
+### Guaranteed Outputs
+
+- observations.json
+- trajectories.json
+- camera_metrics.json
+- perception_summary.json
+- camera_metadata.json
+
+### Identity Rules
+
+- Local vehicle identity = (`camera_id`, `track_id`)
+- Appearance embeddings are genuine OSNet embeddings.
+- OCR outputs are genuine EasyOCR results or `null`.
+- Missing information remains `null`; it is never fabricated.
+
+### Responsibilities Deferred to Member 2
+
+Member 2 consumes these observation records and performs:
+
+- Cross-camera identity fusion.
+- Bayesian candidate matching.
+- Global vehicle identity assignment.
+- Trajectory reconstruction across cameras.
+- Route probability estimation.
+- City-wide analytics and anomaly detection.
+
+This separation is intentional to keep the perception layer reproducible and independently testable.
