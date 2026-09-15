@@ -1,0 +1,67 @@
+{
+  "CAM_NORTH_01": {
+    "camera_id": "CAM_NORTH_01",
+    "name": "North Entry Junction",
+    "latitude": 17.398,
+    "longitude": 78.485,
+    "reliability": 0.95,
+    "fps": 30.0,
+    "resolution": [
+      3840,
+      2160
+    ],
+    "time_reference_id": "city_network_sync"
+  },
+  "CAM_NORTH_02": {
+    "camera_id": "CAM_NORTH_02",
+    "name": "Northern Arterial",
+    "latitude": 17.393,
+    "longitude": 78.486,
+    "reliability": 0.92,
+    "fps": 30.0,
+    "resolution": [
+      3840,
+      2160
+    ],
+    "time_reference_id": "city_network_sync"
+  },
+  "CAM_CENTRAL_01": {
+    "camera_id": "CAM_CENTRAL_01",
+    "name": "City Center Junction",
+    "latitude": 17.388,
+    "longitude": 78.487,
+    "reliability": 0.88,
+    "fps": 30.0,
+    "resolution": [
+      3840,
+      2160
+    ],
+    "time_reference_id": "city_network_sync"
+  },
+  "CAM_SOUTH_01": {
+    "camera_id": "CAM_SOUTH_01",
+    "name": "South Commercial Hub",
+    "latitude": 17.383,
+    "longitude": 78.488,
+    "reliability": 0.85,
+    "fps": 30.0,
+    "resolution": [
+      3840,
+      2160
+    ],
+    "time_reference_id": "city_network_sync"
+  },
+  "CAM_SOUTH_02": {
+    "camera_id": "CAM_SOUTH_02",
+    "name": "South Ring Exit",
+    "latitude": 17.378,
+    "longitude": 78.489,
+    "reliability": 0.94,
+    "fps": 30.0,
+    "resolution": [
+      3840,
+      2160
+    ],
+    "time_reference_id": "city_network_sync"
+  }
+}

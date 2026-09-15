@@ -1,0 +1,18 @@
+{
+  "dataset_name": "multicamera_v1",
+  "dataset_type": "synthetic_controlled",
+  "generation_timestamp": "2026-09-15T11:07:05.021897",
+  "total_cameras": 5,
+  "total_latent_vehicles": 150,
+  "total_observations": 1500,
+  "total_labeled_pairs": 13750,
+  "positive_pairs": 6750,
+  "hard_negative_pairs": 2000,
+  "camera_topology": [
+    "CAM_NORTH_01",
+    "CAM_NORTH_02",
+    "CAM_CENTRAL_01",
+    "CAM_SOUTH_01",
+    "CAM_SOUTH_02"
+  ]
+}

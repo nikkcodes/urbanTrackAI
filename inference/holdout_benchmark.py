@@ -26,38 +26,49 @@ def generate_corridor_split(
     cameras: List[Dict[str, Any]],
     start_time: float = 1000.0,
     prefix: str = "DEV",
+    num_hard_negatives: int = 2,
 ) -> Tuple[List[Observation], Dict[str, List[str]]]:
+    """
+    Generate deterministic benchmark split with empirical OSNet 512-D prototypes,
+    realistic Indian registration plates, difficulty tiers, and hard negatives.
+    """
+    from .benchmark.generator import load_empirical_osnet_prototypes
+    from .benchmark.difficulty import DifficultyTier, perturb_plate_text, perturb_embedding, sample_tier
+
     rng = random.Random(seed)
     observations: List[Observation] = []
     ground_truth_clusters: Dict[str, List[str]] = {}
 
-    vehicle_types = ["car", "truck", "bus", "motorcycle"]
-    plate_chars = "ABCDEFGHJKLMNPRSTUVWXYZ0123456789"
+    state_codes = ["MH", "KA", "TS", "DL"]
+    vehicle_types = ["car", "car", "motorcycle", "truck", "bus"]
+    osnet_protos = load_empirical_osnet_prototypes()
 
-    for v_idx in range(num_vehicles):
+    def _make_plate(state: str, num: int) -> str:
+        series = chr(65 + (num // 1000) % 26) + chr(65 + (num // 100) % 26)
+        rto = f"{(num % 90) + 1:02d}"
+        seq = f"{num % 9000 + 1000:04d}"
+        return f"{state}{rto}{series}{seq}"
+
+    # 1. Regular vehicles
+    n_reg = max(2, num_vehicles - num_hard_negatives * 2)
+    for v_idx in range(n_reg):
         veh_id = f"{prefix}_VEH_{v_idx:03d}"
         ground_truth_clusters[veh_id] = []
         v_type = rng.choice(vehicle_types)
-
-        plate = "".join(rng.choice(plate_chars) for _ in range(8))
-        base_embedding = [rng.gauss(0.0, 1.0) for _ in range(16)]
-        norm = math.sqrt(sum(x * x for x in base_embedding))
-        base_embedding = [x / norm for x in base_embedding]
+        plate = _make_plate(rng.choice(state_codes), 1000 + v_idx * 17)
+        proto = rng.choice(osnet_protos)
 
         num_cams_visited = rng.randint(2, len(cameras))
         visited_cams = cameras[:num_cams_visited]
-        current_time = start_time + v_idx * 45.0 + rng.uniform(-5.0, 5.0)
+        current_time = start_time + v_idx * 60.0 + rng.uniform(-5.0, 5.0)
 
         for c_idx, cam in enumerate(visited_cams):
             obs_id = f"{prefix}_OBS_{v_idx:03d}_C{c_idx+1:02d}"
             ground_truth_clusters[veh_id].append(obs_id)
 
-            has_plate = rng.random() > 0.15
-            obs_plate = plate if has_plate else None
-
-            noisy_emb = [x + rng.gauss(0.0, 0.05) for x in base_embedding]
-            n_norm = math.sqrt(sum(x * x for x in noisy_emb))
-            noisy_emb = [x / n_norm for x in noisy_emb]
+            tier = sample_tier(rng)
+            obs_plate, plate_conf = perturb_plate_text(plate, tier, rng=rng)
+            noisy_emb, emb_q = perturb_embedding(proto, tier, rng=rng)
 
             if c_idx > 0:
                 dist_m = 400.0
@@ -74,12 +85,57 @@ def generate_corridor_split(
                 longitude=cam.get("longitude"),
                 vehicle_type=v_type,
                 plate=obs_plate,
-                plate_confidence=0.92 if obs_plate else None,
+                plate_confidence=plate_conf,
+                ocr_confidence=plate_conf,
                 appearance_embedding=noisy_emb,
+                source_provenance={"reid_model": "osnet_x0_25_msmt17", "embedding_quality": emb_q},
                 timestamp_semantics="synchronized",
                 time_reference_id="city_network_sync",
             )
             observations.append(obs)
+
+    # 2. Hard negative vehicle pairs (unseen twins sharing visual prototype but distinct plates)
+    for h in range(num_hard_negatives):
+        shared_proto = rng.choice(osnet_protos)
+        for twin in [1, 2]:
+            veh_id = f"{prefix}_HN_{h:02d}_T{twin}"
+            ground_truth_clusters[veh_id] = []
+            plate = _make_plate("MH" if twin == 1 else "DL", 5000 + h * 50 + twin * 25)
+            num_cams_visited = rng.randint(2, len(cameras))
+            visited_cams = cameras[:num_cams_visited]
+            current_time = start_time + (n_reg + h) * 60.0 + (twin - 1) * 45.0
+
+            for c_idx, cam in enumerate(visited_cams):
+                obs_id = f"{prefix}_HN_OBS_{h:02d}_T{twin}_C{c_idx+1:02d}"
+                ground_truth_clusters[veh_id].append(obs_id)
+
+                tier = sample_tier(rng)
+                obs_plate, plate_conf = perturb_plate_text(plate, tier, rng=rng)
+                noisy_emb, emb_q = perturb_embedding(shared_proto, tier, rng=rng)
+
+                if c_idx > 0:
+                    dist_m = 400.0
+                    speed_mps = rng.uniform(10.0, 15.0)
+                    travel_time = dist_m / speed_mps
+                    current_time += travel_time
+
+                obs = Observation(
+                    observation_id=obs_id,
+                    camera_id=cam["camera_id"],
+                    timestamp=datetime.fromtimestamp(current_time),
+                    timestamp_seconds=round(current_time, 2),
+                    latitude=cam.get("latitude"),
+                    longitude=cam.get("longitude"),
+                    vehicle_type="car",
+                    plate=obs_plate,
+                    plate_confidence=plate_conf,
+                    ocr_confidence=plate_conf,
+                    appearance_embedding=noisy_emb,
+                    source_provenance={"reid_model": "osnet_x0_25_msmt17", "embedding_quality": emb_q},
+                    timestamp_semantics="synchronized",
+                    time_reference_id="city_network_sync",
+                )
+                observations.append(obs)
 
     return observations, ground_truth_clusters
 

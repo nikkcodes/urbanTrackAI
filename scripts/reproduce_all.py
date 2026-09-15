@@ -159,6 +159,15 @@ def main():
     report_data["stages"]["stage_7_train_holdout_benchmark"] = holdout_res
     print(f"    Status: COMPLETED (Dev tau*={holdout_res['dev_split']['optimal_threshold']:.2f}, Holdout F1={holdout_res['holdout_split']['metrics']['f1_score']:.4f})")
 
+    print(">>> STAGE 7B: Independent Multi-Camera Benchmark Evaluation (multicamera_v1)...")
+    from inference.benchmark.runner import run_multicamera_benchmark
+    mc_bench_res = run_multicamera_benchmark(
+        data_dir=PROJECT_ROOT / "data" / "benchmarks" / "multicamera_v1",
+        force_regenerate=False,
+    )
+    report_data["stages"]["stage_7b_multicamera_benchmark"] = mc_bench_res
+    print(f"    Status: COMPLETED (Candidate Recall: {mc_bench_res['candidate_recall_pct']}%, F1: {mc_bench_res['f1_score']:.4f}, Hard Neg Safe: {mc_bench_res['hard_negative_safe_rate']}%)")
+
     print(">>> STAGE 8: Running Spatio-Temporal Candidate Scaling Benchmark...")
     scaling_res = benchmark_candidate_scaling(counts=[50, 100, 200, 500, 1000])
     report_data["stages"]["stage_8_candidate_scaling"] = scaling_res
@@ -368,6 +377,19 @@ def main():
         f.write(f"- **Re-ID Alone (OSNet cosine >= 0.65)**: False Merge Rate = **{reid_baseline['false_merge_rate']:.4f}** ({reid_baseline['false_merge_rate']*100:.2f}%), Precision = {reid_baseline['precision']:.4f}, F1 = {reid_baseline['f1']:.4f}\n")
         f.write(f"- **Multimodal Fusion (Full System)**: False Merge Rate = **0.0000** (0.0% on real feed, 39 clusters formed)\n\n")
 
+        f.write("---\n\n## 3.5. Independent Multi-Camera Benchmark (`multicamera_v1`)\n\n")
+        f.write(f"- **Dataset Architecture**: 5-camera urban arterial network, 150 latent vehicles, 1,500 observations\n")
+        f.write(f"- **Visual Features**: Empirical 512-D OSNet prototype sampling with geometric perturbation\n")
+        f.write(f"- **Candidate Reduction**: **{mc_bench_res['candidate_reduction_pct']}%** ({mc_bench_res['candidate_pairs_count']:,} of {mc_bench_res['total_possible_pairs']:,} pairs)\n")
+        f.write(f"- **Candidate Recall**: **{mc_bench_res['candidate_recall_pct']}%** on positive identity ground truth\n")
+        f.write(f"- **Pairwise Accuracy**: Precision = **{mc_bench_res['precision']:.4f}**, Recall = **{mc_bench_res['recall']:.4f}**, F1 Score = **{mc_bench_res['f1_score']:.4f}**\n")
+        f.write(f"- **Hard Negative Safety**: {mc_bench_res['hard_negative_safe_rate']}% safe rejection ({mc_bench_res['hard_negative_false_merges']} false merges / {mc_bench_res['hard_negatives_evaluated']} pairs)\n\n")
+        f.write("### Difficulty Tier Breakdown\n\n")
+        f.write("| Difficulty Tier | Total Pairs | Precision | Recall | F1 Score | False Merge Rate (FMR) |\n")
+        f.write("|---|---|---|---|---|---|\n")
+        for tier_name, tstats in mc_bench_res["tier_breakdown"].items():
+            f.write(f"| **{tier_name}** | {tstats['total_pairs']:,} | {tstats['precision']:.4f} | {tstats['recall']:.4f} | **{tstats['f1_score']:.4f}** | {tstats['false_merge_rate']:.4f} |\n")
+        f.write("\n")
         f.write("---\n\n## 4. Spatio-Temporal Candidate Scaling & Recall\n\n")
         f.write("| N Observations | Theoretical Pairs | Retained Candidates | Pruned Pairs | Candidate Reduction | Measured Recall | Retrieval Time |\n")
         f.write("|---|---|---|---|---|---|---|\n")
