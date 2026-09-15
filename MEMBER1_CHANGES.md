@@ -132,3 +132,54 @@ placeholders are emitted.
 Unchanged. The provenance additions only touch `observations.json`. This
 file references trajectory fields (`trajectory`, `average_velocity_px`,
 `appearance_embedding`, `embedding_quality`) for documentation only.
+
+## Camera Metadata
+
+A standalone camera metadata layer lives in
+`data/config/camera_metadata.json`, describing the six prototype cameras
+(`CAM_001` … `CAM_006`) without mixing camera information into vehicle
+observations.
+
+### Field sources
+
+| Field | Source | Value |
+| --- | --- | --- |
+| `camera_id` / `camera_name` | Prototype identity | Factual identifier for each prototype camera. |
+| `metadata_source` | Provenance tag | `video_metadata` when the camera's measured video properties come from a real source video; `prototype_configuration` when the camera is defined in the prototype configuration but has no real video telemetry. |
+| `fps` / `resolution_width` / `resolution_height` | Video metadata | Observed from the source video (`traffics.mp4` is 3840x2160 @ 30 fps for `CAM_001`, so its `metadata_source` is `video_metadata`). `null` for `CAM_002`…`CAM_006`, whose `metadata_source` is `prototype_configuration`. |
+| `calibrated` | Implementation truth | `false` for all cameras: `perception/config.py` ships an empty `CAMERA_METADATA` dict, so `CameraCalibration` loads no homography and `ground_plane_position` is `null` in observations. |
+
+### Unavailable (`null`)
+
+`latitude`, `longitude`, `camera_heading`, `field_of_view_deg`,
+`camera_height_m`, `synchronization_source`,
+`synchronization_accuracy_ms`, and `neighboring_cameras` are `null` for
+every camera. These are genuinely unavailable — no GPS, no mounting
+orientation, no calibration parameters, no sync infrastructure, and no
+camera adjacency graph has been provided. They are intentionally `null`,
+not fabricated. Their `metadata_source` is `prototype_configuration`
+because no measured telemetry exists for them.
+
+### `metadata_source` provenance
+
+`metadata_source` tags the provenance of each camera's metadata values:
+
+- `video_metadata` — measured from a real source video. Only `CAM_001`
+  carries this; its `fps`, `resolution_width`, and `resolution_height`
+  were observed from `data/input/traffics.mp4` (3840x2160 @ 30 fps).
+- `prototype_configuration` — the camera is defined in the prototype
+  configuration but has no real video telemetry. Applies to `CAM_002`
+  through `CAM_006`, and to every unavailable field on all cameras.
+
+### Why separate from perception observations
+
+Camera metadata is a static, per-camera configuration artefact, whereas
+perception observations are per-frame, per-track measurements. Keeping
+them in separate files means:
+
+- Camera parameters can be authored/updated without touching the
+  observation or trajectory JSON schemas.
+- Observations stay free of static camera facts that would otherwise be
+  repeated on every frame.
+- Downstream consumers can load camera context once, independently of
+  the streaming observation data.
