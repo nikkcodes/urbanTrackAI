@@ -54,3 +54,9 @@ REID_EMBEDDING_DIM = 512
 MIN_REID_CROP_SIZE = 32
 EXPORT_TRACK_EMBEDDINGS = True
 
+# Provenance model identifiers (factual names of the loaded artefacts).
+DETECTOR_MODEL = "yolov8s.pt"
+TRACKER_MODEL = "bytetrack"
+OCR_MODEL = "easyocr"
+FPS_SOURCE = "video_metadata"
+

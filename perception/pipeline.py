@@ -14,7 +14,9 @@ from .config import (
     CAMERA_ID,
     CAMERA_METADATA,
     CONFIDENCE_THRESHOLD,
+    DETECTOR_MODEL,
     EXPORT_TRACK_EMBEDDINGS,
+    FPS_SOURCE,
     HUD_ACCENT_COLOR,
     HUD_BACKGROUND_COLOR,
     HUD_FONT_SCALE_LIMITS,
@@ -28,6 +30,7 @@ from .config import (
     MIN_REID_CROP_SIZE,
     OCR_CACHE_FRAMES,
     OCR_CONF_THRESHOLD,
+    OCR_MODEL,
     PLATE_BOX_COLOR,
     PLATE_CONF_THRESHOLD,
     PLATE_LABEL_COLOR,
@@ -43,6 +46,7 @@ from .config import (
     TRAIL_LENGTH,
     TRAIL_MAX_THICKNESS,
     TRAIL_MIN_THICKNESS,
+    TRACKER_MODEL,
     VEHICLE_COLORS,
 )
 from .vehicle_detector import VehicleDetector
@@ -335,6 +339,17 @@ class PerceptionPipeline:
                         "fps": fps,
                         "vehicle_count": len(vehicles),
                         "vehicles": vehicles,
+                        "provenance": {
+                            "source_video": input_file.name,
+                            "camera_id": camera_id,
+                            "frame_number": frame_count,
+                            "detector_model": DETECTOR_MODEL,
+                            "tracker_model": TRACKER_MODEL,
+                            "ocr_model": OCR_MODEL,
+                            "reid_model": f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}",
+                            "processing_device": self._vehicle_detector.device,
+                            "fps_source": FPS_SOURCE,
+                        },
                     }
                 )
                 self._draw_info_overlay(
