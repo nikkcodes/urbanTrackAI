@@ -185,11 +185,11 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
     scenarios.append({
         "id": "ADV_10",
         "name": "Tracker fragmentation with temporal overlap (Tracks 65 & 94)",
-        "expected_state": ["AMBIGUOUS", "CONFIRMED"],
+        "expected_state": ["AMBIGUOUS"],
         "actual_state": r10["decision_state"],
         "score": r10["same_vehicle_score"],
         "explanation": r10["explanation"],
-        "passed": r10["decision_state"] in ("AMBIGUOUS", "CONFIRMED"),
+        "passed": r10["decision_state"] == "AMBIGUOUS",
     })
 
     # 11. Tracker ID switch (Different appearance, same local track label under occlusion)

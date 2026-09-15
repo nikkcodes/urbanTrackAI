@@ -1,6 +1,6 @@
 # UrbanTrack AI — Member 2 Canonical Architecture & Reasoning Engine
 
-**Document Version**: 1.0.0 (Hardened Production)  
+**Document Version**: 1.1.0 (Final Hardened Production)  
 **Author / Responsibility**: Member 2 (Vivek) — Candidate Generation, Identity Fusion, Identity Graph, Trajectory Inference, Benchmarking & Evaluation  
 **Status**: Verified & Auditable  
 
@@ -64,8 +64,8 @@ The Member 2 subsystem implements a single, strictly defined canonical productio
   3. **Simultaneous Cross-Camera Pruning**: If two observations share the exact same timestamp on different cameras with synchronized clocks ($\Delta t = 0$), they are physically impossible and pruned.
   4. **Kinematic Speed Limit Bounds**: Discards pairs requiring travel speed $> 120	ext{ km/h}$ over geographic distance $D(A, B)$.
 - **Complexity Analysis**:
-  - **Average Case**: $O(N \log N)$ when observations are temporally dispersed across an operational timeline.
-  - **Worst Case**: $O(N^2)$ if all $N$ observations occur at the exact same second with identical vehicle types.
+  - **Average Case**: $O(N \log N)$ when observations are temporally dispersed across an operational timeline, leveraging bisect-right searches over chronological observation arrays.
+  - **Worst Case**: $O(N^2)$ if all $N$ observations fall within the exact same temporal horizon $[t, t + \Delta t_{\max}]$ and share identical or wildcard vehicle types. UrbanTrack AI explicitly acknowledges this quadratic worst-case bound without claiming artificial $O(N \log N)$ guarantees.
 - **Diagnostic Ledger**: Maintains exact counters for `temporal_horizon_exceeded`, `incompatible_vehicle_type`, `simultaneous_different_cameras`, and `physically_impossible_speed`.
 
 ### 2.3 Multimodal Identity Fusion Engine (`inference/identity_fusion.py`)

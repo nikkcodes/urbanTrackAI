@@ -84,16 +84,25 @@ class IdentityGraph:
     Edges: Pairwise candidate identity links formed when evidence score meets the configured threshold.
     """
 
-    def __init__(self, min_probability_threshold: float = 0.70) -> None:
+    def __init__(
+        self,
+        min_probability_threshold: Optional[float] = None,
+        min_score_threshold: float = 0.70,
+    ) -> None:
         """
         Initialize the IdentityGraph.
 
         Args:
-            min_probability_threshold: Configured identity-link threshold: 0.70 evidence score.
-                                       A decision parameter requiring sufficient evidence to avoid transitive over-clustering.
-                                       Note: This is an evidence-score decision threshold, not a calibrated probability.
+            min_probability_threshold: Compatibility alias for min_score_threshold.
+            min_score_threshold: Configured identity-link evidence score threshold (default 0.70).
+                                 Note: This is an uncalibrated heuristic ranking score in [0, 1].
         """
-        self.min_threshold = min_probability_threshold
+        if min_probability_threshold is not None:
+            self.min_threshold = float(min_probability_threshold)
+        else:
+            self.min_threshold = float(min_score_threshold)
+        self.min_score_threshold = self.min_threshold
+        self.min_probability_threshold = self.min_threshold
         self.nodes: Dict[str, Observation] = {}
         self.edges: List[Dict[str, Any]] = []
         self.adjacency: Dict[str, List[Tuple[str, float]]] = {}
@@ -106,6 +115,53 @@ class IdentityGraph:
         if obs.observation_id not in self.nodes:
             self.nodes[obs.observation_id] = obs
             self.adjacency[obs.observation_id] = []
+
+    def build_graph_from_matches(
+        self,
+        observations: List[Observation],
+        pairs: List[Tuple[Observation, Observation]],
+        match_results: List[Dict[str, Any]],
+        camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
+        config: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """
+        Assemble graph from pre-evaluated observation pairs and match results.
+        Guarantees identical downstream graph assembly without duplicating upstream fusion.
+        """
+        config = config or {}
+        sorted_obs_input = sorted(observations, key=lambda o: (o.timestamp_seconds, o.observation_id))
+        for obs in sorted_obs_input:
+            self.add_observation(obs)
+
+        for (obs_a, obs_b), match_result in zip(pairs, match_results):
+            score = float(match_result.get("same_vehicle_score", match_result.get("same_vehicle_probability", 0.0)))
+            has_id_ev = match_result.get("evidence", {}).get("identity_evidence_available", True)
+
+            if score >= self.min_threshold and has_id_ev:
+                edge_data = {
+                    "source": obs_a.observation_id,
+                    "target": obs_b.observation_id,
+                    "score": score,
+                    "probability": score,
+                    "evidence": match_result.get("evidence", {}),
+                    "evidence_ledger": match_result.get("evidence_ledger"),
+                    "explanation": match_result.get("explanation", ""),
+                }
+                self.edges.append(edge_data)
+                self.adjacency[obs_a.observation_id].append((obs_b.observation_id, score))
+                self.adjacency[obs_b.observation_id].append((obs_a.observation_id, score))
+            else:
+                expl = match_result.get("explanation", "")
+                if score < self.min_threshold:
+                    tag = "below_threshold"
+                    reason = f"Estimated score {score:.4f} is below configured threshold {self.min_threshold:.2f}. {expl}"
+                else:
+                    tag = "insufficient_identity_evidence"
+                    reason = f"Score {score:.4f} meets threshold but lacked positive identity evidence (both plate & appearance missing/invalid)."
+                self._record_rejection(obs_a.observation_id, obs_b.observation_id, tag, reason, score)
+
+        for nid in self.adjacency:
+            self.adjacency[nid].sort(key=lambda item: (-item[1], item[0]))
 
     def build_graph_reference(
         self,
@@ -125,6 +181,7 @@ class IdentityGraph:
         camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
         config: Optional[Dict[str, Any]] = None,
         enable_pruning: bool = True,
+        candidate_pairs: Optional[List[Tuple[Observation, Observation]]] = None,
     ) -> None:
         """
         Build pairwise edges across observations using the Identity Fusion Engine.
@@ -135,20 +192,21 @@ class IdentityGraph:
             camera_metadata: Optional camera metadata mapping.
             config: Optional fusion engine configuration settings.
             enable_pruning: If True, applies safe deterministic pruning rules that cannot remove valid matches.
+            candidate_pairs: Optional pre-generated candidate pairs to evaluate.
         """
         config = config or {}
-        # Deterministic sorting of input observations by timestamp then ID
         sorted_obs_input = sorted(observations, key=lambda o: (o.timestamp_seconds, o.observation_id))
         for obs in sorted_obs_input:
             self.add_observation(obs)
 
-        # Ensure deterministic node iteration
         obs_list = sorted(self.nodes.values(), key=lambda o: (o.timestamp_seconds, o.observation_id))
         n = len(obs_list)
 
         max_speed_kmh = float(config.get("max_plausible_speed_kmh", 120.0))
 
-        if enable_pruning:
+        if candidate_pairs is not None:
+            pair_iterable = candidate_pairs
+        elif enable_pruning:
             from .candidate_generation import CandidateGenerator
             generator = CandidateGenerator(
                 max_speed_kmh=max_speed_kmh,
@@ -161,43 +219,17 @@ class IdentityGraph:
         else:
             pair_iterable = [(obs_list[i], obs_list[j]) for i in range(n) for j in range(i + 1, n)]
 
+        ordered_pairs: List[Tuple[Observation, Observation]] = []
+        match_results: List[Dict[str, Any]] = []
         for obs_a, obs_b in pair_iterable:
-            # Ensure chronological ordering A -> B for pairwise evaluation
             if obs_a.timestamp_seconds > obs_b.timestamp_seconds:
                 eval_a, eval_b = obs_b, obs_a
             else:
                 eval_a, eval_b = obs_a, obs_b
+            ordered_pairs.append((eval_a, eval_b))
+            match_results.append(match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config))
 
-            match_result = match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config)
-            prob = float(match_result["same_vehicle_probability"])
-            has_id_ev = match_result.get("evidence", {}).get("identity_evidence_available", True)
-
-            # Form edge only if probability meets threshold AND positive identity evidence is present
-            if prob >= self.min_threshold and has_id_ev:
-                edge_data = {
-                    "source": obs_a.observation_id,
-                    "target": obs_b.observation_id,
-                    "probability": prob,
-                    "evidence": match_result["evidence"],
-                    "evidence_ledger": match_result.get("evidence_ledger"),
-                    "explanation": match_result["explanation"],
-                }
-                self.edges.append(edge_data)
-                self.adjacency[obs_a.observation_id].append((obs_b.observation_id, prob))
-                self.adjacency[obs_b.observation_id].append((obs_a.observation_id, prob))
-            else:
-                expl = match_result.get("explanation", "")
-                if prob < self.min_threshold:
-                    tag = "below_threshold"
-                    reason = f"Estimated probability {prob:.4f} is below configured threshold {self.min_threshold:.2f}. {expl}"
-                else:
-                    tag = "insufficient_identity_evidence"
-                    reason = f"Probability {prob:.4f} meets threshold but lacked positive identity evidence (both plate & appearance missing/invalid)."
-                self._record_rejection(obs_a.observation_id, obs_b.observation_id, tag, reason, prob)
-
-        # Deterministic sorting of adjacency lists: decreasing by probability, then neighbor ID
-        for nid in self.adjacency:
-            self.adjacency[nid].sort(key=lambda item: (-item[1], item[0]))
+        self.build_graph_from_matches(observations, ordered_pairs, match_results, camera_metadata=camera_metadata, config=config)
 
     # ---------------------------------------------------------------------------
     # Phase C: Cluster Consistency Validation & Admission
@@ -812,6 +844,7 @@ class IdentityGraph:
                 "merged": False,
                 "rejection_stage": "unknown_observation",
                 "reason": f"Observation(s) {missing} not present in graph.",
+                "same_vehicle_score": 0.0,
                 "same_vehicle_probability": 0.0,
             }
 
@@ -826,6 +859,7 @@ class IdentityGraph:
                     "identity_id": hyp.get("identity_id"),
                     "rejection_stage": "none",
                     "reason": "Observations are merged into the same vehicle identity hypothesis.",
+                    "same_vehicle_score": hyp.get("identity_confidence"),
                     "same_vehicle_probability": hyp.get("identity_confidence"),
                     "admission_status": hyp.get("admission_status"),
                 }
@@ -870,6 +904,7 @@ class IdentityGraph:
                 "merged": False,
                 "rejection_stage": rec["rejection_stage"],
                 "reason": rec["reason"],
+                "same_vehicle_score": rec.get("score", rec.get("probability", 0.0)),
                 "same_vehicle_probability": rec.get("probability", 0.0),
             }
 
@@ -882,16 +917,17 @@ class IdentityGraph:
             eval_a, eval_b = obs_a, obs_b
 
         match_res = match_observations(eval_a, eval_b, camera_metadata=camera_metadata, config=config)
-        prob = float(match_res.get("same_vehicle_probability", 0.0))
+        score = float(match_res.get("same_vehicle_score", match_res.get("same_vehicle_probability", 0.0)))
         reason = match_res.get("explanation", "")
-        stage = "below_threshold" if prob < self.min_threshold else "evaluated"
+        stage = "below_threshold" if score < self.min_threshold else "evaluated"
         return {
             "obs_id_a": obs_id_a,
             "obs_id_b": obs_id_b,
             "merged": False,
             "rejection_stage": stage,
             "reason": reason,
-            "same_vehicle_probability": prob,
+            "same_vehicle_score": score,
+            "same_vehicle_probability": score,
             "evidence": match_res.get("evidence"),
         }
 

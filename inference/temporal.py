@@ -346,6 +346,41 @@ def temporal_feasibility(
             }
 
     # Positive time gap delta_t > 0
+    trk_a = getattr(obs_a, "track_id", obs_a.get("track_id") if isinstance(obs_a, dict) else None)
+    trk_b = getattr(obs_b, "track_id", obs_b.get("track_id") if isinstance(obs_b, dict) else None)
+
+    # Check for same-camera distinct-track temporal overlap or fragmentation
+    if cam_a == cam_b and trk_a is not None and trk_b is not None and trk_a != trk_b:
+        min_reentry_gap = 2.0
+        if isinstance(camera_metadata, dict) and "min_reentry_gap_seconds" in camera_metadata:
+            min_reentry_gap = float(camera_metadata["min_reentry_gap_seconds"])
+
+        prov_a = getattr(obs_a, "source_provenance", None) or (obs_a.get("source_provenance") if isinstance(obs_a, dict) else None) or {}
+        prov_b = getattr(obs_b, "source_provenance", None) or (obs_b.get("source_provenance") if isinstance(obs_b, dict) else None) or {}
+        sf_a, ef_a = prov_a.get("start_frame"), prov_a.get("end_frame")
+        sf_b, ef_b = prov_b.get("start_frame"), prov_b.get("end_frame")
+        has_interval_overlap = (
+            sf_a is not None and ef_a is not None and sf_b is not None and ef_b is not None
+            and min(ef_a, ef_b) >= max(sf_a, sf_b)
+        )
+        if delta_t < min_reentry_gap or has_interval_overlap:
+            return {
+                "feasibility_score": 0.85,
+                "delta_t_seconds": delta_t,
+                "status": "tracker_fragmentation_temporal_overlap",
+                "explanation": (
+                    f"Near-simultaneous distinct tracks ({trk_a} vs {trk_b}) at same camera ({cam_a}) "
+                    f"with time delta {delta_t:.2f}s (< {min_reentry_gap:.1f}s min re-entry gap): "
+                    f"conflicting tracker evidence indicates tracker fragmentation or distinct proximal vehicles."
+                ),
+                "temporal_evidence": comp,
+                "timestamp_semantics": comp.get("timestamp_semantics"),
+                "time_reference_id": comp.get("time_reference_id"),
+                "reason": "tracker_fragmentation_temporal_overlap",
+                "delta_seconds": delta_t,
+                "used_in_route_scoring": True,
+            }
+
     if delta_t > max_reasonable_gap_seconds:
         decay = math_decay(delta_t, max_reasonable_gap_seconds)
         return {

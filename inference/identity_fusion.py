@@ -185,6 +185,10 @@ def match_observations(
         if min_cam_rel < 0.50:
             estimated_prob = 0.50 + min_cam_rel * (estimated_prob - 0.50)
 
+        # Conflicting tracker continuity on same camera limits decision to AMBIGUOUS (< 0.75)
+        if t_status == "tracker_fragmentation_temporal_overlap":
+            estimated_prob = min(estimated_prob, 0.70)
+
         estimated_prob = round(max(0.0, min(1.0, estimated_prob)), 4)
 
         # Generate human-readable explanation
@@ -204,6 +208,10 @@ def match_observations(
             reasons.append(f"required travel speed is {s_speed_kmh:.1f} km/h over {s_dist_m:.1f}m in {t_delta_sec:.1f}s")
         elif t_status == "unavailable":
             reasons.append(f"cross-camera temporal evidence is unavailable ({t_res.get('reason')})")
+        elif t_status == "tracker_fragmentation_temporal_overlap":
+            trk_a = getattr(obs_a, "track_id", obs_a.get("track_id") if isinstance(obs_a, dict) else None)
+            trk_b = getattr(obs_b, "track_id", obs_b.get("track_id") if isinstance(obs_b, dict) else None)
+            reasons.append(f"conflicting tracker evidence on camera {obs_a.camera_id} ({trk_a} vs {trk_b} within {t_delta_sec:.2f}s)")
 
         explanation = f"Estimated match probability is {estimated_prob:.2f}: " + ", ".join(reasons) + "."
 
@@ -307,6 +315,10 @@ def match_observations(
         temporal_ledger_status = "impossible"
         temporal_detailed_status = "available_contradictory"
         temporal_ledger_value = 0.0
+    elif t_status == "tracker_fragmentation_temporal_overlap":
+        temporal_ledger_status = "contradictory"
+        temporal_detailed_status = "available_contradictory"
+        temporal_ledger_value = round(float(t_score), 4) if t_score is not None else 0.50
     elif t_score is not None and t_status in ("feasible", "same_camera", "same_camera_same_frame"):
         temporal_ledger_status = "feasible"
         temporal_detailed_status = "available_supportive"

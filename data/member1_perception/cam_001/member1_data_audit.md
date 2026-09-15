@@ -23,7 +23,7 @@ All data integrity checks pass: **zero NaNs, zero infinities, 100% finite 512-di
 ## 2. Phase 0 Audit Requirements (Items A through S)
 
 ### A. Existing Member 2 Input Format
-Member 2 consumes standardized `Observation` dataclass instances defined in [`schemas/observation_schema.py`](file:///Users/yanalavivekreddy/Projects/urbantrack-ai/schemas/observation_schema.py#L75-L145) and re-exported in [`inference/observation.py`](file:///Users/yanalavivekreddy/Projects/urbantrack-ai/inference/observation.py#L1-L8).
+Member 2 consumes standardized `Observation` dataclass instances defined in [`schemas/observation_schema.py`](schemas/observation_schema.py#L75-L145) and re-exported in [`inference/observation.py`](inference/observation.py#L1-L8).
 - **Core identity fields**: `observation_id` (str), `camera_id` (str), `timestamp` (datetime), `timestamp_seconds` (float), `latitude` (Optional[float]), `longitude` (Optional[float]), `plate` (Optional[str]), `plate_confidence` (Optional[float]), `appearance_embedding` (Optional[List[float]]), `camera_reliability` (Optional[float]).
 - **Perception extension fields**: `frame_id` (Optional[int]), `track_id` (Optional[str]), `vehicle_type` (Optional[str]), `detection_confidence` (Optional[float]), `bbox` (Optional[List[float]]), `trajectory_point` (Optional[List[float]]), `point_type` ("vehicle_footpoint"), `point_coordinate_system` ("image"), `pixel_speed` (Optional[float]), `plate_bbox` (Optional[List[float]]), `plate_text` (Optional[str]), `ocr_confidence` (Optional[float]), `local_track_history` (Optional[List[Any]]).
 - **Temporal metadata fields**: `timestamp_semantics` ("video_relative" | "synchronized_utc"), `time_reference_id` (Optional[str]), `clock_offset_seconds` (Optional[float]), `time_uncertainty_seconds` (Optional[float]).
@@ -144,7 +144,7 @@ Member 1 outputs four JSON artifacts:
 
 ### P. Camera Metadata Availability
 - In perception JSON files: **None** (no latitude, longitude, road segment, or compass bearing).
-- In Member 2 repository: [`data/cameras/camera_metadata.json`](file:///Users/yanalavivekreddy/Projects/urbantrack-ai/data/cameras/camera_metadata.json) defines coordinates for `cam_01`, `cam_02`, `cam_03`.
+- In Member 2 repository: [`data/cameras/camera_metadata.json`](data/cameras/camera_metadata.json) defines coordinates for `cam_01`, `cam_02`, `cam_03`.
 - Inconsistency: Member 1 uses `"CAM_001"`, while repository metadata uses `"cam_01"`. The adapter must normalize camera ID casing and prefixes.
 
 ### Q. Inconsistencies Discovered

@@ -62,13 +62,16 @@ class CandidateGenerator:
         self,
         max_speed_kmh: float = 120.0,
         max_time_window_seconds: float = 7200.0,  # 2-hour maximum corridor horizon
-        min_probability_threshold: float = 0.70,
+        min_probability_threshold: Optional[float] = None,
+        min_score_threshold: float = 0.70,
         camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
         config: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.max_speed_kmh = max_speed_kmh
         self.max_time_window_seconds = max_time_window_seconds
-        self.min_probability_threshold = min_probability_threshold
+        thresh = float(min_probability_threshold) if min_probability_threshold is not None else float(min_score_threshold)
+        self.min_score_threshold = thresh
+        self.min_probability_threshold = thresh
         self.camera_metadata = camera_metadata or {}
         self.config = config or {}
 
@@ -277,6 +280,7 @@ def benchmark_candidate_scaling(
 
     vehicle_types = ["car", "truck", "bus", "motorcycle"]
 
+    random.seed(42)
     for n in counts:
         # Generate synthetic test observations with realistic temporal spread across 4 cameras
         test_obs = []
@@ -401,12 +405,17 @@ def benchmark_end_to_end_scalability(
 
         total_pairs = (n * (n - 1)) // 2
 
-        # 1. Baseline Full Pipeline Repetitions
+        # 0. Warm-up pass to ensure cold start / import effects do not distort measurements
+        warm_pairs = [(test_obs[i], test_obs[j]) for i in range(min(5, n)) for j in range(i + 1, min(5, n))]
+        _ = [match_observations(a, b) for a, b in warm_pairs]
+
+        # 1. Baseline Full Pipeline Repetitions (Naive O(N^2) Pairs -> Fusion -> Graph Assembly)
         base_runtimes = []
         base_fusion_runtimes = []
         base_graph_runtimes = []
         base_fused_count = 0
         base_edges = 0
+        base_pred_edges = set()
 
         for _ in range(repetitions):
             t_start = time.perf_counter()
@@ -417,8 +426,8 @@ def benchmark_end_to_end_scalability(
             t_fusion = (time.perf_counter() - t_fusion_start) * 1000.0
 
             t_graph_start = time.perf_counter()
-            g_base = IdentityGraph(min_probability_threshold=0.75)
-            g_base.build_graph_reference(test_obs)
+            g_base = IdentityGraph(min_score_threshold=0.75)
+            g_base.build_graph_from_matches(test_obs, pairs, fused_res)
             _ = g_base.get_candidate_identities()
             t_graph = (time.perf_counter() - t_graph_start) * 1000.0
             t_total = (time.perf_counter() - t_start) * 1000.0
@@ -428,14 +437,16 @@ def benchmark_end_to_end_scalability(
             base_graph_runtimes.append(t_graph)
             base_fused_count = len(pairs)
             base_edges = len(g_base.edges)
+            base_pred_edges = set((min(e["source"], e["target"]), max(e["source"], e["target"])) for e in g_base.edges)
 
-        # 2. Optimized Candidate Pipeline Repetitions
+        # 2. Optimized Candidate Pipeline Repetitions (CandidateGenerator -> Fusion -> Graph Assembly)
         opt_runtimes = []
         opt_gen_runtimes = []
         opt_fusion_runtimes = []
         opt_graph_runtimes = []
         candidates_count = 0
         opt_edges = 0
+        opt_pred_edges = set()
 
         generator = CandidateGenerator(max_speed_kmh=120.0, max_time_window_seconds=1800.0)
 
@@ -450,8 +461,8 @@ def benchmark_end_to_end_scalability(
             t_fusion = (time.perf_counter() - t_fusion_start) * 1000.0
 
             t_graph_start = time.perf_counter()
-            g_opt = IdentityGraph(min_probability_threshold=0.75)
-            g_opt.build_graph(test_obs)
+            g_opt = IdentityGraph(min_score_threshold=0.75)
+            g_opt.build_graph_from_matches(test_obs, candidates, fused_res)
             _ = g_opt.get_candidate_identities()
             t_graph = (time.perf_counter() - t_graph_start) * 1000.0
             t_total = (time.perf_counter() - t_start) * 1000.0
@@ -462,17 +473,20 @@ def benchmark_end_to_end_scalability(
             opt_graph_runtimes.append(t_graph)
             candidates_count = len(candidates)
             opt_edges = len(g_opt.edges)
+            opt_pred_edges = set((min(e["source"], e["target"]), max(e["source"], e["target"])) for e in g_opt.edges)
 
         # Calculate candidate recall of true identical plates within plausible window
         candidate_pair_ids = set((min(a.observation_id, b.observation_id), max(a.observation_id, b.observation_id)) for a, b in candidates)
         true_matches_total = 0
         true_matches_found = 0
+        true_pair_ids = set()
         for i in range(n):
             for j in range(i + 1, n):
                 oa, ob = test_obs[i], test_obs[j]
                 if oa.plate and ob.plate and oa.plate == ob.plate and abs(oa.timestamp_seconds - ob.timestamp_seconds) <= 1800.0:
                     true_matches_total += 1
                     pid = (min(oa.observation_id, ob.observation_id), max(oa.observation_id, ob.observation_id))
+                    true_pair_ids.add(pid)
                     if pid in candidate_pair_ids:
                         true_matches_found += 1
 
@@ -486,13 +500,27 @@ def benchmark_end_to_end_scalability(
         opt_p95 = sorted(opt_runtimes)[int(0.95 * len(opt_runtimes))]
         speedup = (base_med / opt_med) if opt_med > 0 else 1.0
 
+        # Compute precision, recall, f1 for optimized pipeline edges against true matches
+        tp = sum(1 for edge in opt_pred_edges if edge in true_pair_ids)
+        fp = len(opt_pred_edges) - tp
+        fn = len(true_pair_ids) - tp
+        precision = (tp / (tp + fp)) if (tp + fp) > 0 else 1.0
+        recall = (tp / (tp + fn)) if (tp + fn) > 0 else 1.0
+        f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 1.0
+
         evaluations.append({
             'n_observations': n,
             'theoretical_pairs': total_pairs,
             'candidates_generated': candidates_count,
+            'candidate_pairs': candidates_count,
             'pruned_pairs': pruned_pairs,
             'reduction_pct': round(reduction_pct, 2),
+            'candidate_reduction': round(reduction_pct, 2),
             'candidate_recall_pct': round(candidate_recall, 2),
+            'candidate_recall': round(candidate_recall, 2),
+            'precision': round(precision, 4),
+            'recall': round(recall, 4),
+            'f1': round(f1, 4),
             'baseline_pipeline': {
                 'total_runtime_median_ms': round(base_med, 2),
                 'total_runtime_p95_ms': round(base_p95, 2),

@@ -1,6 +1,6 @@
 # UrbanTrack AI — Member 2 Data Semantics, Coordinate Contracts & Score Terminology
 
-**Document Version**: 1.0.0 (Hardened Production)  
+**Document Version**: 1.1.0 (Final Hardened Production)  
 **Author / Responsibility**: Member 2 (Vivek) — Data Integrity, Contract Verification, Semantically Honest Terminology  
 **Status**: Verified & Auditable  
 
@@ -54,7 +54,7 @@ To prevent semantic conflation of unrelated uncertainty signals, all confidence 
 ## 4. Score Semantics & Terminology Honesty
 
 ### 4.1 Uncalibrated Score Designation (Rule 5)
-- **Terminology**: The primary pairwise output is designated as **`same_vehicle_score`** (aliased as `same_vehicle_probability` solely for backward compatibility).
+- **Terminology**: The primary pairwise output is designated as **`same_vehicle_score`** (aliased as `same_vehicle_probability` strictly as a documented backward-compatibility alias across dataclasses and public APIs).
 - **Semantics**: The score is a deterministic heuristic ranking metric in $[0.0, 1.0]$ formed by combining normalized appearance cosine similarity, license plate edit distance, and kinematic feasibility.
 - **Scientific Claim Boundary**:
   - The system does **NOT** claim to output a calibrated Bayesian posterior probability, probability distribution, or statistically valid confidence interval.

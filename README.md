@@ -17,21 +17,21 @@ City-scale multi-camera vehicle identity fusion, probabilistic trajectory recons
 Foundation layer establishing observation data structures, camera coordinate mapping, spatio-temporal distance metrics, and similarity primitives.
 
 ### Day 1 Deliverables & Architecture:
-- **Observation Schema ([schemas/observation_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/observation_schema.py)):** Standardized `Observation` dataclass supporting detection confidence, bounding boxes, variable-dimension appearance embeddings, license plates, and geographic coordinates.
-- **Camera Metadata Loader ([inference/observation_loader.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/observation_loader.py)):** Ingestion of camera locations ([data/cameras/camera_metadata.json](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/data/cameras/camera_metadata.json)) and perception feeds.
-- **Similarity & Distance Metrics ([inference/similarity.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/similarity.py)):**
+- **Observation Schema ([schemas/observation_schema.py](schemas/observation_schema.py)):** Standardized `Observation` dataclass supporting detection confidence, bounding boxes, variable-dimension appearance embeddings, license plates, and geographic coordinates.
+- **Camera Metadata Loader ([inference/observation_loader.py](inference/observation_loader.py)):** Ingestion of camera locations ([data/cameras/camera_metadata.json](data/cameras/camera_metadata.json)) and perception feeds.
+- **Similarity & Distance Metrics ([inference/similarity.py](inference/similarity.py)):**
   - Appearance cosine similarity with dimension validation.
   - License plate Levenshtein similarity with OCR error tolerance.
   - Vehicle type compatibility matrix.
   - Geographic Haversine distance.
   - Epoch timestamp differences.
 - **Spatio-Temporal Feasibility Primitives:**
-  - [inference/spatial.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/spatial.py): Travel speed validation against city limits.
-  - [inference/temporal.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/temporal.py): Temporal order validation ($\Delta t \ge 0$).
+  - [inference/spatial.py](inference/spatial.py): Travel speed validation against city limits.
+  - [inference/temporal.py](inference/temporal.py): Temporal order validation ($\Delta t \ge 0$).
 - **Day 1 Verification & Demo:**
-  - [demo.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/demo.py): End-to-end Day 1 demonstration script on sample feeds.
-  - [tests/test_observation.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_observation.py): Schema and serialization unit tests.
-  - [tests/test_similarity.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_similarity.py): Unit tests for all similarity and distance functions.
+  - [demo.py](demo.py): End-to-end Day 1 demonstration script on sample feeds.
+  - [tests/test_observation.py](tests/test_observation.py): Schema and serialization unit tests.
+  - [tests/test_similarity.py](tests/test_similarity.py): Unit tests for all similarity and distance functions.
 
 ---
 
@@ -414,7 +414,7 @@ The Day 3 inference engine was verified against 12 core edge cases:
 
 ## Member 3 Integration Contract (`NormalizedTrajectory`)
 
-Defined in [schemas/normalized_trajectory_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/normalized_trajectory_schema.py) and adapted via [inference/member3_adapter.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/member3_adapter.py):
+Defined in [schemas/normalized_trajectory_schema.py](schemas/normalized_trajectory_schema.py) and adapted via [inference/member3_adapter.py](inference/member3_adapter.py):
 
 ```text
 NormalizedTrajectory
@@ -473,15 +473,15 @@ Reasoning about vehicle movement across unobserved intervals (gaps) between sigh
 4. **Member 3 Backward Compatibility**: Adapted directly into `NormalizedTrajectory` with Day-4 metadata (`gap_detected`, `gap_duration_seconds`, `observed_endpoints`, `inferred_segment`, `inference_reason`, `gap_state`, `observations_used`).
 
 ### Deliverables & Modules:
-- **Gap Schema ([schemas/gap_schema.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/schemas/gap_schema.py)):** `SparseObservationGap` dataclass.
-- **Sparse Inference Engine ([inference/sparse_engine.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/sparse_engine.py)):**
+- **Gap Schema ([schemas/gap_schema.py](schemas/gap_schema.py)):** `SparseObservationGap` dataclass.
+- **Sparse Inference Engine ([inference/sparse_engine.py](inference/sparse_engine.py)):**
   - `detect_observation_gaps(observations, road_graph)`: Classifies intervals into direct single-hop, stationary, or unobserved gap.
   - `infer_sparse_gap(obs_a, obs_b, road_graph, ...)`: Infers candidate hidden routes, calculates required speeds, rejects impossible corridors, normalizes relative likelihoods, and detects routing ambiguity.
   - `infer_sparse_identity_trajectory(identity_data, road_graph, ...)`: Evaluates multi-observation vehicle journeys with mixed direct and unobserved intervals.
-- **Member 3 Adapter Extension ([inference/member3_adapter.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/inference/member3_adapter.py)):**
+- **Member 3 Adapter Extension ([inference/member3_adapter.py](inference/member3_adapter.py)):**
   - `adapt_sparse_gap_to_normalized(gap, vehicle_weight=1.0)`: Converts a `SparseObservationGap` into Member 3's `NormalizedTrajectory`.
-- **Day 4 Test Scenarios Fixture ([data/synthetic/day4_sparse_scenarios.json](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/data/synthetic/day4_sparse_scenarios.json)):** Controlled synthetic test fixture covering Cases 1 through 10.
-- **Day 4 Test Suite ([tests/test_day4_sparse_inference.py](file:///Users/yanalavivekreddy/.gemini/antigravity-ide/scratch/urbantrack-ai/tests/test_day4_sparse_inference.py)):** 15 focused tests validating gap detection, Cases 1–10, zero observation fabrication, and Member-3 contract compatibility.
+- **Day 4 Test Scenarios Fixture ([data/synthetic/day4_sparse_scenarios.json](data/synthetic/day4_sparse_scenarios.json)):** Controlled synthetic test fixture covering Cases 1 through 10.
+- **Day 4 Test Suite ([tests/test_day4_sparse_inference.py](tests/test_day4_sparse_inference.py)):** 15 focused tests validating gap detection, Cases 1–10, zero observation fabrication, and Member-3 contract compatibility.
 
 ---
 

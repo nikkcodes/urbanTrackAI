@@ -391,7 +391,7 @@ def evaluate_identity_uncertainty(
     Returns:
         IdentityMatchReliability: Structured identity trust assessment.
     """
-    match_prob = float(match_result.get("same_vehicle_probability", 0.0))
+    match_prob = float(match_result.get("same_vehicle_score", match_result.get("same_vehicle_probability", 0.0)))
     evidence = match_result.get("evidence", {})
 
     # Geometric mean of endpoint observation reliabilities

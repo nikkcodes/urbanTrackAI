@@ -22,6 +22,7 @@ from .evaluator import BenchmarkEvaluationResult, MultiCameraBenchmarkEvaluator
 
 def run_multicamera_benchmark(
     data_dir: Optional[Path] = None,
+    benchmark_id: str = "multicamera_v1",
     n_vehicles: int = 150,
     target_observations: int = 1500,
     threshold: float = 0.75,
@@ -40,7 +41,7 @@ def run_multicamera_benchmark(
     Returns:
         Dict[str, Any]: Complete benchmark evaluation report.
     """
-    bench_dir = data_dir or (PROJECT_ROOT / "data" / "benchmarks" / "multicamera_v1")
+    bench_dir = data_dir or (PROJECT_ROOT / "data" / "benchmarks" / benchmark_id)
     bench_dir.mkdir(parents=True, exist_ok=True)
 
     obs_file = bench_dir / "observations.json"
