@@ -153,12 +153,95 @@ observations.
 
 `latitude`, `longitude`, `camera_heading`, `field_of_view_deg`,
 `camera_height_m`, `synchronization_source`,
-`synchronization_accuracy_ms`, and `neighboring_cameras` are `null` for
-every camera. These are genuinely unavailable — no GPS, no mounting
-orientation, no calibration parameters, no sync infrastructure, and no
-camera adjacency graph has been provided. They are intentionally `null`,
-not fabricated. Their `metadata_source` is `prototype_configuration`
-because no measured telemetry exists for them.
+  `synchronization_accuracy_ms`, and `neighboring_cameras` are `null` for
+  every camera. These are genuinely unavailable — no GPS, no mounting
+  orientation, no calibration parameters, no sync infrastructure, and no
+  camera adjacency graph has been provided. They are intentionally `null`,
+  not fabricated. Their `metadata_source` is `prototype_configuration`
+  because no measured telemetry exists for them.
+
+## Multi-Camera Support
+
+The perception layer now supports observations from six prototype cameras
+(`CAM_001` … `CAM_006`) while remaining camera-local: no cross-camera
+matching, global identities, or synthetic multi-camera detections are
+implemented.
+
+### Supported camera IDs
+
+`CAM_001`, `CAM_002`, `CAM_003`, `CAM_004`, `CAM_005`, `CAM_006` — the six
+cameras defined in `data/config/camera_metadata.json`. Any other id is
+rejected at load time.
+
+### Camera-aware input pipeline
+
+The camera id is now an independent input, decoupled from the video path:
+
+```
+python -m perception.pipeline --camera-id CAM_001
+python -m perception.pipeline --camera-id CAM_003
+```
+
+If no `--camera-id` is supplied, the pipeline defaults to `CAM_001`. The
+resolved id is validated against `camera_metadata.json`; an unknown camera
+raises a clear `ValueError` and metadata is never silently created. The id
+propagates into every exported observation.
+
+### Camera-local track IDs
+
+`track_id` remains local to a single camera. ByteTrack assigns ids
+independently per video, so two cameras may both have `track_id = 17` and
+they are independent observations — there is no global id and no attempt
+to match tracks across cameras. Each camera's tracking state
+(`track_history`, `previous_centroids`, `ocr_cache`, `track_colors`,
+`inactive_track_age`, `_track_embeddings`) is scoped to its own run.
+
+### Camera-Local Identity Rule
+
+* `track_id` is a **camera-local ByteTrack identifier** generated
+  independently for each camera.
+* The pair **(`camera_id`, `track_id`)** uniquely identifies a vehicle
+  track within the perception layer.
+* Two different cameras may legitimately have the same `track_id`; they
+  are **not** the same vehicle.
+* Member 1 exports only local observations and local trajectories.
+* Member 1 does **not** create global vehicle identities, candidate
+  matches, or cross-camera associations.
+* Cross-camera identity fusion, Bayesian matching, and global trajectory
+  reconstruction are performed entirely by **Member 2**.
+
+### Folder structure for multiple cameras
+
+Videos may be organized per camera:
+
+```
+data/input/
+  CAM_001/
+    traffics.mp4
+  CAM_002/
+    camera2.mp4
+  CAM_003/
+    camera3.mp4
+```
+
+The pipeline looks inside `data/input/<camera_id>/` first and falls back to
+the flat `data/input/` directory for backward compatibility. Only `CAM_001`
+is required; `CAM_002`–`CAM_006` need not have videos. Cameras without a
+video simply have no input to process — no observations are fabricated for
+them.
+
+### Export schema
+
+Every observation already includes `camera_id` (top-level), `frame_number`,
+`timestamp`, per-vehicle `track_id`, and `provenance.camera_id`. No schema
+changes were needed beyond camera-awareness.
+
+### Default camera behaviour
+
+With no `--camera-id`, the pipeline defaults to `CAM_001` and loads the
+newest supported video from `data/input/`, preserving the original
+behaviour. CAM_001 output is otherwise equivalent to the previous run except
+for camera-aware loading and validation.
 
 ### `metadata_source` provenance
 

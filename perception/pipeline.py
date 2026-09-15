@@ -13,6 +13,7 @@ import numpy as np
 from .config import (
     CAMERA_ID,
     CAMERA_METADATA,
+    CAMERA_METADATA_PATH,
     CONFIDENCE_THRESHOLD,
     DETECTOR_MODEL,
     EXPORT_TRACK_EMBEDDINGS,
@@ -84,6 +85,7 @@ class PerceptionPipeline:
         self,
         input_path: str | PathLike[str],
         output_path: str | PathLike[str] | None = None,
+        camera_id: str | None = None,
     ) -> int:
         """Process a video and save its vehicle detections.
 
@@ -91,13 +93,18 @@ class PerceptionPipeline:
             input_path: Path to the source video.
             output_path: Path for the processed video. If omitted, the output
                 is written beside other outputs using the input filename stem.
+            camera_id: Camera identifier that must exist in the camera
+                metadata file. Defaults to ``CAMERA_ID`` (CAM_001).
 
         Raises:
             OSError: If the input or output video cannot be opened.
+            ValueError: If ``camera_id`` is not a known camera in
+                ``data/config/camera_metadata.json``.
 
         Returns:
             The number of processed frames.
         """
+        camera_id = self._resolve_camera_id(camera_id)
         input_file = Path(input_path)
         output_file = (
             Path(output_path)
@@ -115,7 +122,6 @@ class PerceptionPipeline:
         camera_metric_frames: list[dict[str, object]] = []
         trajectory_records: dict[int, dict[str, object]] = {}
         previous_centroids: dict[int, tuple[int, int]] = {}
-        camera_id = CAMERA_ID
         configured_camera_metadata = (
             CAMERA_METADATA.get(camera_id, {}) if camera_id else {}
         )
@@ -792,6 +798,69 @@ class PerceptionPipeline:
         )
 
     @staticmethod
+    def _load_camera_metadata() -> dict[str, dict[str, object]]:
+        """Load the camera metadata file, returning ``{camera_id: {...}}``.
+
+        Returns an empty dict when the file is missing or unreadable.
+        """
+        metadata_path = Path(CAMERA_METADATA_PATH)
+        if not metadata_path.is_file():
+            return {}
+        try:
+            with metadata_path.open("r", encoding="utf-8") as file:
+                data = json.load(file)
+        except (OSError, ValueError):
+            return {}
+        cameras = data.get("cameras") if isinstance(data, dict) else None
+        if not isinstance(cameras, list):
+            return {}
+        result: dict[str, dict[str, object]] = {}
+        for entry in cameras:
+            if not isinstance(entry, dict):
+                continue
+            cid = entry.get("camera_id")
+            if isinstance(cid, str) and cid:
+                result[cid] = entry
+        return result
+
+    @classmethod
+    def _resolve_camera_id(cls, camera_id: str | None) -> str:
+        """Validate and resolve the requested camera id.
+
+        Args:
+            camera_id: Requested camera id, or ``None`` for the default.
+
+        Returns:
+            The resolved camera id.
+
+        Raises:
+            ValueError: If ``camera_id`` is not present in the camera metadata
+                file. Metadata is never silently created.
+        """
+        resolved = camera_id if camera_id else CAMERA_ID
+        known = cls._load_camera_metadata()
+        if resolved not in known:
+            raise ValueError(
+                f"Unknown camera_id '{resolved}'. Known cameras: "
+                f"{', '.join(sorted(known)) if known else 'none (no metadata file)'}"
+            )
+        return resolved
+
+    @staticmethod
+    def _find_camera_video(camera_id: str, input_directory: Path) -> Path | None:
+        """Return the newest supported video for a camera, if any.
+
+        Looks first inside ``<input_directory>/<camera_id>/`` and falls back
+        to a flat ``<input_directory>`` for backward compatibility.
+        """
+        camera_directory = input_directory / camera_id
+        if camera_directory.is_dir():
+            video = PerceptionPipeline._find_input_video(camera_directory)
+            if video is not None:
+                return video
+        return PerceptionPipeline._find_input_video(input_directory)
+
+    @staticmethod
     def _draw_info_overlay(
         frame: np.ndarray,
         camera_id: str | None,
@@ -1139,19 +1208,43 @@ class PerceptionPipeline:
             cv2.circle(frame, center, radius, color, cv2.FILLED)
 
 
-def main() -> None:
-    """Run the UrbanTrack perception pipeline on the default input video."""
+def main(argv: list[str] | None = None) -> None:
+    """Run the UrbanTrack perception pipeline on the default input video.
+
+    Accepts an optional ``--camera-id`` argument selecting one of the
+    prototype cameras defined in ``data/config/camera_metadata.json``
+    (defaults to ``CAMERA_001``). Videos may live flat in
+    ``data/input/`` or under ``data/input/<camera_id>/``.
+    """
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Run the UrbanTrack perception pipeline for one camera."
+    )
+    parser.add_argument(
+        "--camera-id",
+        default=None,
+        help="Camera identifier (e.g. CAM_001). Defaults to CAM_001.",
+    )
+    args = parser.parse_args(argv)
+
     input_directory = Path("data/input")
-    input_path = PerceptionPipeline._find_input_video(input_directory)
+    try:
+        camera_id = PerceptionPipeline._resolve_camera_id(args.camera_id)
+    except ValueError as error:
+        print(f"Error: {error}")
+        return
+
+    input_path = PerceptionPipeline._find_camera_video(camera_id, input_directory)
 
     print("Starting UrbanTrack Perception Pipeline...")
     print(f"Confidence threshold: {CONFIDENCE_THRESHOLD}")
+    print(f"Camera ID: {camera_id}")
 
     if input_path is None:
-        supported_formats = ", ".join(SUPPORTED_VIDEO_EXTENSIONS)
         print(
-            f"Error: no supported video found in {input_directory}. "
-            f"Supported formats: {supported_formats}"
+            f"Error: no supported video found for camera {camera_id} in "
+            f"{input_directory} or {input_directory / camera_id}."
         )
         return
 
@@ -1160,7 +1253,7 @@ def main() -> None:
     print(f"Output video path: {output_path}")
 
     pipeline = PerceptionPipeline()
-    frame_count = pipeline.process(input_path, output_path)
+    frame_count = pipeline.process(input_path, output_path, camera_id=camera_id)
     print(f"Total processed frames: {frame_count}")
 
 
