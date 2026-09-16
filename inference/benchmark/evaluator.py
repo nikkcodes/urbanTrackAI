@@ -47,6 +47,7 @@ class BenchmarkEvaluationResult:
     tier_breakdown: Dict[str, Dict[str, Any]]
     cluster_count: int
     cluster_purity: float
+    reid_metrics: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -70,6 +71,123 @@ class MultiCameraBenchmarkEvaluator:
         self.threshold = threshold
         self.max_time_window_seconds = max_time_window_seconds
         self.max_speed_kmh = max_speed_kmh
+
+
+    def evaluate_reid_quality(
+        self,
+        ground_truth_registry: GroundTruthRegistry,
+        observations: List[Observation],
+    ) -> Dict[str, Any]:
+        """
+        Rigorously evaluate ReID embedding quality, pairwise matching distribution,
+        ROC-AUC, and threshold sensitivity against ground truth.
+        """
+        from inference.similarity import appearance_similarity
+
+        obs_by_id = {o.observation_id: o for o in observations}
+
+        # 1. Embedding Extraction Quality
+        valid_dim_count = 0
+        finite_count = 0
+        norms = []
+        for o in observations:
+            emb = o.appearance_embedding
+            if emb and isinstance(emb, (list, tuple)) and len(emb) == 512:
+                valid_dim_count += 1
+                if not any(math.isnan(x) or math.isinf(x) for x in emb):
+                    finite_count += 1
+                    n_val = math.sqrt(sum(x * x for x in emb))
+                    norms.append(n_val)
+
+        mean_norm = (sum(norms) / len(norms)) if norms else 0.0
+
+        # 2. Pairwise ReID Matching Distribution
+        same_scores = []
+        hard_neg_scores = []
+        diff_scores = []
+
+        for pair in ground_truth_registry.pairwise_labels.values():
+            oa = obs_by_id.get(pair.obs_a_id)
+            ob = obs_by_id.get(pair.obs_b_id)
+            if not oa or not ob or not oa.appearance_embedding or not ob.appearance_embedding:
+                continue
+            sim = appearance_similarity(oa.appearance_embedding, ob.appearance_embedding)
+            if sim is None:
+                continue
+            if pair.relationship == "SAME_VEHICLE":
+                same_scores.append(sim)
+            elif pair.relationship == "HARD_NEGATIVE":
+                hard_neg_scores.append(sim)
+            else:
+                diff_scores.append(sim)
+
+        # 3. ROC-AUC & Threshold Sweep
+        all_pos = same_scores
+        all_neg = diff_scores + hard_neg_scores
+
+        roc_auc = 0.0
+        best_f1 = 0.0
+        best_tau = 0.70
+        sweep_data = []
+
+        if all_pos and all_neg:
+            thresholds = [round(i * 0.05, 2) for i in range(21)]
+            tprs = []
+            fprs = []
+            for t in thresholds:
+                tp_c = sum(1 for s in all_pos if s >= t)
+                fp_c = sum(1 for s in all_neg if s >= t)
+                fn_c = len(all_pos) - tp_c
+                tn_c = len(all_neg) - fp_c
+                tpr = tp_c / len(all_pos)
+                fpr = fp_c / len(all_neg)
+                tprs.append(tpr)
+                fprs.append(fpr)
+
+                prec = tp_c / (tp_c + fp_c) if (tp_c + fp_c) > 0 else 0.0
+                rec = tp_c / (tp_c + fn_c) if (tp_c + fn_c) > 0 else 0.0
+                f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+                fmr = fp_c / len(all_neg)
+                fnmr = fn_c / len(all_pos)
+
+                if f1 > best_f1:
+                    best_f1 = f1
+                    best_tau = t
+
+                sweep_data.append({
+                    "threshold": t,
+                    "precision": round(prec, 4),
+                    "recall": round(rec, 4),
+                    "f1_score": round(f1, 4),
+                    "false_match_rate": round(fmr, 4),
+                    "false_non_match_rate": round(fnmr, 4),
+                })
+
+            for i in range(len(fprs) - 1):
+                roc_auc += abs(fprs[i] - fprs[i + 1]) * (tprs[i] + tprs[i + 1]) / 2.0
+
+        return {
+            "embedding_extraction_quality": {
+                "total_observations": len(observations),
+                "valid_512d_count": valid_dim_count,
+                "finite_count": finite_count,
+                "mean_l2_norm": round(mean_norm, 4),
+                "unit_hypersphere_verified": abs(mean_norm - 1.0) < 0.01,
+            },
+            "pairwise_reid_matching": {
+                "roc_auc": round(roc_auc, 4),
+                "optimal_reid_threshold": best_tau,
+                "optimal_reid_f1": round(best_f1, 4),
+                "same_vehicle_similarity_mean": round(sum(same_scores) / len(same_scores), 4) if same_scores else None,
+                "hard_negative_similarity_mean": round(sum(hard_neg_scores) / len(hard_neg_scores), 4) if hard_neg_scores else None,
+                "different_vehicle_similarity_mean": round(sum(diff_scores) / len(diff_scores), 4) if diff_scores else None,
+                "threshold_sensitivity_sweep": sweep_data,
+            },
+            "ground_truth_context": (
+                "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). "
+                "Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
+            ),
+        }
 
     def evaluate(
         self,
@@ -290,6 +408,7 @@ class MultiCameraBenchmarkEvaluator:
             }
 
         t_total = time.perf_counter() - t_start
+        reid_results = self.evaluate_reid_quality(self.registry, observations)
 
         return BenchmarkEvaluationResult(
             dataset_name="multicamera_v1",
@@ -320,4 +439,5 @@ class MultiCameraBenchmarkEvaluator:
             tier_breakdown=tier_breakdown,
             cluster_count=len(clusters),
             cluster_purity=round(cluster_purity, 4),
+            reid_metrics=reid_results,
         )

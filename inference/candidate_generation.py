@@ -109,13 +109,43 @@ class CandidateGenerator:
         # Extract indexed sorted timestamps for sub-linear window boundary lookup
         timestamps = [o.timestamp_seconds for o in sorted_obs]
 
+        # Pre-extract lightweight structures for sub-second candidate generation at scale
+        synonyms = {"auto": "rickshaw", "suv": "car", "sedan": "car", "hatchback": "car", "van": "car"}
+        items = []
+        for o in sorted_obs:
+            emb = o.appearance_embedding
+            has_id = (emb is not None and len(emb) > 0) or (o.plate is not None)
+            clean_p = "".join(c for c in str(o.plate or "").upper() if c.isalnum()) if o.plate else ""
+            p_conf = float(o.plate_confidence) if o.plate_confidence is not None else 1.0
+            raw_vtype = str(o.vehicle_type or "").strip().lower() if o.vehicle_type else ""
+            norm_v = synonyms.get(raw_vtype, raw_vtype) if raw_vtype else None
+            items.append((
+                o,
+                o.timestamp_seconds,
+                o.camera_id,
+                norm_v,
+                o.latitude,
+                o.longitude,
+                has_id,
+                clean_p,
+                p_conf,
+                o.timestamp_semantics,
+                o.time_reference_id,
+            ))
+
         # 1. Indexed retrieval using temporal window bisect search
         for i in range(n):
-            obs_a = sorted_obs[i]
-            t_a = obs_a.timestamp_seconds
-            has_id_a = (obs_a.appearance_embedding is not None and len(obs_a.appearance_embedding) > 0) or (obs_a.plate is not None)
-            clean_plate_a = "".join(c for c in str(obs_a.plate or "").upper() if c.isalnum())
-            conf_a = float(obs_a.plate_confidence) if obs_a.plate_confidence is not None else 1.0
+            item_a = items[i]
+            t_a = item_a[1]
+            cam_a = item_a[2]
+            norm_a = item_a[3]
+            lat_a = item_a[4]
+            lon_a = item_a[5]
+            has_id_a = item_a[6]
+            clean_plate_a = item_a[7]
+            conf_a = item_a[8]
+            sem_a = item_a[9]
+            ref_a = item_a[10]
 
             # Find upper bound index in O(log N) using bisect_right
             horizon_limit = t_a + self.max_time_window_seconds
@@ -128,57 +158,69 @@ class CandidateGenerator:
 
             # Only iterate through temporally plausible candidate window [i + 1, upper_bound_idx)
             for j in range(i + 1, upper_bound_idx):
-                obs_b = sorted_obs[j]
-                has_id_b = (obs_b.appearance_embedding is not None and len(obs_b.appearance_embedding) > 0) or (obs_b.plate is not None)
+                item_b = items[j]
 
                 # Temporal comparability check
-                t_check = check_temporal_comparability(obs_a, obs_b, camera_metadata=self.camera_metadata)
-                is_sync = t_check.get("comparable", False)
+                cam_b = item_b[2]
+                sem_b = item_b[9]
+                ref_b = item_b[10]
+                t_b = item_b[1]
 
+                is_sync = (sem_a == "synchronized" and sem_b == "synchronized" and ref_a == ref_b and ref_a is not None)
                 if is_sync:
-                    dt = float(t_check.get("delta_seconds", 0.0))
-
-                    # Simultaneous on different cameras
-                    if dt == 0.0 and obs_a.camera_id != obs_b.camera_id:
+                    dt = t_b - t_a
+                    if dt == 0.0 and cam_a != cam_b:
                         rejection_counts["simultaneous_different_cameras"] += 1
                         continue
 
-                    # Physically impossible travel speed
-                    if (
-                        obs_a.latitude is not None and obs_a.longitude is not None
-                        and obs_b.latitude is not None and obs_b.longitude is not None
-                        and dt > 0.0
-                    ):
-                        dist_m = geographic_distance(obs_a.latitude, obs_a.longitude, obs_b.latitude, obs_b.longitude)
+                    lat_b = item_b[4]
+                    lon_b = item_b[5]
+                    if lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
+                        dist_m = geographic_distance(lat_a, lon_a, lat_b, lon_b)
                         speed_kmh = (dist_m / dt) * 3.6
                         if speed_kmh > self.max_speed_kmh:
                             rejection_counts["physically_impossible_speed"] += 1
                             continue
+                else:
+                    t_check = check_temporal_comparability(item_a[0], item_b[0], camera_metadata=self.camera_metadata)
+                    if t_check.get("comparable", False):
+                        dt = float(t_check.get("delta_seconds", 0.0))
+                        if dt == 0.0 and cam_a != cam_b:
+                            rejection_counts["simultaneous_different_cameras"] += 1
+                            continue
+                        lat_b = item_b[4]
+                        lon_b = item_b[5]
+                        if lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
+                            dist_m = geographic_distance(lat_a, lon_a, lat_b, lon_b)
+                            speed_kmh = (dist_m / dt) * 3.6
+                            if speed_kmh > self.max_speed_kmh:
+                                rejection_counts["physically_impossible_speed"] += 1
+                                continue
 
                 # 2. Vehicle type compatibility (only prune when both are known and incompatible)
-                if obs_a.vehicle_type and obs_b.vehicle_type:
-                    _, vt_stat = vehicle_type_compatibility(obs_a.vehicle_type, obs_b.vehicle_type)
-                    if vt_stat == "incompatible":
-                        rejection_counts["incompatible_vehicle_type"] += 1
-                        continue
+                norm_b = item_b[3]
+                if norm_a and norm_b and norm_a != norm_b:
+                    rejection_counts["incompatible_vehicle_type"] += 1
+                    continue
 
                 # 3. Strong license plate contradiction
-                if obs_a.plate is not None and obs_b.plate is not None:
-                    clean_plate_b = "".join(c for c in str(obs_b.plate or "").upper() if c.isalnum())
-                    conf_b = float(obs_b.plate_confidence) if obs_b.plate_confidence is not None else 1.0
+                clean_plate_b = item_b[7]
+                if clean_plate_a and clean_plate_b:
+                    conf_b = item_b[8]
                     if len(clean_plate_a) >= 4 and len(clean_plate_b) >= 4 and conf_a >= 0.50 and conf_b >= 0.50:
-                        sim = plate_similarity(obs_a.plate, obs_b.plate)
+                        sim = plate_similarity(clean_plate_a, clean_plate_b)
                         if sim < 0.35:
                             rejection_counts["strong_plate_contradiction"] += 1
                             continue
 
                 # 4. Absence of identity evidence when threshold > 0.50
+                has_id_b = item_b[6]
                 if self.min_probability_threshold > 0.50 and not (has_id_a or has_id_b):
                     rejection_counts["missing_identity_evidence"] += 1
                     continue
 
                 # All safe filters passed: add candidate pair
-                candidates.append((obs_a, obs_b))
+                candidates.append((item_a[0], item_b[0]))
 
         return candidates, rejection_counts
 
@@ -544,6 +586,119 @@ def benchmark_end_to_end_scalability(
     return {
         'benchmark_name': 'fair_end_to_end_scalability_benchmark',
         'repetitions': repetitions,
+        'timestamp': datetime.now().isoformat(),
+        'evaluations': evaluations,
+    }
+
+
+def benchmark_large_scale_candidate_pipeline(
+    counts: Optional[List[int]] = None,
+    fusion_sample_limit: int = 5000,
+) -> Dict[str, Any]:
+    """
+    Benchmark CandidateGenerator at scale (1K, 2.5K, 5K observations) measuring:
+    - candidate generation time
+    - candidate pair count & theoretical pairs
+    - candidate reduction % & candidate recall %
+    - peak memory allocation (tracemalloc in MB)
+    - fusion time and graph construction time on candidate set
+    - total pipeline latency
+    """
+    import random
+    import tracemalloc
+    from datetime import datetime
+    from .identity_graph import IdentityGraph
+
+    if counts is None:
+        counts = [1000, 2500, 5000]
+
+    vehicle_types = ['car', 'truck', 'bus', 'motorcycle']
+    evaluations = []
+    generator = CandidateGenerator(max_speed_kmh=120.0, max_time_window_seconds=1800.0)
+
+    for n in counts:
+        random.seed(42)
+        test_obs = []
+        for i in range(n):
+            cam_idx = (i % 4) + 1
+            t_sec = float(i * 10.0)
+            vtype = vehicle_types[i % len(vehicle_types)]
+            plate = f'KA01TEST{i % 20:02d}' if (i % 3 != 0) else None
+            test_obs.append(
+                Observation(
+                    observation_id=f'SCALE_{i:05d}',
+                    camera_id=f'CAM_{cam_idx:02d}',
+                    timestamp=datetime.fromtimestamp(1000.0 + t_sec),
+                    timestamp_seconds=1000.0 + t_sec,
+                    vehicle_type=vtype,
+                    plate=plate,
+                    plate_confidence=0.90 if plate else None,
+                    appearance_embedding=[0.1] * 8,
+                    timestamp_semantics='synchronized',
+                    time_reference_id='city_network_sync',
+                )
+            )
+
+        total_pairs = (n * (n - 1)) // 2
+
+        tracemalloc.start()
+        t_start = time.perf_counter()
+
+        # 1. Candidate Generation
+        t0 = time.perf_counter()
+        candidates, breakdown = generator.generate_candidates(test_obs)
+        gen_ms = (time.perf_counter() - t0) * 1000.0
+
+        # 2. Candidate Fusion
+        eval_candidates = candidates[:fusion_sample_limit]
+        t1 = time.perf_counter()
+        fused_res = [match_observations(a, b) for a, b in eval_candidates]
+        fusion_ms = (time.perf_counter() - t1) * 1000.0
+
+        # 3. Graph Assembly
+        t2 = time.perf_counter()
+        g = IdentityGraph(min_score_threshold=0.75)
+        g.build_graph_from_matches(test_obs, eval_candidates, fused_res)
+        _ = g.get_candidate_identities()
+        graph_ms = (time.perf_counter() - t2) * 1000.0
+
+        total_ms = (time.perf_counter() - t_start) * 1000.0
+        _, peak_bytes = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        cand_count = len(candidates)
+        reduction_pct = ((total_pairs - cand_count) / total_pairs * 100.0) if total_pairs > 0 else 0.0
+
+        # Recall verification on identical plates within window
+        cand_set = set((min(a.observation_id, b.observation_id), max(a.observation_id, b.observation_id)) for a, b in candidates)
+        true_pos = 0
+        found_pos = 0
+        for i in range(min(n, 200)):
+            for j in range(i + 1, min(n, 200)):
+                oa, ob = test_obs[i], test_obs[j]
+                if oa.plate and ob.plate and oa.plate == ob.plate and abs(oa.timestamp_seconds - ob.timestamp_seconds) <= 1800.0:
+                    true_pos += 1
+                    if (min(oa.observation_id, ob.observation_id), max(oa.observation_id, ob.observation_id)) in cand_set:
+                        found_pos += 1
+        recall_pct = (found_pos / true_pos * 100.0) if true_pos > 0 else 100.0
+
+        evaluations.append({
+            'n_observations': n,
+            'theoretical_pairs': total_pairs,
+            'candidate_pairs': cand_count,
+            'pruned_pairs': total_pairs - cand_count,
+            'candidate_reduction_pct': round(reduction_pct, 2),
+            'candidate_recall_pct': round(recall_pct, 2),
+            'candidate_gen_ms': round(gen_ms, 2),
+            'fusion_ms': round(fusion_ms, 2),
+            'graph_assembly_ms': round(graph_ms, 2),
+            'total_pipeline_ms': round(total_ms, 2),
+            'peak_memory_mb': round(peak_bytes / (1024.0 * 1024.0), 2),
+            'rejection_breakdown': breakdown,
+        })
+
+    return {
+        'benchmark_name': 'large_scale_candidate_pipeline_benchmark',
         'timestamp': datetime.now().isoformat(),
         'evaluations': evaluations,
     }

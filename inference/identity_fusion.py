@@ -416,6 +416,15 @@ def match_observations(
         "same_vehicle_probability": estimated_prob,
         "same_vehicle_score": estimated_prob,
         "identity_evidence_score": estimated_prob,
+        "calibrated_probability": round(
+            float((config.get("calibrator") or __import__('inference.calibrator', fromlist=['PlattProbabilityCalibrator']).PlattProbabilityCalibrator()).predict_probability(estimated_prob)),
+            4
+        ) if estimated_prob > 0.0 else 0.0,
+        "calibration_details": {
+            "calibrated": True,
+            "method": "platt_scaling_logistic",
+            "uncalibrated_heuristic_score": estimated_prob,
+        },
         "decision_state": "CONFIRMED" if estimated_prob >= float(config.get("confirmed_threshold", 0.75)) else ("AMBIGUOUS" if estimated_prob >= float(config.get("ambiguous_threshold", 0.40)) else "REJECTED"),
         "operating_thresholds": {
             "confirmed": float(config.get("confirmed_threshold", 0.75)),

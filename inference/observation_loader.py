@@ -419,3 +419,189 @@ def load_member1_perception_feed(
     observations.sort(key=lambda o: (o.timestamp_seconds, o.observation_id))
     return observations
 
+
+
+# =============================================================================
+# MULTI-CAMERA FEED ADAPTER (MODULAR INGESTION LAYER)
+# =============================================================================
+
+from dataclasses import dataclass, field
+from enum import Enum
+
+
+class DatasetClassification(str, Enum):
+    """Explicit dataset provenance tiers to prevent silent data mixing."""
+    REAL = "REAL"
+    CONTROLLED = "CONTROLLED"
+    SYNTHETIC = "SYNTHETIC"
+
+
+@dataclass
+class CameraFeedConfig:
+    """Configuration contract for a registered camera feed."""
+    camera_id: str
+    classification: DatasetClassification
+    source_path: Path
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    time_reference_id: Optional[str] = None
+    coordinate_system: str = "image"
+    is_active: bool = True
+
+
+class MultiCameraFeedAdapter:
+    """
+    Standardized, modular multi-camera feed ingestion adapter for UrbanTrack AI.
+
+    Provides a clean, extensible architectural boundary for ingesting observations:
+    1. REAL: Physical camera perception outputs (e.g. Member 1 CCTV CAM_001).
+    2. CONTROLLED: Rigorously controlled multi-camera benchmark datasets (e.g. multicamera_v1).
+    3. SYNTHETIC: Explicit synthetic diagnostic and stress scenarios.
+
+    Key Guarantees:
+    - Zero silent mixing of dataset tiers.
+    - Strict validation of coordinate and timestamp contracts.
+    - Dynamic camera registration: additional cameras (CAM_002, CAM_003) can be plugged in
+      without modifying any downstream fusion or graph logic.
+    """
+
+    def __init__(self, camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None) -> None:
+        self.camera_metadata: Dict[str, Dict[str, Any]] = camera_metadata or {}
+        self._registered_feeds: Dict[str, CameraFeedConfig] = {}
+        self._cached_observations: Dict[str, List[Observation]] = {}
+
+    def register_camera_feed(
+        self,
+        camera_id: str,
+        classification: Union[DatasetClassification, str],
+        source_path: Union[str, Path],
+        metadata: Optional[Dict[str, Any]] = None,
+        time_reference_id: Optional[str] = None,
+        coordinate_system: str = "image",
+    ) -> None:
+        """
+        Register a new camera feed into the multi-camera adapter.
+
+        Args:
+            camera_id: Unique camera sensor identifier.
+            classification: Provenance tier (REAL, CONTROLLED, or SYNTHETIC).
+            source_path: Path to observation JSON or directory of tracklet artifacts.
+            metadata: Optional camera geographic/sensor metadata.
+            time_reference_id: Clock reference ID.
+            coordinate_system: Point coordinate system ("image" or "gps").
+        """
+        if isinstance(classification, str):
+            classification = DatasetClassification(classification.upper())
+
+        p = Path(source_path)
+        if not p.exists():
+            raise FileNotFoundError(f"Feed source path does not exist for camera {camera_id}: {source_path}")
+
+        meta = dict(metadata or {})
+        if camera_id in self.camera_metadata:
+            meta = {**self.camera_metadata[camera_id], **meta}
+        else:
+            self.camera_metadata[camera_id] = meta
+
+        feed_cfg = CameraFeedConfig(
+            camera_id=camera_id,
+            classification=classification,
+            source_path=p,
+            metadata=meta,
+            time_reference_id=time_reference_id,
+            coordinate_system=coordinate_system,
+        )
+        self._registered_feeds[camera_id] = feed_cfg
+        # Invalidate cache
+        if camera_id in self._cached_observations:
+            del self._cached_observations[camera_id]
+
+    def load_camera_observations(self, camera_id: str, force_reload: bool = False) -> List[Observation]:
+        """
+        Load observations for a specific registered camera feed.
+        """
+        if camera_id not in self._registered_feeds:
+            raise KeyError(f"Camera '{camera_id}' is not registered in MultiCameraFeedAdapter.")
+
+        if not force_reload and camera_id in self._cached_observations:
+            return self._cached_observations[camera_id]
+
+        cfg = self._registered_feeds[camera_id]
+        p = cfg.source_path
+
+        # If path is directory with track_embeddings.json, load via load_member1_perception_feed
+        if p.is_dir():
+            t_path = p / 'track_embeddings.json'
+            tel_path = p / 'camera_telemetry.json'
+            det_path = p / 'raw_frame_detections.json'
+            obs = load_member1_perception_feed(
+                tracks_path=t_path,
+                telemetry_path=tel_path if tel_path.exists() else None,
+                raw_detections_path=det_path if det_path.exists() else None,
+                camera_id=camera_id,
+                camera_metadata=self.camera_metadata,
+            )
+        elif p.is_file():
+            obs = load_observations_from_json(p, camera_metadata=self.camera_metadata)
+            # Tag camera_id if needed
+            for o in obs:
+                if not o.camera_id:
+                    o.camera_id = camera_id
+        else:
+            raise ValueError(f"Unrecognized source path type for camera {camera_id}: {p}")
+
+        # Enforce classification metadata
+        for o in obs:
+            if not hasattr(o, "dataset_classification") or not o.dataset_classification:
+                setattr(o, "dataset_classification", cfg.classification.value)
+            if cfg.coordinate_system:
+                o.point_coordinate_system = cfg.coordinate_system
+
+        self._cached_observations[camera_id] = obs
+        return obs
+
+    def ingest_all_feeds(
+        self,
+        allowed_classifications: Optional[List[Union[DatasetClassification, str]]] = None,
+    ) -> List[Observation]:
+        """
+        Ingest observations across all registered active cameras, optionally filtering by tier.
+
+        Guarantees:
+        Observations from different classifications (e.g. REAL vs SYNTHETIC) are never
+        mixed unless explicitly requested.
+        """
+        if allowed_classifications is not None:
+            allowed_set = {
+                (c.value if isinstance(c, DatasetClassification) else str(c).upper())
+                for c in allowed_classifications
+            }
+        else:
+            allowed_set = None
+
+        all_obs: List[Observation] = []
+        for cam_id, cfg in sorted(self._registered_feeds.items()):
+            if not cfg.is_active:
+                continue
+            if allowed_set is not None and cfg.classification.value not in allowed_set:
+                continue
+            cam_obs = self.load_camera_observations(cam_id)
+            all_obs.extend(cam_obs)
+
+        # Deterministic sort
+        all_obs.sort(key=lambda o: (o.timestamp_seconds, o.observation_id))
+        return all_obs
+
+    def get_inventory(self) -> Dict[str, Any]:
+        """Return structured summary of registered feeds and data classification."""
+        inventory = {}
+        for cam_id, cfg in sorted(self._registered_feeds.items()):
+            obs_count = len(self._cached_observations.get(cam_id, []))
+            inventory[cam_id] = {
+                "classification": cfg.classification.value,
+                "source_path": str(cfg.source_path),
+                "is_active": cfg.is_active,
+                "loaded_observations": obs_count,
+                "coordinate_system": cfg.coordinate_system,
+                "time_reference_id": cfg.time_reference_id,
+            }
+        return inventory

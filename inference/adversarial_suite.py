@@ -276,6 +276,16 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
         "passed": r16["decision_state"] == "CONFIRMED" and r16["same_vehicle_score"] >= 0.75,
     })
 
+
+    for s in scenarios:
+        if 'input' not in s:
+            s['input'] = f"{s['name']} scenario with synthetic observations."
+        if 'expected_behavior' not in s:
+            s['expected_behavior'] = f"Decision state in {s.get('expected_state', [])}"
+        if 'actual_behavior' not in s:
+            s['actual_behavior'] = f"{s.get('actual_state')} (score: {s.get('score', 0.0):.4f})"
+        s['pass_fail'] = "PASS" if s.get('passed', False) else "FAIL"
+
     passed_count = sum(1 for s in scenarios if s["passed"])
     return {
         "suite": "ADVERSARIAL_16_SCENARIOS",

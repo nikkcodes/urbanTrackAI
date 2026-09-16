@@ -1,19 +1,19 @@
 {
   "metadata": {
     "title": "UrbanTrack AI \u2014 Master Reproduction & Technical Hardening Audit",
-    "timestamp": "2026-09-15T06:21:28.174641+00:00",
-    "git_commit": "9b4f9b24ab6c707e5af5bc366c09d62a436323cd",
+    "timestamp": "2026-09-16T09:51:45.343772+00:00",
+    "git_commit": "208989164c96c99a6e70507fd8911a4d905e9b67",
     "system_version": "9.0+ Hardened Prototype",
     "evaluated_by": "Automated Reproduction Suite",
-    "execution_time_seconds": 72.47
+    "execution_time_seconds": 100.82
   },
   "stages": {
     "stage_0_unit_tests": {
-      "tests_run": 366,
+      "tests_run": 374,
       "failures": 0,
       "errors": 0,
-      "passed": 366,
-      "runtime_seconds": 36.754,
+      "passed": 374,
+      "runtime_seconds": 40.644,
       "status": "PASSED"
     },
     "stage_1_raw_integrity": {
@@ -67,6 +67,33 @@
       "field_isolation": "detection_confidence, frame_detection_confidence_mean, camera_reliability isolated"
     },
     "stage_3_real_member1_feed": {
+      "data_driven_camera_reliability": {
+        "camera_id": "CAM_001",
+        "reliability": 0.7078,
+        "overall_reliability": 0.7078,
+        "status": "computed_data_driven",
+        "factors": {
+          "sample_count": 39,
+          "mean_detection_confidence": 0.6934,
+          "reid_validity_rate": 1.0,
+          "ocr_success_rate": 0.1795,
+          "mean_plate_confidence": 0.7551,
+          "unique_tracks": 39,
+          "tracking_stability": 0.3,
+          "source": "empirical_stream_profiler"
+        },
+        "metadata": {
+          "sample_count": 39,
+          "mean_detection_confidence": 0.6934,
+          "reid_validity_rate": 1.0,
+          "ocr_success_rate": 0.1795,
+          "mean_plate_confidence": 0.7551,
+          "unique_tracks": 39,
+          "tracking_stability": 0.3,
+          "source": "empirical_stream_profiler"
+        },
+        "explanation": "Camera 'CAM_001' empirically profiled from 39 observations: det_conf=0.69, reid_valid=1.00, ocr_rate=0.18 -> data-driven reliability=0.71 (computed_data_driven)."
+      },
       "status": "PASSED",
       "observations_loaded": 39,
       "tracks_with_512d_reid": 39,
@@ -432,9 +459,9 @@
       "candidate_pairs_count": 66556,
       "candidate_reduction_pct": 94.08,
       "candidate_recall_pct": 99.99,
-      "elapsed_total_seconds": 14.58,
-      "elapsed_candidate_gen_seconds": 2.238,
-      "elapsed_fusion_seconds": 12.021,
+      "elapsed_total_seconds": 13.608,
+      "elapsed_candidate_gen_seconds": 1.445,
+      "elapsed_fusion_seconds": 11.841,
       "elapsed_graph_seconds": 0.292,
       "threshold_used": 0.75,
       "tp": 5814,
@@ -502,11 +529,199 @@
         }
       },
       "cluster_count": 182,
-      "cluster_purity": 0.8956
+      "cluster_purity": 0.8956,
+      "reid_metrics": {
+        "embedding_extraction_quality": {
+          "total_observations": 1500,
+          "valid_512d_count": 1410,
+          "finite_count": 1410,
+          "mean_l2_norm": 1.0,
+          "unit_hypersphere_verified": true
+        },
+        "pairwise_reid_matching": {
+          "roc_auc": 0.8647,
+          "optimal_reid_threshold": 0.65,
+          "optimal_reid_f1": 0.8547,
+          "same_vehicle_similarity_mean": 0.8317,
+          "hard_negative_similarity_mean": 0.8088,
+          "different_vehicle_similarity_mean": 0.4588,
+          "threshold_sensitivity_sweep": [
+            {
+              "threshold": 0.0,
+              "precision": 0.4941,
+              "recall": 1.0,
+              "f1_score": 0.6614,
+              "false_match_rate": 1.0,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.05,
+              "precision": 0.4941,
+              "recall": 1.0,
+              "f1_score": 0.6614,
+              "false_match_rate": 1.0,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.1,
+              "precision": 0.4941,
+              "recall": 1.0,
+              "f1_score": 0.6614,
+              "false_match_rate": 1.0,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.15,
+              "precision": 0.4941,
+              "recall": 1.0,
+              "f1_score": 0.6614,
+              "false_match_rate": 1.0,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.2,
+              "precision": 0.4946,
+              "recall": 1.0,
+              "f1_score": 0.6618,
+              "false_match_rate": 0.9982,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.25,
+              "precision": 0.4957,
+              "recall": 1.0,
+              "f1_score": 0.6628,
+              "false_match_rate": 0.9938,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.3,
+              "precision": 0.5024,
+              "recall": 1.0,
+              "f1_score": 0.6688,
+              "false_match_rate": 0.9673,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.35,
+              "precision": 0.5205,
+              "recall": 1.0,
+              "f1_score": 0.6847,
+              "false_match_rate": 0.8997,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.4,
+              "precision": 0.5533,
+              "recall": 1.0,
+              "f1_score": 0.7124,
+              "false_match_rate": 0.7887,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.45,
+              "precision": 0.602,
+              "recall": 1.0,
+              "f1_score": 0.7516,
+              "false_match_rate": 0.6457,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.5,
+              "precision": 0.6562,
+              "recall": 1.0,
+              "f1_score": 0.7924,
+              "false_match_rate": 0.5118,
+              "false_non_match_rate": 0.0
+            },
+            {
+              "threshold": 0.55,
+              "precision": 0.7061,
+              "recall": 0.9993,
+              "f1_score": 0.8275,
+              "false_match_rate": 0.4062,
+              "false_non_match_rate": 0.0007
+            },
+            {
+              "threshold": 0.6,
+              "precision": 0.74,
+              "recall": 0.9956,
+              "f1_score": 0.849,
+              "false_match_rate": 0.3417,
+              "false_non_match_rate": 0.0044
+            },
+            {
+              "threshold": 0.65,
+              "precision": 0.7588,
+              "recall": 0.9784,
+              "f1_score": 0.8547,
+              "false_match_rate": 0.3038,
+              "false_non_match_rate": 0.0216
+            },
+            {
+              "threshold": 0.7,
+              "precision": 0.7706,
+              "recall": 0.9296,
+              "f1_score": 0.8426,
+              "false_match_rate": 0.2704,
+              "false_non_match_rate": 0.0704
+            },
+            {
+              "threshold": 0.75,
+              "precision": 0.7752,
+              "recall": 0.8261,
+              "f1_score": 0.7998,
+              "false_match_rate": 0.234,
+              "false_non_match_rate": 0.1739
+            },
+            {
+              "threshold": 0.8,
+              "precision": 0.7875,
+              "recall": 0.6793,
+              "f1_score": 0.7294,
+              "false_match_rate": 0.1791,
+              "false_non_match_rate": 0.3207
+            },
+            {
+              "threshold": 0.85,
+              "precision": 0.795,
+              "recall": 0.4678,
+              "f1_score": 0.589,
+              "false_match_rate": 0.1178,
+              "false_non_match_rate": 0.5322
+            },
+            {
+              "threshold": 0.9,
+              "precision": 0.8161,
+              "recall": 0.1711,
+              "f1_score": 0.2829,
+              "false_match_rate": 0.0376,
+              "false_non_match_rate": 0.8289
+            },
+            {
+              "threshold": 0.95,
+              "precision": 1.0,
+              "recall": 0.001,
+              "f1_score": 0.002,
+              "false_match_rate": 0.0,
+              "false_non_match_rate": 0.999
+            },
+            {
+              "threshold": 1.0,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1_score": 0.0,
+              "false_match_rate": 0.0,
+              "false_non_match_rate": 1.0
+            }
+          ]
+        },
+        "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
+      }
     },
     "stage_8_candidate_scaling": {
       "benchmark_name": "candidate_generation_scaling",
-      "timestamp": "2026-09-15T11:52:21.613568",
+      "timestamp": "2026-09-16T15:22:42.521565",
       "evaluations": [
         {
           "n_observations": 50,
@@ -515,9 +730,9 @@
           "pruned_pairs": 937,
           "reduction_pct": 76.49,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 0.04,
-          "indexed_retrieval_ms": 2.85,
-          "speedup_factor": 0.02
+          "naive_enumeration_ms": 0.06,
+          "indexed_retrieval_ms": 1.36,
+          "speedup_factor": 0.04
         },
         {
           "n_observations": 100,
@@ -526,9 +741,9 @@
           "pruned_pairs": 3750,
           "reduction_pct": 75.76,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 0.25,
-          "indexed_retrieval_ms": 11.32,
-          "speedup_factor": 0.02
+          "naive_enumeration_ms": 0.24,
+          "indexed_retrieval_ms": 5.23,
+          "speedup_factor": 0.05
         },
         {
           "n_observations": 200,
@@ -537,9 +752,9 @@
           "pruned_pairs": 15312,
           "reduction_pct": 76.94,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 1.07,
-          "indexed_retrieval_ms": 42.83,
-          "speedup_factor": 0.03
+          "naive_enumeration_ms": 5.12,
+          "indexed_retrieval_ms": 20.0,
+          "speedup_factor": 0.26
         },
         {
           "n_observations": 500,
@@ -548,9 +763,9 @@
           "pruned_pairs": 109062,
           "reduction_pct": 87.42,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 12.23,
-          "indexed_retrieval_ms": 146.54,
-          "speedup_factor": 0.08
+          "naive_enumeration_ms": 7.0,
+          "indexed_retrieval_ms": 67.85,
+          "speedup_factor": 0.1
         },
         {
           "n_observations": 1000,
@@ -559,16 +774,16 @@
           "pruned_pairs": 465312,
           "reduction_pct": 93.16,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 53.75,
-          "indexed_retrieval_ms": 316.31,
-          "speedup_factor": 0.17
+          "naive_enumeration_ms": 48.98,
+          "indexed_retrieval_ms": 143.73,
+          "speedup_factor": 0.34
         }
       ]
     },
     "stage_8b_fair_end_to_end_scalability": {
       "benchmark_name": "fair_end_to_end_scalability_benchmark",
       "repetitions": 2,
-      "timestamp": "2026-09-15T11:52:39.194285",
+      "timestamp": "2026-09-16T15:23:00.602809",
       "evaluations": [
         {
           "n_observations": 50,
@@ -584,23 +799,23 @@
           "recall": 0.0769,
           "f1": 0.1429,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 49.09,
-            "total_runtime_p95_ms": 49.75,
-            "fusion_runtime_median_ms": 47.71,
+            "total_runtime_median_ms": 49.91,
+            "total_runtime_p95_ms": 50.64,
+            "fusion_runtime_median_ms": 48.52,
             "graph_runtime_median_ms": 1.32,
             "fused_pairs_count": 1225,
             "final_edges": 1
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 15.65,
-            "total_runtime_p95_ms": 16.61,
-            "candidate_gen_median_ms": 2.8,
-            "fusion_runtime_median_ms": 12.31,
-            "graph_runtime_median_ms": 0.54,
+            "total_runtime_median_ms": 15.59,
+            "total_runtime_p95_ms": 16.63,
+            "candidate_gen_median_ms": 1.27,
+            "fusion_runtime_median_ms": 13.81,
+            "graph_runtime_median_ms": 0.52,
             "fused_pairs_count": 288,
             "final_edges": 1
           },
-          "speedup_factor": 3.14
+          "speedup_factor": 3.2
         },
         {
           "n_observations": 100,
@@ -616,23 +831,23 @@
           "recall": 0.0128,
           "f1": 0.0244,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 203.29,
-            "total_runtime_p95_ms": 204.02,
-            "fusion_runtime_median_ms": 197.78,
-            "graph_runtime_median_ms": 5.28,
+            "total_runtime_median_ms": 202.23,
+            "total_runtime_p95_ms": 207.08,
+            "fusion_runtime_median_ms": 195.86,
+            "graph_runtime_median_ms": 6.13,
             "fused_pairs_count": 4950,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 63.57,
-            "total_runtime_p95_ms": 65.61,
-            "candidate_gen_median_ms": 11.43,
-            "fusion_runtime_median_ms": 50.32,
-            "graph_runtime_median_ms": 1.82,
+            "total_runtime_median_ms": 63.86,
+            "total_runtime_p95_ms": 71.69,
+            "candidate_gen_median_ms": 5.08,
+            "fusion_runtime_median_ms": 56.87,
+            "graph_runtime_median_ms": 1.9,
             "fused_pairs_count": 1200,
             "final_edges": 4
           },
-          "speedup_factor": 3.2
+          "speedup_factor": 3.17
         },
         {
           "n_observations": 200,
@@ -648,23 +863,23 @@
           "recall": 0.0079,
           "f1": 0.0157,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 885.76,
-            "total_runtime_p95_ms": 943.96,
-            "fusion_runtime_median_ms": 866.56,
-            "graph_runtime_median_ms": 18.28,
+            "total_runtime_median_ms": 922.76,
+            "total_runtime_p95_ms": 979.6,
+            "fusion_runtime_median_ms": 901.81,
+            "graph_runtime_median_ms": 19.67,
             "fused_pairs_count": 19900,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 261.97,
-            "total_runtime_p95_ms": 266.93,
-            "candidate_gen_median_ms": 45.37,
-            "fusion_runtime_median_ms": 209.16,
-            "graph_runtime_median_ms": 7.44,
+            "total_runtime_median_ms": 246.03,
+            "total_runtime_p95_ms": 261.01,
+            "candidate_gen_median_ms": 20.69,
+            "fusion_runtime_median_ms": 218.15,
+            "graph_runtime_median_ms": 7.2,
             "fused_pairs_count": 4860,
             "final_edges": 4
           },
-          "speedup_factor": 3.38
+          "speedup_factor": 3.75
         },
         {
           "n_observations": 500,
@@ -680,23 +895,92 @@
           "recall": 0.007,
           "f1": 0.0138,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 6275.77,
-            "total_runtime_p95_ms": 6706.03,
-            "fusion_runtime_median_ms": 6166.48,
-            "graph_runtime_median_ms": 102.46,
+            "total_runtime_median_ms": 6566.04,
+            "total_runtime_p95_ms": 7330.85,
+            "fusion_runtime_median_ms": 6315.7,
+            "graph_runtime_median_ms": 118.54,
             "fused_pairs_count": 124750,
             "final_edges": 30
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 1023.01,
-            "total_runtime_p95_ms": 1093.89,
-            "candidate_gen_median_ms": 168.62,
-            "fusion_runtime_median_ms": 814.47,
-            "graph_runtime_median_ms": 39.92,
+            "total_runtime_median_ms": 955.29,
+            "total_runtime_p95_ms": 1054.06,
+            "candidate_gen_median_ms": 76.6,
+            "fusion_runtime_median_ms": 856.51,
+            "graph_runtime_median_ms": 22.18,
             "fused_pairs_count": 18360,
             "final_edges": 19
           },
-          "speedup_factor": 6.13
+          "speedup_factor": 6.87
+        }
+      ]
+    },
+    "stage_8c_large_scale_candidate_pipeline": {
+      "benchmark_name": "large_scale_candidate_pipeline_benchmark",
+      "timestamp": "2026-09-16T15:23:24.744640",
+      "evaluations": [
+        {
+          "n_observations": 1000,
+          "theoretical_pairs": 499500,
+          "candidate_pairs": 40860,
+          "pruned_pairs": 458640,
+          "candidate_reduction_pct": 91.82,
+          "candidate_recall_pct": 100.0,
+          "candidate_gen_ms": 1009.97,
+          "fusion_ms": 3785.49,
+          "graph_assembly_ms": 930.53,
+          "total_pipeline_ms": 5726.63,
+          "peak_memory_mb": 44.89,
+          "rejection_breakdown": {
+            "temporal_horizon_exceeded": 335790,
+            "simultaneous_different_cameras": 0,
+            "physically_impossible_speed": 0,
+            "incompatible_vehicle_type": 122850,
+            "strong_plate_contradiction": 0,
+            "missing_identity_evidence": 0
+          }
+        },
+        {
+          "n_observations": 2500,
+          "theoretical_pairs": 3123750,
+          "candidate_pairs": 108360,
+          "pruned_pairs": 3015390,
+          "candidate_reduction_pct": 96.53,
+          "candidate_recall_pct": 100.0,
+          "candidate_gen_ms": 2711.0,
+          "fusion_ms": 3782.22,
+          "graph_assembly_ms": 1088.23,
+          "total_pipeline_ms": 7581.62,
+          "peak_memory_mb": 52.44,
+          "rejection_breakdown": {
+            "temporal_horizon_exceeded": 2690040,
+            "simultaneous_different_cameras": 0,
+            "physically_impossible_speed": 0,
+            "incompatible_vehicle_type": 325350,
+            "strong_plate_contradiction": 0,
+            "missing_identity_evidence": 0
+          }
+        },
+        {
+          "n_observations": 5000,
+          "theoretical_pairs": 12497500,
+          "candidate_pairs": 220860,
+          "pruned_pairs": 12276640,
+          "candidate_reduction_pct": 98.23,
+          "candidate_recall_pct": 100.0,
+          "candidate_gen_ms": 5547.72,
+          "fusion_ms": 3817.85,
+          "graph_assembly_ms": 1296.31,
+          "total_pipeline_ms": 10662.03,
+          "peak_memory_mb": 65.22,
+          "rejection_breakdown": {
+            "temporal_horizon_exceeded": 11613790,
+            "simultaneous_different_cameras": 0,
+            "physically_impossible_speed": 0,
+            "incompatible_vehicle_type": 662850,
+            "strong_plate_contradiction": 0,
+            "missing_identity_evidence": 0
+          }
         }
       ]
     },
@@ -1024,7 +1308,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_03).).",
-          "passed": true
+          "passed": true,
+          "input": "Identical-looking vehicles (Simultaneous presence) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_02",
@@ -1035,7 +1323,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Physically impossible travel speed (Required travel speed of 2147.3 km/h exceeds maximum plausible limit (120.0 km/h).).",
-          "passed": true
+          "passed": true,
+          "input": "Visually similar vehicles (Impossible speed) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_03",
@@ -1047,7 +1339,11 @@
           "actual_state": "CONFIRMED",
           "score": 0.955,
           "explanation": "Estimated match probability is 0.95: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
-          "passed": true
+          "passed": true,
+          "input": "OCR 1-character OCR noise (Soft penalty) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+          "actual_behavior": "CONFIRMED (score: 0.9550)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_04",
@@ -1059,7 +1355,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Strong license plate contradiction (TS09EA1234 vs DL01XY9999, similarity 0.10 < 0.35 with verified OCR).",
-          "passed": true
+          "passed": true,
+          "input": "Wrong OCR (Plate contradiction) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_05",
@@ -1071,7 +1371,11 @@
           "actual_state": "CONFIRMED",
           "score": 1.0,
           "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
-          "passed": true
+          "passed": true,
+          "input": "Missing OCR (Neutral fallback) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+          "actual_behavior": "CONFIRMED (score: 1.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_06",
@@ -1082,7 +1386,11 @@
           "actual_state": "CONFIRMED",
           "score": 1.0,
           "explanation": "Estimated match probability is 1.00: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
-          "passed": true
+          "passed": true,
+          "input": "Missing OSNet (Plate fallback) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED']",
+          "actual_behavior": "CONFIRMED (score: 1.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_07",
@@ -1093,7 +1401,11 @@
           "actual_state": "AMBIGUOUS",
           "score": 0.5,
           "explanation": "Estimated match probability is 0.50: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
-          "passed": true
+          "passed": true,
+          "input": "Corrupted OSNet (NaN vectors safely neutral) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['AMBIGUOUS']",
+          "actual_behavior": "AMBIGUOUS (score: 0.5000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_08",
@@ -1104,7 +1416,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_02).).",
-          "passed": true
+          "passed": true,
+          "input": "Simultaneous presence across cameras (dt=0.0s) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_09",
@@ -1115,7 +1431,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Chronologically inverted: negative_elapsed_time_same_camera.).",
-          "passed": true
+          "passed": true,
+          "input": "Negative elapsed time on same camera scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_10",
@@ -1126,7 +1446,11 @@
           "actual_state": "AMBIGUOUS",
           "score": 0.7,
           "explanation": "Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).",
-          "passed": true
+          "passed": true,
+          "input": "Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['AMBIGUOUS']",
+          "actual_behavior": "AMBIGUOUS (score: 0.7000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_11",
@@ -1138,7 +1462,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Estimated match probability is 0.00: Appearance similarity is 0.00 (low), vehicle types are compatible (car vs car).",
-          "passed": true
+          "passed": true,
+          "input": "Tracker ID switch (Severe visual drift) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_12",
@@ -1150,7 +1478,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous distinct detections/tracks (trk_a vs trk_b) at camera cam_01.).",
-          "passed": true
+          "passed": true,
+          "input": "Duplicate detections in same frame scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_13",
@@ -1161,7 +1493,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Incompatible vehicle types (car vs bus).",
-          "passed": true
+          "passed": true,
+          "input": "Contradictory vehicle type (Car vs Bus) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_14",
@@ -1173,7 +1509,11 @@
           "actual_state": "AMBIGUOUS",
           "score": 0.575,
           "explanation": "Estimated match probability is 0.57: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 43.1 km/h over 359.4m in 30.0s.",
-          "passed": true
+          "passed": true,
+          "input": "Low camera reliability (Attenuated weight) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+          "actual_behavior": "AMBIGUOUS (score: 0.5750)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_15",
@@ -1185,7 +1525,11 @@
           "actual_state": "REJECTED",
           "score": 0.0,
           "explanation": "Match rejected (0.0): Strong license plate contradiction (AP09AA1111 vs MH12ZZ9999, similarity 0.00 < 0.35 with verified OCR).",
-          "passed": true
+          "passed": true,
+          "input": "Conflicting modalities (High appearance vs Conflicting plate) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         },
         {
           "id": "ADV_16",
@@ -1196,7 +1540,11 @@
           "actual_state": "CONFIRMED",
           "score": 1.0,
           "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 2488.8m in 180.0s.",
-          "passed": true
+          "passed": true,
+          "input": "Missing camera corridor transition (Zero fabricated sightings) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED']",
+          "actual_behavior": "CONFIRMED (score: 1.0000)",
+          "pass_fail": "PASS"
         }
       ]
     },
@@ -1205,17 +1553,51 @@
       "candidate_routes_count": 2,
       "shannon_entropy_nats": 0.6887,
       "fabricated_observations_count": 0
+    },
+    "stage_11b_system_health": {
+      "overall_status": "HEALTHY",
+      "preflight_duration_ms": 0.08,
+      "environment": {
+        "status": "PASS",
+        "python_version": "3.13.5",
+        "supported_python": true,
+        "missing_modules": [],
+        "platform": "darwin"
+      },
+      "perception_feeds": {
+        "status": "PASS",
+        "total_registered_cameras": 1,
+        "camera_feeds": {
+          "CAM_001": {
+            "classification": "REAL",
+            "source_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/member1_perception/cam_001",
+            "exists": true,
+            "readable": true,
+            "status": "READY"
+          }
+        }
+      },
+      "coordinate_contracts": {
+        "status": "PASS",
+        "samples_checked": 39,
+        "violations_count": 0,
+        "violations": []
+      },
+      "diagnostics": {
+        "active_failures": [],
+        "deployment_ready": true
+      }
     }
   },
   "acceptance_gates": {
     "GATE_01_all_tests_pass": {
       "status": "PASS",
-      "metric": "366/366 tests passing",
+      "metric": "374/374 tests passing",
       "threshold": "100% pass (0 failures, 0 errors, >= 356 tests)",
       "dataset": "Full test suite (tests/test_*.py)",
-      "source_result": "unittest.TextTestRunner (Ran 366 tests in 36.754s)",
+      "source_result": "unittest.TextTestRunner (Ran 374 tests in 40.644s)",
       "reason_for_threshold": "Zero regression policy across all Member 2 units and integrations",
-      "details": "366/366 unit and integration tests passing cleanly (0 errors, 0 failures)"
+      "details": "374/374 unit and integration tests passing cleanly (0 errors, 0 failures)"
     },
     "GATE_02_raw_manifest_verified": {
       "status": "PASS",
@@ -1291,12 +1673,12 @@
     },
     "GATE_10_scalability_fair_downstream_comparison": {
       "status": "PASS",
-      "metric": "N=500 -> Speedup: 6.13x (85.3% reduction, 100.0% recall)",
+      "metric": "N=500 -> Speedup: 6.87x (85.3% reduction, 100.0% recall)",
       "threshold": ">= 2.0x speedup with >= 99.0% candidate recall and zero duplicated fusion",
       "dataset": "Synthetic scalability benchmark (N=50..500)",
-      "source_result": "benchmark_end_to_end_scalability (Base=6275.77ms, Opt=1023.01ms)",
+      "source_result": "benchmark_end_to_end_scalability (Base=6566.04ms, Opt=955.29ms)",
       "reason_for_threshold": "Methodological correctness: downstream fusion and graph logic executed exactly once",
-      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.13x measured speedup"
+      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.87x measured speedup"
     },
     "GATE_11_degradation_metrics_dynamic": {
       "status": "PASS",
@@ -1330,7 +1712,7 @@
       "metric": "ADV_10 actual state: AMBIGUOUS (expected ['AMBIGUOUS'])",
       "threshold": "Strict AMBIGUOUS resolution via general temporal proximity/fragmentation reasoning",
       "dataset": "inference/adversarial_suite.py (ADV_10)",
-      "source_result": "run_adversarial_suite: {'id': 'ADV_10', 'name': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94)', 'expected_state': ['AMBIGUOUS'], 'actual_state': 'AMBIGUOUS', 'score': 0.7, 'explanation': 'Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).', 'passed': True}",
+      "source_result": "run_adversarial_suite: {'id': 'ADV_10', 'name': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94)', 'expected_state': ['AMBIGUOUS'], 'actual_state': 'AMBIGUOUS', 'score': 0.7, 'explanation': 'Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).', 'passed': True, 'input': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.', 'expected_behavior': \"Decision state in ['AMBIGUOUS']\", 'actual_behavior': 'AMBIGUOUS (score: 0.7000)', 'pass_fail': 'PASS'}",
       "reason_for_threshold": "Generalization integrity: tracker fragmentation must not produce false confirmed links",
       "details": "Handled purely via temporal overlap / tracker fragmentation contradiction logic (0 hardcoded IDs)"
     },
@@ -1381,12 +1763,12 @@
     },
     "GATE_20_clean_environment_reproduction": {
       "status": "PASS",
-      "metric": "14/14 stages executed cleanly",
+      "metric": "16/16 stages executed cleanly",
       "threshold": "All stages execute and pass without unhandled errors",
       "dataset": "End-to-end repository reproduction suite",
       "source_result": "0 failed stages",
       "reason_for_threshold": "Full reproducibility requirement",
-      "details": "All 14 reproduction stages execute cleanly from pristine repository state"
+      "details": "All 16 reproduction stages execute cleanly from pristine repository state"
     }
   },
   "technical_evidence_matrix": {
@@ -1458,7 +1840,7 @@
       "evidence_files": [
         "inference/candidate_generation.py"
       ],
-      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.13x without duplicated fusion.",
+      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.87x without duplicated fusion.",
       "strengths": "Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls.",
       "limitations": "Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types."
     },
@@ -1468,9 +1850,228 @@
         "scripts/reproduce_all.py",
         "reports/generated/final_technical_audit.md"
       ],
-      "empirical_findings": "Single command reproduction; all 366 tests passing; 20 dynamic acceptance gates; relative portable paths.",
+      "empirical_findings": "Single command reproduction; all 374 tests passing; 20 dynamic acceptance gates; relative portable paths.",
       "strengths": "Zero hardcoded scores; fact-based reporting directly from execution; pristine clean-state reproducibility.",
       "limitations": "None in reproduction scope; fully self-contained in standard Python 3.9+ without GPU dependency."
     }
+  },
+  "summary": {
+    "timestamp": "2026-09-16T09:51:45.343772+00:00",
+    "git_commit": "208989164c96c99a6e70507fd8911a4d905e9b67",
+    "dataset_identifier": "multicamera_v1 + REAL_MEMBER1_CAM_001",
+    "benchmark_configuration": {
+      "threshold": 0.75,
+      "max_speed_kmh": 120.0,
+      "time_window_seconds": 1800.0,
+      "calibrator": "PlattProbabilityCalibrator"
+    },
+    "random_seed": 42,
+    "number_of_observations": 1500,
+    "number_of_vehicles": 150,
+    "number_of_cameras": 5,
+    "candidate_count": 66556,
+    "candidate_reduction_pct": 94.08,
+    "candidate_recall_pct": 99.99,
+    "precision": 0.9727,
+    "recall": 0.8613,
+    "f1_score": 0.9136,
+    "false_merge_rate": 0.0233,
+    "cluster_purity": 0.8956,
+    "reid_metrics": {
+      "embedding_extraction_quality": {
+        "total_observations": 1500,
+        "valid_512d_count": 1410,
+        "finite_count": 1410,
+        "mean_l2_norm": 1.0,
+        "unit_hypersphere_verified": true
+      },
+      "pairwise_reid_matching": {
+        "roc_auc": 0.8647,
+        "optimal_reid_threshold": 0.65,
+        "optimal_reid_f1": 0.8547,
+        "same_vehicle_similarity_mean": 0.8317,
+        "hard_negative_similarity_mean": 0.8088,
+        "different_vehicle_similarity_mean": 0.4588,
+        "threshold_sensitivity_sweep": [
+          {
+            "threshold": 0.0,
+            "precision": 0.4941,
+            "recall": 1.0,
+            "f1_score": 0.6614,
+            "false_match_rate": 1.0,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.05,
+            "precision": 0.4941,
+            "recall": 1.0,
+            "f1_score": 0.6614,
+            "false_match_rate": 1.0,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.1,
+            "precision": 0.4941,
+            "recall": 1.0,
+            "f1_score": 0.6614,
+            "false_match_rate": 1.0,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.15,
+            "precision": 0.4941,
+            "recall": 1.0,
+            "f1_score": 0.6614,
+            "false_match_rate": 1.0,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.2,
+            "precision": 0.4946,
+            "recall": 1.0,
+            "f1_score": 0.6618,
+            "false_match_rate": 0.9982,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.25,
+            "precision": 0.4957,
+            "recall": 1.0,
+            "f1_score": 0.6628,
+            "false_match_rate": 0.9938,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.3,
+            "precision": 0.5024,
+            "recall": 1.0,
+            "f1_score": 0.6688,
+            "false_match_rate": 0.9673,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.35,
+            "precision": 0.5205,
+            "recall": 1.0,
+            "f1_score": 0.6847,
+            "false_match_rate": 0.8997,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.4,
+            "precision": 0.5533,
+            "recall": 1.0,
+            "f1_score": 0.7124,
+            "false_match_rate": 0.7887,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.45,
+            "precision": 0.602,
+            "recall": 1.0,
+            "f1_score": 0.7516,
+            "false_match_rate": 0.6457,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.5,
+            "precision": 0.6562,
+            "recall": 1.0,
+            "f1_score": 0.7924,
+            "false_match_rate": 0.5118,
+            "false_non_match_rate": 0.0
+          },
+          {
+            "threshold": 0.55,
+            "precision": 0.7061,
+            "recall": 0.9993,
+            "f1_score": 0.8275,
+            "false_match_rate": 0.4062,
+            "false_non_match_rate": 0.0007
+          },
+          {
+            "threshold": 0.6,
+            "precision": 0.74,
+            "recall": 0.9956,
+            "f1_score": 0.849,
+            "false_match_rate": 0.3417,
+            "false_non_match_rate": 0.0044
+          },
+          {
+            "threshold": 0.65,
+            "precision": 0.7588,
+            "recall": 0.9784,
+            "f1_score": 0.8547,
+            "false_match_rate": 0.3038,
+            "false_non_match_rate": 0.0216
+          },
+          {
+            "threshold": 0.7,
+            "precision": 0.7706,
+            "recall": 0.9296,
+            "f1_score": 0.8426,
+            "false_match_rate": 0.2704,
+            "false_non_match_rate": 0.0704
+          },
+          {
+            "threshold": 0.75,
+            "precision": 0.7752,
+            "recall": 0.8261,
+            "f1_score": 0.7998,
+            "false_match_rate": 0.234,
+            "false_non_match_rate": 0.1739
+          },
+          {
+            "threshold": 0.8,
+            "precision": 0.7875,
+            "recall": 0.6793,
+            "f1_score": 0.7294,
+            "false_match_rate": 0.1791,
+            "false_non_match_rate": 0.3207
+          },
+          {
+            "threshold": 0.85,
+            "precision": 0.795,
+            "recall": 0.4678,
+            "f1_score": 0.589,
+            "false_match_rate": 0.1178,
+            "false_non_match_rate": 0.5322
+          },
+          {
+            "threshold": 0.9,
+            "precision": 0.8161,
+            "recall": 0.1711,
+            "f1_score": 0.2829,
+            "false_match_rate": 0.0376,
+            "false_non_match_rate": 0.8289
+          },
+          {
+            "threshold": 0.95,
+            "precision": 1.0,
+            "recall": 0.001,
+            "f1_score": 0.002,
+            "false_match_rate": 0.0,
+            "false_non_match_rate": 0.999
+          },
+          {
+            "threshold": 1.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "false_match_rate": 0.0,
+            "false_non_match_rate": 1.0
+          }
+        ]
+      },
+      "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
+    },
+    "latency_seconds": {
+      "total": 100.82,
+      "candidate_generation": 1.445,
+      "fusion": 11.841,
+      "graph_assembly": 0.292
+    },
+    "peak_memory_mb": 65.22,
+    "test_count": 374
   }
 }

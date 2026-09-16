@@ -29,7 +29,7 @@ class CameraReliability:
         explanation: Human-readable rationale for camera reliability score.
     """
     camera_id: str
-    reliability: float = 0.85
+    reliability: Optional[float] = 0.85
     overall_reliability: Optional[float] = None
     status: str = "configured"
     factors: Dict[str, Any] = field(default_factory=dict)
@@ -43,8 +43,11 @@ class CameraReliability:
     def __post_init__(self) -> None:
         if self.overall_reliability is not None:
             self.reliability = float(self.overall_reliability)
-        self.reliability = max(0.0, min(1.0, float(self.reliability)))
-        self.overall_reliability = self.reliability
+        if self.reliability is not None:
+            self.reliability = max(0.0, min(1.0, float(self.reliability)))
+            self.overall_reliability = self.reliability
+        else:
+            self.overall_reliability = None
         if not self.metadata and self.factors:
             self.metadata = dict(self.factors)
         elif not self.factors and self.metadata:
@@ -53,8 +56,8 @@ class CameraReliability:
     def to_dict(self) -> Dict[str, Any]:
         d: Dict[str, Any] = {
             "camera_id": self.camera_id,
-            "reliability": round(self.reliability, 4),
-            "overall_reliability": round(self.reliability, 4),
+            "reliability": round(self.reliability, 4) if self.reliability is not None else None,
+            "overall_reliability": round(self.reliability, 4) if self.reliability is not None else None,
             "status": self.status,
             "factors": dict(self.factors),
             "metadata": dict(self.metadata),

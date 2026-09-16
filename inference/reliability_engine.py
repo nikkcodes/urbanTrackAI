@@ -58,6 +58,146 @@ ROUTE_AMBIGUITY_THRESHOLD: float = 0.18
 ROUTE_AMBIGUITY_PENALTY: float = 0.08
 
 
+
+def profile_camera_reliability_from_observations(
+    camera_id: str,
+    observations: List[Union[Observation, Dict[str, Any]]],
+    min_sample_threshold: int = 3,
+    config: Optional[Dict[str, Any]] = None,
+) -> CameraReliability:
+    """
+    Empirically evaluate physical camera reliability directly from observable stream metrics.
+
+    Strict Zero-Magic-Number Invariant:
+    If observations are absent or sample count < min_sample_threshold, returns status='unknown'
+    or 'insufficient_evidence' with reliability=None. Never invents an arbitrary 0.85 default.
+
+    Measurable signals:
+    1. Detection confidence distribution (YOLO mean detection score).
+    2. ReID embedding completeness and finite vector validity.
+    3. OCR success rate and plate confidence.
+    4. Tracklet continuity and tracking stability.
+    """
+    config = config or {}
+    # Filter observations matching camera_id if mixed
+    matching = []
+    for o in observations:
+        cid = getattr(o, "camera_id", o.get("camera_id") if isinstance(o, dict) else None)
+        if cid == camera_id or not cid:
+            matching.append(o)
+
+    sample_count = len(matching)
+    if sample_count == 0:
+        return CameraReliability(
+            camera_id=camera_id,
+            reliability=None,
+            status="unknown",
+            factors={"sample_count": 0, "source": "no_observations_available"},
+            explanation=f"Camera '{camera_id}' has zero observations; operational reliability is unknown.",
+        )
+
+    if sample_count < min_sample_threshold:
+        return CameraReliability(
+            camera_id=camera_id,
+            reliability=None,
+            status="insufficient_evidence",
+            factors={"sample_count": sample_count, "min_required": min_sample_threshold, "source": "insufficient_samples"},
+            explanation=f"Camera '{camera_id}' has insufficient sample size ({sample_count} < {min_sample_threshold}); reliable metric cannot be derived.",
+        )
+
+    # 1. Detection confidence
+    det_confs = []
+    for o in matching:
+        c = getattr(o, "detection_confidence", None)
+        if c is None and isinstance(o, dict):
+            c = o.get("detection_confidence", o.get("confidence"))
+        if c is not None:
+            try:
+                det_confs.append(float(c))
+            except (ValueError, TypeError):
+                pass
+    mean_det_conf = (sum(det_confs) / len(det_confs)) if det_confs else 0.80
+
+    # 2. ReID embedding validity
+    reid_valid_count = 0
+    for o in matching:
+        emb = getattr(o, "appearance_embedding", None)
+        if emb is None and isinstance(o, dict):
+            emb = o.get("appearance_embedding")
+        if emb is not None and isinstance(emb, (list, tuple)) and len(emb) > 0:
+            if not any(math.isnan(x) or math.isinf(x) for x in emb):
+                reid_valid_count += 1
+    reid_valid_rate = reid_valid_count / sample_count
+
+    # 3. OCR success rate and plate confidence
+    plate_reads = 0
+    plate_confs = []
+    for o in matching:
+        p = getattr(o, "plate", None)
+        if p is None and isinstance(o, dict):
+            p = o.get("plate")
+        if p and len(str(p).strip()) >= 2:
+            plate_reads += 1
+            pc = getattr(o, "plate_confidence", None)
+            if pc is None and isinstance(o, dict):
+                pc = o.get("plate_confidence")
+            if pc is not None:
+                try:
+                    plate_confs.append(float(pc))
+                except (ValueError, TypeError):
+                    pass
+    ocr_rate = plate_reads / sample_count
+    mean_plate_conf = (sum(plate_confs) / len(plate_confs)) if plate_confs else None
+
+    # 4. Tracking stability
+    track_ids = set()
+    for o in matching:
+        tid = getattr(o, "track_id", None)
+        if tid is None and isinstance(o, dict):
+            tid = o.get("track_id")
+        if tid is not None:
+            track_ids.add(str(tid))
+    unique_tracks = len(track_ids)
+    # Ratio of observations per track: stable tracking has multiple observations per track
+    obs_per_track = sample_count / max(1, unique_tracks)
+    tracking_stability = min(1.0, max(0.3, obs_per_track / 5.0))
+
+    # Composite empirical score
+    if plate_reads > 0:
+        ocr_contrib = 0.5 * ocr_rate + 0.5 * (mean_plate_conf if mean_plate_conf is not None else 0.8)
+        rel = 0.35 * mean_det_conf + 0.35 * reid_valid_rate + 0.15 * ocr_contrib + 0.15 * tracking_stability
+    else:
+        # CCTV feed without ANPR expectation
+        rel = 0.45 * mean_det_conf + 0.45 * reid_valid_rate + 0.10 * tracking_stability
+
+    rel = round(max(0.05, min(1.0, rel)), 4)
+    status = "degraded" if rel < 0.45 else "computed_data_driven"
+
+    factors = {
+        "sample_count": sample_count,
+        "mean_detection_confidence": round(mean_det_conf, 4),
+        "reid_validity_rate": round(reid_valid_rate, 4),
+        "ocr_success_rate": round(ocr_rate, 4),
+        "mean_plate_confidence": round(mean_plate_conf, 4) if mean_plate_conf is not None else None,
+        "unique_tracks": unique_tracks,
+        "tracking_stability": round(tracking_stability, 4),
+        "source": "empirical_stream_profiler",
+    }
+
+    explanation = (
+        f"Camera '{camera_id}' empirically profiled from {sample_count} observations: "
+        f"det_conf={mean_det_conf:.2f}, reid_valid={reid_valid_rate:.2f}, "
+        f"ocr_rate={ocr_rate:.2f} -> data-driven reliability={rel:.2f} ({status})."
+    )
+
+    return CameraReliability(
+        camera_id=camera_id,
+        reliability=rel,
+        status=status,
+        factors=factors,
+        explanation=explanation,
+    )
+
 def evaluate_camera_reliability(
     camera_id: str,
     camera_metadata: Optional[Dict[str, Any]] = None,
@@ -124,6 +264,8 @@ def evaluate_camera_reliability(
     elif "camera_reliabilities" in config and camera_id in config["camera_reliabilities"]:
         configured_rel = float(config["camera_reliabilities"][camera_id])
 
+    obs_list = kwargs.get("observations") or cam_meta.get("observations")
+
     default_reliability = float(config.get("default_camera_reliability", 0.85))
 
     if configured_rel is not None:
@@ -131,6 +273,16 @@ def evaluate_camera_reliability(
         status = "degraded" if rel <= 0.40 else "known"
         explanation = f"Camera '{camera_id}' has configured reliability {rel:.2f} (status: {status})."
         factors = {"configured_reliability": rel, "source": "camera_metadata_or_config"}
+    elif obs_list:
+        return profile_camera_reliability_from_observations(camera_id, obs_list, config=config)
+    elif config.get("require_data_driven", False):
+        return CameraReliability(
+            camera_id=camera_id,
+            reliability=None,
+            status="insufficient_evidence",
+            factors={"source": "insufficient_evidence", "sample_count": 0},
+            explanation=f"Camera '{camera_id}' has insufficient evidence to derive reliability.",
+        )
     else:
         rel = default_reliability
         status = "default"

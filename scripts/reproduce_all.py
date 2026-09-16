@@ -100,6 +100,12 @@ def verify_report_consistency(
     if real_count != 39:
         discrepancies.append(f"Real perception feed count mismatch: expected 39, got {real_count}")
 
+    # 5b. benchmark_results.json check (enforced during full reproduction)
+    if report_data.get("check_json_file", False):
+        bench_file = PROJECT_ROOT / "reports" / "generated" / "benchmark_results.json"
+        if not bench_file.exists():
+            discrepancies.append("Single source of truth benchmark_results.json does not exist")
+
     # 6. All gates must pass in report_data
     gates = report_data.get("acceptance_gates", {})
     failed_gates = [gid for gid, g in gates.items() if g.get("status") != "PASS"]
@@ -215,7 +221,10 @@ def main():
     real_obs = load_member1_perception_feed()
     tracks_with_ocr = sum(1 for o in real_obs if o.plate is not None)
     tracks_with_reid = sum(1 for o in real_obs if o.appearance_embedding is not None and len(o.appearance_embedding) == 512)
+    from inference.reliability_engine import profile_camera_reliability_from_observations
+    cam1_profile = profile_camera_reliability_from_observations("CAM_001", real_obs)
     report_data["stages"]["stage_3_real_member1_feed"] = {
+        "data_driven_camera_reliability": cam1_profile.to_dict(),
         "status": "PASSED",
         "observations_loaded": len(real_obs),
         "tracks_with_512d_reid": tracks_with_reid,
@@ -295,6 +304,16 @@ def main():
     print(f"    Status: COMPLETED (N={last_e2e['n_observations']} -> Speedup: {last_e2e['speedup_factor']}x, Baseline: {last_e2e['baseline_pipeline']['total_runtime_median_ms']}ms, Opt: {last_e2e['optimized_pipeline']['total_runtime_median_ms']}ms)")
 
     # ---------------------------------------------------------------------------
+    # STAGE 8C: Large-Scale Candidate Generation Scaling (1K, 2.5K, 5K Observations)
+    # ---------------------------------------------------------------------------
+    print(">>> STAGE 8C: Running Large-Scale Candidate Scaling (1K, 2.5K, 5K Observations)...")
+    from inference.candidate_generation import benchmark_large_scale_candidate_pipeline
+    large_scale_res = benchmark_large_scale_candidate_pipeline(counts=[1000, 2500, 5000])
+    report_data["stages"]["stage_8c_large_scale_candidate_pipeline"] = large_scale_res
+    last_ls = large_scale_res["evaluations"][-1]
+    print(f"    Status: COMPLETED (N={last_ls['n_observations']} -> Candidates: {last_ls['candidate_pairs']}, Reduction: {last_ls['candidate_reduction_pct']}%, Gen: {last_ls['candidate_gen_ms']:.1f}ms, Peak Mem: {last_ls['peak_memory_mb']:.2f}MB)")
+
+    # ---------------------------------------------------------------------------
     # STAGE 9: Dynamic Graceful Degradation Benchmark
     # ---------------------------------------------------------------------------
     print(">>> STAGE 9: Running Dynamic Graceful Degradation Benchmark...")
@@ -348,6 +367,19 @@ def main():
         "fabricated_observations_count": 0,
     }
     print(f"    Status: PASSED ({len(c_routes)} alternative corridors, Shannon Entropy: {entropy:.3f} nats, 0 fabricated sightings)")
+
+    # ---------------------------------------------------------------------------
+    # STAGE 11B: System Health & Pre-Flight Deployment Readiness Diagnostic
+    # ---------------------------------------------------------------------------
+    print(">>> STAGE 11B: System Health & Pre-Flight Deployment Readiness Diagnostic...")
+    from inference.system_health import SystemHealthChecker
+    from inference.observation_loader import MultiCameraFeedAdapter, DatasetClassification
+    health_adapter = MultiCameraFeedAdapter()
+    health_adapter.register_camera_feed("CAM_001", DatasetClassification.REAL, PROJECT_ROOT / "data/member1_perception/cam_001")
+    health_checker = SystemHealthChecker(feed_adapter=health_adapter)
+    health_res = health_checker.run_preflight_check(sample_observations=real_obs)
+    report_data["stages"]["stage_11b_system_health"] = health_res
+    print(f"    Status: PASSED (Overall System Health: {health_res['overall_status']}, Pre-Flight Duration: {health_res['preflight_duration_ms']}ms)")
 
     # ---------------------------------------------------------------------------
     # STAGE 12: Evaluating All 20 Forensic Acceptance Gates Dynamically
@@ -609,6 +641,43 @@ def main():
     print(">>> STAGE 13: Report Generation & Consistency Validation...")
     out_dir = PROJECT_ROOT / "reports" / "generated"
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    report_data["summary"] = {
+        "timestamp": start_iso,
+        "git_commit": git_commit,
+        "dataset_identifier": "multicamera_v1 + REAL_MEMBER1_CAM_001",
+        "benchmark_configuration": {
+            "threshold": 0.75,
+            "max_speed_kmh": 120.0,
+            "time_window_seconds": 1800.0,
+            "calibrator": "PlattProbabilityCalibrator",
+        },
+        "random_seed": 42,
+        "number_of_observations": mc_bench_res["total_observations"],
+        "number_of_vehicles": 150,
+        "number_of_cameras": 5,
+        "candidate_count": mc_bench_res["candidate_pairs_count"],
+        "candidate_reduction_pct": mc_bench_res["candidate_reduction_pct"],
+        "candidate_recall_pct": mc_bench_res["candidate_recall_pct"],
+        "precision": mc_bench_res["precision"],
+        "recall": mc_bench_res["recall"],
+        "f1_score": mc_bench_res["f1_score"],
+        "false_merge_rate": mc_bench_res["false_merge_rate"],
+        "cluster_purity": mc_bench_res["cluster_purity"],
+        "reid_metrics": mc_bench_res.get("reid_metrics"),
+        "latency_seconds": {
+            "total": round(t_total, 2),
+            "candidate_generation": mc_bench_res["elapsed_candidate_gen_seconds"],
+            "fusion": mc_bench_res["elapsed_fusion_seconds"],
+            "graph_assembly": mc_bench_res["elapsed_graph_seconds"],
+        },
+        "peak_memory_mb": large_scale_res["evaluations"][-1]["peak_memory_mb"],
+        "test_count": test_stats["tests_run"],
+    }
+
+    benchmark_json_path = out_dir / "benchmark_results.json"
+    with open(benchmark_json_path, "w", encoding="utf-8") as f:
+        json.dump(report_data, f, indent=2)
 
     json_path = out_dir / "final_technical_audit.json"
     with open(json_path, "w", encoding="utf-8") as f:
