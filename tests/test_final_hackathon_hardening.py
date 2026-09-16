@@ -193,7 +193,7 @@ class TestFinalHackathonHardening(unittest.TestCase):
     def test_adversarial_suite_explicit_reporting(self):
         """Verify all 16 adversarial scenarios have explicit structured failure fields."""
         adv_res = run_adversarial_suite()
-        self.assertEqual(adv_res["total_scenarios"], 16)
+        self.assertEqual(adv_res["total_scenarios"], 20)
         self.assertTrue(adv_res["all_passed"])
 
         required_keys = {"id", "name", "input", "expected_behavior", "actual_behavior", "pass_fail", "score"}

@@ -1,11 +1,11 @@
 {
   "metadata": {
     "title": "UrbanTrack AI \u2014 Master Reproduction & Technical Hardening Audit",
-    "timestamp": "2026-09-16T09:51:45.343772+00:00",
-    "git_commit": "208989164c96c99a6e70507fd8911a4d905e9b67",
+    "timestamp": "2026-09-16T16:26:37.330227+00:00",
+    "git_commit": "eb9c7b934ed6cbb24daa084ef39749ee6eb3af39",
     "system_version": "9.0+ Hardened Prototype",
     "evaluated_by": "Automated Reproduction Suite",
-    "execution_time_seconds": 100.82
+    "execution_time_seconds": 101.31
   },
   "stages": {
     "stage_0_unit_tests": {
@@ -13,7 +13,7 @@
       "failures": 0,
       "errors": 0,
       "passed": 374,
-      "runtime_seconds": 40.644,
+      "runtime_seconds": 40.814,
       "status": "PASSED"
     },
     "stage_1_raw_integrity": {
@@ -459,10 +459,10 @@
       "candidate_pairs_count": 66556,
       "candidate_reduction_pct": 94.08,
       "candidate_recall_pct": 99.99,
-      "elapsed_total_seconds": 13.608,
-      "elapsed_candidate_gen_seconds": 1.445,
-      "elapsed_fusion_seconds": 11.841,
-      "elapsed_graph_seconds": 0.292,
+      "elapsed_total_seconds": 14.576,
+      "elapsed_candidate_gen_seconds": 1.514,
+      "elapsed_fusion_seconds": 12.724,
+      "elapsed_graph_seconds": 0.307,
       "threshold_used": 0.75,
       "tp": 5814,
       "fp": 163,
@@ -721,7 +721,7 @@
     },
     "stage_8_candidate_scaling": {
       "benchmark_name": "candidate_generation_scaling",
-      "timestamp": "2026-09-16T15:22:42.521565",
+      "timestamp": "2026-09-16T21:57:35.833422",
       "evaluations": [
         {
           "n_observations": 50,
@@ -730,8 +730,8 @@
           "pruned_pairs": 937,
           "reduction_pct": 76.49,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 0.06,
-          "indexed_retrieval_ms": 1.36,
+          "naive_enumeration_ms": 0.05,
+          "indexed_retrieval_ms": 1.37,
           "speedup_factor": 0.04
         },
         {
@@ -741,8 +741,8 @@
           "pruned_pairs": 3750,
           "reduction_pct": 75.76,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 0.24,
-          "indexed_retrieval_ms": 5.23,
+          "naive_enumeration_ms": 0.28,
+          "indexed_retrieval_ms": 5.32,
           "speedup_factor": 0.05
         },
         {
@@ -752,9 +752,9 @@
           "pruned_pairs": 15312,
           "reduction_pct": 76.94,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 5.12,
-          "indexed_retrieval_ms": 20.0,
-          "speedup_factor": 0.26
+          "naive_enumeration_ms": 5.76,
+          "indexed_retrieval_ms": 20.02,
+          "speedup_factor": 0.29
         },
         {
           "n_observations": 500,
@@ -763,9 +763,9 @@
           "pruned_pairs": 109062,
           "reduction_pct": 87.42,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 7.0,
-          "indexed_retrieval_ms": 67.85,
-          "speedup_factor": 0.1
+          "naive_enumeration_ms": 7.28,
+          "indexed_retrieval_ms": 67.52,
+          "speedup_factor": 0.11
         },
         {
           "n_observations": 1000,
@@ -774,8 +774,8 @@
           "pruned_pairs": 465312,
           "reduction_pct": 93.16,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 48.98,
-          "indexed_retrieval_ms": 143.73,
+          "naive_enumeration_ms": 49.97,
+          "indexed_retrieval_ms": 146.26,
           "speedup_factor": 0.34
         }
       ]
@@ -783,7 +783,7 @@
     "stage_8b_fair_end_to_end_scalability": {
       "benchmark_name": "fair_end_to_end_scalability_benchmark",
       "repetitions": 2,
-      "timestamp": "2026-09-16T15:23:00.602809",
+      "timestamp": "2026-09-16T21:57:54.412128",
       "evaluations": [
         {
           "n_observations": 50,
@@ -799,23 +799,23 @@
           "recall": 0.0769,
           "f1": 0.1429,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 49.91,
-            "total_runtime_p95_ms": 50.64,
-            "fusion_runtime_median_ms": 48.52,
-            "graph_runtime_median_ms": 1.32,
+            "total_runtime_median_ms": 50.63,
+            "total_runtime_p95_ms": 51.29,
+            "fusion_runtime_median_ms": 49.12,
+            "graph_runtime_median_ms": 1.44,
             "fused_pairs_count": 1225,
             "final_edges": 1
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 15.59,
-            "total_runtime_p95_ms": 16.63,
-            "candidate_gen_median_ms": 1.27,
-            "fusion_runtime_median_ms": 13.81,
-            "graph_runtime_median_ms": 0.52,
+            "total_runtime_median_ms": 15.66,
+            "total_runtime_p95_ms": 16.57,
+            "candidate_gen_median_ms": 1.31,
+            "fusion_runtime_median_ms": 13.82,
+            "graph_runtime_median_ms": 0.54,
             "fused_pairs_count": 288,
             "final_edges": 1
           },
-          "speedup_factor": 3.2
+          "speedup_factor": 3.23
         },
         {
           "n_observations": 100,
@@ -831,23 +831,23 @@
           "recall": 0.0128,
           "f1": 0.0244,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 202.23,
-            "total_runtime_p95_ms": 207.08,
-            "fusion_runtime_median_ms": 195.86,
-            "graph_runtime_median_ms": 6.13,
+            "total_runtime_median_ms": 204.47,
+            "total_runtime_p95_ms": 209.39,
+            "fusion_runtime_median_ms": 198.2,
+            "graph_runtime_median_ms": 6.0,
             "fused_pairs_count": 4950,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 63.86,
-            "total_runtime_p95_ms": 71.69,
-            "candidate_gen_median_ms": 5.08,
-            "fusion_runtime_median_ms": 56.87,
-            "graph_runtime_median_ms": 1.9,
+            "total_runtime_median_ms": 65.19,
+            "total_runtime_p95_ms": 73.62,
+            "candidate_gen_median_ms": 5.18,
+            "fusion_runtime_median_ms": 58.12,
+            "graph_runtime_median_ms": 1.89,
             "fused_pairs_count": 1200,
             "final_edges": 4
           },
-          "speedup_factor": 3.17
+          "speedup_factor": 3.14
         },
         {
           "n_observations": 200,
@@ -863,23 +863,23 @@
           "recall": 0.0079,
           "f1": 0.0157,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 922.76,
-            "total_runtime_p95_ms": 979.6,
-            "fusion_runtime_median_ms": 901.81,
-            "graph_runtime_median_ms": 19.67,
+            "total_runtime_median_ms": 929.32,
+            "total_runtime_p95_ms": 981.38,
+            "fusion_runtime_median_ms": 909.14,
+            "graph_runtime_median_ms": 18.92,
             "fused_pairs_count": 19900,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 246.03,
-            "total_runtime_p95_ms": 261.01,
-            "candidate_gen_median_ms": 20.69,
-            "fusion_runtime_median_ms": 218.15,
-            "graph_runtime_median_ms": 7.2,
+            "total_runtime_median_ms": 241.29,
+            "total_runtime_p95_ms": 253.94,
+            "candidate_gen_median_ms": 20.72,
+            "fusion_runtime_median_ms": 213.8,
+            "graph_runtime_median_ms": 6.76,
             "fused_pairs_count": 4860,
             "final_edges": 4
           },
-          "speedup_factor": 3.75
+          "speedup_factor": 3.85
         },
         {
           "n_observations": 500,
@@ -895,29 +895,29 @@
           "recall": 0.007,
           "f1": 0.0138,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 6566.04,
-            "total_runtime_p95_ms": 7330.85,
-            "fusion_runtime_median_ms": 6315.7,
-            "graph_runtime_median_ms": 118.54,
+            "total_runtime_median_ms": 6792.88,
+            "total_runtime_p95_ms": 7673.98,
+            "fusion_runtime_median_ms": 6514.71,
+            "graph_runtime_median_ms": 126.05,
             "fused_pairs_count": 124750,
             "final_edges": 30
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 955.29,
-            "total_runtime_p95_ms": 1054.06,
-            "candidate_gen_median_ms": 76.6,
-            "fusion_runtime_median_ms": 856.51,
-            "graph_runtime_median_ms": 22.18,
+            "total_runtime_median_ms": 971.78,
+            "total_runtime_p95_ms": 1069.48,
+            "candidate_gen_median_ms": 77.99,
+            "fusion_runtime_median_ms": 872.01,
+            "graph_runtime_median_ms": 21.77,
             "fused_pairs_count": 18360,
             "final_edges": 19
           },
-          "speedup_factor": 6.87
+          "speedup_factor": 6.99
         }
       ]
     },
     "stage_8c_large_scale_candidate_pipeline": {
       "benchmark_name": "large_scale_candidate_pipeline_benchmark",
-      "timestamp": "2026-09-16T15:23:24.744640",
+      "timestamp": "2026-09-16T21:58:17.147106",
       "evaluations": [
         {
           "n_observations": 1000,
@@ -926,37 +926,16 @@
           "pruned_pairs": 458640,
           "candidate_reduction_pct": 91.82,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 1009.97,
-          "fusion_ms": 3785.49,
-          "graph_assembly_ms": 930.53,
-          "total_pipeline_ms": 5726.63,
-          "peak_memory_mb": 44.89,
+          "candidate_gen_ms": 1020.02,
+          "fusion_ms": 518.11,
+          "graph_assembly_ms": 401.64,
+          "total_pipeline_ms": 1940.39,
+          "peak_memory_mb": 8.56,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 335790,
             "simultaneous_different_cameras": 0,
             "physically_impossible_speed": 0,
             "incompatible_vehicle_type": 122850,
-            "strong_plate_contradiction": 0,
-            "missing_identity_evidence": 0
-          }
-        },
-        {
-          "n_observations": 2500,
-          "theoretical_pairs": 3123750,
-          "candidate_pairs": 108360,
-          "pruned_pairs": 3015390,
-          "candidate_reduction_pct": 96.53,
-          "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 2711.0,
-          "fusion_ms": 3782.22,
-          "graph_assembly_ms": 1088.23,
-          "total_pipeline_ms": 7581.62,
-          "peak_memory_mb": 52.44,
-          "rejection_breakdown": {
-            "temporal_horizon_exceeded": 2690040,
-            "simultaneous_different_cameras": 0,
-            "physically_impossible_speed": 0,
-            "incompatible_vehicle_type": 325350,
             "strong_plate_contradiction": 0,
             "missing_identity_evidence": 0
           }
@@ -968,16 +947,37 @@
           "pruned_pairs": 12276640,
           "candidate_reduction_pct": 98.23,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 5547.72,
-          "fusion_ms": 3817.85,
-          "graph_assembly_ms": 1296.31,
-          "total_pipeline_ms": 10662.03,
-          "peak_memory_mb": 65.22,
+          "candidate_gen_ms": 5630.31,
+          "fusion_ms": 525.1,
+          "graph_assembly_ms": 725.89,
+          "total_pipeline_ms": 6881.32,
+          "peak_memory_mb": 29.41,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 11613790,
             "simultaneous_different_cameras": 0,
             "physically_impossible_speed": 0,
             "incompatible_vehicle_type": 662850,
+            "strong_plate_contradiction": 0,
+            "missing_identity_evidence": 0
+          }
+        },
+        {
+          "n_observations": 10000,
+          "theoretical_pairs": 49995000,
+          "candidate_pairs": 445860,
+          "pruned_pairs": 49549140,
+          "candidate_reduction_pct": 99.11,
+          "candidate_recall_pct": 100.0,
+          "candidate_gen_ms": 11552.89,
+          "fusion_ms": 524.21,
+          "graph_assembly_ms": 1198.43,
+          "total_pipeline_ms": 13275.56,
+          "peak_memory_mb": 54.23,
+          "rejection_breakdown": {
+            "temporal_horizon_exceeded": 48211290,
+            "simultaneous_different_cameras": 0,
+            "physically_impossible_speed": 0,
+            "incompatible_vehicle_type": 1337850,
             "strong_plate_contradiction": 0,
             "missing_identity_evidence": 0
           }
@@ -1292,9 +1292,9 @@
       "dynamic_conclusion": "Measured max false merge rate across all degradation levels is 0.0013. Plate dropout reduces F1 to 0.0000 at 100% loss (relying on appearance + kinematics). Re-ID dropout reduces F1 to 0.0000 at 100% loss (relying on plate consensus). Camera reliability attenuation modulates scores toward the 0.50 uninformative prior without asserting false merges."
     },
     "stage_10_adversarial_suite": {
-      "suite": "ADVERSARIAL_16_SCENARIOS",
-      "total_scenarios": 16,
-      "passed_count": 16,
+      "suite": "ADVERSARIAL_20_SCENARIOS",
+      "total_scenarios": 20,
+      "passed_count": 20,
       "pass_rate": 1.0,
       "all_passed": true,
       "scenarios": [
@@ -1545,6 +1545,67 @@
           "expected_behavior": "Decision state in ['CONFIRMED']",
           "actual_behavior": "CONFIRMED (score: 1.0000)",
           "pass_fail": "PASS"
+        },
+        {
+          "id": "ADV_17",
+          "name": "Partial plate matching (Truncated suffix under uncertainty)",
+          "expected_state": [
+            "AMBIGUOUS",
+            "CONFIRMED"
+          ],
+          "actual_state": "AMBIGUOUS",
+          "score": 0.73,
+          "explanation": "Estimated match probability is 0.73: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "passed": true,
+          "input": "Partial plate matching (Truncated suffix under uncertainty) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['AMBIGUOUS', 'CONFIRMED']",
+          "actual_behavior": "AMBIGUOUS (score: 0.7300)",
+          "pass_fail": "PASS"
+        },
+        {
+          "id": "ADV_18",
+          "name": "Long temporal gap (> 1800s candidate window expiration)",
+          "expected_state": [
+            "PRUNED_BY_CANDIDATE_GENERATOR"
+          ],
+          "actual_state": "PRUNED_BY_CANDIDATE_GENERATOR",
+          "score": 0.0,
+          "explanation": "Candidate pair safely pruned before fusion: {'temporal_horizon_exceeded': 1, 'simultaneous_different_cameras': 0, 'physically_impossible_speed': 0, 'incompatible_vehicle_type': 0, 'strong_plate_contradiction': 0, 'missing_identity_evidence': 0}",
+          "passed": true,
+          "input": "Long temporal gap (> 1800s candidate window expiration) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['PRUNED_BY_CANDIDATE_GENERATOR']",
+          "actual_behavior": "PRUNED_BY_CANDIDATE_GENERATOR (score: 0.0000)",
+          "pass_fail": "PASS"
+        },
+        {
+          "id": "ADV_19",
+          "name": "Repeated route loop (Same vehicle re-entry after plausible circuit)",
+          "expected_state": [
+            "CONFIRMED"
+          ],
+          "actual_state": "CONFIRMED",
+          "score": 1.0,
+          "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car).",
+          "passed": true,
+          "input": "Repeated route loop (Same vehicle re-entry after plausible circuit) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['CONFIRMED']",
+          "actual_behavior": "CONFIRMED (score: 1.0000)",
+          "pass_fail": "PASS"
+        },
+        {
+          "id": "ADV_20",
+          "name": "Conflicting cross-camera sightings (Simultaneous clone vehicle attack)",
+          "expected_state": [
+            "REJECTED"
+          ],
+          "actual_state": "REJECTED",
+          "score": 0.0,
+          "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_03).).",
+          "passed": true,
+          "input": "Conflicting cross-camera sightings (Simultaneous clone vehicle attack) scenario with synthetic observations.",
+          "expected_behavior": "Decision state in ['REJECTED']",
+          "actual_behavior": "REJECTED (score: 0.0000)",
+          "pass_fail": "PASS"
         }
       ]
     },
@@ -1556,7 +1617,7 @@
     },
     "stage_11b_system_health": {
       "overall_status": "HEALTHY",
-      "preflight_duration_ms": 0.08,
+      "preflight_duration_ms": 0.07,
       "environment": {
         "status": "PASS",
         "python_version": "3.13.5",
@@ -1595,7 +1656,7 @@
       "metric": "374/374 tests passing",
       "threshold": "100% pass (0 failures, 0 errors, >= 356 tests)",
       "dataset": "Full test suite (tests/test_*.py)",
-      "source_result": "unittest.TextTestRunner (Ran 374 tests in 40.644s)",
+      "source_result": "unittest.TextTestRunner (Ran 374 tests in 40.814s)",
       "reason_for_threshold": "Zero regression policy across all Member 2 units and integrations",
       "details": "374/374 unit and integration tests passing cleanly (0 errors, 0 failures)"
     },
@@ -1673,12 +1734,12 @@
     },
     "GATE_10_scalability_fair_downstream_comparison": {
       "status": "PASS",
-      "metric": "N=500 -> Speedup: 6.87x (85.3% reduction, 100.0% recall)",
+      "metric": "N=500 -> Speedup: 6.99x (85.3% reduction, 100.0% recall)",
       "threshold": ">= 2.0x speedup with >= 99.0% candidate recall and zero duplicated fusion",
       "dataset": "Synthetic scalability benchmark (N=50..500)",
-      "source_result": "benchmark_end_to_end_scalability (Base=6566.04ms, Opt=955.29ms)",
+      "source_result": "benchmark_end_to_end_scalability (Base=6792.88ms, Opt=971.78ms)",
       "reason_for_threshold": "Methodological correctness: downstream fusion and graph logic executed exactly once",
-      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.87x measured speedup"
+      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.99x measured speedup"
     },
     "GATE_11_degradation_metrics_dynamic": {
       "status": "PASS",
@@ -1840,7 +1901,7 @@
       "evidence_files": [
         "inference/candidate_generation.py"
       ],
-      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.87x without duplicated fusion.",
+      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.99x without duplicated fusion.",
       "strengths": "Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls.",
       "limitations": "Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types."
     },
@@ -1856,8 +1917,8 @@
     }
   },
   "summary": {
-    "timestamp": "2026-09-16T09:51:45.343772+00:00",
-    "git_commit": "208989164c96c99a6e70507fd8911a4d905e9b67",
+    "timestamp": "2026-09-16T16:26:37.330227+00:00",
+    "git_commit": "eb9c7b934ed6cbb24daa084ef39749ee6eb3af39",
     "dataset_identifier": "multicamera_v1 + REAL_MEMBER1_CAM_001",
     "benchmark_configuration": {
       "threshold": 0.75,
@@ -2066,12 +2127,12 @@
       "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
     },
     "latency_seconds": {
-      "total": 100.82,
-      "candidate_generation": 1.445,
-      "fusion": 11.841,
-      "graph_assembly": 0.292
+      "total": 101.31,
+      "candidate_generation": 1.514,
+      "fusion": 12.724,
+      "graph_assembly": 0.307
     },
-    "peak_memory_mb": 65.22,
+    "peak_memory_mb": 54.23,
     "test_count": 374
   }
 }

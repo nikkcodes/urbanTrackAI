@@ -1,9 +1,9 @@
 """
-UrbanTrack AI — 15-Case Adversarial Evaluation Suite.
+UrbanTrack AI — 20-Case Adversarial Evaluation Suite.
 Hardens the identity fusion engine against deliberate adversarial inputs,
 edge cases, and degraded perception scenarios per Phase 21.
 
-15 Scenarios:
+20 Scenarios:
 1. Identical-looking vehicles (same appearance, impossible simultaneous presence)
 2. Visually similar vehicles (close appearance, exceeding physical speed limit)
 3. OCR one-character error (e.g., NH0LBD4932 vs NH0LDD4922 - soft penalty)
@@ -31,7 +31,7 @@ from .similarity import appearance_similarity, plate_similarity, vehicle_type_co
 
 def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Execute all 15 adversarial scenarios and verify correct decision states.
+    Execute all 20 adversarial scenarios and verify correct decision states.
     Target: zero unjustified CONFIRMED decisions on conflicting evidence;
     unresolved conflicts must resolve to AMBIGUOUS or REJECTED.
     """
@@ -276,6 +276,65 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
         "passed": r16["decision_state"] == "CONFIRMED" and r16["same_vehicle_score"] >= 0.75,
     })
 
+    # 17. Partial plate (truncated plate suffix vs full plate)
+    o17_a = Observation(camera_id="cam_01", timestamp_seconds=10.0, vehicle_type="car", plate="9484", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867)
+    o17_b = Observation(camera_id="cam_02", timestamp_seconds=40.0, vehicle_type="car", plate="MH0ZFX9484", appearance_embedding=emb_white_sedan, latitude=17.3870, longitude=78.4900)
+    r17 = match_observations(o17_a, o17_b, camera_metadata=camera_metadata)
+    scenarios.append({
+        "id": "ADV_17",
+        "name": "Partial plate matching (Truncated suffix under uncertainty)",
+        "expected_state": ["AMBIGUOUS", "CONFIRMED"],
+        "actual_state": r17["decision_state"],
+        "score": r17["same_vehicle_score"],
+        "explanation": r17["explanation"],
+        "passed": r17["decision_state"] in ("AMBIGUOUS", "CONFIRMED") and r17["same_vehicle_score"] >= 0.40,
+    })
+
+    # 18. Long temporal gap (exceeding maximum candidate window > 1800s)
+    from .candidate_generation import CandidateGenerator
+    o18_a = Observation(camera_id="cam_01", timestamp_seconds=10.0, vehicle_type="car", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867)
+    o18_b = Observation(camera_id="cam_02", timestamp_seconds=3600.0, vehicle_type="car", appearance_embedding=emb_white_sedan, latitude=17.3870, longitude=78.4900)
+    cand_gen = CandidateGenerator(max_time_window_seconds=1800.0)
+    cands18, breakdown18 = cand_gen.generate_candidates([o18_a, o18_b])
+    is_pruned18 = len(cands18) == 0 and breakdown18.get("temporal_horizon_exceeded", 0) >= 1
+    scenarios.append({
+        "id": "ADV_18",
+        "name": "Long temporal gap (> 1800s candidate window expiration)",
+        "expected_state": ["PRUNED_BY_CANDIDATE_GENERATOR"],
+        "actual_state": "PRUNED_BY_CANDIDATE_GENERATOR" if is_pruned18 else "FAILED_TO_PRUNE",
+        "score": 0.0 if is_pruned18 else 1.0,
+        "explanation": f"Candidate pair safely pruned before fusion: {breakdown18}",
+        "passed": is_pruned18,
+    })
+
+    # 19. Repeated route loop (same vehicle observed on same camera after loop duration)
+    o19_a = Observation(camera_id="cam_01", timestamp_seconds=100.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867)
+    o19_b = Observation(camera_id="cam_01", timestamp_seconds=710.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867)
+    r19 = match_observations(o19_a, o19_b, camera_metadata=camera_metadata)
+    scenarios.append({
+        "id": "ADV_19",
+        "name": "Repeated route loop (Same vehicle re-entry after plausible circuit)",
+        "expected_state": ["CONFIRMED"],
+        "actual_state": r19["decision_state"],
+        "score": r19["same_vehicle_score"],
+        "explanation": r19["explanation"],
+        "passed": r19["decision_state"] == "CONFIRMED" and r19["same_vehicle_score"] >= 0.75,
+    })
+
+    # 20. Conflicting simultaneous cross-camera sightings (Clone plate attack, dt=0 on distant cameras)
+    o20_a = Observation(camera_id="cam_01", timestamp_seconds=10.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.3850, longitude=78.4867, timestamp_semantics="synchronized", time_reference_id="city_sync")
+    o20_b = Observation(camera_id="cam_03", timestamp_seconds=10.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=emb_white_sedan, latitude=17.4000, longitude=78.5100, timestamp_semantics="synchronized", time_reference_id="city_sync")
+    r20 = match_observations(o20_a, o20_b, camera_metadata=camera_metadata)
+    scenarios.append({
+        "id": "ADV_20",
+        "name": "Conflicting cross-camera sightings (Simultaneous clone vehicle attack)",
+        "expected_state": ["REJECTED"],
+        "actual_state": r20["decision_state"],
+        "score": r20["same_vehicle_score"],
+        "explanation": r20["explanation"],
+        "passed": r20["decision_state"] == "REJECTED" and r20["same_vehicle_score"] == 0.0,
+    })
+
 
     for s in scenarios:
         if 'input' not in s:
@@ -288,7 +347,7 @@ def run_adversarial_suite(camera_metadata: Optional[Dict[str, Any]] = None) -> D
 
     passed_count = sum(1 for s in scenarios if s["passed"])
     return {
-        "suite": "ADVERSARIAL_16_SCENARIOS",
+        "suite": "ADVERSARIAL_20_SCENARIOS",
         "total_scenarios": len(scenarios),
         "passed_count": passed_count,
         "pass_rate": round(passed_count / len(scenarios), 4),

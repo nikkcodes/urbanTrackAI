@@ -593,10 +593,10 @@ def benchmark_end_to_end_scalability(
 
 def benchmark_large_scale_candidate_pipeline(
     counts: Optional[List[int]] = None,
-    fusion_sample_limit: int = 5000,
+    fusion_sample_limit: int = 500,
 ) -> Dict[str, Any]:
     """
-    Benchmark CandidateGenerator at scale (1K, 2.5K, 5K observations) measuring:
+    Benchmark CandidateGenerator at scale (1K, 5K, 10K observations) measuring:
     - candidate generation time
     - candidate pair count & theoretical pairs
     - candidate reduction % & candidate recall %
@@ -610,7 +610,7 @@ def benchmark_large_scale_candidate_pipeline(
     from .identity_graph import IdentityGraph
 
     if counts is None:
-        counts = [1000, 2500, 5000]
+        counts = [1000, 5000, 10000]
 
     vehicle_types = ['car', 'truck', 'bus', 'motorcycle']
     evaluations = []
@@ -633,7 +633,7 @@ def benchmark_large_scale_candidate_pipeline(
                     vehicle_type=vtype,
                     plate=plate,
                     plate_confidence=0.90 if plate else None,
-                    appearance_embedding=[0.1] * 8,
+                    appearance_embedding=[0.1] * 512,
                     timestamp_semantics='synchronized',
                     time_reference_id='city_network_sync',
                 )

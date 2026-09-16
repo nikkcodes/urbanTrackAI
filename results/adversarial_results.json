@@ -1,0 +1,318 @@
+{
+  "suite": "ADVERSARIAL_20_SCENARIOS",
+  "total_scenarios": 20,
+  "passed_count": 20,
+  "pass_rate": 1.0,
+  "all_passed": true,
+  "scenarios": [
+    {
+      "id": "ADV_01",
+      "name": "Identical-looking vehicles (Simultaneous presence)",
+      "expected_state": [
+        "REJECTED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_03).).",
+      "passed": true,
+      "input": "Identical-looking vehicles (Simultaneous presence) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_02",
+      "name": "Visually similar vehicles (Impossible speed)",
+      "expected_state": [
+        "REJECTED"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible travel speed (Required travel speed of 2147.3 km/h exceeds maximum plausible limit (120.0 km/h).).",
+      "passed": true,
+      "input": "Visually similar vehicles (Impossible speed) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_03",
+      "name": "OCR 1-character OCR noise (Soft penalty)",
+      "expected_state": [
+        "CONFIRMED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "CONFIRMED",
+      "score": 0.955,
+      "explanation": "Estimated match probability is 0.95: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+      "passed": true,
+      "input": "OCR 1-character OCR noise (Soft penalty) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+      "actual_behavior": "CONFIRMED (score: 0.9550)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_04",
+      "name": "Wrong OCR (Plate contradiction)",
+      "expected_state": [
+        "REJECTED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Strong license plate contradiction (TS09EA1234 vs DL01XY9999, similarity 0.10 < 0.35 with verified OCR).",
+      "passed": true,
+      "input": "Wrong OCR (Plate contradiction) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_05",
+      "name": "Missing OCR (Neutral fallback)",
+      "expected_state": [
+        "CONFIRMED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "CONFIRMED",
+      "score": 1.0,
+      "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+      "passed": true,
+      "input": "Missing OCR (Neutral fallback) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+      "actual_behavior": "CONFIRMED (score: 1.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_06",
+      "name": "Missing OSNet (Plate fallback)",
+      "expected_state": [
+        "CONFIRMED"
+      ],
+      "actual_state": "CONFIRMED",
+      "score": 1.0,
+      "explanation": "Estimated match probability is 1.00: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+      "passed": true,
+      "input": "Missing OSNet (Plate fallback) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED']",
+      "actual_behavior": "CONFIRMED (score: 1.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_07",
+      "name": "Corrupted OSNet (NaN vectors safely neutral)",
+      "expected_state": [
+        "AMBIGUOUS"
+      ],
+      "actual_state": "AMBIGUOUS",
+      "score": 0.5,
+      "explanation": "Estimated match probability is 0.50: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+      "passed": true,
+      "input": "Corrupted OSNet (NaN vectors safely neutral) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['AMBIGUOUS']",
+      "actual_behavior": "AMBIGUOUS (score: 0.5000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_08",
+      "name": "Simultaneous presence across cameras (dt=0.0s)",
+      "expected_state": [
+        "REJECTED"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_02).).",
+      "passed": true,
+      "input": "Simultaneous presence across cameras (dt=0.0s) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_09",
+      "name": "Negative elapsed time on same camera",
+      "expected_state": [
+        "REJECTED"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Chronologically inverted: negative_elapsed_time_same_camera.).",
+      "passed": true,
+      "input": "Negative elapsed time on same camera scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_10",
+      "name": "Tracker fragmentation with temporal overlap (Tracks 65 & 94)",
+      "expected_state": [
+        "AMBIGUOUS"
+      ],
+      "actual_state": "AMBIGUOUS",
+      "score": 0.7,
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).",
+      "passed": true,
+      "input": "Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['AMBIGUOUS']",
+      "actual_behavior": "AMBIGUOUS (score: 0.7000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_11",
+      "name": "Tracker ID switch (Severe visual drift)",
+      "expected_state": [
+        "REJECTED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Estimated match probability is 0.00: Appearance similarity is 0.00 (low), vehicle types are compatible (car vs car).",
+      "passed": true,
+      "input": "Tracker ID switch (Severe visual drift) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_12",
+      "name": "Duplicate detections in same frame",
+      "expected_state": [
+        "REJECTED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous distinct detections/tracks (trk_a vs trk_b) at camera cam_01.).",
+      "passed": true,
+      "input": "Duplicate detections in same frame scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_13",
+      "name": "Contradictory vehicle type (Car vs Bus)",
+      "expected_state": [
+        "REJECTED"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Incompatible vehicle types (car vs bus).",
+      "passed": true,
+      "input": "Contradictory vehicle type (Car vs Bus) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_14",
+      "name": "Low camera reliability (Attenuated weight)",
+      "expected_state": [
+        "CONFIRMED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "AMBIGUOUS",
+      "score": 0.575,
+      "explanation": "Estimated match probability is 0.57: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 43.1 km/h over 359.4m in 30.0s.",
+      "passed": true,
+      "input": "Low camera reliability (Attenuated weight) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
+      "actual_behavior": "AMBIGUOUS (score: 0.5750)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_15",
+      "name": "Conflicting modalities (High appearance vs Conflicting plate)",
+      "expected_state": [
+        "REJECTED",
+        "AMBIGUOUS"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Strong license plate contradiction (AP09AA1111 vs MH12ZZ9999, similarity 0.00 < 0.35 with verified OCR).",
+      "passed": true,
+      "input": "Conflicting modalities (High appearance vs Conflicting plate) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_16",
+      "name": "Missing camera corridor transition (Zero fabricated sightings)",
+      "expected_state": [
+        "CONFIRMED"
+      ],
+      "actual_state": "CONFIRMED",
+      "score": 1.0,
+      "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 2488.8m in 180.0s.",
+      "passed": true,
+      "input": "Missing camera corridor transition (Zero fabricated sightings) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED']",
+      "actual_behavior": "CONFIRMED (score: 1.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_17",
+      "name": "Partial plate matching (Truncated suffix under uncertainty)",
+      "expected_state": [
+        "AMBIGUOUS",
+        "CONFIRMED"
+      ],
+      "actual_state": "AMBIGUOUS",
+      "score": 0.73,
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+      "passed": true,
+      "input": "Partial plate matching (Truncated suffix under uncertainty) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['AMBIGUOUS', 'CONFIRMED']",
+      "actual_behavior": "AMBIGUOUS (score: 0.7300)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_18",
+      "name": "Long temporal gap (> 1800s candidate window expiration)",
+      "expected_state": [
+        "PRUNED_BY_CANDIDATE_GENERATOR"
+      ],
+      "actual_state": "PRUNED_BY_CANDIDATE_GENERATOR",
+      "score": 0.0,
+      "explanation": "Candidate pair safely pruned before fusion: {'temporal_horizon_exceeded': 1, 'simultaneous_different_cameras': 0, 'physically_impossible_speed': 0, 'incompatible_vehicle_type': 0, 'strong_plate_contradiction': 0, 'missing_identity_evidence': 0}",
+      "passed": true,
+      "input": "Long temporal gap (> 1800s candidate window expiration) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['PRUNED_BY_CANDIDATE_GENERATOR']",
+      "actual_behavior": "PRUNED_BY_CANDIDATE_GENERATOR (score: 0.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_19",
+      "name": "Repeated route loop (Same vehicle re-entry after plausible circuit)",
+      "expected_state": [
+        "CONFIRMED"
+      ],
+      "actual_state": "CONFIRMED",
+      "score": 1.0,
+      "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car).",
+      "passed": true,
+      "input": "Repeated route loop (Same vehicle re-entry after plausible circuit) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['CONFIRMED']",
+      "actual_behavior": "CONFIRMED (score: 1.0000)",
+      "pass_fail": "PASS"
+    },
+    {
+      "id": "ADV_20",
+      "name": "Conflicting cross-camera sightings (Simultaneous clone vehicle attack)",
+      "expected_state": [
+        "REJECTED"
+      ],
+      "actual_state": "REJECTED",
+      "score": 0.0,
+      "explanation": "Match rejected (0.0): Physically impossible temporal alignment (Simultaneous detection at different cameras (cam_01 vs cam_03).).",
+      "passed": true,
+      "input": "Conflicting cross-camera sightings (Simultaneous clone vehicle attack) scenario with synthetic observations.",
+      "expected_behavior": "Decision state in ['REJECTED']",
+      "actual_behavior": "REJECTED (score: 0.0000)",
+      "pass_fail": "PASS"
+    }
+  ]
+}

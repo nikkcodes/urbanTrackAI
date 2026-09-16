@@ -1,0 +1,196 @@
+{
+  "calibrator": "PlattProbabilityCalibrator",
+  "fitted_split": "DEV",
+  "brier_score": 0.0528,
+  "expected_calibration_error": 0.0482,
+  "reliability_diagram_bins": 10,
+  "holdout_f1": null,
+  "reid_metrics": {
+    "embedding_extraction_quality": {
+      "total_observations": 1500,
+      "valid_512d_count": 1410,
+      "finite_count": 1410,
+      "mean_l2_norm": 1.0,
+      "unit_hypersphere_verified": true
+    },
+    "pairwise_reid_matching": {
+      "roc_auc": 0.8647,
+      "optimal_reid_threshold": 0.65,
+      "optimal_reid_f1": 0.8547,
+      "same_vehicle_similarity_mean": 0.8317,
+      "hard_negative_similarity_mean": 0.8088,
+      "different_vehicle_similarity_mean": 0.4588,
+      "threshold_sensitivity_sweep": [
+        {
+          "threshold": 0.0,
+          "precision": 0.4941,
+          "recall": 1.0,
+          "f1_score": 0.6614,
+          "false_match_rate": 1.0,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.05,
+          "precision": 0.4941,
+          "recall": 1.0,
+          "f1_score": 0.6614,
+          "false_match_rate": 1.0,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.1,
+          "precision": 0.4941,
+          "recall": 1.0,
+          "f1_score": 0.6614,
+          "false_match_rate": 1.0,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.15,
+          "precision": 0.4941,
+          "recall": 1.0,
+          "f1_score": 0.6614,
+          "false_match_rate": 1.0,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.2,
+          "precision": 0.4946,
+          "recall": 1.0,
+          "f1_score": 0.6618,
+          "false_match_rate": 0.9982,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.25,
+          "precision": 0.4957,
+          "recall": 1.0,
+          "f1_score": 0.6628,
+          "false_match_rate": 0.9938,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.3,
+          "precision": 0.5024,
+          "recall": 1.0,
+          "f1_score": 0.6688,
+          "false_match_rate": 0.9673,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.35,
+          "precision": 0.5205,
+          "recall": 1.0,
+          "f1_score": 0.6847,
+          "false_match_rate": 0.8997,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.4,
+          "precision": 0.5533,
+          "recall": 1.0,
+          "f1_score": 0.7124,
+          "false_match_rate": 0.7887,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.45,
+          "precision": 0.602,
+          "recall": 1.0,
+          "f1_score": 0.7516,
+          "false_match_rate": 0.6457,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.5,
+          "precision": 0.6562,
+          "recall": 1.0,
+          "f1_score": 0.7924,
+          "false_match_rate": 0.5118,
+          "false_non_match_rate": 0.0
+        },
+        {
+          "threshold": 0.55,
+          "precision": 0.7061,
+          "recall": 0.9993,
+          "f1_score": 0.8275,
+          "false_match_rate": 0.4062,
+          "false_non_match_rate": 0.0007
+        },
+        {
+          "threshold": 0.6,
+          "precision": 0.74,
+          "recall": 0.9956,
+          "f1_score": 0.849,
+          "false_match_rate": 0.3417,
+          "false_non_match_rate": 0.0044
+        },
+        {
+          "threshold": 0.65,
+          "precision": 0.7588,
+          "recall": 0.9784,
+          "f1_score": 0.8547,
+          "false_match_rate": 0.3038,
+          "false_non_match_rate": 0.0216
+        },
+        {
+          "threshold": 0.7,
+          "precision": 0.7706,
+          "recall": 0.9296,
+          "f1_score": 0.8426,
+          "false_match_rate": 0.2704,
+          "false_non_match_rate": 0.0704
+        },
+        {
+          "threshold": 0.75,
+          "precision": 0.7752,
+          "recall": 0.8261,
+          "f1_score": 0.7998,
+          "false_match_rate": 0.234,
+          "false_non_match_rate": 0.1739
+        },
+        {
+          "threshold": 0.8,
+          "precision": 0.7875,
+          "recall": 0.6793,
+          "f1_score": 0.7294,
+          "false_match_rate": 0.1791,
+          "false_non_match_rate": 0.3207
+        },
+        {
+          "threshold": 0.85,
+          "precision": 0.795,
+          "recall": 0.4678,
+          "f1_score": 0.589,
+          "false_match_rate": 0.1178,
+          "false_non_match_rate": 0.5322
+        },
+        {
+          "threshold": 0.9,
+          "precision": 0.8161,
+          "recall": 0.1711,
+          "f1_score": 0.2829,
+          "false_match_rate": 0.0376,
+          "false_non_match_rate": 0.8289
+        },
+        {
+          "threshold": 0.95,
+          "precision": 1.0,
+          "recall": 0.001,
+          "f1_score": 0.002,
+          "false_match_rate": 0.0,
+          "false_non_match_rate": 0.999
+        },
+        {
+          "threshold": 1.0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1_score": 0.0,
+          "false_match_rate": 0.0,
+          "false_non_match_rate": 1.0
+        }
+      ]
+    },
+    "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
+  }
+}

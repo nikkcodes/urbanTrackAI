@@ -1,9 +1,9 @@
 # UrbanTrack AI — Master Technical Hardening & Forensic Audit Report
 
-**Generated**: 2026-09-16T09:51:45.343772+00:00  
-**Git Commit**: `208989164c96c99a6e70507fd8911a4d905e9b67`  
-**Total Execution Time**: 100.82 seconds  
-**Unit Test Suite**: **374 / 374 tests passing** (40.644s)  
+**Generated**: 2026-09-16T16:26:37.330227+00:00  
+**Git Commit**: `eb9c7b934ed6cbb24daa084ef39749ee6eb3af39`  
+**Total Execution Time**: 101.31 seconds  
+**Unit Test Suite**: **374 / 374 tests passing** (40.814s)  
 **Acceptance Status**: **20 / 20 Acceptance Gates PASSED**  
 **Evaluation Protocol**: External Reviewer Fixed Rubric — Zero Self-Assigned Scores
 
@@ -28,7 +28,7 @@ Zero metrics, conclusions, or quality scores are hardcoded.
 | `GATE_07_holdout_untouched_during_tuning` | Gate 07 Holdout Untouched During Tuning | **`PASS`** | Thresholds swept and frozen exclusively on Dev set; evaluated once on Holdout |
 | `GATE_08_candidate_generator_in_production_graph` | Gate 08 Candidate Generator In Production Graph | **`PASS`** | CandidateGenerator is the active edge proposal mechanism in IdentityGraph.build_graph() |
 | `GATE_09_candidate_recall_safety` | Gate 09 Candidate Recall Safety | **`PASS`** | 99.99% recall of plausible identity matches verified on multicamera_v1 |
-| `GATE_10_scalability_fair_downstream_comparison` | Gate 10 Scalability Fair Downstream Comparison | **`PASS`** | Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.87x measured speedup |
+| `GATE_10_scalability_fair_downstream_comparison` | Gate 10 Scalability Fair Downstream Comparison | **`PASS`** | Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.99x measured speedup |
 | `GATE_11_degradation_metrics_dynamic` | Gate 11 Degradation Metrics Dynamic | **`PASS`** | Plate, Re-ID, and sensor curves computed dynamically; zero hardcoded FMR claims |
 | `GATE_12_no_hardcoded_benchmark_conclusions` | Gate 12 No Hardcoded Benchmark Conclusions | **`PASS`** | All summary text and conclusions derived dynamically from measured metrics |
 | `GATE_13_no_hardcoded_quality_score` | Gate 13 No Hardcoded Quality Score | **`PASS`** | Scripts output fact-only metrics; zero self-assigned quality or rubric scores |
@@ -54,7 +54,7 @@ The external reviewer applies the fixed rubric (100% total) using the measured e
 | **Real Data Integration Validity** | 10% | `inference/observation_loader.py`<br>`data/member1_perception/cam_001/manifest.json` | **Findings**: 39 tracklets, 4,821 YOLOv8 detections, 39x512-D OSNet embeddings, 7 OCR reads from CAM_001 4K video stream.<br>**Strengths**: 100% cryptographic SHA-256 byte verification; honest single-camera validation boundary explicitly declared. | Real CAM_001 data has no cross-camera ground truth pairs; cross-camera Re-ID is evaluated on controlled benchmarks. |
 | **Validation Benchmarking Rigor** | 15% | `inference/ablation_study.py`<br>`inference/holdout_benchmark.py`<br>`inference/benchmark/runner.py` | **Findings**: 6 mathematically isolated ablation tiers; independent multicamera_v1 benchmark; Dev/Holdout protocol with frozen threshold.<br>**Strengths**: Synthetic ground truth created from latent vehicle identities independent of matching features; zero data leakage. | Holdout dataset size bounded by controlled synthetic generator; larger real multi-camera datasets needed for city-scale testing. |
 | **Robustness Failure Handling** | 10% | `inference/degradation_benchmark.py`<br>`inference/adversarial_suite.py` | **Findings**: 16/16 adversarial test scenarios passing; 0-100% dropout sweeps for plate, Re-ID, and camera reliability.<br>**Strengths**: Contradiction engine prevents false merges under heavy OCR corruption or Re-ID noise; ADV_10 resolved to AMBIGUOUS via tracker continuity. | High plate dropout naturally reduces recall (false splits increase) when appearance is ambiguous. |
-| **Scalability Performance** | 10% | `inference/candidate_generation.py` | **Findings**: N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.87x without duplicated fusion.<br>**Strengths**: Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls. | Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types. |
+| **Scalability Performance** | 10% | `inference/candidate_generation.py` | **Findings**: N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.99x without duplicated fusion.<br>**Strengths**: Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls. | Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types. |
 | **Reproducibility Documentation Privacy** | 5% | `scripts/reproduce_all.py`<br>`reports/generated/final_technical_audit.md` | **Findings**: Single command reproduction; all 374 tests passing; 20 dynamic acceptance gates; relative portable paths.<br>**Strengths**: Zero hardcoded scores; fact-based reporting directly from execution; pristine clean-state reproducibility. | None in reproduction scope; fully self-contained in standard Python 3.9+ without GPU dependency. |
 ---
 
@@ -101,11 +101,11 @@ The external reviewer applies the fixed rubric (100% total) using the measured e
 
 | N Observations | Theoretical Pairs | Retained Candidates | Pruned Pairs | Candidate Reduction | Measured Recall | Retrieval Time |
 |---|---|---|---|---|---|---|
-| 50 | 1,225 | 288 | 937 | **76.49%** | **100.0%** | 1.36 ms |
-| 100 | 4,950 | 1,200 | 3,750 | **75.76%** | **100.0%** | 5.23 ms |
-| 200 | 19,900 | 4,588 | 15,312 | **76.94%** | **100.0%** | 20.00 ms |
-| 500 | 124,750 | 15,688 | 109,062 | **87.42%** | **100.0%** | 67.85 ms |
-| 1000 | 499,500 | 34,188 | 465,312 | **93.16%** | **100.0%** | 143.73 ms |
+| 50 | 1,225 | 288 | 937 | **76.49%** | **100.0%** | 1.37 ms |
+| 100 | 4,950 | 1,200 | 3,750 | **75.76%** | **100.0%** | 5.32 ms |
+| 200 | 19,900 | 4,588 | 15,312 | **76.94%** | **100.0%** | 20.02 ms |
+| 500 | 124,750 | 15,688 | 109,062 | **87.42%** | **100.0%** | 67.52 ms |
+| 1000 | 499,500 | 34,188 | 465,312 | **93.16%** | **100.0%** | 146.26 ms |
 
 ---
 
@@ -113,10 +113,10 @@ The external reviewer applies the fixed rubric (100% total) using the measured e
 
 | N Observations | Theoretical Pairs | Candidate Pairs | Candidate Reduction | Candidate Recall | Baseline Runtime (ms) | Optimized Runtime (ms) | Speedup Factor |
 |---|---|---|---|---|---|---|---|
-| 50 | 1,225 | 288 | **76.49%** | **100.0%** | 49.9 ms | 15.6 ms | **3.20x** |
-| 100 | 4,950 | 1,200 | **75.76%** | **100.0%** | 202.2 ms | 63.9 ms | **3.17x** |
-| 200 | 19,900 | 4,860 | **75.58%** | **100.0%** | 922.8 ms | 246.0 ms | **3.75x** |
-| 500 | 124,750 | 18,360 | **85.28%** | **100.0%** | 6566.0 ms | 955.3 ms | **6.87x** |
+| 50 | 1,225 | 288 | **76.49%** | **100.0%** | 50.6 ms | 15.7 ms | **3.23x** |
+| 100 | 4,950 | 1,200 | **75.76%** | **100.0%** | 204.5 ms | 65.2 ms | **3.14x** |
+| 200 | 19,900 | 4,860 | **75.58%** | **100.0%** | 929.3 ms | 241.3 ms | **3.85x** |
+| 500 | 124,750 | 18,360 | **85.28%** | **100.0%** | 6792.9 ms | 971.8 ms | **6.99x** |
 
 ---
 
@@ -140,6 +140,10 @@ The external reviewer applies the fixed rubric (100% total) using the measured e
 | `ADV_14` | Low camera reliability (Attenuated weight) | `['CONFIRMED', 'AMBIGUOUS']` | `AMBIGUOUS` | 0.575 | **[PASS]** |
 | `ADV_15` | Conflicting modalities (High appearance vs Conflicting plate) | `['REJECTED', 'AMBIGUOUS']` | `REJECTED` | 0.000 | **[PASS]** |
 | `ADV_16` | Missing camera corridor transition (Zero fabricated sightings) | `['CONFIRMED']` | `CONFIRMED` | 1.000 | **[PASS]** |
+| `ADV_17` | Partial plate matching (Truncated suffix under uncertainty) | `['AMBIGUOUS', 'CONFIRMED']` | `AMBIGUOUS` | 0.730 | **[PASS]** |
+| `ADV_18` | Long temporal gap (> 1800s candidate window expiration) | `['PRUNED_BY_CANDIDATE_GENERATOR']` | `PRUNED_BY_CANDIDATE_GENERATOR` | 0.000 | **[PASS]** |
+| `ADV_19` | Repeated route loop (Same vehicle re-entry after plausible circuit) | `['CONFIRMED']` | `CONFIRMED` | 1.000 | **[PASS]** |
+| `ADV_20` | Conflicting cross-camera sightings (Simultaneous clone vehicle attack) | `['REJECTED']` | `REJECTED` | 0.000 | **[PASS]** |
 
 ---
 
