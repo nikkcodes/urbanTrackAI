@@ -308,6 +308,13 @@ class SyntheticDegradationGenerator:
             json.dump(data, file, indent=4)
 
 
+def _camera_dir(base_dir: str | Path, camera_id: str | None) -> str:
+    """Return ``<base_dir>/<camera_id>`` when a camera is given, else ``base_dir``."""
+    if camera_id:
+        return str(Path(base_dir) / camera_id)
+    return str(base_dir)
+
+
 def main(argv: list[str] | None = None) -> None:
     """Generate degraded synthetic copies of the real perception outputs."""
     parser = argparse.ArgumentParser(
@@ -321,14 +328,22 @@ def main(argv: list[str] | None = None) -> None:
         help="Random seed for deterministic degradation (e.g. --seed 42).",
     )
     parser.add_argument(
+        "--camera-id",
+        default=None,
+        help="Camera identifier. When provided, reads from "
+        "data/output/<camera_id>/ and writes to data/synthetic_output/<camera_id>/.",
+    )
+    parser.add_argument(
         "--input-dir",
-        default=config.SYNTHETIC_INPUT_DIR,
-        help="Directory containing the real observations.json and trajectories.json.",
+        default=None,
+        help="Directory containing the real observations.json and trajectories.json. "
+        "Defaults to data/output or data/output/<camera_id>/ when --camera-id is set.",
     )
     parser.add_argument(
         "--output-dir",
-        default=config.SYNTHETIC_OUTPUT_DIR,
-        help="Directory for degraded synthetic outputs.",
+        default=None,
+        help="Directory for degraded synthetic outputs. Defaults to "
+        "data/synthetic_output or data/synthetic_output/<camera_id>/.",
     )
     args = parser.parse_args(argv)
 
@@ -339,9 +354,16 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
+    input_dir = args.input_dir or _camera_dir(
+        config.SYNTHETIC_INPUT_DIR, args.camera_id
+    )
+    output_dir = args.output_dir or _camera_dir(
+        config.SYNTHETIC_OUTPUT_DIR, args.camera_id
+    )
+
     generator = SyntheticDegradationGenerator(seed=args.seed)
-    summary = generator.generate(args.input_dir, args.output_dir)
-    print(f"Synthetic outputs written to {args.output_dir}")
+    summary = generator.generate(input_dir, output_dir)
+    print(f"Synthetic outputs written to {args.output_dir or _camera_dir(config.SYNTHETIC_OUTPUT_DIR, args.camera_id)}")
     print(f"Degraded frames: {summary['degraded_frames']}")
     print(f"Degraded tracks: {summary['degraded_tracks']}")
     print(f"Missing plates: {summary['missing_plate_count']}")

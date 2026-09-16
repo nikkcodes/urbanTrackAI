@@ -106,16 +106,19 @@ class PerceptionPipeline:
         """
         camera_id = self._resolve_camera_id(camera_id)
         input_file = Path(input_path)
+        output_dir = self._camera_output_dir(camera_id)
+        output_dir.mkdir(parents=True, exist_ok=True)
         output_file = (
             Path(output_path)
             if output_path is not None
-            else Path("data/output") / f"{input_file.stem}_tracked{input_file.suffix}"
+            else output_dir / f"{input_file.stem}_tracked{input_file.suffix}"
         )
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        observations_file = Path("data/output/observations.json")
+        observations_file = output_dir / "observations.json"
         observations_file.parent.mkdir(parents=True, exist_ok=True)
-        trajectories_file = Path("data/output/trajectories.json")
-        camera_metrics_file = Path("data/output/camera_metrics.json")
+        trajectories_file = output_dir / "trajectories.json"
+        camera_metrics_file = output_dir / "camera_metrics.json"
+        perception_summary_file = output_dir / "perception_summary.json"
         writer: cv2.VideoWriter | None = None
         frame_count = 0
         frame_observations: list[dict[str, object]] = []
@@ -512,7 +515,7 @@ class PerceptionPipeline:
         embedding_failures = sum(
             1 for emb, _ in self._track_embeddings.values() if emb is None
         )
-        perception_summary_file = Path("data/output/perception_summary.json")
+        perception_summary_file = output_dir / "perception_summary.json"
         with perception_summary_file.open("w", encoding="utf-8") as file:
             json.dump(
                 {
@@ -859,6 +862,13 @@ class PerceptionPipeline:
             if video is not None:
                 return video
         return PerceptionPipeline._find_input_video(input_directory)
+
+    @staticmethod
+    def _camera_output_dir(camera_id: str, base_dir: str | Path = "data/output") -> Path:
+        """Return the camera-specific output directory, creating it if needed."""
+        output_dir = Path(base_dir) / camera_id
+        output_dir.mkdir(parents=True, exist_ok=True)
+        return output_dir
 
     @staticmethod
     def _draw_info_overlay(
@@ -1248,7 +1258,9 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
-    output_path = Path("data/output") / f"{input_path.stem}_tracked{input_path.suffix}"
+    output_path = PerceptionPipeline._camera_output_dir(camera_id) / (
+        f"{input_path.stem}_tracked{input_path.suffix}"
+    )
     print(f"Selected input filename: {input_path.name}")
     print(f"Output video path: {output_path}")
 

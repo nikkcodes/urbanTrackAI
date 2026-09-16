@@ -337,15 +337,99 @@ python -m perception.synthetic_degradation --seed 42
 
 ### Configuration
 
-Synthetic benchmark generation is **disabled by default** in `perception/config.py`.
-
-`SYNTHETIC_ENABLE` must be explicitly set to `True` before running:
+Degradation probabilities live in `perception/config.py` under
+`SYNTHETIC_*`. `SYNTHETIC_ENABLE` defaults to `True`; the rates are
+conservative (`0.02`–`0.10`) so generation is lightweight by default.
+Synthetic outputs are **not** real observations.
 
 ```bash
 python -m perception.synthetic_degradation --seed 42
 ```
 
-All degradation probabilities default to `0.0` in the repository to ensure the real perception pipeline always exports genuine observations unless benchmark generation is intentionally enabled.
+## Validation Suite
+
+A pytest suite in `tests/` verifies the semantic correctness of Member 1
+exports without changing any perception behaviour.
+
+### What is validated
+
+- **Observations** (`tests/test_observations.py`): bounding-box validity
+  (`x1 < x2`, `y1 < y2`, within frame, integer coords), confidence ranges
+  (`[0, 1]` or `null`), timestamp monotonicity and frame-number/FPS
+  correspondence, unique frame numbers, `vehicle_count == len(vehicles)`,
+  unavailable values are `null` (not empty strings), per-frame
+  `track_id` uniqueness, and the full provenance block on every frame.
+- **Re-ID / trajectories** (`tests/test_reid_embeddings.py`): embedding
+  dimension matches `REID_EMBEDDING_DIM`, finite numeric values,
+  L2-normalisation, null embedding ⟺ null quality, `embedding_quality` in
+  `[0, 1]`, exported model name matches config, valid integer trajectory
+  points.
+- **Camera metadata** (`tests/test_camera_metadata.py`): unique
+  `CAM_001`–`CAM_006` ids, valid `metadata_source`, boolean `calibrated`,
+  video metadata only when `metadata_source == video_metadata`, all
+  unavailable fields `null`, all required fields present.
+- **Schema compatibility** (`tests/test_schema_semantics.py`): required
+  real artefacts exist (`observations.json`, `trajectories.json`,
+  `camera_metrics.json`, `perception_summary.json`), synthetic artefacts
+  exist and never overwrite real files, every degraded observation carries
+  `synthetic: true` and `degradation_tags`, `degradation_summary.json`
+  contains all required fields, and same-seed generation is
+  byte-identical while different seeds differ.
+
+### What is intentionally **not** validated
+
+- Benchmark accuracy, detection recall, OCR character error rate, or
+  Re-ID matching quality — these belong to Member 2 evaluation.
+- The internal weights or behaviour of YOLO, ByteTrack, EasyOCR, or
+  TorchReID — only their exported artefacts are checked.
+
+### How to run
+
+```bash
+pytest
+```
+
+Tests consume exported JSON artefacts. If a required artefact is missing,
+the suite fails with a clear assertion naming the missing file. The
+synthetic outputs are regenerated deterministically (seed `42`) by a
+session-scoped fixture before the schema tests run.
+
+### Final interface freeze
+
+This is the Member 1 interface freeze for integration with Member 2.
+
+## Camera-Specific Output Layout
+
+Every camera's perception outputs are written to an isolated,
+camera-specific directory so processing multiple cameras sequentially
+never overwrites previous outputs:
+
+```
+data/output/
+  CAM_001/
+    observations.json
+    trajectories.json
+    camera_metrics.json
+    perception_summary.json
+    traffics_tracked.mp4
+  CAM_002/
+    observations.json
+    trajectories.json
+    camera_metrics.json
+    perception_summary.json
+    camera2_tracked.mp4
+  CAM_003/ ... CAM_006/
+```
+
+- The directory `data/output/<camera_id>/` is created automatically if it
+  does not exist (`PerceptionPipeline._camera_output_dir`).
+- JSON field names and contents are unchanged; only the write location
+  moved. Running CAM_001 produces identical JSON contents to before.
+- Synthetic benchmark outputs follow the same isolation:
+  `data/synthetic_output/<camera_id>/` when `--camera-id` is passed to
+  `perception.synthetic_degradation`.
+
+Member 2 should load observations from `data/output/<camera_id>/`.
 
 ## Integration Contract (Member 1 → Member 2)
 
