@@ -24,7 +24,7 @@ class PlattProbabilityCalibrator:
         P(same_vehicle = 1 | s) = 1 / (1 + exp(-(a * s + b)))
     """
 
-    def __init__(self, a: float = 6.0, b: float = -4.5, is_fitted: bool = True) -> None:
+    def __init__(self, a: float = 6.0, b: float = -4.5, is_fitted: bool = False) -> None:
         self.a: float = float(a)
         self.b: float = float(b)
         self.is_fitted: bool = is_fitted
@@ -103,7 +103,7 @@ class PlattProbabilityCalibrator:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> PlattProbabilityCalibrator:
-        cal = cls(a=data.get("a", 6.0), b=data.get("b", -4.5), is_fitted=data.get("is_fitted", True))
+        cal = cls(a=data.get("a", 6.0), b=data.get("b", -4.5), is_fitted=data.get("is_fitted", False))
         cal.training_metrics = data.get("training_metrics", {})
         return cal
 

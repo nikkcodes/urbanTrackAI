@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "dataset": "AI City Challenge 2022 CityFlowV2",
+    "split": "train",
+    "scenario": "S01",
+    "tracker_input": "mtsc_deepsort_mask_rcnn.txt",
+    "source_root": "data/cityflowv2",
+    "generated_at": "2026-09-17T09:06:23.454488+00:00",
+    "ground_truth_used_for": "evaluation_only_box_matching",
+    "ground_truth_inference_leakage": false,
+    "source_videos_extracted": false
+  },
+  "ingestion": {
+    "frame_observations": 98180,
+    "tracklet_summaries": 1301,
+    "cameras": [
+      "c001",
+      "c002",
+      "c003",
+      "c004",
+      "c005"
+    ],
+    "observations_with_512d_embeddings": 0,
+    "observations_with_plates": 0,
+    "observations_with_native_world_position": 98180
+  },
+  "identity": {
+    "metrics": {
+      "cross_camera_pairs": 655645,
+      "labeled_tracklets": 437,
+      "positive_pairs": 818,
+      "tp": 0,
+      "fp": 0,
+      "tn": 654827,
+      "fn": 818,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "false_merge_rate": 0.0,
+      "false_split_rate": 1.0
+    },
+    "predicted_identity_edges": 0,
+    "candidate_pairs": 0,
+    "candidate_positive_recall": 0.0,
+    "candidate_rejection_summary": {
+      "temporal_horizon_exceeded": 0,
+      "simultaneous_different_cameras": 0,
+      "physically_impossible_speed": 543922,
+      "incompatible_vehicle_type": 0,
+      "strong_plate_contradiction": 0,
+      "missing_identity_evidence": 301728
+    },
+    "interpretation": "No identity edges are confirmed when CityFlow MTSC input lacks plate or appearance evidence."
+  }
+}

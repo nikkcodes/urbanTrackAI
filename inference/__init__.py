@@ -71,6 +71,13 @@ from .similarity import evaluate_reid_distribution, evaluate_reid_only_baseline,
 from .adversarial_suite import run_adversarial_suite
 from .ablation_study import run_ablation_study
 from .degradation_benchmark import run_full_degradation_benchmark
+from .cityflow_adapter import (
+    CityFlowCameraConfig,
+    CityFlowV2Adapter,
+    parse_cityflow_calibration,
+    parse_cityflow_camera_timestamps,
+    parse_cityflow_mot_file,
+)
 
 from .inference_trace import (
     InferenceTrace,
@@ -85,6 +92,11 @@ __all__ = [
     "run_adversarial_suite",
     "run_ablation_study",
     "run_full_degradation_benchmark",
+    "CityFlowCameraConfig",
+    "CityFlowV2Adapter",
+    "parse_cityflow_calibration",
+    "parse_cityflow_camera_timestamps",
+    "parse_cityflow_mot_file",
     "Observation",
     "CandidateRoute",
     "TrajectorySegment",
@@ -147,7 +159,5 @@ __all__ = [
     "build_global_trajectory_trace",
     "evaluate_reid_only_baseline",
 ]
-
-
 
 

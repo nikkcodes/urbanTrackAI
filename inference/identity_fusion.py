@@ -1,6 +1,6 @@
 """
 Identity Fusion Engine for UrbanTrack AI.
-Calculates pairwise estimated match probabilities and explainable evidence
+Calculates pairwise estimated match scores and explainable evidence
 between vehicle observations across cameras.
 """
 
@@ -22,7 +22,7 @@ def match_observations(
     Compute pairwise identity fusion score and explainable evidence between two observations.
 
     Answers: "Given two vehicle observations from different cameras, how likely
-    is it that they represent the same physical vehicle?"
+    is the evidence that they represent the same physical vehicle?"
 
     Args:
         obs_a: First vehicle observation.
@@ -32,7 +32,8 @@ def match_observations(
 
     Returns:
         Dict[str, Any]: Structured output containing observation IDs, detailed evidence,
-                       estimated match probability, and human-readable explanation.
+                       canonical match score, optional calibrated probability,
+                       and human-readable explanation.
     """
     config = config or {}
     max_speed_kmh = float(config.get("max_plausible_speed_kmh", 120.0))
@@ -137,7 +138,7 @@ def match_observations(
 
     has_identity_evidence = (app_score is not None) or (plate_score is not None)
 
-    # --- ESTIMATED MATCH PROBABILITY CALCULATION ---
+    # --- ESTIMATED MATCH SCORE CALCULATION ---
     if is_rejected:
         estimated_prob = 0.0
         explanation = f"Match rejected (0.0): {rejection_reason}"
@@ -166,7 +167,7 @@ def match_observations(
             else:
                 id_score = plate_score
 
-            # Match probability: spatio-temporal feasibility gating * identity similarity score
+            # Match score: spatio-temporal feasibility gating * identity similarity score
             estimated_prob = feasibility_score * id_score
         else:
             # Identity evidence unavailable (missing/invalid appearance and no plate):
@@ -213,7 +214,10 @@ def match_observations(
             trk_b = getattr(obs_b, "track_id", obs_b.get("track_id") if isinstance(obs_b, dict) else None)
             reasons.append(f"conflicting tracker evidence on camera {obs_a.camera_id} ({trk_a} vs {trk_b} within {t_delta_sec:.2f}s)")
 
-        explanation = f"Estimated match probability is {estimated_prob:.2f}: " + ", ".join(reasons) + "."
+        explanation = (
+            f"Estimated match probability is not reported; estimated match score is {estimated_prob:.2f}: "
+            + ", ".join(reasons) + "."
+        )
 
     # Day 5: Evaluate observation reliabilities and identity uncertainty
     from .reliability_engine import evaluate_identity_uncertainty, evaluate_observation_reliability
@@ -393,6 +397,25 @@ def match_observations(
         },
     }
 
+    # Calibrated probability is optional and must only be emitted after an
+    # explicitly fitted calibrator is supplied by the caller.  The canonical
+    # value used for ranking remains same_vehicle_score.
+    calibrator = config.get("calibrator")
+    calibrated_probability = None
+    calibration_details = {
+        "calibrated": False,
+        "method": None,
+        "uncalibrated_heuristic_score": estimated_prob,
+        "reason": "No fitted calibrator supplied; score is not a probability.",
+    }
+    if calibrator is not None and bool(getattr(calibrator, "is_fitted", False)):
+        calibrated_probability = round(float(calibrator.predict_probability(estimated_prob)), 4)
+        calibration_details = {
+            "calibrated": True,
+            "method": calibrator.__class__.__name__,
+            "uncalibrated_heuristic_score": estimated_prob,
+        }
+
     # Structured Output Payload (100% backward compatible with Day 2)
     return {
         "observation_a": obs_a.observation_id,
@@ -413,18 +436,12 @@ def match_observations(
             "required_speed_kmh": round(float(s_speed_kmh), 2) if (s_speed_kmh is not None and s_speed_kmh != float("inf")) else (None if s_speed_kmh is None else "infinite"),
         },
         "evidence_ledger": evidence_ledger,
+        # Deprecated compatibility alias. Use same_vehicle_score for inference.
         "same_vehicle_probability": estimated_prob,
         "same_vehicle_score": estimated_prob,
         "identity_evidence_score": estimated_prob,
-        "calibrated_probability": round(
-            float((config.get("calibrator") or __import__('inference.calibrator', fromlist=['PlattProbabilityCalibrator']).PlattProbabilityCalibrator()).predict_probability(estimated_prob)),
-            4
-        ) if estimated_prob > 0.0 else 0.0,
-        "calibration_details": {
-            "calibrated": True,
-            "method": "platt_scaling_logistic",
-            "uncalibrated_heuristic_score": estimated_prob,
-        },
+        "calibrated_probability": calibrated_probability,
+        "calibration_details": calibration_details,
         "decision_state": "CONFIRMED" if estimated_prob >= float(config.get("confirmed_threshold", 0.75)) else ("AMBIGUOUS" if estimated_prob >= float(config.get("ambiguous_threshold", 0.40)) else "REJECTED"),
         "operating_thresholds": {
             "confirmed": float(config.get("confirmed_threshold", 0.75)),

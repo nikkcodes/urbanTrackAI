@@ -131,6 +131,8 @@ class CandidateGenerator:
                 p_conf,
                 o.timestamp_semantics,
                 o.time_reference_id,
+                o.world_position,
+                o.world_coordinate_system,
             ))
 
         # 1. Indexed retrieval using temporal window bisect search
@@ -146,6 +148,8 @@ class CandidateGenerator:
             conf_a = item_a[8]
             sem_a = item_a[9]
             ref_a = item_a[10]
+            world_a = item_a[11]
+            world_sys_a = item_a[12]
 
             # Find upper bound index in O(log N) using bisect_right
             horizon_limit = t_a + self.max_time_window_seconds
@@ -175,7 +179,15 @@ class CandidateGenerator:
 
                     lat_b = item_b[4]
                     lon_b = item_b[5]
-                    if lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
+                    world_b = item_b[11]
+                    world_sys_b = item_b[12]
+                    if world_a is not None and world_b is not None and world_sys_a == world_sys_b and dt > 0.0:
+                        dist_m = ((float(world_b[0]) - float(world_a[0])) ** 2 + (float(world_b[1]) - float(world_a[1])) ** 2) ** 0.5
+                        speed_kmh = (dist_m / dt) * 3.6
+                        if speed_kmh > self.max_speed_kmh:
+                            rejection_counts["physically_impossible_speed"] += 1
+                            continue
+                    elif lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
                         dist_m = geographic_distance(lat_a, lon_a, lat_b, lon_b)
                         speed_kmh = (dist_m / dt) * 3.6
                         if speed_kmh > self.max_speed_kmh:
@@ -190,7 +202,15 @@ class CandidateGenerator:
                             continue
                         lat_b = item_b[4]
                         lon_b = item_b[5]
-                        if lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
+                        world_b = item_b[11]
+                        world_sys_b = item_b[12]
+                        if world_a is not None and world_b is not None and world_sys_a == world_sys_b and dt > 0.0:
+                            dist_m = ((float(world_b[0]) - float(world_a[0])) ** 2 + (float(world_b[1]) - float(world_a[1])) ** 2) ** 0.5
+                            speed_kmh = (dist_m / dt) * 3.6
+                            if speed_kmh > self.max_speed_kmh:
+                                rejection_counts["physically_impossible_speed"] += 1
+                                continue
+                        elif lat_a is not None and lon_a is not None and lat_b is not None and lon_b is not None and dt > 0.0:
                             dist_m = geographic_distance(lat_a, lon_a, lat_b, lon_b)
                             speed_kmh = (dist_m / dt) * 3.6
                             if speed_kmh > self.max_speed_kmh:

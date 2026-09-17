@@ -1,19 +1,19 @@
 {
   "metadata": {
     "title": "UrbanTrack AI \u2014 Master Reproduction & Technical Hardening Audit",
-    "timestamp": "2026-09-17T05:01:32.422579+00:00",
-    "git_commit": "4a3158df503d885cbed2851f0a02404495e8154f",
+    "timestamp": "2026-09-17T09:04:57.012166+00:00",
+    "git_commit": "UNKNOWN_COMMIT",
     "system_version": "9.0+ Hardened Prototype",
     "evaluated_by": "Automated Reproduction Suite",
-    "execution_time_seconds": 101.65
+    "execution_time_seconds": 135.25
   },
   "stages": {
     "stage_0_unit_tests": {
-      "tests_run": 377,
+      "tests_run": 381,
       "failures": 0,
       "errors": 0,
-      "passed": 377,
-      "runtime_seconds": 38.381,
+      "passed": 381,
+      "runtime_seconds": 40.622,
       "status": "PASSED"
     },
     "stage_1_raw_integrity": {
@@ -459,10 +459,10 @@
       "candidate_pairs_count": 66556,
       "candidate_reduction_pct": 94.08,
       "candidate_recall_pct": 99.99,
-      "elapsed_total_seconds": 15.907,
-      "elapsed_candidate_gen_seconds": 1.5,
-      "elapsed_fusion_seconds": 14.059,
-      "elapsed_graph_seconds": 0.318,
+      "elapsed_total_seconds": 13.973,
+      "elapsed_candidate_gen_seconds": 1.483,
+      "elapsed_fusion_seconds": 12.012,
+      "elapsed_graph_seconds": 0.461,
       "threshold_used": 0.75,
       "tp": 5814,
       "fp": 163,
@@ -719,9 +719,680 @@
         "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
       }
     },
+    "stage_7c_cityflowv2_s01": {
+      "metadata": {
+        "dataset": "AI City Challenge 2022 CityFlowV2",
+        "split": "train",
+        "scenario": "S01",
+        "tracker_input": "mtsc_deepsort_mask_rcnn.txt",
+        "source_root": "data/cityflowv2",
+        "generated_at": "2026-09-17T09:06:23.454488+00:00",
+        "ground_truth_used_for": "evaluation_only_box_matching",
+        "ground_truth_inference_leakage": false,
+        "source_videos_extracted": false
+      },
+      "ingestion": {
+        "frame_observations": 98180,
+        "tracklet_summaries": 1301,
+        "cameras": [
+          "c001",
+          "c002",
+          "c003",
+          "c004",
+          "c005"
+        ],
+        "observations_with_512d_embeddings": 0,
+        "observations_with_plates": 0,
+        "observations_with_native_world_position": 98180
+      },
+      "identity": {
+        "metrics": {
+          "cross_camera_pairs": 655645,
+          "labeled_tracklets": 437,
+          "positive_pairs": 818,
+          "tp": 0,
+          "fp": 0,
+          "tn": 654827,
+          "fn": 818,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "false_merge_rate": 0.0,
+          "false_split_rate": 1.0
+        },
+        "predicted_identity_edges": 0,
+        "candidate_pairs": 0,
+        "candidate_positive_recall": 0.0,
+        "candidate_rejection_summary": {
+          "temporal_horizon_exceeded": 0,
+          "simultaneous_different_cameras": 0,
+          "physically_impossible_speed": 543922,
+          "incompatible_vehicle_type": 0,
+          "strong_plate_contradiction": 0,
+          "missing_identity_evidence": 301728
+        },
+        "interpretation": "No identity edges are confirmed when CityFlow MTSC input lacks plate or appearance evidence."
+      }
+    },
+    "stage_7d_probability_calibration": {
+      "status": "PASSED",
+      "dataset": "multicamera_v1",
+      "label_source": "independent pairwise_ground_truth.json",
+      "score_source": "production match_observations.same_vehicle_score",
+      "split_protocol": {
+        "dev_fraction": 0.7,
+        "dev_samples": 9625,
+        "fit_samples": 9625,
+        "freeze_before_holdout": true,
+        "holdout_samples": 4125,
+        "ordering": "sorted pair keys; deterministic, no random reshuffle"
+      },
+      "calibrator": {
+        "model_type": "platt_scaling_logistic",
+        "a": 6.7645,
+        "b": -3.6465,
+        "is_fitted": true,
+        "training_metrics": {
+          "brier_score": 0.0201,
+          "expected_calibration_error": 0.0674,
+          "maximum_calibration_error": 0.3527,
+          "sample_size": 9625,
+          "reliability_diagram_bins": [
+            {
+              "bin_index": 0,
+              "bin_range": [
+                0.0,
+                0.1
+              ],
+              "sample_count": 4276,
+              "mean_confidence": 0.0003,
+              "empirical_accuracy": 0.0,
+              "calibration_gap": 0.0003
+            },
+            {
+              "bin_index": 1,
+              "bin_range": [
+                0.1,
+                0.2
+              ],
+              "sample_count": 56,
+              "mean_confidence": 0.1557,
+              "empirical_accuracy": 0.0,
+              "calibration_gap": 0.1557
+            },
+            {
+              "bin_index": 2,
+              "bin_range": [
+                0.2,
+                0.3
+              ],
+              "sample_count": 130,
+              "mean_confidence": 0.252,
+              "empirical_accuracy": 0.0077,
+              "calibration_gap": 0.2443
+            },
+            {
+              "bin_index": 3,
+              "bin_range": [
+                0.3,
+                0.4
+              ],
+              "sample_count": 90,
+              "mean_confidence": 0.3527,
+              "empirical_accuracy": 0.0,
+              "calibration_gap": 0.3527
+            },
+            {
+              "bin_index": 4,
+              "bin_range": [
+                0.4,
+                0.5
+              ],
+              "sample_count": 314,
+              "mean_confidence": 0.4343,
+              "empirical_accuracy": 0.7484,
+              "calibration_gap": 0.3141
+            },
+            {
+              "bin_index": 5,
+              "bin_range": [
+                0.5,
+                0.6
+              ],
+              "sample_count": 30,
+              "mean_confidence": 0.5471,
+              "empirical_accuracy": 0.5667,
+              "calibration_gap": 0.0195
+            },
+            {
+              "bin_index": 6,
+              "bin_range": [
+                0.6,
+                0.7
+              ],
+              "sample_count": 104,
+              "mean_confidence": 0.6485,
+              "empirical_accuracy": 0.8654,
+              "calibration_gap": 0.2169
+            },
+            {
+              "bin_index": 7,
+              "bin_range": [
+                0.7,
+                0.8
+              ],
+              "sample_count": 310,
+              "mean_confidence": 0.7593,
+              "empirical_accuracy": 1.0,
+              "calibration_gap": 0.2407
+            },
+            {
+              "bin_index": 8,
+              "bin_range": [
+                0.8,
+                0.9
+              ],
+              "sample_count": 1337,
+              "mean_confidence": 0.8652,
+              "empirical_accuracy": 0.9993,
+              "calibration_gap": 0.1341
+            },
+            {
+              "bin_index": 9,
+              "bin_range": [
+                0.9,
+                1.0
+              ],
+              "sample_count": 2978,
+              "mean_confidence": 0.9329,
+              "empirical_accuracy": 1.0,
+              "calibration_gap": 0.0671
+            }
+          ]
+        }
+      },
+      "frozen_parameters": {
+        "a": 6.7645,
+        "b": -3.6465
+      },
+      "dev_metrics_before_calibration": {
+        "brier_score": 0.0245,
+        "expected_calibration_error": 0.0799,
+        "maximum_calibration_error": 0.4389,
+        "sample_size": 9625,
+        "reliability_diagram_bins": [
+          {
+            "bin_index": 0,
+            "bin_range": [
+              0.0,
+              0.1
+            ],
+            "sample_count": 4262,
+            "mean_confidence": 0.0001,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.0001
+          },
+          {
+            "bin_index": 1,
+            "bin_range": [
+              0.1,
+              0.2
+            ],
+            "sample_count": 11,
+            "mean_confidence": 0.1302,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.1302
+          },
+          {
+            "bin_index": 2,
+            "bin_range": [
+              0.2,
+              0.3
+            ],
+            "sample_count": 36,
+            "mean_confidence": 0.2618,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.2618
+          },
+          {
+            "bin_index": 3,
+            "bin_range": [
+              0.3,
+              0.4
+            ],
+            "sample_count": 121,
+            "mean_confidence": 0.3585,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.3585
+          },
+          {
+            "bin_index": 4,
+            "bin_range": [
+              0.4,
+              0.5
+            ],
+            "sample_count": 145,
+            "mean_confidence": 0.4458,
+            "empirical_accuracy": 0.0069,
+            "calibration_gap": 0.4389
+          },
+          {
+            "bin_index": 5,
+            "bin_range": [
+              0.5,
+              0.6
+            ],
+            "sample_count": 339,
+            "mean_confidence": 0.5119,
+            "empirical_accuracy": 0.7965,
+            "calibration_gap": 0.2846
+          },
+          {
+            "bin_index": 6,
+            "bin_range": [
+              0.6,
+              0.7
+            ],
+            "sample_count": 196,
+            "mean_confidence": 0.6651,
+            "empirical_accuracy": 0.9286,
+            "calibration_gap": 0.2635
+          },
+          {
+            "bin_index": 7,
+            "bin_range": [
+              0.7,
+              0.8
+            ],
+            "sample_count": 606,
+            "mean_confidence": 0.7588,
+            "empirical_accuracy": 0.9983,
+            "calibration_gap": 0.2395
+          },
+          {
+            "bin_index": 8,
+            "bin_range": [
+              0.8,
+              0.9
+            ],
+            "sample_count": 1640,
+            "mean_confidence": 0.8547,
+            "empirical_accuracy": 1.0,
+            "calibration_gap": 0.1453
+          },
+          {
+            "bin_index": 9,
+            "bin_range": [
+              0.9,
+              1.0
+            ],
+            "sample_count": 2269,
+            "mean_confidence": 0.9475,
+            "empirical_accuracy": 1.0,
+            "calibration_gap": 0.0525
+          }
+        ]
+      },
+      "dev_metrics_after_calibration": {
+        "brier_score": 0.0201,
+        "expected_calibration_error": 0.0674,
+        "maximum_calibration_error": 0.3527,
+        "sample_size": 9625,
+        "reliability_diagram_bins": [
+          {
+            "bin_index": 0,
+            "bin_range": [
+              0.0,
+              0.1
+            ],
+            "sample_count": 4276,
+            "mean_confidence": 0.0003,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.0003
+          },
+          {
+            "bin_index": 1,
+            "bin_range": [
+              0.1,
+              0.2
+            ],
+            "sample_count": 56,
+            "mean_confidence": 0.1557,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.1557
+          },
+          {
+            "bin_index": 2,
+            "bin_range": [
+              0.2,
+              0.3
+            ],
+            "sample_count": 130,
+            "mean_confidence": 0.252,
+            "empirical_accuracy": 0.0077,
+            "calibration_gap": 0.2443
+          },
+          {
+            "bin_index": 3,
+            "bin_range": [
+              0.3,
+              0.4
+            ],
+            "sample_count": 90,
+            "mean_confidence": 0.3527,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.3527
+          },
+          {
+            "bin_index": 4,
+            "bin_range": [
+              0.4,
+              0.5
+            ],
+            "sample_count": 314,
+            "mean_confidence": 0.4343,
+            "empirical_accuracy": 0.7484,
+            "calibration_gap": 0.3141
+          },
+          {
+            "bin_index": 5,
+            "bin_range": [
+              0.5,
+              0.6
+            ],
+            "sample_count": 30,
+            "mean_confidence": 0.5471,
+            "empirical_accuracy": 0.5667,
+            "calibration_gap": 0.0195
+          },
+          {
+            "bin_index": 6,
+            "bin_range": [
+              0.6,
+              0.7
+            ],
+            "sample_count": 104,
+            "mean_confidence": 0.6485,
+            "empirical_accuracy": 0.8654,
+            "calibration_gap": 0.2169
+          },
+          {
+            "bin_index": 7,
+            "bin_range": [
+              0.7,
+              0.8
+            ],
+            "sample_count": 310,
+            "mean_confidence": 0.7593,
+            "empirical_accuracy": 1.0,
+            "calibration_gap": 0.2407
+          },
+          {
+            "bin_index": 8,
+            "bin_range": [
+              0.8,
+              0.9
+            ],
+            "sample_count": 1337,
+            "mean_confidence": 0.8652,
+            "empirical_accuracy": 0.9993,
+            "calibration_gap": 0.1341
+          },
+          {
+            "bin_index": 9,
+            "bin_range": [
+              0.9,
+              1.0
+            ],
+            "sample_count": 2978,
+            "mean_confidence": 0.9329,
+            "empirical_accuracy": 1.0,
+            "calibration_gap": 0.0671
+          }
+        ]
+      },
+      "holdout_metrics_before_calibration": {
+        "brier_score": 0.0586,
+        "expected_calibration_error": 0.0556,
+        "maximum_calibration_error": 0.4343,
+        "sample_size": 4125,
+        "reliability_diagram_bins": [
+          {
+            "bin_index": 0,
+            "bin_range": [
+              0.0,
+              0.1
+            ],
+            "sample_count": 1807,
+            "mean_confidence": 0.0,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_index": 1,
+            "bin_range": [
+              0.1,
+              0.2
+            ],
+            "sample_count": 7,
+            "mean_confidence": 0.1271,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.1271
+          },
+          {
+            "bin_index": 2,
+            "bin_range": [
+              0.2,
+              0.3
+            ],
+            "sample_count": 20,
+            "mean_confidence": 0.2647,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.2647
+          },
+          {
+            "bin_index": 3,
+            "bin_range": [
+              0.3,
+              0.4
+            ],
+            "sample_count": 89,
+            "mean_confidence": 0.3578,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.3578
+          },
+          {
+            "bin_index": 4,
+            "bin_range": [
+              0.4,
+              0.5
+            ],
+            "sample_count": 93,
+            "mean_confidence": 0.4343,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.4343
+          },
+          {
+            "bin_index": 5,
+            "bin_range": [
+              0.5,
+              0.6
+            ],
+            "sample_count": 199,
+            "mean_confidence": 0.512,
+            "empirical_accuracy": 0.5025,
+            "calibration_gap": 0.0095
+          },
+          {
+            "bin_index": 6,
+            "bin_range": [
+              0.6,
+              0.7
+            ],
+            "sample_count": 129,
+            "mean_confidence": 0.6624,
+            "empirical_accuracy": 0.4806,
+            "calibration_gap": 0.1818
+          },
+          {
+            "bin_index": 7,
+            "bin_range": [
+              0.7,
+              0.8
+            ],
+            "sample_count": 354,
+            "mean_confidence": 0.7561,
+            "empirical_accuracy": 0.6554,
+            "calibration_gap": 0.1008
+          },
+          {
+            "bin_index": 8,
+            "bin_range": [
+              0.8,
+              0.9
+            ],
+            "sample_count": 567,
+            "mean_confidence": 0.8503,
+            "empirical_accuracy": 0.933,
+            "calibration_gap": 0.0827
+          },
+          {
+            "bin_index": 9,
+            "bin_range": [
+              0.9,
+              1.0
+            ],
+            "sample_count": 860,
+            "mean_confidence": 0.95,
+            "empirical_accuracy": 1.0,
+            "calibration_gap": 0.05
+          }
+        ]
+      },
+      "holdout_metrics_after_calibration": {
+        "brier_score": 0.0563,
+        "expected_calibration_error": 0.0494,
+        "maximum_calibration_error": 0.4015,
+        "sample_size": 4125,
+        "reliability_diagram_bins": [
+          {
+            "bin_index": 0,
+            "bin_range": [
+              0.0,
+              0.1
+            ],
+            "sample_count": 1815,
+            "mean_confidence": 0.0003,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.0003
+          },
+          {
+            "bin_index": 1,
+            "bin_range": [
+              0.1,
+              0.2
+            ],
+            "sample_count": 42,
+            "mean_confidence": 0.1637,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.1637
+          },
+          {
+            "bin_index": 2,
+            "bin_range": [
+              0.2,
+              0.3
+            ],
+            "sample_count": 95,
+            "mean_confidence": 0.2575,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.2575
+          },
+          {
+            "bin_index": 3,
+            "bin_range": [
+              0.3,
+              0.4
+            ],
+            "sample_count": 54,
+            "mean_confidence": 0.3385,
+            "empirical_accuracy": 0.0,
+            "calibration_gap": 0.3385
+          },
+          {
+            "bin_index": 4,
+            "bin_range": [
+              0.4,
+              0.5
+            ],
+            "sample_count": 182,
+            "mean_confidence": 0.4371,
+            "empirical_accuracy": 0.5275,
+            "calibration_gap": 0.0904
+          },
+          {
+            "bin_index": 5,
+            "bin_range": [
+              0.5,
+              0.6
+            ],
+            "sample_count": 26,
+            "mean_confidence": 0.5554,
+            "empirical_accuracy": 0.1538,
+            "calibration_gap": 0.4015
+          },
+          {
+            "bin_index": 6,
+            "bin_range": [
+              0.6,
+              0.7
+            ],
+            "sample_count": 60,
+            "mean_confidence": 0.6508,
+            "empirical_accuracy": 0.3333,
+            "calibration_gap": 0.3175
+          },
+          {
+            "bin_index": 7,
+            "bin_range": [
+              0.7,
+              0.8
+            ],
+            "sample_count": 193,
+            "mean_confidence": 0.7584,
+            "empirical_accuracy": 0.6373,
+            "calibration_gap": 0.1211
+          },
+          {
+            "bin_index": 8,
+            "bin_range": [
+              0.8,
+              0.9
+            ],
+            "sample_count": 591,
+            "mean_confidence": 0.8596,
+            "empirical_accuracy": 0.8173,
+            "calibration_gap": 0.0423
+          },
+          {
+            "bin_index": 9,
+            "bin_range": [
+              0.9,
+              1.0
+            ],
+            "sample_count": 1067,
+            "mean_confidence": 0.9349,
+            "empirical_accuracy": 0.9906,
+            "calibration_gap": 0.0557
+          }
+        ]
+      },
+      "ground_truth_used_for_fit_and_evaluation_only": true,
+      "holdout_tuning": false
+    },
     "stage_8_candidate_scaling": {
       "benchmark_name": "candidate_generation_scaling",
-      "timestamp": "2026-09-17T10:32:29.641924",
+      "timestamp": "2026-09-17T14:36:27.207814",
       "evaluations": [
         {
           "n_observations": 50,
@@ -731,8 +1402,8 @@
           "reduction_pct": 76.49,
           "candidate_recall_pct": 100.0,
           "naive_enumeration_ms": 0.05,
-          "indexed_retrieval_ms": 2.15,
-          "speedup_factor": 0.02
+          "indexed_retrieval_ms": 1.33,
+          "speedup_factor": 0.04
         },
         {
           "n_observations": 100,
@@ -742,7 +1413,7 @@
           "reduction_pct": 75.76,
           "candidate_recall_pct": 100.0,
           "naive_enumeration_ms": 0.25,
-          "indexed_retrieval_ms": 5.37,
+          "indexed_retrieval_ms": 5.38,
           "speedup_factor": 0.05
         },
         {
@@ -752,9 +1423,9 @@
           "pruned_pairs": 15312,
           "reduction_pct": 76.94,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 5.03,
-          "indexed_retrieval_ms": 20.22,
-          "speedup_factor": 0.25
+          "naive_enumeration_ms": 1.1,
+          "indexed_retrieval_ms": 19.93,
+          "speedup_factor": 0.06
         },
         {
           "n_observations": 500,
@@ -763,9 +1434,9 @@
           "pruned_pairs": 109062,
           "reduction_pct": 87.42,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 7.3,
-          "indexed_retrieval_ms": 67.75,
-          "speedup_factor": 0.11
+          "naive_enumeration_ms": 12.78,
+          "indexed_retrieval_ms": 67.34,
+          "speedup_factor": 0.19
         },
         {
           "n_observations": 1000,
@@ -774,16 +1445,16 @@
           "pruned_pairs": 465312,
           "reduction_pct": 93.16,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 51.46,
-          "indexed_retrieval_ms": 146.17,
-          "speedup_factor": 0.35
+          "naive_enumeration_ms": 58.07,
+          "indexed_retrieval_ms": 147.92,
+          "speedup_factor": 0.39
         }
       ]
     },
     "stage_8b_fair_end_to_end_scalability": {
       "benchmark_name": "fair_end_to_end_scalability_benchmark",
       "repetitions": 2,
-      "timestamp": "2026-09-17T10:32:47.941221",
+      "timestamp": "2026-09-17T14:36:45.687432",
       "evaluations": [
         {
           "n_observations": 50,
@@ -799,23 +1470,23 @@
           "recall": 0.0769,
           "f1": 0.1429,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 49.99,
-            "total_runtime_p95_ms": 50.51,
-            "fusion_runtime_median_ms": 48.5,
-            "graph_runtime_median_ms": 1.41,
+            "total_runtime_median_ms": 51.08,
+            "total_runtime_p95_ms": 52.25,
+            "fusion_runtime_median_ms": 49.48,
+            "graph_runtime_median_ms": 1.51,
             "fused_pairs_count": 1225,
             "final_edges": 1
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 15.73,
-            "total_runtime_p95_ms": 16.63,
+            "total_runtime_median_ms": 14.35,
+            "total_runtime_p95_ms": 14.9,
             "candidate_gen_median_ms": 1.3,
-            "fusion_runtime_median_ms": 13.9,
-            "graph_runtime_median_ms": 0.53,
+            "fusion_runtime_median_ms": 12.47,
+            "graph_runtime_median_ms": 0.58,
             "fused_pairs_count": 288,
             "final_edges": 1
           },
-          "speedup_factor": 3.18
+          "speedup_factor": 3.56
         },
         {
           "n_observations": 100,
@@ -831,23 +1502,23 @@
           "recall": 0.0128,
           "f1": 0.0244,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 204.55,
-            "total_runtime_p95_ms": 209.69,
-            "fusion_runtime_median_ms": 198.0,
-            "graph_runtime_median_ms": 6.31,
+            "total_runtime_median_ms": 209.42,
+            "total_runtime_p95_ms": 210.49,
+            "fusion_runtime_median_ms": 202.95,
+            "graph_runtime_median_ms": 6.22,
             "fused_pairs_count": 4950,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 64.9,
-            "total_runtime_p95_ms": 73.42,
-            "candidate_gen_median_ms": 5.16,
-            "fusion_runtime_median_ms": 57.76,
-            "graph_runtime_median_ms": 1.99,
+            "total_runtime_median_ms": 61.79,
+            "total_runtime_p95_ms": 62.46,
+            "candidate_gen_median_ms": 5.18,
+            "fusion_runtime_median_ms": 54.14,
+            "graph_runtime_median_ms": 2.46,
             "fused_pairs_count": 1200,
             "final_edges": 4
           },
-          "speedup_factor": 3.15
+          "speedup_factor": 3.39
         },
         {
           "n_observations": 200,
@@ -863,23 +1534,23 @@
           "recall": 0.0079,
           "f1": 0.0157,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 938.98,
-            "total_runtime_p95_ms": 984.79,
-            "fusion_runtime_median_ms": 917.96,
-            "graph_runtime_median_ms": 19.73,
+            "total_runtime_median_ms": 902.0,
+            "total_runtime_p95_ms": 919.42,
+            "fusion_runtime_median_ms": 856.83,
+            "graph_runtime_median_ms": 44.15,
             "fused_pairs_count": 19900,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 239.84,
-            "total_runtime_p95_ms": 253.12,
-            "candidate_gen_median_ms": 20.74,
-            "fusion_runtime_median_ms": 212.05,
-            "graph_runtime_median_ms": 7.04,
+            "total_runtime_median_ms": 264.71,
+            "total_runtime_p95_ms": 299.16,
+            "candidate_gen_median_ms": 20.95,
+            "fusion_runtime_median_ms": 236.33,
+            "graph_runtime_median_ms": 7.43,
             "fused_pairs_count": 4860,
             "final_edges": 4
           },
-          "speedup_factor": 3.92
+          "speedup_factor": 3.41
         },
         {
           "n_observations": 500,
@@ -895,29 +1566,29 @@
           "recall": 0.007,
           "f1": 0.0138,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 6643.34,
-            "total_runtime_p95_ms": 7457.4,
-            "fusion_runtime_median_ms": 6388.88,
-            "graph_runtime_median_ms": 122.92,
+            "total_runtime_median_ms": 6591.27,
+            "total_runtime_p95_ms": 7125.44,
+            "fusion_runtime_median_ms": 6251.43,
+            "graph_runtime_median_ms": 160.06,
             "fused_pairs_count": 124750,
             "final_edges": 30
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 974.08,
-            "total_runtime_p95_ms": 1083.13,
-            "candidate_gen_median_ms": 77.61,
-            "fusion_runtime_median_ms": 873.49,
-            "graph_runtime_median_ms": 22.97,
+            "total_runtime_median_ms": 1132.26,
+            "total_runtime_p95_ms": 1332.07,
+            "candidate_gen_median_ms": 78.56,
+            "fusion_runtime_median_ms": 1029.03,
+            "graph_runtime_median_ms": 24.67,
             "fused_pairs_count": 18360,
             "final_edges": 19
           },
-          "speedup_factor": 6.82
+          "speedup_factor": 5.82
         }
       ]
     },
     "stage_8c_large_scale_candidate_pipeline": {
       "benchmark_name": "large_scale_candidate_pipeline_benchmark",
-      "timestamp": "2026-09-17T10:33:12.598456",
+      "timestamp": "2026-09-17T14:37:10.817772",
       "evaluations": [
         {
           "n_observations": 1000,
@@ -926,11 +1597,11 @@
           "pruned_pairs": 458640,
           "candidate_reduction_pct": 91.82,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 1020.32,
-          "fusion_ms": 543.45,
-          "graph_assembly_ms": 420.71,
-          "total_pipeline_ms": 1984.93,
-          "peak_memory_mb": 8.56,
+          "candidate_gen_ms": 1149.1,
+          "fusion_ms": 518.17,
+          "graph_assembly_ms": 407.55,
+          "total_pipeline_ms": 2075.6,
+          "peak_memory_mb": 8.65,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 335790,
             "simultaneous_different_cameras": 0,
@@ -947,11 +1618,11 @@
           "pruned_pairs": 12276640,
           "candidate_reduction_pct": 98.23,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 6913.09,
-          "fusion_ms": 525.75,
-          "graph_assembly_ms": 732.02,
-          "total_pipeline_ms": 8170.89,
-          "peak_memory_mb": 29.41,
+          "candidate_gen_ms": 6324.25,
+          "fusion_ms": 521.27,
+          "graph_assembly_ms": 752.0,
+          "total_pipeline_ms": 7597.55,
+          "peak_memory_mb": 29.45,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 11613790,
             "simultaneous_different_cameras": 0,
@@ -968,11 +1639,11 @@
           "pruned_pairs": 49549140,
           "candidate_reduction_pct": 99.11,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 12089.82,
-          "fusion_ms": 523.89,
-          "graph_assembly_ms": 1226.52,
-          "total_pipeline_ms": 13840.47,
-          "peak_memory_mb": 54.23,
+          "candidate_gen_ms": 13053.52,
+          "fusion_ms": 521.0,
+          "graph_assembly_ms": 1223.82,
+          "total_pipeline_ms": 14798.4,
+          "peak_memory_mb": 54.24,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 48211290,
             "simultaneous_different_cameras": 0,
@@ -1338,7 +2009,7 @@
           ],
           "actual_state": "CONFIRMED",
           "score": 0.955,
-          "explanation": "Estimated match probability is 0.95: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.95: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
           "passed": true,
           "input": "OCR 1-character OCR noise (Soft penalty) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
@@ -1370,7 +2041,7 @@
           ],
           "actual_state": "CONFIRMED",
           "score": 1.0,
-          "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
           "passed": true,
           "input": "Missing OCR (Neutral fallback) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
@@ -1385,7 +2056,7 @@
           ],
           "actual_state": "CONFIRMED",
           "score": 1.0,
-          "explanation": "Estimated match probability is 1.00: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 1.00: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
           "passed": true,
           "input": "Missing OSNet (Plate fallback) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED']",
@@ -1400,7 +2071,7 @@
           ],
           "actual_state": "AMBIGUOUS",
           "score": 0.5,
-          "explanation": "Estimated match probability is 0.50: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.50: Appearance evidence unavailable, vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
           "passed": true,
           "input": "Corrupted OSNet (NaN vectors safely neutral) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['AMBIGUOUS']",
@@ -1445,7 +2116,7 @@
           ],
           "actual_state": "AMBIGUOUS",
           "score": 0.7,
-          "explanation": "Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).",
           "passed": true,
           "input": "Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['AMBIGUOUS']",
@@ -1461,7 +2132,7 @@
           ],
           "actual_state": "REJECTED",
           "score": 0.0,
-          "explanation": "Estimated match probability is 0.00: Appearance similarity is 0.00 (low), vehicle types are compatible (car vs car).",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.00: Appearance similarity is 0.00 (low), vehicle types are compatible (car vs car).",
           "passed": true,
           "input": "Tracker ID switch (Severe visual drift) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['REJECTED', 'AMBIGUOUS']",
@@ -1508,7 +2179,7 @@
           ],
           "actual_state": "AMBIGUOUS",
           "score": 0.575,
-          "explanation": "Estimated match probability is 0.57: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 43.1 km/h over 359.4m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.57: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 43.1 km/h over 359.4m in 30.0s.",
           "passed": true,
           "input": "Low camera reliability (Attenuated weight) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED', 'AMBIGUOUS']",
@@ -1539,7 +2210,7 @@
           ],
           "actual_state": "CONFIRMED",
           "score": 1.0,
-          "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 2488.8m in 180.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 2488.8m in 180.0s.",
           "passed": true,
           "input": "Missing camera corridor transition (Zero fabricated sightings) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED']",
@@ -1555,7 +2226,7 @@
           ],
           "actual_state": "AMBIGUOUS",
           "score": 0.73,
-          "explanation": "Estimated match probability is 0.73: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
+          "explanation": "Estimated match probability is not reported; estimated match score is 0.73: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), required travel speed is 49.8 km/h over 414.8m in 30.0s.",
           "passed": true,
           "input": "Partial plate matching (Truncated suffix under uncertainty) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['AMBIGUOUS', 'CONFIRMED']",
@@ -1585,7 +2256,7 @@
           ],
           "actual_state": "CONFIRMED",
           "score": 1.0,
-          "explanation": "Estimated match probability is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car).",
+          "explanation": "Estimated match probability is not reported; estimated match score is 1.00: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car).",
           "passed": true,
           "input": "Repeated route loop (Same vehicle re-entry after plausible circuit) scenario with synthetic observations.",
           "expected_behavior": "Decision state in ['CONFIRMED']",
@@ -1617,7 +2288,7 @@
     },
     "stage_11b_system_health": {
       "overall_status": "HEALTHY",
-      "preflight_duration_ms": 0.08,
+      "preflight_duration_ms": 0.09,
       "environment": {
         "status": "PASS",
         "python_version": "3.13.5",
@@ -1631,7 +2302,7 @@
         "camera_feeds": {
           "CAM_001": {
             "classification": "REAL",
-            "source_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/member1_perception/cam_001",
+            "source_path": "/Users/yanalavivekreddy/Downloads/urbanTrackAI-member-2 2/data/member1_perception/cam_001",
             "exists": true,
             "readable": true,
             "status": "READY"
@@ -1653,12 +2324,12 @@
   "acceptance_gates": {
     "GATE_01_all_tests_pass": {
       "status": "PASS",
-      "metric": "377/377 tests passing",
+      "metric": "381/381 tests passing",
       "threshold": "100% pass (0 failures, 0 errors, >= 356 tests)",
       "dataset": "Full test suite (tests/test_*.py)",
-      "source_result": "unittest.TextTestRunner (Ran 377 tests in 38.381s)",
+      "source_result": "unittest.TextTestRunner (Ran 381 tests in 40.622s)",
       "reason_for_threshold": "Zero regression policy across all Member 2 units and integrations",
-      "details": "377/377 unit and integration tests passing cleanly (0 errors, 0 failures)"
+      "details": "381/381 unit and integration tests passing cleanly (0 errors, 0 failures)"
     },
     "GATE_02_raw_manifest_verified": {
       "status": "PASS",
@@ -1734,12 +2405,12 @@
     },
     "GATE_10_scalability_fair_downstream_comparison": {
       "status": "PASS",
-      "metric": "N=500 -> Speedup: 6.82x (85.3% reduction, 100.0% recall)",
+      "metric": "N=500 -> Speedup: 5.82x (85.3% reduction, 100.0% recall)",
       "threshold": ">= 2.0x speedup with >= 99.0% candidate recall and zero duplicated fusion",
       "dataset": "Synthetic scalability benchmark (N=50..500)",
-      "source_result": "benchmark_end_to_end_scalability (Base=6643.34ms, Opt=974.08ms)",
+      "source_result": "benchmark_end_to_end_scalability (Base=6591.27ms, Opt=1132.26ms)",
       "reason_for_threshold": "Methodological correctness: downstream fusion and graph logic executed exactly once",
-      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.82x measured speedup"
+      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 5.82x measured speedup"
     },
     "GATE_11_degradation_metrics_dynamic": {
       "status": "PASS",
@@ -1773,7 +2444,7 @@
       "metric": "ADV_10 actual state: AMBIGUOUS (expected ['AMBIGUOUS'])",
       "threshold": "Strict AMBIGUOUS resolution via general temporal proximity/fragmentation reasoning",
       "dataset": "inference/adversarial_suite.py (ADV_10)",
-      "source_result": "run_adversarial_suite: {'id': 'ADV_10', 'name': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94)', 'expected_state': ['AMBIGUOUS'], 'actual_state': 'AMBIGUOUS', 'score': 0.7, 'explanation': 'Estimated match probability is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).', 'passed': True, 'input': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.', 'expected_behavior': \"Decision state in ['AMBIGUOUS']\", 'actual_behavior': 'AMBIGUOUS (score: 0.7000)', 'pass_fail': 'PASS'}",
+      "source_result": "run_adversarial_suite: {'id': 'ADV_10', 'name': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94)', 'expected_state': ['AMBIGUOUS'], 'actual_state': 'AMBIGUOUS', 'score': 0.7, 'explanation': 'Estimated match probability is not reported; estimated match score is 0.70: Appearance similarity is 1.00 (high), vehicle types are compatible (car vs car), conflicting tracker evidence on camera CAM_001 (65 vs 94 within 0.33s).', 'passed': True, 'input': 'Tracker fragmentation with temporal overlap (Tracks 65 & 94) scenario with synthetic observations.', 'expected_behavior': \"Decision state in ['AMBIGUOUS']\", 'actual_behavior': 'AMBIGUOUS (score: 0.7000)', 'pass_fail': 'PASS'}",
       "reason_for_threshold": "Generalization integrity: tracker fragmentation must not produce false confirmed links",
       "details": "Handled purely via temporal overlap / tracker fragmentation contradiction logic (0 hardcoded IDs)"
     },
@@ -1824,12 +2495,21 @@
     },
     "GATE_20_clean_environment_reproduction": {
       "status": "PASS",
-      "metric": "16/16 stages executed cleanly",
+      "metric": "18/18 stages executed cleanly",
       "threshold": "All stages execute and pass without unhandled errors",
       "dataset": "End-to-end repository reproduction suite",
       "source_result": "0 failed stages",
       "reason_for_threshold": "Full reproducibility requirement",
-      "details": "All 16 reproduction stages execute cleanly from pristine repository state"
+      "details": "All 18 reproduction stages execute cleanly from pristine repository state"
+    },
+    "GATE_21_cityflowv2_native_evaluation": {
+      "status": "PASS",
+      "metric": "98180 native frame observations, 1301 tracklets, 0.0000 pair F1",
+      "threshold": "Native CityFlowV2 files load; ground truth remains evaluation-only",
+      "dataset": "AI City Challenge 2022 CityFlowV2 train/S01",
+      "source_result": "inference.cityflow_evaluation.run_cityflow_s01_evaluation",
+      "reason_for_threshold": "Prevent claims based on synthetic-only or leaked labels",
+      "details": "Official MOT/MTSC input evaluated with separate GT box matching; no GT identity enters Observation or fusion."
     }
   },
   "technical_evidence_matrix": {
@@ -1853,7 +2533,7 @@
       ],
       "empirical_findings": "OSNet 512-D L2-normalized embeddings, Jaro-Winkler plate similarity, kinematic bounds, multi-hypothesis trajectory inference.",
       "strengths": "Physical speed contradiction vetoes high appearance matches; multi-hypothesis Dijkstra trajectory handles unobserved corridors.",
-      "limitations": "Heuristic fusion weights are empirically tuned on Dev set; probabilistic calibration curves require multi-camera ground truth."
+      "limitations": "Heuristic fusion weights remain operating-policy choices; calibration is fitted on independent multicamera pair labels and remains limited by benchmark distribution."
     },
     "3_data_integrity_semantic_correctness": {
       "weight": "10%",
@@ -1871,7 +2551,7 @@
         "inference/observation_loader.py",
         "data/member1_perception/cam_001/manifest.json"
       ],
-      "empirical_findings": "39 tracklets, 4,821 YOLOv8 detections, 39x512-D OSNet embeddings, 7 OCR reads from CAM_001 4K video stream.",
+      "empirical_findings": "39 tracklets, 4,821 detector observations, 39x512-D OSNet embeddings, 7 observations with OCR plate evidence from CAM_001.",
       "strengths": "100% cryptographic SHA-256 byte verification; honest single-camera validation boundary explicitly declared.",
       "limitations": "Real CAM_001 data has no cross-camera ground truth pairs; cross-camera Re-ID is evaluated on controlled benchmarks."
     },
@@ -1901,7 +2581,7 @@
       "evidence_files": [
         "inference/candidate_generation.py"
       ],
-      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.82x without duplicated fusion.",
+      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 5.82x without duplicated fusion.",
       "strengths": "Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls.",
       "limitations": "Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types."
     },
@@ -1911,14 +2591,14 @@
         "scripts/reproduce_all.py",
         "reports/generated/final_technical_audit.md"
       ],
-      "empirical_findings": "Single command reproduction; all 377 tests passing; 20 dynamic acceptance gates; relative portable paths.",
+      "empirical_findings": "Single command reproduction; all 381 tests passing; 20 dynamic acceptance gates; relative portable paths.",
       "strengths": "Zero hardcoded scores; fact-based reporting directly from execution; pristine clean-state reproducibility.",
       "limitations": "None in reproduction scope; fully self-contained in standard Python 3.9+ without GPU dependency."
     }
   },
   "summary": {
-    "timestamp": "2026-09-17T05:01:32.422579+00:00",
-    "git_commit": "4a3158df503d885cbed2851f0a02404495e8154f",
+    "timestamp": "2026-09-17T09:04:57.012166+00:00",
+    "git_commit": "UNKNOWN_COMMIT",
     "dataset_identifier": "multicamera_v1 + REAL_MEMBER1_CAM_001",
     "benchmark_configuration": {
       "threshold": 0.75,
@@ -2127,12 +2807,12 @@
       "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
     },
     "latency_seconds": {
-      "total": 101.65,
-      "candidate_generation": 1.5,
-      "fusion": 14.059,
-      "graph_assembly": 0.318
+      "total": 135.25,
+      "candidate_generation": 1.483,
+      "fusion": 12.012,
+      "graph_assembly": 0.461
     },
-    "peak_memory_mb": 54.23,
-    "test_count": 377
+    "peak_memory_mb": 54.24,
+    "test_count": 381
   }
 }

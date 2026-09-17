@@ -2,6 +2,7 @@
 Spatial feasibility and required travel speed calculation for vehicle observation pairs.
 """
 
+import math
 from typing import Any, Dict, Optional, Union
 
 from schemas.observation_schema import Observation
@@ -51,28 +52,46 @@ def spatial_feasibility(
     cam_a = str(getattr(obs_a, "camera_id", obs_a.get("camera_id") if isinstance(obs_a, dict) else ""))
     cam_b = str(getattr(obs_b, "camera_id", obs_b.get("camera_id") if isinstance(obs_b, dict) else ""))
 
+    world_a = getattr(obs_a, "world_position", obs_a.get("world_position") if isinstance(obs_a, dict) else None)
+    world_b = getattr(obs_b, "world_position", obs_b.get("world_position") if isinstance(obs_b, dict) else None)
+    world_sys_a = getattr(obs_a, "world_coordinate_system", obs_a.get("world_coordinate_system") if isinstance(obs_a, dict) else None)
+    world_sys_b = getattr(obs_b, "world_coordinate_system", obs_b.get("world_coordinate_system") if isinstance(obs_b, dict) else None)
+    has_native_world = (
+        isinstance(world_a, (list, tuple)) and len(world_a) == 2
+        and isinstance(world_b, (list, tuple)) and len(world_b) == 2
+        and world_sys_a is not None and world_sys_a == world_sys_b
+    )
+
+    if has_native_world:
+        distance_fn = lambda: math.hypot(float(world_a[0]) - float(world_b[0]), float(world_a[1]) - float(world_b[1]))
+        distance_source = f"native_world_coordinates:{world_sys_a}"
+    else:
+        distance_fn = lambda: geographic_distance(float(lat_a), float(lon_a), float(lat_b), float(lon_b))
+        distance_source = "geographic_coordinates"
+
     # Check if geographic coordinates exist
-    if lat_a is None or lon_a is None or lat_b is None or lon_b is None:
+    if not has_native_world and (lat_a is None or lon_a is None or lat_b is None or lon_b is None):
         return {
             "feasibility_score": 0.5,
             "distance_meters": 0.0,
             "required_speed_kmh": None,
             "status": "coordinates_unavailable",
-            "explanation": "Geographic coordinates unavailable for spatial evaluation.",
+            "explanation": "No common native world coordinates or geographic coordinates are available for spatial evaluation.",
         }
 
     # Same camera shortcut
     if cam_a and cam_b and cam_a == cam_b:
-        dist = geographic_distance(float(lat_a), float(lon_a), float(lat_b), float(lon_b))
+        dist = distance_fn()
         return {
             "feasibility_score": 1.0,
             "distance_meters": dist,
             "required_speed_kmh": 0.0,
             "status": "same_camera",
-            "explanation": f"Observations at same camera ({cam_a}). Distance: {dist:.1f}m.",
+            "coordinate_source": distance_source,
+            "explanation": f"Observations at same camera ({cam_a}). Distance: {dist:.1f}m from {distance_source}.",
         }
 
-    dist_meters = geographic_distance(float(lat_a), float(lon_a), float(lat_b), float(lon_b))
+    dist_meters = distance_fn()
 
     # Check temporal comparability
     comp = check_temporal_comparability(obs_a, obs_b, camera_metadata=camera_metadata)
@@ -83,8 +102,9 @@ def spatial_feasibility(
                 "feasibility_score": 0.0,
                 "distance_meters": dist_meters,
                 "required_speed_kmh": float("inf"),
-                "status": "impossible_speed",
-                "explanation": f"Distance of {dist_meters:.1f}m cannot be traversed in negative time ({comp['reason']}).",
+            "status": "impossible_speed",
+            "explanation": f"Distance of {dist_meters:.1f}m cannot be traversed in negative time ({comp['reason']}).",
+            "coordinate_source": distance_source,
                 "temporal_evidence": comp,
             }
         # Temporal evidence unavailable: DO NOT divide by fake delta_t or mark impossible_speed
@@ -94,6 +114,7 @@ def spatial_feasibility(
             "required_speed_kmh": None,
             "status": "temporal_evidence_unavailable",
             "explanation": f"Distance of {dist_meters:.1f}m measured, but cross-camera temporal evidence is unavailable ({comp['reason']}).",
+            "coordinate_source": distance_source,
             "temporal_evidence": comp,
         }
 
@@ -107,6 +128,7 @@ def spatial_feasibility(
                 "required_speed_kmh": float("inf"),
                 "status": "impossible_speed",
                 "explanation": f"Distance of {dist_meters:.1f}m cannot be traversed in 0.0s (infinite speed required).",
+                "coordinate_source": distance_source,
                 "temporal_evidence": comp,
             }
         return {
@@ -115,6 +137,7 @@ def spatial_feasibility(
             "required_speed_kmh": 0.0,
             "status": "same_location_same_instant",
             "explanation": "Simultaneous observation at identical coordinates.",
+            "coordinate_source": distance_source,
             "temporal_evidence": comp,
         }
 
@@ -132,6 +155,7 @@ def spatial_feasibility(
                 f"Required travel speed of {speed_kmh:.1f} km/h exceeds maximum plausible limit "
                 f"({max_plausible_speed_kmh:.1f} km/h)."
             ),
+            "coordinate_source": distance_source,
             "temporal_evidence": comp,
         }
 
@@ -150,6 +174,6 @@ def spatial_feasibility(
         "required_speed_kmh": speed_kmh,
         "status": "plausible_speed",
         "explanation": f"Plausible required speed of {speed_kmh:.1f} km/h over {dist_meters:.1f}m in {delta_t:.1f}s.",
+        "coordinate_source": distance_source,
         "temporal_evidence": comp,
     }
-

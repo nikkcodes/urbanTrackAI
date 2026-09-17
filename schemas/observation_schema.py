@@ -112,6 +112,15 @@ class Observation:
     clock_offset_seconds: Optional[float] = None
     time_uncertainty_seconds: Optional[float] = None
     source_provenance: Optional[Dict[str, Any]] = None
+    source_dataset: Optional[str] = None
+    source_video: Optional[str] = None
+    frame_number: Optional[int] = None
+    local_track_id: Optional[str] = None
+    vehicle_class: Optional[str] = None
+    embedding_model: Optional[str] = None
+    world_position: Optional[List[float]] = None
+    world_coordinate_system: Optional[str] = None
+    data_quality_flags: List[str] = field(default_factory=list)
 
     @property
     def coordinate_system(self) -> str:
@@ -152,6 +161,15 @@ class Observation:
         clock_offset_seconds: Optional[float] = None,
         time_uncertainty_seconds: Optional[float] = None,
         source_provenance: Optional[Dict[str, Any]] = None,
+        source_dataset: Optional[str] = None,
+        source_video: Optional[str] = None,
+        frame_number: Optional[int] = None,
+        local_track_id: Optional[str] = None,
+        vehicle_class: Optional[str] = None,
+        embedding_model: Optional[str] = None,
+        world_position: Optional[List[float]] = None,
+        world_coordinate_system: Optional[str] = None,
+        data_quality_flags: Optional[List[str]] = None,
     ) -> None:
         # Handle signature resolution for backwards compatibility
         if camera_id is not None:
@@ -387,6 +405,21 @@ class Observation:
         else:
             self.source_provenance = None
 
+        self.source_dataset = str(source_dataset) if source_dataset is not None else None
+        self.source_video = str(source_video) if source_video is not None else None
+        self.frame_number = int(frame_number) if frame_number is not None else self.frame_id
+        self.local_track_id = str(local_track_id) if local_track_id is not None else self.track_id
+        self.vehicle_class = str(vehicle_class).strip().lower() if vehicle_class is not None else self.vehicle_type
+        self.embedding_model = str(embedding_model) if embedding_model is not None else None
+        if world_position is not None:
+            if not isinstance(world_position, (list, tuple)) or len(world_position) != 2:
+                raise ValueError("world_position must be a list or tuple of 2 numbers [x, y].")
+            self.world_position = [float(p) for p in world_position]
+        else:
+            self.world_position = None
+        self.world_coordinate_system = str(world_coordinate_system) if world_coordinate_system is not None else None
+        self.data_quality_flags = [str(flag) for flag in (data_quality_flags or [])]
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert Observation to dictionary representation."""
         ts_str = self.timestamp.isoformat() if self.timestamp else None
@@ -411,6 +444,21 @@ class Observation:
             "plate_confidence": self.plate_confidence,
             "camera_reliability": self.camera_reliability,
         }
+        for key, value in (
+            ("source_dataset", self.source_dataset),
+            ("source_video", self.source_video),
+            ("frame_number", self.frame_number),
+            ("local_track_id", self.local_track_id),
+            ("vehicle_class", self.vehicle_class),
+            ("embedding_model", self.embedding_model),
+            ("world_coordinate_system", self.world_coordinate_system),
+        ):
+            if value is not None:
+                d[key] = value
+        if self.world_position is not None:
+            d["world_position"] = self.world_position
+        if self.data_quality_flags:
+            d["data_quality_flags"] = list(self.data_quality_flags)
         if self.trajectory_point is not None:
             d["trajectory_point"] = self.trajectory_point
             d["point_type"] = self.point_type
@@ -482,6 +530,15 @@ class Observation:
         time_ref_id = data.get("time_reference_id")
         clock_offset = data.get("clock_offset_seconds")
         time_unc = data.get("time_uncertainty_seconds")
+        source_dataset = data.get("source_dataset")
+        source_video = data.get("source_video")
+        frame_number = data.get("frame_number")
+        local_track_id = data.get("local_track_id")
+        vehicle_class = data.get("vehicle_class")
+        embedding_model = data.get("embedding_model")
+        world_position = data.get("world_position")
+        world_coordinate_system = data.get("world_coordinate_system")
+        data_quality_flags = data.get("data_quality_flags")
 
         return cls(
             observation_id_or_camera_id=data.get("observation_id"),
@@ -516,6 +573,15 @@ class Observation:
             clock_offset_seconds=clock_offset,
             time_uncertainty_seconds=time_unc,
             source_provenance=data.get("source_provenance"),
+            source_dataset=source_dataset,
+            source_video=source_video,
+            frame_number=frame_number,
+            local_track_id=local_track_id,
+            vehicle_class=vehicle_class,
+            embedding_model=embedding_model,
+            world_position=world_position,
+            world_coordinate_system=world_coordinate_system,
+            data_quality_flags=data_quality_flags,
         )
 
     @classmethod

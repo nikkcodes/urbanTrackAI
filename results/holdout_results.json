@@ -1,1 +1,164 @@
-{}
+{
+  "benchmark_name": "train_holdout_generalization",
+  "methodology": "Threshold selected on DEV split, frozen, and evaluated ONCE on HOLDOUT split",
+  "dev_split": {
+    "seed": 42,
+    "dataset_hash": "6925b34a1c0250ec",
+    "num_vehicles": 12,
+    "num_observations": 37,
+    "optimal_threshold": 0.75,
+    "best_dev_f1": 0.9756,
+    "threshold_sweep": [
+      {
+        "threshold": 0.4,
+        "tp": 40,
+        "fp": 53,
+        "tn": 571,
+        "fn": 2,
+        "precision": 0.4301,
+        "recall": 0.9524,
+        "f1_score": 0.5926,
+        "false_merge_rate": 0.0849,
+        "false_split_rate": 0.0476,
+        "clusters_count": 8
+      },
+      {
+        "threshold": 0.45,
+        "tp": 40,
+        "fp": 53,
+        "tn": 571,
+        "fn": 2,
+        "precision": 0.4301,
+        "recall": 0.9524,
+        "f1_score": 0.5926,
+        "false_merge_rate": 0.0849,
+        "false_split_rate": 0.0476,
+        "clusters_count": 8
+      },
+      {
+        "threshold": 0.5,
+        "tp": 40,
+        "fp": 41,
+        "tn": 583,
+        "fn": 2,
+        "precision": 0.4938,
+        "recall": 0.9524,
+        "f1_score": 0.6504,
+        "false_merge_rate": 0.0657,
+        "false_split_rate": 0.0476,
+        "clusters_count": 9
+      },
+      {
+        "threshold": 0.55,
+        "tp": 40,
+        "fp": 12,
+        "tn": 612,
+        "fn": 2,
+        "precision": 0.7692,
+        "recall": 0.9524,
+        "f1_score": 0.8511,
+        "false_merge_rate": 0.0192,
+        "false_split_rate": 0.0476,
+        "clusters_count": 11
+      },
+      {
+        "threshold": 0.6,
+        "tp": 40,
+        "fp": 12,
+        "tn": 612,
+        "fn": 2,
+        "precision": 0.7692,
+        "recall": 0.9524,
+        "f1_score": 0.8511,
+        "false_merge_rate": 0.0192,
+        "false_split_rate": 0.0476,
+        "clusters_count": 11
+      },
+      {
+        "threshold": 0.65,
+        "tp": 40,
+        "fp": 4,
+        "tn": 620,
+        "fn": 2,
+        "precision": 0.9091,
+        "recall": 0.9524,
+        "f1_score": 0.9302,
+        "false_merge_rate": 0.0064,
+        "false_split_rate": 0.0476,
+        "clusters_count": 12
+      },
+      {
+        "threshold": 0.7,
+        "tp": 40,
+        "fp": 4,
+        "tn": 620,
+        "fn": 2,
+        "precision": 0.9091,
+        "recall": 0.9524,
+        "f1_score": 0.9302,
+        "false_merge_rate": 0.0064,
+        "false_split_rate": 0.0476,
+        "clusters_count": 12
+      },
+      {
+        "threshold": 0.75,
+        "tp": 40,
+        "fp": 0,
+        "tn": 624,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.9524,
+        "f1_score": 0.9756,
+        "false_merge_rate": 0.0,
+        "false_split_rate": 0.0476,
+        "clusters_count": 13
+      },
+      {
+        "threshold": 0.8,
+        "tp": 35,
+        "fp": 0,
+        "tn": 624,
+        "fn": 7,
+        "precision": 1.0,
+        "recall": 0.8333,
+        "f1_score": 0.9091,
+        "false_merge_rate": 0.0,
+        "false_split_rate": 0.1667,
+        "clusters_count": 15
+      },
+      {
+        "threshold": 0.85,
+        "tp": 34,
+        "fp": 0,
+        "tn": 624,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.8095,
+        "f1_score": 0.8947,
+        "false_merge_rate": 0.0,
+        "false_split_rate": 0.1905,
+        "clusters_count": 16
+      }
+    ]
+  },
+  "holdout_split": {
+    "seed": 1337,
+    "dataset_hash": "a2de8016bd4949ff",
+    "num_vehicles": 15,
+    "num_observations": 47,
+    "frozen_evaluation_threshold": 0.75,
+    "metrics": {
+      "threshold": 0.75,
+      "tp": 47,
+      "fp": 4,
+      "tn": 1022,
+      "fn": 8,
+      "precision": 0.9216,
+      "recall": 0.8545,
+      "f1_score": 0.8868,
+      "false_merge_rate": 0.0039,
+      "false_split_rate": 0.1455,
+      "clusters_count": 18
+    }
+  }
+}
