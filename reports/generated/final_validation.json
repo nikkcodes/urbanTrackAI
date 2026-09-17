@@ -1,19 +1,19 @@
 {
   "metadata": {
     "title": "UrbanTrack AI \u2014 Master Reproduction & Technical Hardening Audit",
-    "timestamp": "2026-09-16T16:26:37.330227+00:00",
-    "git_commit": "eb9c7b934ed6cbb24daa084ef39749ee6eb3af39",
+    "timestamp": "2026-09-17T05:01:32.422579+00:00",
+    "git_commit": "4a3158df503d885cbed2851f0a02404495e8154f",
     "system_version": "9.0+ Hardened Prototype",
     "evaluated_by": "Automated Reproduction Suite",
-    "execution_time_seconds": 101.31
+    "execution_time_seconds": 101.65
   },
   "stages": {
     "stage_0_unit_tests": {
-      "tests_run": 374,
+      "tests_run": 377,
       "failures": 0,
       "errors": 0,
-      "passed": 374,
-      "runtime_seconds": 40.814,
+      "passed": 377,
+      "runtime_seconds": 38.381,
       "status": "PASSED"
     },
     "stage_1_raw_integrity": {
@@ -459,10 +459,10 @@
       "candidate_pairs_count": 66556,
       "candidate_reduction_pct": 94.08,
       "candidate_recall_pct": 99.99,
-      "elapsed_total_seconds": 14.576,
-      "elapsed_candidate_gen_seconds": 1.514,
-      "elapsed_fusion_seconds": 12.724,
-      "elapsed_graph_seconds": 0.307,
+      "elapsed_total_seconds": 15.907,
+      "elapsed_candidate_gen_seconds": 1.5,
+      "elapsed_fusion_seconds": 14.059,
+      "elapsed_graph_seconds": 0.318,
       "threshold_used": 0.75,
       "tp": 5814,
       "fp": 163,
@@ -721,7 +721,7 @@
     },
     "stage_8_candidate_scaling": {
       "benchmark_name": "candidate_generation_scaling",
-      "timestamp": "2026-09-16T21:57:35.833422",
+      "timestamp": "2026-09-17T10:32:29.641924",
       "evaluations": [
         {
           "n_observations": 50,
@@ -731,8 +731,8 @@
           "reduction_pct": 76.49,
           "candidate_recall_pct": 100.0,
           "naive_enumeration_ms": 0.05,
-          "indexed_retrieval_ms": 1.37,
-          "speedup_factor": 0.04
+          "indexed_retrieval_ms": 2.15,
+          "speedup_factor": 0.02
         },
         {
           "n_observations": 100,
@@ -741,8 +741,8 @@
           "pruned_pairs": 3750,
           "reduction_pct": 75.76,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 0.28,
-          "indexed_retrieval_ms": 5.32,
+          "naive_enumeration_ms": 0.25,
+          "indexed_retrieval_ms": 5.37,
           "speedup_factor": 0.05
         },
         {
@@ -752,9 +752,9 @@
           "pruned_pairs": 15312,
           "reduction_pct": 76.94,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 5.76,
-          "indexed_retrieval_ms": 20.02,
-          "speedup_factor": 0.29
+          "naive_enumeration_ms": 5.03,
+          "indexed_retrieval_ms": 20.22,
+          "speedup_factor": 0.25
         },
         {
           "n_observations": 500,
@@ -763,8 +763,8 @@
           "pruned_pairs": 109062,
           "reduction_pct": 87.42,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 7.28,
-          "indexed_retrieval_ms": 67.52,
+          "naive_enumeration_ms": 7.3,
+          "indexed_retrieval_ms": 67.75,
           "speedup_factor": 0.11
         },
         {
@@ -774,16 +774,16 @@
           "pruned_pairs": 465312,
           "reduction_pct": 93.16,
           "candidate_recall_pct": 100.0,
-          "naive_enumeration_ms": 49.97,
-          "indexed_retrieval_ms": 146.26,
-          "speedup_factor": 0.34
+          "naive_enumeration_ms": 51.46,
+          "indexed_retrieval_ms": 146.17,
+          "speedup_factor": 0.35
         }
       ]
     },
     "stage_8b_fair_end_to_end_scalability": {
       "benchmark_name": "fair_end_to_end_scalability_benchmark",
       "repetitions": 2,
-      "timestamp": "2026-09-16T21:57:54.412128",
+      "timestamp": "2026-09-17T10:32:47.941221",
       "evaluations": [
         {
           "n_observations": 50,
@@ -799,23 +799,23 @@
           "recall": 0.0769,
           "f1": 0.1429,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 50.63,
-            "total_runtime_p95_ms": 51.29,
-            "fusion_runtime_median_ms": 49.12,
-            "graph_runtime_median_ms": 1.44,
+            "total_runtime_median_ms": 49.99,
+            "total_runtime_p95_ms": 50.51,
+            "fusion_runtime_median_ms": 48.5,
+            "graph_runtime_median_ms": 1.41,
             "fused_pairs_count": 1225,
             "final_edges": 1
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 15.66,
-            "total_runtime_p95_ms": 16.57,
-            "candidate_gen_median_ms": 1.31,
-            "fusion_runtime_median_ms": 13.82,
-            "graph_runtime_median_ms": 0.54,
+            "total_runtime_median_ms": 15.73,
+            "total_runtime_p95_ms": 16.63,
+            "candidate_gen_median_ms": 1.3,
+            "fusion_runtime_median_ms": 13.9,
+            "graph_runtime_median_ms": 0.53,
             "fused_pairs_count": 288,
             "final_edges": 1
           },
-          "speedup_factor": 3.23
+          "speedup_factor": 3.18
         },
         {
           "n_observations": 100,
@@ -831,23 +831,23 @@
           "recall": 0.0128,
           "f1": 0.0244,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 204.47,
-            "total_runtime_p95_ms": 209.39,
-            "fusion_runtime_median_ms": 198.2,
-            "graph_runtime_median_ms": 6.0,
+            "total_runtime_median_ms": 204.55,
+            "total_runtime_p95_ms": 209.69,
+            "fusion_runtime_median_ms": 198.0,
+            "graph_runtime_median_ms": 6.31,
             "fused_pairs_count": 4950,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 65.19,
-            "total_runtime_p95_ms": 73.62,
-            "candidate_gen_median_ms": 5.18,
-            "fusion_runtime_median_ms": 58.12,
-            "graph_runtime_median_ms": 1.89,
+            "total_runtime_median_ms": 64.9,
+            "total_runtime_p95_ms": 73.42,
+            "candidate_gen_median_ms": 5.16,
+            "fusion_runtime_median_ms": 57.76,
+            "graph_runtime_median_ms": 1.99,
             "fused_pairs_count": 1200,
             "final_edges": 4
           },
-          "speedup_factor": 3.14
+          "speedup_factor": 3.15
         },
         {
           "n_observations": 200,
@@ -863,23 +863,23 @@
           "recall": 0.0079,
           "f1": 0.0157,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 929.32,
-            "total_runtime_p95_ms": 981.38,
-            "fusion_runtime_median_ms": 909.14,
-            "graph_runtime_median_ms": 18.92,
+            "total_runtime_median_ms": 938.98,
+            "total_runtime_p95_ms": 984.79,
+            "fusion_runtime_median_ms": 917.96,
+            "graph_runtime_median_ms": 19.73,
             "fused_pairs_count": 19900,
             "final_edges": 4
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 241.29,
-            "total_runtime_p95_ms": 253.94,
-            "candidate_gen_median_ms": 20.72,
-            "fusion_runtime_median_ms": 213.8,
-            "graph_runtime_median_ms": 6.76,
+            "total_runtime_median_ms": 239.84,
+            "total_runtime_p95_ms": 253.12,
+            "candidate_gen_median_ms": 20.74,
+            "fusion_runtime_median_ms": 212.05,
+            "graph_runtime_median_ms": 7.04,
             "fused_pairs_count": 4860,
             "final_edges": 4
           },
-          "speedup_factor": 3.85
+          "speedup_factor": 3.92
         },
         {
           "n_observations": 500,
@@ -895,29 +895,29 @@
           "recall": 0.007,
           "f1": 0.0138,
           "baseline_pipeline": {
-            "total_runtime_median_ms": 6792.88,
-            "total_runtime_p95_ms": 7673.98,
-            "fusion_runtime_median_ms": 6514.71,
-            "graph_runtime_median_ms": 126.05,
+            "total_runtime_median_ms": 6643.34,
+            "total_runtime_p95_ms": 7457.4,
+            "fusion_runtime_median_ms": 6388.88,
+            "graph_runtime_median_ms": 122.92,
             "fused_pairs_count": 124750,
             "final_edges": 30
           },
           "optimized_pipeline": {
-            "total_runtime_median_ms": 971.78,
-            "total_runtime_p95_ms": 1069.48,
-            "candidate_gen_median_ms": 77.99,
-            "fusion_runtime_median_ms": 872.01,
-            "graph_runtime_median_ms": 21.77,
+            "total_runtime_median_ms": 974.08,
+            "total_runtime_p95_ms": 1083.13,
+            "candidate_gen_median_ms": 77.61,
+            "fusion_runtime_median_ms": 873.49,
+            "graph_runtime_median_ms": 22.97,
             "fused_pairs_count": 18360,
             "final_edges": 19
           },
-          "speedup_factor": 6.99
+          "speedup_factor": 6.82
         }
       ]
     },
     "stage_8c_large_scale_candidate_pipeline": {
       "benchmark_name": "large_scale_candidate_pipeline_benchmark",
-      "timestamp": "2026-09-16T21:58:17.147106",
+      "timestamp": "2026-09-17T10:33:12.598456",
       "evaluations": [
         {
           "n_observations": 1000,
@@ -926,10 +926,10 @@
           "pruned_pairs": 458640,
           "candidate_reduction_pct": 91.82,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 1020.02,
-          "fusion_ms": 518.11,
-          "graph_assembly_ms": 401.64,
-          "total_pipeline_ms": 1940.39,
+          "candidate_gen_ms": 1020.32,
+          "fusion_ms": 543.45,
+          "graph_assembly_ms": 420.71,
+          "total_pipeline_ms": 1984.93,
           "peak_memory_mb": 8.56,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 335790,
@@ -947,10 +947,10 @@
           "pruned_pairs": 12276640,
           "candidate_reduction_pct": 98.23,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 5630.31,
-          "fusion_ms": 525.1,
-          "graph_assembly_ms": 725.89,
-          "total_pipeline_ms": 6881.32,
+          "candidate_gen_ms": 6913.09,
+          "fusion_ms": 525.75,
+          "graph_assembly_ms": 732.02,
+          "total_pipeline_ms": 8170.89,
           "peak_memory_mb": 29.41,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 11613790,
@@ -968,10 +968,10 @@
           "pruned_pairs": 49549140,
           "candidate_reduction_pct": 99.11,
           "candidate_recall_pct": 100.0,
-          "candidate_gen_ms": 11552.89,
-          "fusion_ms": 524.21,
-          "graph_assembly_ms": 1198.43,
-          "total_pipeline_ms": 13275.56,
+          "candidate_gen_ms": 12089.82,
+          "fusion_ms": 523.89,
+          "graph_assembly_ms": 1226.52,
+          "total_pipeline_ms": 13840.47,
           "peak_memory_mb": 54.23,
           "rejection_breakdown": {
             "temporal_horizon_exceeded": 48211290,
@@ -1617,7 +1617,7 @@
     },
     "stage_11b_system_health": {
       "overall_status": "HEALTHY",
-      "preflight_duration_ms": 0.07,
+      "preflight_duration_ms": 0.08,
       "environment": {
         "status": "PASS",
         "python_version": "3.13.5",
@@ -1653,12 +1653,12 @@
   "acceptance_gates": {
     "GATE_01_all_tests_pass": {
       "status": "PASS",
-      "metric": "374/374 tests passing",
+      "metric": "377/377 tests passing",
       "threshold": "100% pass (0 failures, 0 errors, >= 356 tests)",
       "dataset": "Full test suite (tests/test_*.py)",
-      "source_result": "unittest.TextTestRunner (Ran 374 tests in 40.814s)",
+      "source_result": "unittest.TextTestRunner (Ran 377 tests in 38.381s)",
       "reason_for_threshold": "Zero regression policy across all Member 2 units and integrations",
-      "details": "374/374 unit and integration tests passing cleanly (0 errors, 0 failures)"
+      "details": "377/377 unit and integration tests passing cleanly (0 errors, 0 failures)"
     },
     "GATE_02_raw_manifest_verified": {
       "status": "PASS",
@@ -1734,12 +1734,12 @@
     },
     "GATE_10_scalability_fair_downstream_comparison": {
       "status": "PASS",
-      "metric": "N=500 -> Speedup: 6.99x (85.3% reduction, 100.0% recall)",
+      "metric": "N=500 -> Speedup: 6.82x (85.3% reduction, 100.0% recall)",
       "threshold": ">= 2.0x speedup with >= 99.0% candidate recall and zero duplicated fusion",
       "dataset": "Synthetic scalability benchmark (N=50..500)",
-      "source_result": "benchmark_end_to_end_scalability (Base=6792.88ms, Opt=971.78ms)",
+      "source_result": "benchmark_end_to_end_scalability (Base=6643.34ms, Opt=974.08ms)",
       "reason_for_threshold": "Methodological correctness: downstream fusion and graph logic executed exactly once",
-      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.99x measured speedup"
+      "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 6.82x measured speedup"
     },
     "GATE_11_degradation_metrics_dynamic": {
       "status": "PASS",
@@ -1901,7 +1901,7 @@
       "evidence_files": [
         "inference/candidate_generation.py"
       ],
-      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.99x without duplicated fusion.",
+      "empirical_findings": "N=500: Candidate reduction 87.42%, Recall 100.0%, End-to-end speedup 6.82x without duplicated fusion.",
       "strengths": "Bisect-sorted temporal indexing + vehicle-type partitioning + spatial radius filtering significantly reduces expensive fusion calls.",
       "limitations": "Worst-case complexity remains O(N^2) if all observations occur at the same second with identical vehicle types."
     },
@@ -1911,14 +1911,14 @@
         "scripts/reproduce_all.py",
         "reports/generated/final_technical_audit.md"
       ],
-      "empirical_findings": "Single command reproduction; all 374 tests passing; 20 dynamic acceptance gates; relative portable paths.",
+      "empirical_findings": "Single command reproduction; all 377 tests passing; 20 dynamic acceptance gates; relative portable paths.",
       "strengths": "Zero hardcoded scores; fact-based reporting directly from execution; pristine clean-state reproducibility.",
       "limitations": "None in reproduction scope; fully self-contained in standard Python 3.9+ without GPU dependency."
     }
   },
   "summary": {
-    "timestamp": "2026-09-16T16:26:37.330227+00:00",
-    "git_commit": "eb9c7b934ed6cbb24daa084ef39749ee6eb3af39",
+    "timestamp": "2026-09-17T05:01:32.422579+00:00",
+    "git_commit": "4a3158df503d885cbed2851f0a02404495e8154f",
     "dataset_identifier": "multicamera_v1 + REAL_MEMBER1_CAM_001",
     "benchmark_configuration": {
       "threshold": 0.75,
@@ -2127,12 +2127,12 @@
       "ground_truth_context": "Controlled Multi-Camera ReID Evaluation ('multicamera_v1'). Real perception feed ('CAM_001') contains single-camera CCTV data with zero cross-camera ground truth."
     },
     "latency_seconds": {
-      "total": 101.31,
-      "candidate_generation": 1.514,
-      "fusion": 12.724,
-      "graph_assembly": 0.307
+      "total": 101.65,
+      "candidate_generation": 1.5,
+      "fusion": 14.059,
+      "graph_assembly": 0.318
     },
     "peak_memory_mb": 54.23,
-    "test_count": 374
+    "test_count": 377
   }
 }

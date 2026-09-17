@@ -9,6 +9,7 @@ Calculates deterministic and explainable:
 """
 
 from __future__ import annotations
+from dataclasses import dataclass, field
 
 import math
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -735,3 +736,176 @@ def propagate_trajectory_uncertainty(
         sources_of_uncertainty=sources_of_uncertainty,
         explanation=explanation,
     )
+
+
+# =============================================================================
+# DYNAMIC TIME-DEPENDENT CAMERA RELIABILITY TRACKER R(c, t)
+# =============================================================================
+
+@dataclass
+class DynamicCameraReliabilitySnapshot:
+    """Point-in-time reliability evaluation for camera c at timestamp t."""
+    camera_id: str
+    timestamp_seconds: float
+    reliability: Optional[float]
+    status: str
+    detection_quality: Optional[float]
+    ocr_quality: Optional[float]
+    tracking_stability: Optional[float]
+    observation_density: Optional[float]
+    sample_count: int
+    is_smoothed: bool
+    explanation: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "camera_id": self.camera_id,
+            "timestamp_seconds": self.timestamp_seconds,
+            "reliability": round(self.reliability, 4) if self.reliability is not None else None,
+            "status": self.status,
+            "detection_quality": round(self.detection_quality, 4) if self.detection_quality is not None else None,
+            "ocr_quality": round(self.ocr_quality, 4) if self.ocr_quality is not None else None,
+            "tracking_stability": round(self.tracking_stability, 4) if self.tracking_stability is not None else None,
+            "observation_density": round(self.observation_density, 4) if self.observation_density is not None else None,
+            "sample_count": self.sample_count,
+            "is_smoothed": self.is_smoothed,
+            "explanation": self.explanation,
+        }
+
+
+class DynamicCameraReliabilityTracker:
+    """
+    Dynamic, time-dependent camera reliability tracker R(c, t).
+
+    Evaluates camera reliability over temporal sliding windows with exponential smoothing
+    to prevent abrupt frame-to-frame fluctuations while accurately reflecting sensor degradation.
+    """
+
+    def __init__(
+        self,
+        window_size_seconds: float = 30.0,
+        smoothing_alpha: float = 0.35,
+        min_samples_for_evaluation: int = 3,
+    ) -> None:
+        self.window_size_seconds = window_size_seconds
+        self.smoothing_alpha = smoothing_alpha
+        self.min_samples = min_samples_for_evaluation
+        self._history: Dict[str, List[Observation]] = {}
+        self._last_smoothed_reliability: Dict[str, float] = {}
+
+    def add_observations(self, observations: List[Observation]) -> None:
+        """Ingest observations into the temporal history buffer."""
+        for obs in observations:
+            cid = obs.camera_id or "UNKNOWN"
+            if cid not in self._history:
+                self._history[cid] = []
+            self._history[cid].append(obs)
+        # Ensure chronological ordering
+        for cid in self._history:
+            self._history[cid].sort(key=lambda o: o.timestamp_seconds)
+
+    def evaluate_reliability(
+        self,
+        camera_id: str,
+        timestamp_seconds: float,
+    ) -> DynamicCameraReliabilitySnapshot:
+        """
+        Compute R(c, t) in the window [t - window_size, t].
+        """
+        if camera_id not in self._history or not self._history[camera_id]:
+            return DynamicCameraReliabilitySnapshot(
+                camera_id=camera_id,
+                timestamp_seconds=timestamp_seconds,
+                reliability=None,
+                status="no_history",
+                detection_quality=None,
+                ocr_quality=None,
+                tracking_stability=None,
+                observation_density=None,
+                sample_count=0,
+                is_smoothed=False,
+                explanation=f"Camera '{camera_id}' has no recorded observations.",
+            )
+
+        t_start = max(0.0, timestamp_seconds - self.window_size_seconds)
+        t_end = timestamp_seconds
+
+        window_obs = [
+            o for o in self._history[camera_id]
+            if t_start <= o.timestamp_seconds <= t_end
+        ]
+
+        n_samples = len(window_obs)
+        if n_samples < self.min_samples:
+            return DynamicCameraReliabilitySnapshot(
+                camera_id=camera_id,
+                timestamp_seconds=timestamp_seconds,
+                reliability=None,
+                status="insufficient_evidence",
+                detection_quality=None,
+                ocr_quality=None,
+                tracking_stability=None,
+                observation_density=None,
+                sample_count=n_samples,
+                is_smoothed=False,
+                explanation=(
+                    f"Camera '{camera_id}' at t={timestamp_seconds:.1f}s has only {n_samples} "
+                    f"observation(s) in window [{t_start:.1f}s, {t_end:.1f}s] (< min {self.min_samples})."
+                ),
+            )
+
+        # 1. Detection Quality
+        det_confs = [o.detection_confidence for o in window_obs if o.detection_confidence is not None]
+        det_q = sum(det_confs) / len(det_confs) if det_confs else 0.50
+
+        # 2. OCR Quality
+        ocr_valid = [o for o in window_obs if o.plate_text and len(o.plate_text) >= 4]
+        ocr_rate = len(ocr_valid) / n_samples
+        ocr_confs = [o.ocr_confidence for o in ocr_valid if o.ocr_confidence is not None]
+        mean_ocr_conf = sum(ocr_confs) / len(ocr_confs) if ocr_confs else (0.80 if ocr_valid else 0.0)
+        ocr_q = (0.5 * ocr_rate + 0.5 * mean_ocr_conf) if ocr_valid else 0.50
+
+        # 3. Tracking Stability
+        stable_tracks = [o for o in window_obs if o.local_track_history and len(o.local_track_history) >= 2]
+        has_tracking_info = any(o.local_track_history is not None for o in window_obs)
+        track_q = (len(stable_tracks) / n_samples) if has_tracking_info else 0.80
+
+        # 4. Observation Density (scaled relative to active rate)
+        expected_density = max(1.0, (t_end - t_start) / 10.0)
+        density_q = min(1.0, n_samples / expected_density)
+
+        # Raw window score: transparent weighted combination of empirical components
+        raw_r = 0.40 * det_q + 0.30 * ocr_q + 0.20 * track_q + 0.10 * density_q
+        raw_r = max(0.0, min(1.0, raw_r))
+
+        # Temporal Exponential Smoothing
+        prev_r = self._last_smoothed_reliability.get(camera_id)
+        if prev_r is not None:
+            smoothed_r = self.smoothing_alpha * raw_r + (1.0 - self.smoothing_alpha) * prev_r
+            is_smoothed = True
+        else:
+            smoothed_r = raw_r
+            is_smoothed = False
+
+        self._last_smoothed_reliability[camera_id] = smoothed_r
+
+        explanation = (
+            f"Camera '{camera_id}' reliability at t={timestamp_seconds:.1f}s is {smoothed_r:.2f} "
+            f"(detection: {det_q:.2f}, OCR: {ocr_q:.2f}, tracking: {track_q:.2f}, density: {density_q:.2f}, "
+            f"{n_samples} samples in {self.window_size_seconds:.0f}s window, "
+            f"smoothed: {is_smoothed})."
+        )
+
+        return DynamicCameraReliabilitySnapshot(
+            camera_id=camera_id,
+            timestamp_seconds=timestamp_seconds,
+            reliability=smoothed_r,
+            status="healthy" if smoothed_r >= 0.70 else ("degraded" if smoothed_r >= 0.40 else "critical"),
+            detection_quality=det_q,
+            ocr_quality=ocr_q,
+            tracking_stability=track_q,
+            observation_density=density_q,
+            sample_count=n_samples,
+            is_smoothed=is_smoothed,
+            explanation=explanation,
+        )

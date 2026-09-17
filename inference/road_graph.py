@@ -420,3 +420,178 @@ class RoadGraph:
             "edges": [e.to_dict() for e in self.edges.values()],
             "camera_associations": self.camera_associations,
         }
+
+
+# =============================================================================
+# UNIFIED SPATIAL WORLD MODEL (WORLDMODEL ABSTRACTION)
+# =============================================================================
+
+@dataclass
+class CameraNode:
+    """Represents a physical camera sensor positioned in the spatial world model."""
+    camera_id: str
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    world_x: Optional[float] = None
+    world_y: Optional[float] = None
+    associated_road_id: Optional[str] = None
+    associated_node_id: Optional[str] = None
+    name: str = ""
+    coordinate_system: str = "EPSG:4326"
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "camera_id": self.camera_id,
+            "name": self.name or self.camera_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "world_x": self.world_x,
+            "world_y": self.world_y,
+            "associated_road_id": self.associated_road_id,
+            "associated_node_id": self.associated_node_id,
+            "coordinate_system": self.coordinate_system,
+            "metadata": self.metadata,
+        }
+
+
+class WorldModel:
+    """
+    Unified Spatial World Model for UrbanTrack AI.
+
+    Key Guarantees:
+    1. Single source of spatial truth: Downstream trajectory inference, candidate generation,
+       and frontend GIS visualization consume the exact same spatial nodes and road graph.
+    2. Coordinate Reference System (CRS) Contract: Explicitly preserves coordinate systems
+       (e.g. EPSG:4326 WGS-84, CityFlow Homography 2D, Local Cartesian Meters) without silent
+       conversion or GPS fabrication.
+    3. Multi-modal topology: Integrates camera sensor nodes, intersection junctions, directed
+       road segments, distances, and speed-limited travel times.
+    """
+
+    def __init__(
+        self,
+        road_graph: Optional[RoadGraph] = None,
+        coordinate_system: str = "EPSG:4326",
+        name: str = "UrbanTrack World Model",
+    ) -> None:
+        self.road_graph: RoadGraph = road_graph or RoadGraph()
+        self.coordinate_system: str = coordinate_system
+        self.name: str = name
+        self.camera_nodes: Dict[str, CameraNode] = {}
+
+    def add_camera(
+        self,
+        camera_id: str,
+        latitude: Optional[float] = None,
+        longitude: Optional[float] = None,
+        world_x: Optional[float] = None,
+        world_y: Optional[float] = None,
+        associated_road_id: Optional[str] = None,
+        associated_node_id: Optional[str] = None,
+        name: str = "",
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> CameraNode:
+        """Register a camera sensor node in the world model."""
+        cam = CameraNode(
+            camera_id=camera_id,
+            latitude=latitude,
+            longitude=longitude,
+            world_x=world_x,
+            world_y=world_y,
+            associated_road_id=associated_road_id,
+            associated_node_id=associated_node_id,
+            name=name or camera_id,
+            coordinate_system=self.coordinate_system,
+            metadata=metadata or {},
+        )
+        self.camera_nodes[camera_id] = cam
+        if associated_node_id:
+            self.road_graph.camera_associations[camera_id] = associated_node_id
+        return cam
+
+    def get_camera(self, camera_id: str) -> Optional[CameraNode]:
+        """Retrieve camera node by ID."""
+        return self.camera_nodes.get(camera_id)
+
+    def _get_associated_node(self, camera_id: str) -> Optional[str]:
+        """Helper to resolve camera_id to associated road node_id."""
+        if camera_id in self.camera_nodes and self.camera_nodes[camera_id].associated_node_id:
+            return self.camera_nodes[camera_id].associated_node_id
+        return self.road_graph.camera_associations.get(camera_id)
+
+    def find_routes_between_cameras(
+        self,
+        camera_a: str,
+        camera_b: str,
+        max_paths: int = 3,
+    ) -> List[Dict[str, Any]]:
+        """Find feasible routes between two cameras via the road network."""
+        node_a = self._get_associated_node(camera_a)
+        node_b = self._get_associated_node(camera_b)
+        if not node_a or not node_b:
+            return []
+        return self.road_graph.find_candidate_paths(node_a, node_b, max_paths=max_paths)
+
+    def estimate_travel_time(
+        self,
+        camera_a: str,
+        camera_b: str,
+        speed_kmh: Optional[float] = None,
+    ) -> Optional[Dict[str, float]]:
+        """Estimate min, expected, and max travel time between cameras."""
+        node_a = self._get_associated_node(camera_a)
+        node_b = self._get_associated_node(camera_b)
+        if not node_a or not node_b:
+            return None
+
+        dist_m = self.road_graph.find_shortest_distance(node_a, node_b)
+        if dist_m is None:
+            return None
+
+        v_exp = (speed_kmh if speed_kmh else 40.0) / 3.6
+        v_max = (speed_kmh * 1.5 if speed_kmh else 80.0) / 3.6
+        v_min = 15.0 / 3.6 # 15 km/h in congestion
+
+        return {
+            "distance_m": dist_m,
+            "expected_seconds": round(dist_m / v_exp, 1),
+            "min_seconds": round(dist_m / v_max, 1),
+            "max_seconds": round(dist_m / v_min, 1),
+        }
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize entire world model to dictionary for frontend/reporting."""
+        return {
+            "name": self.name,
+            "coordinate_system": self.coordinate_system,
+            "cameras": [c.to_dict() for c in self.camera_nodes.values()],
+            "road_network": self.road_graph.to_dict(),
+        }
+
+    def to_json(self, indent: Optional[int] = None) -> str:
+        """Serialize world model to JSON."""
+        return json.dumps(self.to_dict(), indent=indent)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "WorldModel":
+        """Construct WorldModel from serialized dictionary."""
+        coord_sys = str(data.get("coordinate_system", "EPSG:4326"))
+        name = str(data.get("name", "UrbanTrack World Model"))
+        rg_data = data.get("road_network", {})
+        rg = RoadGraph.from_dict(rg_data) if rg_data else RoadGraph()
+
+        wm = cls(road_graph=rg, coordinate_system=coord_sys, name=name)
+        for c in data.get("cameras", []):
+            wm.add_camera(
+                camera_id=str(c["camera_id"]),
+                latitude=c.get("latitude"),
+                longitude=c.get("longitude"),
+                world_x=c.get("world_x"),
+                world_y=c.get("world_y"),
+                associated_road_id=c.get("associated_road_id"),
+                associated_node_id=c.get("associated_node_id"),
+                name=str(c.get("name", c["camera_id"])),
+                metadata=c.get("metadata", {}),
+            )
+        return wm

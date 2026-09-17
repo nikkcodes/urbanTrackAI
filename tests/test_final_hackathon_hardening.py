@@ -21,6 +21,9 @@ from inference.observation_loader import (
     DatasetClassification,
     load_member1_perception_feed,
 )
+from inference.cityflow_adapter import CityFlowV2Adapter, CityFlowCameraConfig
+from inference.reliability_engine import DynamicCameraReliabilityTracker
+from inference.road_graph import WorldModel, CameraNode, RoadGraph, RoadNode, RoadEdge
 from inference.reliability_engine import (
     profile_camera_reliability_from_observations,
     evaluate_camera_reliability,
@@ -222,6 +225,118 @@ class TestFinalHackathonHardening(unittest.TestCase):
         match_q = reid_eval["pairwise_reid_matching"]
         self.assertGreater(match_q["roc_auc"], 0.80)
         self.assertGreater(match_q["same_vehicle_similarity_mean"], match_q["different_vehicle_similarity_mean"])
+
+    def test_cityflow_v2_adapter_and_ground_truth_isolation(self):
+        """Verify CityFlowV2Adapter ingests data and isolates ground-truth identities."""
+        adapter = CityFlowV2Adapter(default_fps=10.0)
+        adapter.register_camera(
+            camera_id="c001",
+            scenario_id="S01",
+            fps=10.0,
+            time_offset_seconds=5.0,
+            homography_matrix=[[1.0, 0.0, 100.0], [0.0, 1.0, 200.0], [0.0, 0.0, 1.0]],
+            coordinate_system="cityflow_world",
+        )
+
+        detections = [
+            {
+                "frame": 10,
+                "track_id": 1,
+                "bbox": [100, 200, 150, 260],
+                "confidence": 0.92,
+                "vehicle_type": "sedan",
+            },
+            {
+                "frame": 20,
+                "track_id": 2,
+                "bbox": [300, 400, 350, 450],
+                "confidence": 0.88,
+                "vehicle_type": "suv",
+            },
+        ]
+        embeddings = {
+            1: [0.5] * 512,
+            2: [0.3] * 512,
+        }
+        gt_records = [
+            {"frame": 10, "track_id": 1, "target_id": 101},
+            {"frame": 20, "track_id": 2, "target_id": 102},
+        ]
+
+        obs_list = adapter.parse_detections_and_embeddings(
+            camera_id="c001",
+            detections_records=detections,
+            embeddings_records=embeddings,
+            ground_truth_records=gt_records,
+        )
+
+        self.assertEqual(len(obs_list), 2)
+        self.assertEqual(obs_list[0].timestamp_seconds, 6.0)
+        self.assertEqual(obs_list[1].timestamp_seconds, 7.0)
+
+        # Verify ground truth IS NOT present in Observation inference fields
+        for obs in obs_list:
+            self.assertFalse(hasattr(obs, "target_id"))
+            self.assertFalse(hasattr(obs, "gt_identity"))
+            self.assertEqual(obs.point_coordinate_system, "cityflow_world")
+            self.assertIsNotNone(obs.trajectory_point)
+
+        # Verify ground truth is accessible strictly through isolated evaluation dictionary
+        obs1_id = obs_list[0].observation_id
+        obs2_id = obs_list[1].observation_id
+        self.assertEqual(adapter.get_ground_truth_identity(obs1_id), 101)
+        self.assertEqual(adapter.get_ground_truth_identity(obs2_id), 102)
+
+    def test_dynamic_camera_reliability_tracker(self):
+        """Verify DynamicCameraReliabilityTracker computes time-dependent R(c, t) with smoothing."""
+        tracker = DynamicCameraReliabilityTracker(window_size_seconds=30.0, smoothing_alpha=0.5, min_samples_for_evaluation=2)
+
+        obs_good = [
+            Observation(observation_id="O1", camera_id="CAM_TEST", timestamp_seconds=10.0, detection_confidence=0.90, plate_text="KA01AB1234", ocr_confidence=0.95),
+            Observation(observation_id="O2", camera_id="CAM_TEST", timestamp_seconds=15.0, detection_confidence=0.88, plate_text="KA01AB1234", ocr_confidence=0.92),
+            Observation(observation_id="O3", camera_id="CAM_TEST", timestamp_seconds=20.0, detection_confidence=0.92, plate_text="KA01AB1234", ocr_confidence=0.90),
+        ]
+        tracker.add_observations(obs_good)
+
+        snap1 = tracker.evaluate_reliability("CAM_TEST", timestamp_seconds=25.0)
+        self.assertEqual(snap1.status, "healthy")
+        self.assertIsNotNone(snap1.reliability)
+        self.assertGreater(snap1.reliability, 0.70)
+        self.assertIn("detection:", snap1.explanation)
+
+        snap_empty = tracker.evaluate_reliability("CAM_UNKNOWN", timestamp_seconds=25.0)
+        self.assertEqual(snap_empty.status, "no_history")
+        self.assertIsNone(snap_empty.reliability)
+
+    def test_world_model_abstraction(self):
+        """Verify WorldModel integrates cameras, road network, and travel time estimation."""
+        rg = RoadGraph()
+        rg.add_node(RoadNode(node_id="N1", latitude=12.9716, longitude=77.5946, name="Junction 1"))
+        rg.add_node(RoadNode(node_id="N2", latitude=12.9750, longitude=77.5990, name="Junction 2"))
+        rg.add_edge(RoadEdge(road_id="R1", from_node="N1", to_node="N2", distance_m=600.0, speed_limit_kmh=60.0))
+
+        wm = WorldModel(road_graph=rg, coordinate_system="EPSG:4326", name="Bangalore Test Corridor")
+        wm.add_camera("CAM_01", latitude=12.9716, longitude=77.5946, associated_node_id="N1")
+        wm.add_camera("CAM_02", latitude=12.9750, longitude=77.5990, associated_node_id="N2")
+
+        cam1 = wm.get_camera("CAM_01")
+        self.assertIsNotNone(cam1)
+        self.assertEqual(cam1.coordinate_system, "EPSG:4326")
+
+        routes = wm.find_routes_between_cameras("CAM_01", "CAM_02")
+        self.assertEqual(len(routes), 1)
+        self.assertEqual(routes[0]["distance_m"], 600.0)
+
+        tt = wm.estimate_travel_time("CAM_01", "CAM_02", speed_kmh=60.0)
+        self.assertIsNotNone(tt)
+        self.assertEqual(tt["distance_m"], 600.0)
+        self.assertEqual(tt["expected_seconds"], 36.0)
+
+        d = wm.to_dict()
+        self.assertEqual(d["name"], "Bangalore Test Corridor")
+        wm_loaded = WorldModel.from_dict(d)
+        self.assertEqual(len(wm_loaded.camera_nodes), 2)
+
 
 
 if __name__ == "__main__":
