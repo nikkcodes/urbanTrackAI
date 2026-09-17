@@ -1,0 +1,11 @@
+{
+  "total_identities": 152,
+  "total_images": 9636,
+  "train_identities": 152,
+  "validation_identities": 0,
+  "skipped_crops": 0,
+  "skipped_small_crops": 0,
+  "identity_namespace": "camera_local",
+  "identity_folder_format": "CAM_Sxx_Cyyy_000007",
+  "generation_timestamp": "2026-09-17T15:13:22.658456+00:00"
+}

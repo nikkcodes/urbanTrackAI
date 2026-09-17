@@ -1,0 +1,14 @@
+{
+    "source_dataset": "data\\output",
+    "generation_timestamp": "2026-09-17T16:36:59.829665+00:00",
+    "degradation_seed": 99,
+    "degraded_frames": 0,
+    "degraded_tracks": 0,
+    "missing_plate_count": 0,
+    "ocr_failure_count": 0,
+    "missing_embedding_count": 0,
+    "occluded_vehicle_count": 0,
+    "fragmented_track_count": 0,
+    "dropped_frame_count": 0,
+    "camera_outage_intervals": []
+}

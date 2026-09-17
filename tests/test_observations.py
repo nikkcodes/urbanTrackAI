@@ -7,8 +7,27 @@ from pathlib import Path
 
 import pytest
 
-OBSERVATIONS_PATH = Path("data/output/CAM_001/observations.json")
-VALID_CAMERA_IDS = {f"CAM_{i:03d}" for i in range(1, 7)}
+from tests.conftest import get_camera_output_dir
+
+
+def _load_valid_camera_ids() -> set[str]:
+    valid = {f"CAM_{i:03d}" for i in range(1, 7)}
+    manifest_path = Path("data/config/aicity_manifest.json")
+    if manifest_path.is_file():
+        try:
+            with manifest_path.open("r", encoding="utf-8") as file:
+                manifest = json.load(file)
+            for cam in manifest.get("cameras", []):
+                if "camera_id" in cam:
+                    valid.add(cam["camera_id"])
+        except Exception:
+            pass
+    valid.add(get_camera_output_dir().name)
+    return valid
+
+
+OBSERVATIONS_PATH = get_camera_output_dir() / "observations.json"
+VALID_CAMERA_IDS = _load_valid_camera_ids()
 REQUIRED_PROVENANCE = (
     "source_video",
     "camera_id",

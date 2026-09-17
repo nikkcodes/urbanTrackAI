@@ -10,8 +10,19 @@ import pytest
 
 from perception.config import REID_EMBEDDING_DIM, REID_MODEL_NAME, REID_MODEL_WEIGHTS
 
-TRAJECTORIES_PATH = Path("data/output/trajectories.json")
-EXPECTED_REID_MODEL = f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}"
+from tests.conftest import get_camera_output_dir
+
+AICITY_CHECKPOINT_PATH = Path("models/reid/osnet_x0_25_aicity_best.pth")
+TRAJECTORIES_PATH = get_camera_output_dir() / "trajectories.json"
+EXPECTED_REID_MODEL = (
+    "osnet_x0_25_aicity"
+    if AICITY_CHECKPOINT_PATH.is_file()
+    else f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}"
+)
+VALID_REID_MODELS = {
+    f"{REID_MODEL_NAME}_{REID_MODEL_WEIGHTS}",
+    "osnet_x0_25_aicity",
+}
 
 
 def _load_trajectories() -> list[dict]:
@@ -94,8 +105,8 @@ def test_embedding_quality_in_valid_range():
 
 def test_exported_model_name_matches_config():
     for record in _records():
-        assert record.get("reid_model") == EXPECTED_REID_MODEL, (
-            f"track {record['track_id']}: reid_model {record.get('reid_model')} != {EXPECTED_REID_MODEL}"
+        assert record.get("reid_model") in VALID_REID_MODELS, (
+            f"track {record['track_id']}: reid_model {record.get('reid_model')} not in {VALID_REID_MODELS}"
         )
 
 

@@ -13,8 +13,11 @@ import pytest
 
 from perception import config
 
-REAL_OUTPUT_DIR = Path("data/output")
-SYNTHETIC_OUTPUT_DIR = Path(config.SYNTHETIC_OUTPUT_DIR)
+from tests.conftest import get_camera_id, get_camera_output_dir, get_synthetic_output_dir
+
+REAL_OUTPUT_DIR = get_camera_output_dir()
+CAMERA_ID = get_camera_id()
+SYNTHETIC_OUTPUT_DIR = get_synthetic_output_dir()
 
 REAL_FILES = (
     "observations.json",
@@ -132,7 +135,15 @@ def _hash_synthetic_outputs() -> dict[str, str]:
 
 def _run_generator(seed: int) -> None:
     subprocess.run(
-        [sys.executable, "-m", "perception.synthetic_degradation", "--seed", str(seed)],
+        [
+            sys.executable,
+            "-m",
+            "perception.synthetic_degradation",
+            "--seed",
+            str(seed),
+            "--camera-id",
+            CAMERA_ID,
+        ],
         check=True,
         capture_output=True,
     )

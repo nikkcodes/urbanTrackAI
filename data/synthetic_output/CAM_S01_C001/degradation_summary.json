@@ -1,0 +1,31 @@
+{
+    "source_dataset": "data\\output\\CAM_S01_C001",
+    "generation_timestamp": "2026-09-17T16:39:18.575682+00:00",
+    "degradation_seed": 99,
+    "degraded_frames": 203,
+    "degraded_tracks": 107,
+    "missing_plate_count": 75,
+    "ocr_failure_count": 0,
+    "missing_embedding_count": 5,
+    "occluded_vehicle_count": 73,
+    "fragmented_track_count": 5,
+    "dropped_frame_count": 4,
+    "camera_outage_intervals": [
+        [
+            28,
+            515
+        ],
+        [
+            540,
+            1027
+        ],
+        [
+            1127,
+            1614
+        ],
+        [
+            1671,
+            1954
+        ]
+    ]
+}
