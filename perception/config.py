@@ -8,6 +8,14 @@ PLATE_CONF_THRESHOLD = 0.40
 OCR_CONF_THRESHOLD = 0.45
 OCR_CACHE_FRAMES = 15
 OCR_RETRY_FRAMES = 10
+# Debug flag for OCR preprocessing statistics (upscaled crops, adaptive
+# thresholding, average crop height). Disabled by default.
+PLATE_OCR_DEBUG = False
+# Debug export of original + preprocessed plate crops to data/debug/ocr_samples/.
+# Diagnostics only: does not change OCR outputs, thresholds, or schemas.
+OCR_DEBUG_EXPORT = False
+# Maximum number of plate crops exported during a single pipeline run.
+OCR_DEBUG_EXPORT_MAX_SAMPLES = 100
 TRACKER_CONFIG = {
     "tracker": "bytetrack.yaml",
     "track_high_thresh": 0.45,

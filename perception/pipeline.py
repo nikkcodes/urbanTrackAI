@@ -86,6 +86,7 @@ class PerceptionPipeline:
         input_path: str | PathLike[str],
         output_path: str | PathLike[str] | None = None,
         camera_id: str | None = None,
+        allow_unknown_camera: bool = False,
     ) -> int:
         """Process a video and save its vehicle detections.
 
@@ -95,16 +96,23 @@ class PerceptionPipeline:
                 is written beside other outputs using the input filename stem.
             camera_id: Camera identifier that must exist in the camera
                 metadata file. Defaults to ``CAMERA_ID`` (CAM_001).
+            allow_unknown_camera: When ``True``, skip the camera-metadata
+                validation so non-prototype cameras (e.g. AI City
+                ``CAM_S01_C001``) can be processed. Defaults to ``False`` to
+                preserve the prototype contract.
 
         Raises:
             OSError: If the input or output video cannot be opened.
             ValueError: If ``camera_id`` is not a known camera in
-                ``data/config/camera_metadata.json``.
+                ``data/config/camera_metadata.json`` and
+                ``allow_unknown_camera`` is ``False``.
 
         Returns:
             The number of processed frames.
         """
-        camera_id = self._resolve_camera_id(camera_id)
+        camera_id = self._resolve_camera_id(
+            camera_id, allow_unknown_camera=allow_unknown_camera
+        )
         input_file = Path(input_path)
         output_dir = self._camera_output_dir(camera_id)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -827,26 +835,35 @@ class PerceptionPipeline:
         return result
 
     @classmethod
-    def _resolve_camera_id(cls, camera_id: str | None) -> str:
+    def _resolve_camera_id(
+        cls,
+        camera_id: str | None,
+        allow_unknown_camera: bool = False,
+    ) -> str:
         """Validate and resolve the requested camera id.
 
         Args:
             camera_id: Requested camera id, or ``None`` for the default.
+            allow_unknown_camera: When ``True``, non-prototype camera ids
+                (e.g. AI City ``CAM_S01_C001``) are accepted without raising.
 
         Returns:
             The resolved camera id.
 
         Raises:
             ValueError: If ``camera_id`` is not present in the camera metadata
-                file. Metadata is never silently created.
+                file and ``allow_unknown_camera`` is ``False``. Metadata is
+                never silently created.
         """
         resolved = camera_id if camera_id else CAMERA_ID
         known = cls._load_camera_metadata()
         if resolved not in known:
-            raise ValueError(
-                f"Unknown camera_id '{resolved}'. Known cameras: "
-                f"{', '.join(sorted(known)) if known else 'none (no metadata file)'}"
-            )
+            if not allow_unknown_camera:
+                raise ValueError(
+                    f"Unknown camera_id '{resolved}'. Known cameras: "
+                    f"{', '.join(sorted(known)) if known else 'none (no metadata file)'}"
+                )
+            # Accept the requested id as-is for non-prototype datasets.
         return resolved
 
     @staticmethod
