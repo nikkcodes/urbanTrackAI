@@ -65,6 +65,30 @@ function MapController({
   return null
 }
 
+function InteractionController({ interactive }: { interactive: boolean }) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (interactive) {
+      map.dragging.enable()
+      map.touchZoom.enable()
+      map.doubleClickZoom.enable()
+      map.scrollWheelZoom.enable()
+      map.boxZoom.enable()
+      map.keyboard.enable()
+    } else {
+      map.dragging.disable()
+      map.touchZoom.disable()
+      map.doubleClickZoom.disable()
+      map.scrollWheelZoom.disable()
+      map.boxZoom.disable()
+      map.keyboard.disable()
+    }
+  }, [map, interactive])
+
+  return null
+}
+
 function roadColor(metric?: TrafficMetric) {
   if (!metric) {
     return '#31586b'
@@ -107,11 +131,8 @@ export default function CityMap({
   fullscreen = false,
   onExitInteraction,
 }: CityMapProps) {
-  const [selectedRoad, setSelectedRoad] =
-    useState<string | null>(null)
-
-  const [selectedTrackId, setSelectedTrackId] =
-    useState<string | null>(null)
+  const [selectedRoad, setSelectedRoad] = useState<string | null>(null)
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
 
   const nodes = useMemo(
     () =>
@@ -183,18 +204,15 @@ export default function CityMap({
     ) / nodes.length,
   ]
 
-  const selectedRoadData =
-    selectedRoad
-      ? network.roads.find(
-          (road) =>
-            road.road_id === selectedRoad,
-        )
-      : undefined
+  const selectedRoadData = selectedRoad
+    ? network.roads.find(
+        (road) => road.road_id === selectedRoad,
+      )
+    : undefined
 
-  const selectedMetric =
-    selectedRoad
-      ? trafficLookup.get(selectedRoad)
-      : undefined
+  const selectedMetric = selectedRoad
+    ? trafficLookup.get(selectedRoad)
+    : undefined
 
   return (
     <div
@@ -205,11 +223,11 @@ export default function CityMap({
       <MapContainer
         center={center}
         zoom={14}
-        scrollWheelZoom={interactive}
-        dragging={interactive}
-        doubleClickZoom={interactive}
-        touchZoom={interactive}
-        keyboard={interactive}
+        scrollWheelZoom={false}
+        dragging={false}
+        doubleClickZoom={false}
+        touchZoom={false}
+        keyboard={false}
         className="leaflet-map"
       >
         <TileLayer
@@ -217,17 +235,12 @@ export default function CityMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <MapController
-          network={network}
-        />
+        <MapController network={network} />
+        <InteractionController interactive={interactive} />
 
-        {/* Base road network */}
         {network.roads.map((road) => {
-          const from =
-            nodeLookup.get(road.from_node)
-
-          const to =
-            nodeLookup.get(road.to_node)
+          const from = nodeLookup.get(road.from_node)
+          const to = nodeLookup.get(road.to_node)
 
           if (
             !from ||
@@ -240,11 +253,8 @@ export default function CityMap({
             return null
           }
 
-          const metric =
-            trafficLookup.get(road.road_id)
-
-          const selected =
-            selectedRoad === road.road_id
+          const metric = trafficLookup.get(road.road_id)
+          const selected = selectedRoad === road.road_id
 
           return (
             <Polyline
@@ -272,48 +282,32 @@ export default function CityMap({
                     ? 0.55
                     : 0.9,
 
-                dashArray:
-                  road.is_closed
-                    ? '8 8'
-                    : undefined,
+                dashArray: road.is_closed
+                  ? '8 8'
+                  : undefined,
               }}
               eventHandlers={{
                 click: () => {
-                  setSelectedRoad(
-                    road.road_id,
-                  )
+                  setSelectedRoad(road.road_id)
                 },
               }}
             >
               <Tooltip sticky>
-                <strong>
-                  {road.road_id}
-                </strong>
-
+                <strong>{road.road_id}</strong>
                 <br />
-
                 {road.from_node}
                 {' → '}
                 {road.to_node}
-
                 <br />
-
                 {road.is_closed ? (
                   'ROAD CLOSED'
                 ) : metric ? (
                   <>
-                    {metric.hourly_flow?.toFixed(
-                      1,
-                    ) ?? '—'}{' '}
-                    veh/h
+                    {metric.hourly_flow?.toFixed(1) ?? '—'} veh/h
                     <br />
                     {metric.congestion_level}
                     <br />
-                    {(
-                      metric.utilization_ratio *
-                      100
-                    ).toFixed(1)}
-                    % utilization
+                    {(metric.utilization_ratio * 100).toFixed(1)}% utilization
                   </>
                 ) : (
                   'Traffic unavailable'
@@ -323,44 +317,31 @@ export default function CityMap({
           )
         })}
 
-        {/* Probabilistic trajectory overlays */}
         {selectedTrajectory?.candidate_routes.map(
           (route, index) => {
             const routePositions = route.nodes
               .map((nodeId) => {
-                const node =
-                  nodeLookup.get(nodeId)
+                const node = nodeLookup.get(nodeId)
 
                 if (
                   !node ||
-                  typeof node.lat !==
-                    'number' ||
-                  typeof node.lon !==
-                    'number'
+                  typeof node.lat !== 'number' ||
+                  typeof node.lon !== 'number'
                 ) {
                   return null
                 }
 
-                return [
-                  node.lat,
-                  node.lon,
-                ] as [number, number]
+                return [node.lat, node.lon] as [number, number]
               })
               .filter(
-                (
-                  point,
-                ): point is [
-                  number,
-                  number,
-                ] => point !== null,
+                (point): point is [number, number] => point !== null,
               )
 
             if (routePositions.length < 2) {
               return null
             }
 
-            const probability =
-              route.probability * 100
+            const probability = route.probability * 100
 
             return (
               <Polyline
@@ -369,44 +350,23 @@ export default function CityMap({
                 pathOptions={{
                   color:
                     trajectoryColors[
-                      index %
-                        trajectoryColors.length
+                      index % trajectoryColors.length
                     ],
-                  weight:
-                    index === 0
-                      ? 7
-                      : 5,
-                  opacity:
-                    Math.max(
-                      0.45,
-                      Math.min(
-                        1,
-                        0.35 +
-                          route.probability,
-                      ),
-                    ),
-                  dashArray:
-                    index === 0
-                      ? undefined
-                      : '10 8',
+                  weight: index === 0 ? 7 : 5,
+                  opacity: Math.max(
+                    0.45,
+                    Math.min(1, 0.35 + route.probability),
+                  ),
+                  dashArray: index === 0 ? undefined : '10 8',
                 }}
               >
                 <Tooltip sticky>
-                  <strong>
-                    {selectedTrajectory.track_id}
-                  </strong>
-
+                  <strong>{selectedTrajectory.track_id}</strong>
                   <br />
-
                   Candidate route {index + 1}
-
                   <br />
-
-                  Probability:{' '}
-                  {probability.toFixed(1)}%
-
+                  Probability: {probability.toFixed(1)}%
                   <br />
-
                   {route.nodes.join(' → ')}
                 </Tooltip>
               </Polyline>
@@ -417,10 +377,7 @@ export default function CityMap({
         {nodes.map((node) => (
           <CircleMarker
             key={node.node_id}
-            center={[
-              node.lat!,
-              node.lon!,
-            ]}
+            center={[node.lat!, node.lon!]}
             radius={7}
             pathOptions={{
               color: '#07141b',
@@ -430,10 +387,7 @@ export default function CityMap({
             }}
           >
             <Tooltip>
-              <strong>
-                {node.node_id}
-              </strong>
-
+              <strong>{node.node_id}</strong>
               {node.name && (
                 <>
                   <br />
@@ -445,25 +399,17 @@ export default function CityMap({
         ))}
       </MapContainer>
 
-      {/* Interaction mode controls */}
       {fullscreen && (
         <div className="map-interaction-overlay">
           <div className="interaction-overlay-title">
             <div>
-              <span>
-                MAP INTERACTION MODE
-              </span>
-
-              <strong>
-                Live Traffic Map
-              </strong>
+              <span>MAP INTERACTION MODE</span>
+              <strong>Live Traffic Map</strong>
             </div>
 
             <button
               className="interaction-exit-button"
-              onClick={
-                onExitInteraction
-              }
+              onClick={onExitInteraction}
             >
               <span>×</span>
               EXIT FULL SCREEN
@@ -471,26 +417,14 @@ export default function CityMap({
           </div>
 
           <div className="interaction-help">
-            <span>
-              SCROLL TO ZOOM
-            </span>
-
-            <span>
-              DRAG TO PAN
-            </span>
-
-            <span>
-              CLICK ROADS FOR DETAILS
-            </span>
-
-            <span>
-              ESC TO EXIT
-            </span>
+            <span>SCROLL TO ZOOM</span>
+            <span>DRAG TO PAN</span>
+            <span>CLICK ROADS FOR DETAILS</span>
+            <span>ESC TO EXIT</span>
           </div>
         </div>
       )}
 
-      {/* Trajectory selector */}
       {trajectories.length > 0 && (
         <div className="trajectory-control">
           <span className="trajectory-control-label">
@@ -501,27 +435,20 @@ export default function CityMap({
             value={selectedTrackId ?? ''}
             onChange={(event) =>
               setSelectedTrackId(
-                event.target.value ||
-                  null,
+                event.target.value || null,
               )
             }
           >
-            <option value="">
-              SELECT VEHICLE
-            </option>
+            <option value="">SELECT VEHICLE</option>
 
-            {trajectories.map(
-              (trajectory) => (
-                <option
-                  key={trajectory.track_id}
-                  value={
-                    trajectory.track_id
-                  }
-                >
-                  {trajectory.track_id}
-                </option>
-              ),
-            )}
+            {trajectories.map((trajectory) => (
+              <option
+                key={trajectory.track_id}
+                value={trajectory.track_id}
+              >
+                {trajectory.track_id}
+              </option>
+            ))}
           </select>
 
           {selectedTrajectory && (
@@ -569,203 +496,147 @@ export default function CityMap({
         <div className="trajectory-panel">
           <div className="trajectory-panel-header">
             <div>
-              <span>
-                PROBABILISTIC TRAJECTORY
-              </span>
-
-              <strong>
-                {selectedTrajectory.track_id}
-              </strong>
+              <span>PROBABILISTIC TRAJECTORY</span>
+              <strong>{selectedTrajectory.track_id}</strong>
             </div>
 
             <button
               className="road-close"
-              onClick={() =>
-                setSelectedTrackId(null)
-              }
+              onClick={() => setSelectedTrackId(null)}
             >
               ×
             </button>
           </div>
 
           <div className="trajectory-route">
-            <span>
-              {selectedTrajectory.origin_node}
-            </span>
-
+            <span>{selectedTrajectory.origin_node}</span>
             <strong>→</strong>
-
-            <span>
-              {selectedTrajectory.destination_node}
-            </span>
+            <span>{selectedTrajectory.destination_node}</span>
           </div>
 
           <div className="trajectory-summary">
             <div>
-              <span>
-                CANDIDATE ROUTES
-              </span>
-
+              <span>CANDIDATE ROUTES</span>
               <strong>
-                {
-                  selectedTrajectory
-                    .candidate_routes
-                    .length
-                }
+                {selectedTrajectory.candidate_routes.length}
               </strong>
             </div>
 
             <div>
-              <span>
-                VEHICLE WEIGHT
-              </span>
-
+              <span>VEHICLE WEIGHT</span>
               <strong>
-                {selectedTrajectory.vehicle_weight.toFixed(
-                  1,
-                )}
+                {selectedTrajectory.vehicle_weight.toFixed(1)}
               </strong>
             </div>
           </div>
 
           <div className="trajectory-routes">
-            {selectedTrajectory.candidate_routes
-              .map(
-                (route, index) => (
-                  <div
-                    className="trajectory-route-row"
-                    key={index}
-                  >
-                    <span
-                      className="trajectory-route-dot"
-                      style={{
-                        background:
-                          trajectoryColors[
-                            index %
-                              trajectoryColors.length
-                          ],
-                      }}
-                    />
+            {selectedTrajectory.candidate_routes.map(
+              (route, index) => (
+                <div
+                  className="trajectory-route-row"
+                  key={index}
+                >
+                  <span
+                    className="trajectory-route-dot"
+                    style={{
+                      background:
+                        trajectoryColors[
+                          index % trajectoryColors.length
+                        ],
+                    }}
+                  />
 
-                    <div>
-                      <strong>
-                        ROUTE {index + 1}
-                      </strong>
-
-                      <small>
-                        {route.nodes.join(
-                          ' → ',
-                        )}
-                      </small>
-                    </div>
-
-                    <b>
-                      {(
-                        route.probability *
-                        100
-                      ).toFixed(1)}
-                      %
-                    </b>
+                  <div>
+                    <strong>ROUTE {index + 1}</strong>
+                    <small>
+                      {route.nodes.join(' → ')}
+                    </small>
                   </div>
-                ),
-              )}
+
+                  <b>
+                    {(route.probability * 100).toFixed(1)}%
+                  </b>
+                </div>
+              ),
+            )}
           </div>
 
           <div className="trajectory-note">
-            Probability represents the estimated
-            relative likelihood of each candidate
-            route from the upstream trajectory
-            inference engine.
+            Probability represents the estimated relative likelihood of each candidate route from the upstream trajectory inference engine.
           </div>
         </div>
       )}
 
-      {selectedRoadData &&
-        !selectedTrajectory && (
-          <div className="road-detail-panel">
-            <div className="road-detail-header">
-              <div>
-                <span className="road-detail-label">
-                  SELECTED ROAD
-                </span>
-
-                <h3>
-                  {selectedRoadData.road_id}
-                </h3>
-              </div>
-
-              <button
-                className="road-close"
-                onClick={() =>
-                  setSelectedRoad(null)
-                }
-              >
-                ×
-              </button>
+      {selectedRoadData && !selectedTrajectory && (
+        <div className="road-detail-panel">
+          <div className="road-detail-header">
+            <div>
+              <span className="road-detail-label">
+                SELECTED ROAD
+              </span>
+              <h3>{selectedRoadData.road_id}</h3>
             </div>
 
-            <div className="road-route">
-              {selectedRoadData.from_node}
-              <span>→</span>
-              {selectedRoadData.to_node}
+            <button
+              className="road-close"
+              onClick={() => setSelectedRoad(null)}
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="road-route">
+            {selectedRoadData.from_node}
+            <span>→</span>
+            {selectedRoadData.to_node}
+          </div>
+
+          <div className="road-detail-grid">
+            <div>
+              <span>FLOW</span>
+              <strong>
+                {selectedMetric?.hourly_flow?.toFixed(1) ?? '—'}
+              </strong>
+              <small>veh/h</small>
             </div>
 
-            <div className="road-detail-grid">
-              <div>
-                <span>FLOW</span>
+            <div>
+              <span>UTILIZATION</span>
+              <strong>
+                {selectedMetric
+                  ? `${(
+                      selectedMetric.utilization_ratio * 100
+                    ).toFixed(1)}%`
+                  : '—'}
+              </strong>
+            </div>
 
-                <strong>
-                  {selectedMetric?.hourly_flow?.toFixed(
-                    1,
-                  ) ?? '—'}
-                </strong>
+            <div>
+              <span>STATUS</span>
+              <strong>
+                {selectedRoadData.is_closed
+                  ? 'CLOSED'
+                  : selectedMetric?.congestion_level ?? 'UNKNOWN'}
+              </strong>
+            </div>
 
-                <small>veh/h</small>
-              </div>
-
-              <div>
-                <span>UTILIZATION</span>
-
-                <strong>
-                  {selectedMetric
-                    ? `${(
-                        selectedMetric.utilization_ratio *
-                        100
-                      ).toFixed(1)}%`
-                    : '—'}
-                </strong>
-              </div>
-
-              <div>
-                <span>STATUS</span>
-
-                <strong>
-                  {selectedRoadData.is_closed
-                    ? 'CLOSED'
-                    : selectedMetric?.congestion_level ??
-                      'UNKNOWN'}
-                </strong>
-              </div>
-
-              <div>
-                <span>CAPACITY</span>
-
-                <strong>
-                  {selectedRoadData.capacity_vph.toLocaleString()}
-                </strong>
-
-                <small>veh/h</small>
-              </div>
+            <div>
+              <span>CAPACITY</span>
+              <strong>
+                {selectedRoadData.capacity_vph.toLocaleString()}
+              </strong>
+              <small>veh/h</small>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-      {!selectedRoad &&
-        !selectedTrajectory && (
-          <div className="map-hint">
-            CLICK A ROAD SEGMENT TO INSPECT
-          </div>
-        )}
+      {!selectedRoad && !selectedTrajectory && (
+        <div className="map-hint">
+          CLICK A ROAD SEGMENT TO INSPECT
+        </div>
+      )}
     </div>
   )
-}
+} 
