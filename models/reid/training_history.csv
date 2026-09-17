@@ -1,0 +1,3 @@
+epoch,train_loss,learning_rate,rank1_accuracy,mAP
+1,2.0451,0.0003,0.875,0.9086
+2,0.9844,0.0003,0.9276,0.9462
