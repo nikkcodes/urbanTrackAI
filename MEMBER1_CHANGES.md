@@ -462,3 +462,13 @@ Member 2 consumes these observation records and performs:
 - City-wide analytics and anomaly detection.
 
 This separation is intentional to keep the perception layer reproducible and independently testable.
+
+## AI City Batch Processing
+
+The batch processor (`scripts/process_aicity_batch.py`) automates end-to-end perception across the AI City Challenge 2022 Track 1 dataset:
+
+- **Manifest-Driven Processing**: Uses `data/config/aicity_manifest.json` as the single source of truth without rescanning. Supports filtering by split (`train`, `validation`, `both`), camera ID, and camera count.
+- **Camera-Specific Output Folders**: Each camera's results are isolated in `data/output/<camera_id>/` (`observations.json`, `trajectories.json`, `camera_metrics.json`, `perception_summary.json`), preventing cross-camera overwrites.
+- **Resume Support**: `--resume` skips cameras that already possess a valid `perception_summary.json` and skips runtime artifact cleanup, allowing interrupted batch runs to continue efficiently. Overwrite is supported via `--overwrite`.
+- **Processing Index**: Produces `data/output/aicity_index.json` summarizing dataset metrics, processing status (`success`/`failed`), frame counts, timing, timestamps, and normalized relative paths for Member 2 ingestion.
+- **Logging**: Comprehensive execution tracing is recorded to `logs/aicity_processing.log`, capturing camera start/finish events, elapsed seconds, skipped items, and full error tracebacks.
