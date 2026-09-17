@@ -21,6 +21,8 @@ type CityMapProps = {
   trajectories?: Trajectory[]
   interactive?: boolean
   fullscreen?: boolean
+  selectedTrackId?: string | null
+  onSelectTrack?: (trackId: string | null) => void
   onExitInteraction?: () => void
 }
 
@@ -91,18 +93,18 @@ function InteractionController({ interactive }: { interactive: boolean }) {
 
 function roadColor(metric?: TrafficMetric) {
   if (!metric) {
-    return '#31586b'
+    return '#94A3B8'
   }
 
   switch (metric.congestion_level) {
     case 'SEVERE':
-      return '#ff3b5c'
+      return '#EF4444'
     case 'HEAVY':
-      return '#ff8a3d'
+      return '#EF4444'
     case 'MODERATE':
-      return '#ffd166'
+      return '#F59E0B'
     default:
-      return '#36d1dc'
+      return '#16B981'
   }
 }
 
@@ -123,16 +125,83 @@ function roadWeight(metric?: TrafficMetric) {
   }
 }
 
+function SelectedTrajectoryController({
+  selectedTrajectory,
+  nodeLookup,
+}: {
+  selectedTrajectory: Trajectory | undefined
+  nodeLookup: Map<string, any>
+}) {
+  const map = useMap()
+
+  useEffect(() => {
+    if (!selectedTrajectory) {
+      return
+    }
+
+    const routePositions = selectedTrajectory.candidate_routes
+      .flatMap((route) =>
+        route.nodes
+          .map((nodeId) => {
+            const node = nodeLookup.get(nodeId)
+            if (!node || typeof node.lat !== 'number' || typeof node.lon !== 'number') {
+              return null
+            }
+            return [node.lat, node.lon] as [number, number]
+          })
+          .filter((point): point is [number, number] => point !== null)
+      )
+
+    if (routePositions.length < 2) {
+      return
+    }
+
+    const bounds = routePositions.reduce(
+      (acc, position) => {
+        acc[0][0] = Math.min(acc[0][0], position[0])
+        acc[0][1] = Math.min(acc[0][1], position[1])
+        acc[1][0] = Math.max(acc[1][0], position[0])
+        acc[1][1] = Math.max(acc[1][1], position[1])
+        return acc
+      },
+      [
+        [routePositions[0][0], routePositions[0][1]],
+        [routePositions[0][0], routePositions[0][1]],
+      ] as [[number, number], [number, number]]
+    )
+
+    const timer = window.setTimeout(() => {
+      map.fitBounds(bounds, { padding: [45, 45] })
+    }, 120)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [map, nodeLookup, selectedTrajectory])
+
+  return null
+}
+
 export default function CityMap({
   network,
   traffic = [],
   trajectories = [],
   interactive = false,
   fullscreen = false,
+  selectedTrackId: controlledTrackId,
+  onSelectTrack,
   onExitInteraction,
 }: CityMapProps) {
   const [selectedRoad, setSelectedRoad] = useState<string | null>(null)
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null)
+  const [internalTrackId, setInternalTrackId] = useState<string | null>(null)
+
+  const selectedTrackId = controlledTrackId ?? internalTrackId
+  const setSelectedTrackId = (next: string | null) => {
+    if (onSelectTrack) {
+      onSelectTrack(next)
+    }
+    setInternalTrackId(next)
+  }
 
   const nodes = useMemo(
     () =>
@@ -176,13 +245,7 @@ export default function CityMap({
     [trajectories, selectedTrackId],
   )
 
-  const trajectoryColors = [
-    '#ffffff',
-    '#ff4fd8',
-    '#7df9ff',
-    '#ffd166',
-    '#a7ff83',
-  ]
+  const trajectoryColors = ['#1683D8', '#06B6D4', '#7C5CFC', '#0B2A3D', '#16B981']
 
   if (!nodes.length) {
     return (
@@ -237,6 +300,7 @@ export default function CityMap({
 
         <MapController network={network} />
         <InteractionController interactive={interactive} />
+        <SelectedTrajectoryController selectedTrajectory={selectedTrajectory} nodeLookup={nodeLookup} />
 
         {network.roads.map((road) => {
           const from = nodeLookup.get(road.from_node)
@@ -265,9 +329,9 @@ export default function CityMap({
               ]}
               pathOptions={{
                 color: road.is_closed
-                  ? '#59636d'
+                  ? '#94A3B8'
                   : selected
-                    ? '#ffffff'
+                    ? '#1683D8'
                     : roadColor(metric),
 
                 weight: selected
@@ -382,7 +446,7 @@ export default function CityMap({
             pathOptions={{
               color: '#07141b',
               weight: 2,
-              fillColor: '#39d8ff',
+              fillColor: '#06B6D4',
               fillOpacity: 1,
             }}
           >

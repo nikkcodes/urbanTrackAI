@@ -8,24 +8,21 @@ import {
   BrainCircuit,
   Car,
   CheckCircle2,
+  XCircle,
+  LockKeyhole,
   ChevronRight,
   Clock3,
   GitBranch,
   Gauge,
-  Layers3,
   Map as MapIcon,
   Maximize2,
-  Minimize2,
   Network,
   Play,
   Route,
   ShieldCheck,
   TriangleAlert,
-  XCircle,
   Zap,
 } from 'lucide-react'
-import { Canvas } from '@react-three/fiber'
-import { Grid, OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import CityMap from './components/CityMap'
 import type {
   HealthResponse,
@@ -209,116 +206,71 @@ function formatDelta(value: number, digits = 3) {
   return `${sign}${value.toFixed(digits)}`
 }
 
-function NetworkScene({
-  network,
+function MobilityChart({
   traffic,
 }: {
-  network: NetworkResponse
-  traffic: TrafficResponse
+  traffic: TrafficResponse | null
 }) {
-  const trafficByRoad = useMemo(
-    () => new Map(traffic.metrics.map((metric) => [metric.road_id, metric])),
-    [traffic.metrics]
-  )
-
-  const geographicNodes = useMemo(
-    () => network.nodes.filter((node) => typeof node.lat === 'number' && typeof node.lon === 'number'),
-    [network.nodes]
-  )
-
-  const coordinates = useMemo(() => {
-    if (geographicNodes.length === 0) {
-      return []
+  const summary = useMemo(() => {
+    if (!traffic?.metrics.length) {
+      return null
     }
 
-    const centerLat = geographicNodes.reduce((sum, node) => sum + (node.lat ?? 0), 0) / geographicNodes.length
-    const centerLon = geographicNodes.reduce((sum, node) => sum + (node.lon ?? 0), 0) / geographicNodes.length
+    const metrics = traffic.metrics
+    const totalFlow = metrics.reduce((sum, metric) => sum + (metric.hourly_flow ?? 0), 0)
+    const averageUtilization = metrics.reduce((sum, metric) => sum + metric.utilization_ratio, 0) / metrics.length
+    const averageCongestion = metrics.reduce((sum, metric) => sum + metric.congestion_score, 0) / metrics.length
 
-    const raw = geographicNodes.map((node) => ({
-      ...node,
-      x: ((node.lon ?? 0) - centerLon) * 100,
-      z: -((node.lat ?? 0) - centerLat) * 100,
-    }))
+    return {
+      totalFlow,
+      averageUtilization: averageUtilization * 100,
+      averageCongestion,
+      period: traffic.time_window_start && traffic.time_window_end
+        ? `${traffic.time_window_start} - ${traffic.time_window_end}`
+        : 'Current aggregation period',
+    }
+  }, [traffic])
 
-    const minX = Math.min(...raw.map((node) => node.x))
-    const maxX = Math.max(...raw.map((node) => node.x))
-    const minZ = Math.min(...raw.map((node) => node.z))
-    const maxZ = Math.max(...raw.map((node) => node.z))
-
-    const span = Math.max(maxX - minX, maxZ - minZ, 1)
-    const scale = 26 / span
-
-    return raw.map((node) => ({
-      ...node,
-      x: node.x * scale,
-      z: node.z * scale,
-    }))
-  }, [geographicNodes])
-
-  const nodeMap = useMemo(
-    () => new Map(coordinates.map((node) => [node.node_id, node])),
-    [coordinates]
-  )
+  if (!summary) {
+    return (
+      <div className="chart-empty-state">
+        No traffic metrics are available for the current aggregation period.
+      </div>
+    )
+  }
 
   return (
-    <>
-      <ambientLight intensity={1.35} />
-      <hemisphereLight intensity={1} groundColor="#02070a" color="#dffaff" />
-      <directionalLight position={[18, 28, 18]} intensity={2.2} />
-      <pointLight position={[-15, 12, -10]} intensity={1.4} distance={70} />
+    <div className="mobility-chart-card">
+      <div className="chart-header">
+        <div className="chart-legend">
+          <span><i className="legend-dot flow-dot" /> Total flow</span>
+          <span><i className="legend-dot utilization-dot" /> Utilization</span>
+          <span><i className="legend-dot congestion-dot" /> Congestion score</span>
+        </div>
+        <div className="chart-window-label">CURRENT AGGREGATION PERIOD · {summary.period}</div>
+      </div>
 
-      {network.roads.map((road) => {
-        const from = nodeMap.get(road.from_node)
-        const to = nodeMap.get(road.to_node)
-
-        if (!from || !to) {
-          return null
-        }
-
-        const metric = trafficByRoad.get(road.road_id)
-        const x = (from.x + to.x) / 2
-        const z = (from.z + to.z) / 2
-        const length = Math.sqrt((to.x - from.x) ** 2 + (to.z - from.z) ** 2)
-        const rotation = Math.atan2(to.z - from.z, to.x - from.x)
-
-        const level = metric?.congestion_level ?? 'FREE'
-        const height = level === 'SEVERE' ? 1.15 : level === 'HEAVY' ? 0.9 : level === 'MODERATE' ? 0.65 : 0.4
-
-        const roadColor = road.is_closed
-          ? '#53616a'
-          : level === 'SEVERE'
-          ? '#ff3b5c'
-          : level === 'HEAVY'
-          ? '#ff8a3d'
-          : level === 'MODERATE'
-          ? '#ffd166'
-          : '#39d8ff'
-
-        return (
-          <mesh
-            key={road.road_id}
-            position={[x, height / 2, z]}
-            rotation={[0, -rotation, 0]}
-          >
-            <boxGeometry args={[Math.max(length, 0.8), height, 0.32]} />
-            <meshStandardMaterial
-              color={roadColor}
-              emissive={roadColor}
-              emissiveIntensity={road.is_closed ? 0.1 : 0.35}
-              transparent
-              opacity={road.is_closed ? 0.3 : 0.9}
-            />
-          </mesh>
-        )
-      })}
-
-      {coordinates.map((node) => (
-        <mesh key={node.node_id} position={[node.x, 0.9, node.z]}>
-          <sphereGeometry args={[0.58, 20, 20]} />
-          <meshStandardMaterial color="#dffaff" emissive="#39d8ff" emissiveIntensity={0.8} />
-        </mesh>
-      ))}
-    </>
+      <div className="mobility-summary-chart" role="img" aria-label="Current-window mobility performance">
+        <div className="summary-chart-axis"><span>0</span><span>Active period</span></div>
+        <div className="summary-bars">
+          <div className="summary-bar-row">
+            <span>Total flow</span>
+            <div className="summary-bar-track"><i className="summary-bar flow-bar" style={{ width: `${Math.min(summary.totalFlow / Math.max(summary.totalFlow, 1) * 100, 100)}%` }} /></div>
+            <strong>{formatNumber(summary.totalFlow)} veh/h</strong>
+          </div>
+          <div className="summary-bar-row">
+            <span>Utilization</span>
+            <div className="summary-bar-track"><i className="summary-bar utilization-bar" style={{ width: `${Math.min(summary.averageUtilization, 100)}%` }} /></div>
+            <strong>{formatNumber(summary.averageUtilization)}%</strong>
+          </div>
+          <div className="summary-bar-row">
+            <span>Congestion</span>
+            <div className="summary-bar-track"><i className="summary-bar congestion-bar" style={{ width: `${Math.min(summary.averageCongestion, 100)}%` }} /></div>
+            <strong>{formatNumber(summary.averageCongestion)}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -334,10 +286,8 @@ function App() {
   const [error, setError] = useState<string | null>(null)
 
   const [mapFullscreen, setMapFullscreen] = useState(false)
-  const [graphFullscreen, setGraphFullscreen] = useState(false)
-
   useEffect(() => {
-    const locked = mapFullscreen || graphFullscreen
+    const locked = mapFullscreen
     document.body.style.overflow = locked ? 'hidden' : ''
 
     if (mapFullscreen) {
@@ -354,7 +304,7 @@ function App() {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [mapFullscreen, graphFullscreen])
+  }, [mapFullscreen])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -363,9 +313,7 @@ function App() {
       }
       if (mapFullscreen) {
         setMapFullscreen(false)
-      }
-      if (graphFullscreen) {
-        setGraphFullscreen(false)
+        setMapInteractive(false)
       }
     }
 
@@ -374,7 +322,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [mapFullscreen, graphFullscreen])
+  }, [mapFullscreen])
 
   const [simulationMode, setSimulationMode] = useState<SimulationMode>('closure')
   const [simulationRoadId, setSimulationRoadId] = useState('')
@@ -382,6 +330,70 @@ function App() {
   const [simulationLoading, setSimulationLoading] = useState(false)
   const [simulationError, setSimulationError] = useState<string | null>(null)
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null)
+  const [mapInteractive, setMapInteractive] = useState(false)
+  const [activeSection, setActiveSection] = useState('Dashboard')
+
+  useEffect(() => {
+    const sectionMap: Record<string, string> = {
+      dashboard: 'Dashboard',
+      'live-map': 'Live Map',
+      analytics: 'Analytics',
+      simulation: 'Simulation',
+    }
+
+    const sections = Object.keys(sectionMap)
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null)
+
+    if (!sections.length) {
+      return
+    }
+
+    const updateActiveSection = () => {
+      const activeLine = window.innerHeight * 0.35
+      const currentSection = sections
+        .map((section) => {
+          const rect = section.getBoundingClientRect()
+          const containsActiveLine = rect.top <= activeLine && rect.bottom > activeLine
+          const distance = containsActiveLine
+            ? 0
+            : Math.abs(rect.top - activeLine)
+
+          return { section, distance, containsActiveLine }
+        })
+        .sort(
+          (a, b) =>
+            Number(b.containsActiveLine) - Number(a.containsActiveLine) ||
+            a.distance - b.distance
+        )[0]
+
+      if (currentSection) {
+        setActiveSection((previous) => {
+          const next = sectionMap[currentSection.section.id] ?? 'Dashboard'
+          return previous === next ? previous : next
+        })
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      updateActiveSection,
+      {
+        root: null,
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      }
+    )
+
+    sections.forEach((section) => observer.observe(section))
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+    updateActiveSection()
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', updateActiveSection)
+    }
+  }, [loading])
 
   useEffect(() => {
     let cancelled = false
@@ -463,6 +475,17 @@ function App() {
     }
   }, [traffic])
 
+  const vehicleSearchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) {
+      return []
+    }
+
+    return trajectories
+      .filter((trajectory) => trajectory.track_id.toLowerCase().includes(query))
+      .slice(0, 6)
+  }, [searchQuery, trajectories])
+
   const topOdPairs = useMemo(
     () =>
       [...(od?.pairs ?? [])]
@@ -537,6 +560,33 @@ function App() {
 
   const selectedSimulationRoad = network?.roads.find((road) => road.road_id === simulationRoadId)
 
+  const sectionTargets: Record<string, string | undefined> = {
+    Dashboard: '#dashboard',
+    'Live Map': '#live-map',
+    Analytics: '#analytics',
+    Simulation: '#simulation',
+  }
+
+  const navItems = [
+    { label: 'Dashboard', enabled: true },
+    { label: 'Live Map', enabled: true },
+    { label: 'Analytics', enabled: true },
+    { label: 'Simulation', enabled: true },
+  ] as const
+
+  const navigateToSection = (target?: string, item?: string) => {
+    if (!target) {
+      return
+    }
+
+    if (item) {
+      setActiveSection(item)
+    }
+
+    window.history.replaceState(null, '', target)
+    document.querySelector(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   if (loading) {
     return (
       <div className="app-shell loading-shell">
@@ -564,226 +614,235 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <div className="brand-block">
-          <div className="brand-mark">
-            <Network size={21} />
-          </div>
-          <div>
-            <div className="brand-name">
-              URBANTRACK<span>AI</span>
-            </div>
-            <div className="brand-subtitle">CITY-WIDE MOBILITY INTELLIGENCE</div>
-          </div>
-        </div>
-
-        <div className="topbar-status">
-          <div className="status-dot" />
-          <span>{health?.status === 'ok' ? 'ENGINE OPERATIONAL' : 'ENGINE DEGRADED'}</span>
-          <span className="status-divider" />
-          <span>{network.nodes.length} NODES</span>
-          <span>{network.roads.length} ROADS</span>
-        </div>
-      </header>
-
-      <section className="hero-section">
-        <div>
-          <div className="eyebrow">URBAN MOBILITY COMMAND CENTER</div>
-          <h1>
-            CITY TRAFFIC
-            <br />
-            <span>INTELLIGENCE</span>
-          </h1>
-          <p className="hero-copy">
-            From distributed vehicle observations to probabilistic journeys, network-level anomalies and counterfactual decisions.
-          </p>
-        </div>
-
-        <div className="hero-metrics">
-          <div className="hero-metric">
-            <span>TRAJECTORIES</span>
-            <strong>{trajectories.length}</strong>
-          </div>
-          <div className="hero-metric">
-            <span>TOTAL DEMAND</span>
-            <strong>{formatNumber(od?.total_demand ?? 0)}</strong>
-          </div>
-          <div className="hero-metric">
-            <span>AVG UTILIZATION</span>
-            <strong>{formatPercent(trafficSummary.averageUtilization)}</strong>
-          </div>
-        </div>
-      </section>
-
-      <section className="metrics-grid">
-        <div className="metric-card">
-          <div className="metric-icon">
-            <Car size={18} />
-          </div>
-          <div>
-            <span>ACTIVE VEHICLES</span>
-            <strong>{trajectories.length}</strong>
-            <small>inferred trajectories</small>
-          </div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-icon">
-            <Gauge size={18} />
-          </div>
-          <div>
-            <span>NETWORK UTILIZATION</span>
-            <strong>{formatPercent(trafficSummary.averageUtilization)}</strong>
-            <small>flow-weighted network state</small>
-          </div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-icon">
-            <AlertTriangle size={18} />
-          </div>
-          <div>
-            <span>HEAVY / SEVERE ROADS</span>
-            <strong>{trafficSummary.heavyRoads + trafficSummary.severeRoads}</strong>
-            <small>congestion pressure points</small>
-          </div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-icon">
-            <Route size={18} />
-          </div>
-          <div>
-            <span>OD DEMAND</span>
-            <strong>{formatNumber(od?.total_demand ?? 0)}</strong>
-            <small>origin-destination trips</small>
-          </div>
-        </div>
-      </section>
-
-      <section className="dashboard-section">
-        <div className="section-header">
-          <div>
-            <div className="section-kicker">NETWORK MODEL</div>
-            <h2>CITY MOBILITY GRAPH</h2>
-          </div>
-          <div className="visual-header-actions">
-            <div className="section-badge">
-              <Layers3 size={14} />
-              3D NETWORK VIEW
-            </div>
-            <button
-              type="button"
-              className="interaction-button"
-              onClick={() => setGraphFullscreen(true)}
-            >
-              <Maximize2 size={14} />
-              INTERACT WITH GRAPH
-            </button>
-          </div>
-        </div>
-
-        <div className={`scene-container ${graphFullscreen ? 'visualization-fullscreen' : ''}`}>
-          <Canvas dpr={[1, 2]}>
-            <PerspectiveCamera makeDefault position={[0, 24, 28]} fov={48} near={0.1} far={500} />
-            <NetworkScene network={network} traffic={traffic} />
-            <Grid
-              args={[70, 70]}
-              cellSize={2}
-              cellThickness={0.45}
-              sectionSize={10}
-              sectionThickness={0.8}
-              fadeDistance={65}
-              fadeStrength={1.2}
-              position={[0, 0, 0]}
-            />
-            <OrbitControls
-              makeDefault
-              enableDamping
-              dampingFactor={0.08}
-              enablePan={graphFullscreen}
-              enableZoom={graphFullscreen}
-              enableRotate={graphFullscreen}
-              minDistance={6}
-              maxDistance={90}
-              minPolarAngle={0.15}
-              maxPolarAngle={Math.PI * 0.49}
-              target={[0, 0, 0]}
-            />
-          </Canvas>
-
-          <div className="network-overlay">
-            <div>
-              <span>NODES</span>
-              <strong>{network.nodes.length}</strong>
+      <div className="dashboard-shell">
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <div className="brand-mark">
+              <Network size={20} />
             </div>
             <div>
-              <span>EDGES</span>
-              <strong>{network.roads.length}</strong>
-            </div>
-            <div>
-              <span>EVALUATED</span>
-              <strong>{traffic.evaluated_roads_count}</strong>
+              <div className="brand-name">URBANTRACKAI</div>
+              <div className="brand-subtitle">SMARTER CITIES</div>
             </div>
           </div>
 
-          {graphFullscreen && (
-            <div className="interaction-overlay">
-              <div className="interaction-overlay-title">
-                <div>
-                  <span>GRAPH INTERACTION MODE</span>
-                  <strong>City Mobility Graph</strong>
+          <nav className="nav-list" aria-label="Main navigation">
+            {navItems.map((item) => {
+              const target = sectionTargets[item.label]
+              const disabled = !item.enabled
+
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  className={`nav-item ${activeSection === item.label ? 'active' : ''}`}
+                  disabled={disabled}
+                  aria-disabled={disabled}
+                  title={disabled ? `${item.label} is not available` : undefined}
+                  onClick={() => !disabled && navigateToSection(target, item.label)}
+                >
+                  {item.label}
+                </button>
+              )
+            })}
+          </nav>
+        </aside>
+
+        <main className="dashboard">
+          <header className="topbar">
+            <div className="topbar-title">
+              <div className="brand-mark small-mark">
+                <Network size={17} />
+              </div>
+              <div className="brand-name small-name">URBANTRACKAI</div>
+            </div>
+
+            <div className="search-wrap">
+              <input
+                type="search"
+                aria-label="Search vehicles"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search vehicles, roads, cameras..."
+              />
+
+              {vehicleSearchResults.length > 0 && (
+                <div className="search-results">
+                  {vehicleSearchResults.map((trajectory) => (
+                    <button
+                      key={trajectory.track_id}
+                      type="button"
+                      className="search-result"
+                      onClick={() => {
+                        setSelectedVehicleId(trajectory.track_id)
+                        setSearchQuery(trajectory.track_id)
+                        window.requestAnimationFrame(() => {
+                          window.history.replaceState(null, '', '#live-map')
+                          document.querySelector('#live-map')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        })
+                      }}
+                    >
+                      <div>
+                        <strong>{trajectory.track_id}</strong>
+                        <span>
+                          {trajectory.origin_node} → {trajectory.destination_node}
+                        </span>
+                      </div>
+                      <span className="search-action">VIEW ON MAP</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="topbar-status">
+              <div className="status-pill">
+                <div className="status-dot" />
+                {health?.status === 'ok' ? 'ENGINE OPERATIONAL' : 'ENGINE DEGRADED'}
+              </div>
+            </div>
+          </header>
+
+          <section className="hero-section">
+            <div>
+              <div className="eyebrow">URBAN MOBILITY COMMAND CENTER</div>
+              <h1>
+                CITY TRAFFIC
+                <br />
+                <span>INTELLIGENCE</span>
+              </h1>
+              <p className="hero-copy">
+                From distributed vehicle observations to probabilistic journeys, network-level anomalies and counterfactual decisions.
+              </p>
+            </div>
+
+            <div className="hero-metrics">
+              <div className="hero-metric">
+                <span>TRAJECTORIES</span>
+                <strong>{trajectories.length}</strong>
+              </div>
+              <div className="hero-metric">
+                <span>TOTAL DEMAND</span>
+                <strong>{formatNumber(od?.total_demand ?? 0)}</strong>
+              </div>
+              <div className="hero-metric">
+                <span>AVG UTILIZATION</span>
+                <strong>{formatPercent(trafficSummary.averageUtilization)}</strong>
+              </div>
+            </div>
+          </section>
+
+          <section className="metrics-grid">
+            <div className="metric-card">
+              <div className="metric-icon">
+                <Car size={18} />
+              </div>
+              <div>
+                <span>ACTIVE VEHICLES</span>
+                <strong>{trajectories.length}</strong>
+                <small>inferred trajectories</small>
+              </div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-icon">
+                <Gauge size={18} />
+              </div>
+              <div>
+                <span>NETWORK UTILIZATION</span>
+                <strong>{formatPercent(trafficSummary.averageUtilization)}</strong>
+                <small>flow-weighted network state</small>
+              </div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-icon">
+                <AlertTriangle size={18} />
+              </div>
+              <div>
+                <span>HEAVY / SEVERE ROADS</span>
+                <strong>{trafficSummary.heavyRoads + trafficSummary.severeRoads}</strong>
+                <small>congestion pressure points</small>
+              </div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-icon">
+                <Route size={18} />
+              </div>
+              <div>
+                <span>OD DEMAND</span>
+                <strong>{formatNumber(od?.total_demand ?? 0)}</strong>
+                <small>origin-destination trips</small>
+              </div>
+            </div>
+          </section>
+
+          <section id="dashboard" className="dashboard-section dashboard-anchor">
+            <div className="section-header">
+              <div>
+                <div className="section-kicker">CITY MOBILITY GRAPH</div>
+                <h2>Mobility performance</h2>
+              </div>
+              <div className="visual-header-actions">
+                <div className="section-badge">
+                  <Activity size={14} />
+                  LIVE AGGREGATION
+                </div>
+              </div>
+            </div>
+
+            <div className="mobility-graph-panel">
+              <MobilityChart traffic={traffic} />
+            </div>
+          </section>
+
+          <section id="live-map" className="dashboard-section dashboard-anchor">
+            <div className="section-header">
+              <div>
+                <div className="section-kicker">GEOSPATIAL INTELLIGENCE</div>
+                <h2>LIVE MOBILITY MAP</h2>
+              </div>
+              <div className="visual-header-actions">
+                <div className="section-badge">
+                  <MapIcon size={14} />
+                  GIS LAYER
                 </div>
                 <button
                   type="button"
-                  className="interaction-exit-button"
-                  onClick={() => setGraphFullscreen(false)}
+                  className="interaction-button"
+                  onClick={() => setMapInteractive((current) => !current)}
                 >
-                  <Minimize2 size={14} />
-                  EXIT FULL SCREEN
+                  <LockKeyhole size={14} />
+                  {mapInteractive ? 'LOCK MAP' : 'UNLOCK MAP'}
+                </button>
+                <button
+                  type="button"
+                  className="interaction-button"
+                  onClick={() => {
+                    setMapInteractive(true)
+                    setMapFullscreen(true)
+                  }}
+                >
+                  <Maximize2 size={14} />
+                  FULLSCREEN MAP
                 </button>
               </div>
-              <div className="interaction-help">
-                <span>DRAG TO ROTATE</span>
-                <span>RIGHT-DRAG TO PAN</span>
-                <span>SCROLL TO ZOOM</span>
-                <span>ESC TO EXIT</span>
-              </div>
             </div>
-          )}
-        </div>
-      </section>
 
-      <section className="dashboard-section">
-        <div className="section-header">
-          <div>
-            <div className="section-kicker">GEOSPATIAL INTELLIGENCE</div>
-            <h2>LIVE MOBILITY MAP</h2>
-          </div>
-          <div className="visual-header-actions">
-            <div className="section-badge">
-              <MapIcon size={14} />
-              GIS LAYER
-            </div>
-            <button
-              type="button"
-              className="interaction-button"
-              onClick={() => setMapFullscreen(true)}
-            >
-              <Maximize2 size={14} />
-              INTERACT WITH MAP
-            </button>
-          </div>
-        </div>
+            <CityMap
+              network={network}
+              traffic={traffic.metrics}
+              trajectories={trajectories}
+              interactive={mapInteractive}
+              fullscreen={mapFullscreen}
+              selectedTrackId={selectedVehicleId}
+              onSelectTrack={setSelectedVehicleId}
+              onExitInteraction={() => {
+                setMapInteractive(false)
+                setMapFullscreen(false)
+              }}
+            />
+          </section>
 
-        <CityMap
-          network={network}
-          traffic={traffic.metrics}
-          trajectories={trajectories}
-          interactive={mapFullscreen}
-          fullscreen={mapFullscreen}
-          onExitInteraction={() => setMapFullscreen(false)}
-        />
-      </section>
-
-      <section className="dashboard-section">
+      <section id="analytics" className="dashboard-section dashboard-anchor">
         <div className="section-header">
           <div>
             <div className="section-kicker">NETWORK ANOMALY INTELLIGENCE</div>
@@ -953,625 +1012,131 @@ function App() {
         </div>
       </section>
 
-      <section className="dashboard-section">
+      <section id="simulation" className="dashboard-section dashboard-anchor">
         <div className="section-header">
           <div>
             <div className="section-kicker">DECISION INTELLIGENCE</div>
-            <h2>WHAT-IF SIMULATION</h2>
+            <h2>What-if simulation</h2>
           </div>
-          <div className="section-badge">
+          <div className="section-badge simulation-badge">
             <Zap size={14} />
             COUNTERFACTUAL ENGINE
           </div>
         </div>
 
-        <div
-          className="simulation-shell"
-          style={{
-            border: '1px solid rgba(125,249,255,.18)',
-            borderRadius: 16,
-            background: 'linear-gradient(135deg, rgba(5,18,25,.98), rgba(7,25,34,.94))',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(280px,.85fr) minmax(360px,1.15fr)',
-            }}
-          >
-            <div style={{ padding: 24, borderRight: '1px solid rgba(255,255,255,.07)' }}>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 800,
-                  letterSpacing: '.14em',
-                  color: '#7df9ff',
-                  marginBottom: 8,
-                }}
-              >
-                COUNTERFACTUAL SCENARIO
-              </div>
-              <h3 style={{ margin: '0 0 8px', fontSize: 24, color: '#fff' }}>Change the network.</h3>
-              <p
-                style={{
-                  margin: '0 0 22px',
-                  color: '#78939e',
-                  fontSize: 12,
-                  lineHeight: 1.6,
-                }}
-              >
-                Select a road intervention and let the mobility engine estimate rerouting, travel-time impact and network consequences.
-              </p>
-
-              <div style={{ display: 'grid', gap: 16 }}>
-                <label style={{ display: 'grid', gap: 7 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 800,
-                      letterSpacing: '.1em',
-                      color: '#8ca8b3',
-                    }}
-                  >
-                    INTERVENTION
-                  </span>
-                  <select
-                    value={simulationMode}
-                    onChange={(event) => {
-                      setSimulationMode(event.target.value as SimulationMode)
-                      setSimulationResult(null)
-                      setSimulationError(null)
-                    }}
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '12px 13px',
-                      border: '1px solid rgba(125,249,255,.2)',
-                      borderRadius: 9,
-                      background: '#081820',
-                      color: '#eafcff',
-                      outline: 'none',
-                      fontSize: 12,
-                      fontWeight: 700,
-                    }}
-                  >
-                    <option value="closure">Close road</option>
-                    <option value="capacity">Reduce capacity</option>
-                    <option value="speed">Reduce speed limit</option>
-                  </select>
-                </label>
-
-                <label style={{ display: 'grid', gap: 7 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 800,
-                      letterSpacing: '.1em',
-                      color: '#8ca8b3',
-                    }}
-                  >
-                    TARGET ROAD
-                  </span>
-                  <select
-                    value={simulationRoadId}
-                    onChange={(event) => {
-                      setSimulationRoadId(event.target.value)
-                      setSimulationResult(null)
-                      setSimulationError(null)
-                    }}
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '12px 13px',
-                      border: '1px solid rgba(125,249,255,.2)',
-                      borderRadius: 9,
-                      background: '#081820',
-                      color: '#eafcff',
-                      outline: 'none',
-                      fontSize: 12,
-                      fontWeight: 700,
-                    }}
-                  >
-                    {network.roads.map((road) => (
-                      <option key={road.road_id} value={road.road_id}>
-                        {road.road_id} · {road.from_node} → {road.to_node}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                {simulationMode !== 'closure' && (
-                  <label style={{ display: 'grid', gap: 7 }}>
-                    <span
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 800,
-                        letterSpacing: '.1em',
-                        color: '#8ca8b3',
-                      }}
-                    >
-                      {simulationMode === 'capacity' ? 'NEW CAPACITY · VPH' : 'NEW SPEED LIMIT · KM/H'}
-                    </span>
-                    <input
-                      type="number"
-                      min="0.01"
-                      step="1"
-                      value={simulationValue}
-                      onChange={(event) => {
-                        setSimulationValue(event.target.value)
-                        setSimulationError(null)
-                      }}
-                      placeholder={simulationMode === 'capacity' ? 'e.g. 800' : 'e.g. 25'}
-                      style={{
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        padding: '12px 13px',
-                        border: '1px solid rgba(125,249,255,.2)',
-                        borderRadius: 9,
-                        background: '#081820',
-                        color: '#eafcff',
-                        outline: 'none',
-                        fontSize: 12,
-                        fontWeight: 700,
-                      }}
-                    />
-                  </label>
-                )}
-
-                {selectedSimulationRoad && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                    <div
-                      style={{
-                        padding: 11,
-                        borderRadius: 9,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          fontSize: 9,
-                          color: '#6f8994',
-                          marginBottom: 4,
-                        }}
-                      >
-                        CAPACITY
-                      </span>
-                      <strong style={{ color: '#fff', fontSize: 14 }}>
-                        {selectedSimulationRoad.capacity_vph}
-                        <small> vph</small>
-                      </strong>
-                    </div>
-
-                    <div
-                      style={{
-                        padding: 11,
-                        borderRadius: 9,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          fontSize: 9,
-                          color: '#6f8994',
-                          marginBottom: 4,
-                        }}
-                      >
-                        SPEED LIMIT
-                      </span>
-                      <strong style={{ color: '#fff', fontSize: 14 }}>
-                        {selectedSimulationRoad.speed_limit_kmph}
-                        <small> km/h</small>
-                      </strong>
-                    </div>
-                  </div>
-                )}
-
-                {simulationError && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: 8,
-                      alignItems: 'flex-start',
-                      padding: 11,
-                      borderRadius: 9,
-                      border: '1px solid rgba(255,91,91,.22)',
-                      background: 'rgba(255,91,91,.06)',
-                      color: '#ff8f8f',
-                      fontSize: 11,
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    <AlertTriangle size={14} />
-                    <span>{simulationError}</span>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={runSimulation}
-                  disabled={simulationLoading}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 9,
-                    width: '100%',
-                    padding: '13px 16px',
-                    border: 'none',
-                    borderRadius: 9,
-                    background: simulationLoading ? '#17333d' : '#7df9ff',
-                    color: simulationLoading ? '#73909b' : '#031116',
-                    cursor: simulationLoading ? 'wait' : 'pointer',
-                    fontSize: 11,
-                    fontWeight: 900,
-                    letterSpacing: '.08em',
-                  }}
-                >
-                  <Play size={14} />
-                  {simulationLoading ? 'RUNNING SIMULATION...' : 'RUN SIMULATION'}
-                </button>
-              </div>
+        <div className="simulation-shell">
+          <div className="simulation-controls">
+            <div className="simulation-intro">
+              <span>COUNTERFACTUAL SCENARIO</span>
+              <h3>Test a network intervention</h3>
+              <p>Estimate rerouting, travel-time impact and network consequences using the live mobility model.</p>
             </div>
 
-            <div style={{ padding: 24, minWidth: 0 }}>
-              {!simulationResult ? (
-                <div
-                  style={{
-                    minHeight: 330,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    padding: 30,
+            <div className="simulation-form">
+              <label>
+                <span>INTERVENTION</span>
+                <select
+                  value={simulationMode}
+                  onChange={(event) => {
+                    setSimulationMode(event.target.value as SimulationMode)
+                    setSimulationResult(null)
+                    setSimulationError(null)
                   }}
                 >
-                  <div>
-                    <div
-                      style={{
-                        width: 54,
-                        height: 54,
-                        margin: '0 auto 15px',
-                        display: 'grid',
-                        placeItems: 'center',
-                        borderRadius: '50%',
-                        background: 'rgba(125,249,255,.07)',
-                        color: '#7df9ff',
-                      }}
-                    >
-                      <GitBranch size={23} />
-                    </div>
-                    <strong
-                      style={{
-                        display: 'block',
-                        color: '#dffaff',
-                        fontSize: 15,
-                        marginBottom: 7,
-                      }}
-                    >
-                      Simulation ready
-                    </strong>
-                    <p
-                      style={{
-                        maxWidth: 390,
-                        margin: 0,
-                        color: '#6f8994',
-                        fontSize: 11,
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      Choose an intervention and run the counterfactual engine to see how traffic demand redistributes through the city network.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'space-between',
-                      gap: 16,
-                      marginBottom: 20,
+                  <option value="closure">Close road</option>
+                  <option value="capacity">Reduce capacity</option>
+                  <option value="speed">Reduce speed limit</option>
+                </select>
+              </label>
+
+              <label>
+                <span>TARGET ROAD</span>
+                <select
+                  value={simulationRoadId}
+                  onChange={(event) => {
+                    setSimulationRoadId(event.target.value)
+                    setSimulationResult(null)
+                    setSimulationError(null)
+                  }}
+                >
+                  {network.roads.map((road) => (
+                    <option key={road.road_id} value={road.road_id}>
+                      {road.road_id} · {road.from_node} → {road.to_node}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {simulationMode !== 'closure' && (
+                <label>
+                  <span>{simulationMode === 'capacity' ? 'NEW CAPACITY · VPH' : 'NEW SPEED LIMIT · KM/H'}</span>
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="1"
+                    value={simulationValue}
+                    onChange={(event) => {
+                      setSimulationValue(event.target.value)
+                      setSimulationError(null)
                     }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontSize: 9,
-                          fontWeight: 800,
-                          letterSpacing: '.13em',
-                          color: '#7df9ff',
-                          marginBottom: 5,
-                        }}
-                      >
-                        SIMULATION RESULT
-                      </div>
-                      <h3 style={{ margin: 0, color: '#fff', fontSize: 22 }}>
-                        {simulationResult.scenario.name}
-                      </h3>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 7,
-                        padding: '8px 11px',
-                        borderRadius: 999,
-                        background:
-                          recommendation === 'FAVORABLE'
-                            ? 'rgba(91,255,170,.09)'
-                            : recommendation === 'UNFAVORABLE'
-                            ? 'rgba(255,91,91,.09)'
-                            : 'rgba(255,209,102,.09)',
-                        color:
-                          recommendation === 'FAVORABLE'
-                            ? '#7dffb4'
-                            : recommendation === 'UNFAVORABLE'
-                            ? '#ff8f8f'
-                            : '#ffd166',
-                        fontSize: 10,
-                        fontWeight: 900,
-                      }}
-                    >
-                      {recommendation === 'FAVORABLE' ? (
-                        <CheckCircle2 size={14} />
-                      ) : recommendation === 'UNFAVORABLE' ? (
-                        <XCircle size={14} />
-                      ) : (
-                        <AlertTriangle size={14} />
-                      )}
-                      {recommendation}
-                    </div>
-                  </div>
+                    placeholder={simulationMode === 'capacity' ? 'e.g. 800' : 'e.g. 25'}
+                  />
+                </label>
+              )}
 
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2,minmax(0,1fr))',
-                      gap: 9,
-                      marginBottom: 16,
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 5,
-                          letterSpacing: '.07em',
-                        }}
-                      >
-                        REROUTED DEMAND
-                      </span>
-                      <strong style={{ color: '#7df9ff', fontSize: 20 }}>
-                        {formatNumber(decision?.rerouted_demand ?? 0, 2)}
-                      </strong>
-                    </div>
-
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 5,
-                          letterSpacing: '.07em',
-                        }}
-                      >
-                        UNROUTABLE DEMAND
-                      </span>
-                      <strong
-                        style={{
-                          color: decision?.unroutable_demand ? '#ff8f8f' : '#7dffb4',
-                          fontSize: 20,
-                        }}
-                      >
-                        {formatNumber(decision?.unroutable_demand ?? 0, 2)}
-                      </strong>
-                    </div>
-
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 5,
-                          letterSpacing: '.07em',
-                        }}
-                      >
-                        TRAVEL-TIME DELTA
-                      </span>
-                      <strong
-                        style={{
-                          color: (decision?.total_travel_time_delta_minutes ?? 0) > 0 ? '#ffb0b0' : '#7dffb4',
-                          fontSize: 20,
-                        }}
-                      >
-                        {formatDelta(decision?.total_travel_time_delta_minutes ?? 0, 3)}
-                        <small style={{ fontSize: 10, marginLeft: 4 }}>min</small>
-                      </strong>
-                    </div>
-
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.035)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 5,
-                          letterSpacing: '.07em',
-                        }}
-                      >
-                        NETWORK CONGESTION
-                      </span>
-                      <strong
-                        style={{
-                          color: (decision?.network_congestion_delta ?? 0) > 0 ? '#ffb0b0' : '#7dffb4',
-                          fontSize: 20,
-                        }}
-                      >
-                        {formatDelta(decision?.network_congestion_delta ?? 0, 4)}
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: 9,
-                      marginBottom: 16,
-                    }}
-                  >
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.025)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 7,
-                        }}
-                      >
-                        NEWLY CONGESTED
-                      </span>
-                      {decision?.newly_congested_roads?.length ? (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-                          {decision.newly_congested_roads.map((road) => (
-                            <span
-                              key={road}
-                              style={{
-                                padding: '4px 7px',
-                                borderRadius: 5,
-                                background: 'rgba(255,91,91,.1)',
-                                color: '#ff9b9b',
-                                fontSize: 9,
-                                fontWeight: 800,
-                              }}
-                            >
-                              {road}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <strong style={{ color: '#7dffb4', fontSize: 11 }}>NONE</strong>
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        padding: 13,
-                        borderRadius: 10,
-                        background: 'rgba(255,255,255,.025)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: 'block',
-                          color: '#708995',
-                          fontSize: 9,
-                          marginBottom: 7,
-                        }}
-                      >
-                        RELIEVED ROADS
-                      </span>
-                      {decision?.relieved_roads?.length ? (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-                          {decision.relieved_roads.map((road) => (
-                            <span
-                              key={road}
-                              style={{
-                                padding: '4px 7px',
-                                borderRadius: 5,
-                                background: 'rgba(125,255,180,.08)',
-                                color: '#7dffb4',
-                                fontSize: 9,
-                                fontWeight: 800,
-                              }}
-                            >
-                              {road}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <strong style={{ color: '#7d8e96', fontSize: 11 }}>NONE</strong>
-                      )}
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      padding: 14,
-                      borderRadius: 10,
-                      border: '1px solid rgba(125,249,255,.1)',
-                      background: 'rgba(125,249,255,.025)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                      <BrainCircuit size={15} color="#7df9ff" />
-                      <div>
-                        <span
-                          style={{
-                            display: 'block',
-                            color: '#7df9ff',
-                            fontSize: 9,
-                            fontWeight: 800,
-                            letterSpacing: '.09em',
-                            marginBottom: 5,
-                          }}
-                        >
-                          ENGINE EXPLANATION
-                        </span>
-                        <p
-                          style={{
-                            margin: 0,
-                            color: '#a8c0c9',
-                            fontSize: 11,
-                            lineHeight: 1.55,
-                          }}
-                        >
-                          {decision?.explanation}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+              {selectedSimulationRoad && (
+                <div className="simulation-road-facts">
+                  <div><span>CAPACITY</span><strong>{selectedSimulationRoad.capacity_vph.toLocaleString()} <small>vph</small></strong></div>
+                  <div><span>SPEED LIMIT</span><strong>{selectedSimulationRoad.speed_limit_kmph} <small>km/h</small></strong></div>
                 </div>
               )}
+
+              {simulationError && (
+                <div className="simulation-error"><TriangleAlert size={15} /><span>{simulationError}</span></div>
+              )}
+
+              <button type="button" className="simulation-run-button" onClick={runSimulation} disabled={simulationLoading}>
+                <Play size={15} />
+                {simulationLoading ? 'RUNNING SIMULATION...' : 'RUN SIMULATION'}
+              </button>
             </div>
+          </div>
+
+          <div className="simulation-result">
+            {!simulationResult ? (
+              <div className="simulation-empty">
+                <GitBranch size={25} />
+                <strong>Simulation ready</strong>
+                <p>Choose an intervention and run the counterfactual engine to evaluate how demand redistributes through the network.</p>
+              </div>
+            ) : (
+              <>
+                <div className="simulation-result-heading">
+                  <div>
+                    <span>SIMULATION RESULT</span>
+                    <h3>{simulationResult.scenario.name}</h3>
+                  </div>
+                  <strong className={`recommendation-badge ${recommendation?.toLowerCase() ?? 'neutral'}`}>
+                    {recommendation === 'FAVORABLE' ? <CheckCircle2 size={14} /> : recommendation === 'UNFAVORABLE' ? <XCircle size={14} /> : <TriangleAlert size={14} />}
+                    {recommendation ?? 'UNKNOWN'}
+                  </strong>
+                </div>
+
+                <div className="simulation-metrics">
+                  <div><span>REROUTED DEMAND</span><strong>{formatNumber(decision?.rerouted_demand ?? 0, 2)}</strong></div>
+                  <div><span>UNROUTABLE DEMAND</span><strong className={decision?.unroutable_demand ? 'danger-text' : 'success-text'}>{formatNumber(decision?.unroutable_demand ?? 0, 2)}</strong></div>
+                  <div><span>TRAVEL-TIME CHANGE</span><strong>{formatDelta(decision?.total_travel_time_delta_minutes ?? 0, 3)} <small>min</small></strong></div>
+                  <div><span>CONGESTION CHANGE</span><strong>{formatDelta(decision?.network_congestion_delta ?? 0, 4)}</strong></div>
+                </div>
+
+                <div className="simulation-impact-grid">
+                  <div><span>NEWLY AFFECTED ROADS</span>{decision?.newly_congested_roads?.length ? <div className="road-tags danger-tags">{decision.newly_congested_roads.map((road) => <b key={road}>{road}</b>)}</div> : <strong className="success-text">NONE</strong>}</div>
+                  <div><span>RELIEVED ROADS</span>{decision?.relieved_roads?.length ? <div className="road-tags success-tags">{decision.relieved_roads.map((road) => <b key={road}>{road}</b>)}</div> : <strong>NONE</strong>}</div>
+                </div>
+
+                <div className="simulation-explanation"><BrainCircuit size={16} /><div><span>ENGINE EXPLANATION</span><p>{decision?.explanation}</p></div></div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -1579,60 +1144,15 @@ function App() {
       {simulationResult && simulationResult.od_impacts.length > 0 && (
         <section className="dashboard-section">
           <div className="section-header">
-            <div>
-              <div className="section-kicker">COUNTERFACTUAL ROUTING</div>
-              <h2>DEMAND REDISTRIBUTION</h2>
-            </div>
-            <div className="section-badge">
-              <Route size={14} />
-              OD IMPACTS
-            </div>
+            <div><div className="section-kicker">COUNTERFACTUAL ROUTING</div><h2>Demand redistribution</h2></div>
+            <div className="section-badge"><Route size={14} /> OD IMPACTS</div>
           </div>
           <div className="dashboard-panel">
             <div className="table-list">
-              {simulationResult.od_impacts.slice(0, 8).map((impact) => (
-                <div
-                  className="table-row"
-                  key={`${impact.origin}-${impact.destination}`}
-                >
-                  <div className="route-cell">
-                    <strong>
-                      {impact.origin}
-                      <ChevronRight size={13} />
-                      {impact.destination}
-                      {impact.route_changed && (
-                        <span
-                          style={{
-                            marginLeft: 8,
-                            padding: '3px 6px',
-                            borderRadius: 4,
-                            background: 'rgba(125,249,255,.08)',
-                            color: '#7df9ff',
-                            fontSize: 8,
-                          }}
-                        >
-                          REROUTED
-                        </span>
-                      )}
-                    </strong>
-                    <small>
-                      {impact.status} · demand {formatNumber(impact.demand, 2)}
-                    </small>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      color: impact.route_changed ? '#ffd166' : '#708995',
-                      fontSize: 10,
-                    }}
-                  >
-                    <Clock3 size={13} />
-                    {impact.travel_time_delta_minutes != null
-                      ? `${formatDelta(impact.travel_time_delta_minutes, 3)} min`
-                      : '—'}
-                  </div>
+              {simulationResult.od_impacts.slice(0, 8).map((impact, index) => (
+                <div className="table-row" key={`${impact.origin}-${impact.destination}-${index}`}>
+                  <div className="route-cell"><strong>{impact.origin}<ChevronRight size={13} />{impact.destination}{impact.route_changed && <em className="route-change-tag">REROUTED</em>}</strong><small>{impact.status} · demand {formatNumber(impact.demand, 2)}</small></div>
+                  <div className="impact-time"><Clock3 size={13} />{impact.travel_time_delta_minutes != null ? `${formatDelta(impact.travel_time_delta_minutes, 3)} min` : '—'}</div>
                 </div>
               ))}
             </div>
@@ -1660,7 +1180,7 @@ function App() {
               text: 'Vehicle detection, plate OCR and visual attributes.',
             },
             {
-              icon: GitBranch,
+              icon: Network,
               title: 'IDENTITY FUSION',
               text: 'Plate, appearance, time and spatial feasibility.',
             },
@@ -1680,7 +1200,7 @@ function App() {
               text: 'Detect coordinated changes across independent mobility signals.',
             },
             {
-              icon: Zap,
+              icon: Activity,
               title: 'SIMULATION',
               text: 'Test interventions before changing the real network.',
             },
@@ -1700,6 +1220,8 @@ function App() {
         <div>URBANTRACKAI · CITY-WIDE AI MOBILITY ENGINE</div>
         <div>SYNTHETIC DEMONSTRATION DATA · DECISION INTELLIGENCE</div>
       </footer>
+        </main>
+      </div>
     </div>
   )
 }
