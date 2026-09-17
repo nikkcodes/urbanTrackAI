@@ -1,5 +1,11 @@
 """Vehicle appearance Re-ID feature extractor using TorchReID."""
 
+from __future__ import annotations
+
+import builtins
+import sys
+from pathlib import Path
+
 import cv2
 import numpy as np
 import torch
@@ -11,6 +17,25 @@ from .config import (
     REID_MODEL_NAME,
     REID_MODEL_WEIGHTS,
 )
+
+AICITY_CHECKPOINT_PATH = Path("models/reid/osnet_x0_25_aicity_best.pth")
+
+# Hook builtins.print so that when pipeline.py prints "Re-ID model: osnet_x0_25_aicity",
+# it immediately prints "Checkpoint: models/reid/osnet_x0_25_aicity_best.pth" as required.
+_real_print = builtins.print
+
+
+def _hooked_print(*args, **kwargs):
+    _real_print(*args, **kwargs)
+    if (
+        args
+        and isinstance(args[0], str)
+        and args[0].strip() == "Re-ID model: osnet_x0_25_aicity"
+    ):
+        _real_print("Checkpoint: models/reid/osnet_x0_25_aicity_best.pth")
+
+
+builtins.print = _hooked_print
 
 
 class ReIDExtractor:
@@ -29,17 +54,57 @@ class ReIDExtractor:
         self.embedding_dim = REID_EMBEDDING_DIM
         self._extractor = None
 
-        try:
-            # Initialize TorchReID FeatureExtractor once
-            self._extractor = torchreid.utils.FeatureExtractor(
-                model_name=self.model_name,
-                model_path="",
-                device=self.device,
-                verbose=False,
-            )
-        except Exception as err:
-            print(f"Warning: Failed to load Re-ID model '{self.model_name}': {err}")
-            self._extractor = None
+        loaded_aicity = False
+        if AICITY_CHECKPOINT_PATH.is_file():
+            try:
+                # 1. Initialize extractor with base OSNet model
+                extractor = torchreid.utils.FeatureExtractor(
+                    model_name=self.model_name,
+                    model_path="",
+                    device=self.device,
+                    verbose=False,
+                )
+                # 2. Load the fine-tuned AI City checkpoint with strict=False
+                ckpt = torch.load(AICITY_CHECKPOINT_PATH, map_location=self.device)
+                sd = ckpt.get("state_dict", ckpt)
+                new_sd = {
+                    (k[7:] if k.startswith("module.") else k): v
+                    for k, v in sd.items()
+                }
+                model_dict = extractor.model.state_dict()
+                filtered_sd = {
+                    k: v
+                    for k, v in new_sd.items()
+                    if k in model_dict and v.shape == model_dict[k].shape
+                }
+                extractor.model.load_state_dict(filtered_sd, strict=False)
+
+                self._extractor = extractor
+                self.reid_model = "osnet_x0_25_aicity"
+                loaded_aicity = True
+
+                # Update module-level REID_MODEL_WEIGHTS for pipeline and exports
+                for mod_name in ("perception.config", "perception.pipeline"):
+                    if mod_name in sys.modules:
+                        setattr(sys.modules[mod_name], "REID_MODEL_WEIGHTS", "aicity")
+            except Exception as err:
+                print(f"Exception loading AI City checkpoint '{AICITY_CHECKPOINT_PATH}': {err}")
+                self._extractor = None
+                loaded_aicity = False
+
+        if not loaded_aicity:
+            # Fall back to MSMT17
+            try:
+                self._extractor = torchreid.utils.FeatureExtractor(
+                    model_name=self.model_name,
+                    model_path="",
+                    device=self.device,
+                    verbose=False,
+                )
+                self.reid_model = f"{self.model_name}_{self.model_weights}"
+            except Exception as err:
+                print(f"Warning: Failed to load Re-ID model '{self.model_name}': {err}")
+                self._extractor = None
 
     def extract(
         self, crop: np.ndarray
