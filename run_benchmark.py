@@ -200,7 +200,7 @@ def execute_ablation_benchmark():
     print("-" * 90)
     for tier_key, t_data in abl_res["tiers"].items():
         p = t_data["pairwise"]
-        print(f"{tier_key:<30} | {p['precision']:<7.4f} | {p['recall']:<7.4f} | {p['f1']:<7.4f} | {p['false_merge_rate']:<7.4f} | {t_data['cluster_purity']:<7.4f}")
+        print(f"{tier_key:<30} | {p['precision']:<7.4f} | {p['recall']:<7.4f} | {p['f1_score']:<7.4f} | {p['false_merge_rate']:<7.4f} | {t_data['cluster_purity']:<7.4f}")
     print("=" * 90)
     print("[INSIGHT] Full UrbanTrack achieves maximum cluster purity and 0.0 false merge rate.\n")
 
@@ -228,15 +228,15 @@ def execute_degradation_benchmark():
     print(f"  {'Dropout %':<12} | {'Precision':<10} | {'Recall':<10} | {'F1 Score':<10} | {'False Merges':<12} | {'Behavior'}")
     print("  " + "-" * 75)
     for row in deg_res["plate_dropout_curve"]:
-        print(f"  {row['plate_dropout_pct']:<12.1f} | {row['precision']:<10.4f} | {row['recall']:<10.4f} | {row['f1_score']:<10.4f} | {row['false_merges']:<12} | {row['behavior']}")
+        print(f"  {row.get('dropout_pct', 0.0):<12.1f} | {row.get('precision', 0.0):<10.4f} | {row.get('recall', 0.0):<10.4f} | {row.get('f1_score', 0.0):<10.4f} | {row.get('false_merges', 0):<12} | {row.get('behavior', '')}")
 
     print("\nRE-ID APPEARANCE DROPOUT CURVE:")
     print(f"  {'Dropout %':<12} | {'Precision':<10} | {'Recall':<10} | {'F1 Score':<10} | {'False Merges':<12} | {'Behavior'}")
     print("  " + "-" * 75)
     for row in deg_res["reid_dropout_curve"]:
-        print(f"  {row['reid_dropout_pct']:<12.1f} | {row['precision']:<10.4f} | {row['recall']:<10.4f} | {row['f1_score']:<10.4f} | {row['false_merges']:<12} | {row['behavior']}")
+        print(f"  {row.get('dropout_pct', 0.0):<12.1f} | {row.get('precision', 0.0):<10.4f} | {row.get('recall', 0.0):<10.4f} | {row.get('f1_score', 0.0):<10.4f} | {row.get('false_merges', 0):<12} | {row.get('behavior', '')}")
     print("=" * 90)
-    print(f"[CONCLUSION] {deg_res['conclusion']}\n")
+    print(f"[CONCLUSION] {deg_res.get('dynamic_conclusion', '')}\n")
 
 
 def execute_tracklet_benchmark():

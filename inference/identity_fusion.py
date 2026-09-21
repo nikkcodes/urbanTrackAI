@@ -83,7 +83,12 @@ def match_observations(
     app_score = None
     app_status = "unavailable"
     if obs_a.appearance_embedding is not None and obs_b.appearance_embedding is not None:
-        if (
+        reid_a = getattr(obs_a, "reid_model", None)
+        reid_b = getattr(obs_b, "reid_model", None)
+        if reid_a and reid_b and reid_a != reid_b:
+            app_score = None
+            app_status = "incompatible_models"
+        elif (
             isinstance(obs_a.appearance_embedding, (list, tuple))
             and isinstance(obs_b.appearance_embedding, (list, tuple))
             and len(obs_a.appearance_embedding) > 0
@@ -124,8 +129,12 @@ def match_observations(
     rejection_reason = ""
 
     if type_status == "incompatible":
-        is_rejected = True
-        rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type})."
+        if app_score is None:
+            is_rejected = True
+            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) and no ReID evidence."
+        elif app_score < 0.75:
+            is_rejected = True
+            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) and insufficient ReID evidence ({app_score:.2f} < 0.75)."
     elif is_strong_plate_contradiction:
         is_rejected = True
         rejection_reason = f"Strong license plate contradiction ({obs_a.plate} vs {obs_b.plate}, similarity {plate_score:.2f} < 0.35 with verified OCR)."

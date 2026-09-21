@@ -119,6 +119,7 @@ class CandidateGenerator:
             p_conf = float(o.plate_confidence) if o.plate_confidence is not None else 1.0
             raw_vtype = str(o.vehicle_type or "").strip().lower() if o.vehicle_type else ""
             norm_v = synonyms.get(raw_vtype, raw_vtype) if raw_vtype else None
+            reid_model = getattr(o, "reid_model", None)
             items.append((
                 o,
                 o.timestamp_seconds,
@@ -133,6 +134,7 @@ class CandidateGenerator:
                 o.time_reference_id,
                 o.world_position,
                 o.world_coordinate_system,
+                reid_model,
             ))
 
         # 1. Indexed retrieval using temporal window bisect search
@@ -220,8 +222,16 @@ class CandidateGenerator:
                 # 2. Vehicle type compatibility (only prune when both are known and incompatible)
                 norm_b = item_b[3]
                 if norm_a and norm_b and norm_a != norm_b:
-                    rejection_counts["incompatible_vehicle_type"] += 1
-                    continue
+                    # TWO-STAGE GATE: 
+                    # We have a vehicle-type mismatch. 
+                    # We only admit this candidate to fusion if there is independent evidence (i.e. ReID model compatibility).
+                    reid_a = item_a[13]
+                    reid_b = item_b[13]
+                    if not (reid_a and reid_b and reid_a == reid_b):
+                        # Incompatible embedding models. Fusion will have NO identity evidence since plates are censored.
+                        rejection_counts["incompatible_vehicle_type"] += 1
+                        continue
+                    # Else: They have compatible ReID models. Admit them to fusion so appearance similarity can be checked.
 
                 # 3. Strong license plate contradiction
                 clean_plate_b = item_b[7]

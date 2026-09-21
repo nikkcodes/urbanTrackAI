@@ -6,6 +6,7 @@ Phase D: Fixes singleton semantics — singletons receive identity_status='uncon
          NOT artificial identity_confidence=1.0.
 """
 
+import math
 from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple
 
 from schemas.observation_schema import Observation
@@ -162,6 +163,9 @@ class IdentityGraph:
 
         for nid in self.adjacency:
             self.adjacency[nid].sort(key=lambda item: (-item[1], item[0]))
+
+    # Semantic alias for assembling graph from precomputed pairs
+    assemble_from_pairs = build_graph_from_matches
 
     def build_graph_reference(
         self,
@@ -401,7 +405,47 @@ class IdentityGraph:
                         )
                         contradictory_edges.append(pair_key)
 
-                # Physical speed & simultaneous contradiction across all pairs
+                # Vehicle type pairwise contradiction check
+                if obs_i.vehicle_type and obs_j.vehicle_type:
+                    from .similarity import vehicle_type_compatibility
+                    _, v_status = vehicle_type_compatibility(obs_i.vehicle_type, obs_j.vehicle_type)
+                    if v_status == "incompatible":
+                        violations.append(
+                            f"Incompatible vehicle types between {obs_i.observation_id} ('{obs_i.vehicle_type}') and "
+                            f"{obs_j.observation_id} ('{obs_j.vehicle_type}') in same cluster."
+                        )
+                        contradictory_edges.append(pair_key)
+
+                # World coordinates physical speed & simultaneous contradiction
+                w_xi = getattr(obs_i, "world_x", None)
+                w_yi = getattr(obs_i, "world_y", None)
+                w_xj = getattr(obs_j, "world_x", None)
+                w_yj = getattr(obs_j, "world_y", None)
+                if w_xi is not None and w_yi is not None and w_xj is not None and w_yj is not None:
+                    t_i = getattr(obs_i, "synchronized_timestamp_seconds", None)
+                    t_j = getattr(obs_j, "synchronized_timestamp_seconds", None)
+                    if t_i is None:
+                        t_i = obs_i.timestamp_seconds
+                    if t_j is None:
+                        t_j = obs_j.timestamp_seconds
+                    dt = abs(float(t_j) - float(t_i))
+                    if dt == 0.0 and obs_i.camera_id != obs_j.camera_id:
+                        violations.append(
+                            f"Physically impossible simultaneous observation at different cameras: "
+                            f"{obs_i.observation_id} ({obs_i.camera_id}) vs {obs_j.observation_id} ({obs_j.camera_id})."
+                        )
+                        contradictory_edges.append(pair_key)
+                    elif dt > 0.0:
+                        dist_m = math.sqrt((w_xj - w_xi)**2 + (w_yj - w_yi)**2)
+                        sp_kmh = (dist_m / dt) * 3.6
+                        if sp_kmh > max_speed_kmh:
+                            violations.append(
+                                f"Physically impossible world transit speed between {obs_i.observation_id} and {obs_j.observation_id}: "
+                                f"{sp_kmh:.1f} km/h exceeds limit ({max_speed_kmh:.1f} km/h)."
+                            )
+                            contradictory_edges.append(pair_key)
+
+                # Geographic physical speed & simultaneous contradiction across all pairs
                 if (
                     obs_i.latitude is not None and obs_i.longitude is not None
                     and obs_j.latitude is not None and obs_j.longitude is not None
@@ -611,6 +655,9 @@ class IdentityGraph:
         Returns:
             List[Dict[str, Any]]: List of candidate or final vehicle identities.
         """
+        if config and "resolve_contradictions" in config:
+            resolve_contradictions = bool(config["resolve_contradictions"])
+
         visited: Set[str] = set()
         raw_components: List[List[Observation]] = []
 
