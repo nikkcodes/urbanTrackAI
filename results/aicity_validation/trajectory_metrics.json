@@ -1,0 +1,10 @@
+{
+  "status": "evaluated",
+  "total_trajectories_evaluated": 355,
+  "transitions_with_world_coordinates": 26,
+  "total_world_distance_meters": 31932.52,
+  "mean_transition_speed_kmh": 254.79,
+  "median_transition_speed_kmh": 9.06,
+  "physically_impossible_speed_violations": 7,
+  "speed_plausibility_rate": 0.7308
+}

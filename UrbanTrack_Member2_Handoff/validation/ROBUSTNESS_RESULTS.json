@@ -1,0 +1,38 @@
+{
+  "missing_embeddings_20pct": {
+    "description": "20% appearance embeddings randomly dropped",
+    "perturbed_f1": 0.0,
+    "delta_f1": 0.0,
+    "cluster_purity": 0.9694,
+    "failure_mode": "graceful_fallback_to_unconfirmed_singletons"
+  },
+  "missing_embeddings_50pct": {
+    "description": "50% appearance embeddings randomly dropped",
+    "perturbed_f1": 0.0,
+    "delta_f1": 0.0,
+    "cluster_purity": 0.9864,
+    "failure_mode": "conservative_rejection_of_sparse_associations"
+  },
+  "vehicle_type_noise_10pct": {
+    "description": "10% vehicle types perturbed with classification noise",
+    "perturbed_f1": 0.0,
+    "delta_f1": 0.0,
+    "cluster_purity": 0.9626,
+    "failure_mode": "type_pruning_suppresses_mismatched_candidates"
+  },
+  "camera_blackout_c002": {
+    "description": "Complete camera blackout on CAM_S01_C002",
+    "perturbed_f1": 0.0,
+    "delta_f1": 0.0,
+    "cluster_purity": 0.9899,
+    "surviving_observations": 259,
+    "failure_mode": "pipeline_continues_with_surviving_c001_c003_pair"
+  },
+  "sync_jitter_2s": {
+    "description": "Injected synthetic synchronization error of +/- 2.0s",
+    "perturbed_f1": 0.0,
+    "delta_f1": 0.0,
+    "cluster_purity": 0.9558,
+    "failure_mode": "widened_temporal_intervals_absorb_mild_jitter"
+  }
+}

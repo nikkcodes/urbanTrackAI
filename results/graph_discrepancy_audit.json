@@ -1,0 +1,398 @@
+{
+  "report_name": "Reference vs Optimized Identity Graph Discrepancy Audit",
+  "total_reference_edges": 23,
+  "total_optimized_edges": 13,
+  "discrepancy_count": 10,
+  "differing_edges": [
+    {
+      "edge": "AB_1 <-> AB_21",
+      "observation_a": {
+        "id": "AB_1",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1020.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_21",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1420.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_1 <-> AB_6",
+      "observation_a": {
+        "id": "AB_1",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1020.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_6",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1120.0,
+        "vehicle_type": "truck",
+        "plate": "MH12AB1006",
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_11 <-> AB_21",
+      "observation_a": {
+        "id": "AB_11",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1220.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_21",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1420.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_6 <-> AB_11",
+      "observation_a": {
+        "id": "AB_6",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1120.0,
+        "vehicle_type": "truck",
+        "plate": "MH12AB1006",
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_11",
+        "camera_id": "cam_1",
+        "timestamp_seconds": 1220.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_13 <-> AB_18",
+      "observation_a": {
+        "id": "AB_13",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1260.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_18",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1360.0,
+        "vehicle_type": "truck",
+        "plate": "MH12AB1018",
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_3 <-> AB_13",
+      "observation_a": {
+        "id": "AB_3",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1060.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_13",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1260.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_9 <-> AB_14",
+      "observation_a": {
+        "id": "AB_9",
+        "camera_id": "cam_4",
+        "timestamp_seconds": 1180.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_14",
+        "camera_id": "cam_4",
+        "timestamp_seconds": 1280.0,
+        "vehicle_type": "car",
+        "plate": "MH12AB1014",
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_18 <-> AB_23",
+      "observation_a": {
+        "id": "AB_18",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1360.0,
+        "vehicle_type": "truck",
+        "plate": "MH12AB1018",
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_23",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1460.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_9 <-> AB_19",
+      "observation_a": {
+        "id": "AB_9",
+        "camera_id": "cam_4",
+        "timestamp_seconds": 1180.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_19",
+        "camera_id": "cam_4",
+        "timestamp_seconds": 1380.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    },
+    {
+      "edge": "AB_3 <-> AB_23",
+      "observation_a": {
+        "id": "AB_3",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1060.0,
+        "vehicle_type": "truck",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "observation_b": {
+        "id": "AB_23",
+        "camera_id": "cam_3",
+        "timestamp_seconds": 1460.0,
+        "vehicle_type": "car",
+        "plate": null,
+        "has_embedding": true,
+        "reid_model": null
+      },
+      "evidence": {
+        "appearance_similarity": 1.0,
+        "appearance_status": "available",
+        "vehicle_type_match": false,
+        "vehicle_type_status": "incompatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "spatial_feasibility": 1.0,
+        "geographic_distance_meters": 0.0
+      },
+      "reference_decision": "EDGE_ADDED",
+      "reference_score": 0.7,
+      "reference_reason": "Brute-force O(N^2) evaluation reached exact boundary score 0.70 via synthetic 1.0 appearance match despite vehicle-type mismatch",
+      "optimized_decision": "PRUNED_AT_CANDIDATE_GATE",
+      "candidate_gate_status": "pruned_by_two_stage_gate",
+      "candidate_gate_reason": "Vehicle type mismatch (car vs truck) without verified compatible reid_model attribute",
+      "expected_semantics": "Type-mismatched observations lacking verified common ReID model space or verified OCR plate match must NOT form unconditional identity edges at 0.70",
+      "semantic_divergence_root_cause": "In brute-force reference path, match_observations computed feasibility = 0.70 * 1.0 + 0.30 * 0.0 = 0.70. Combined with synthetic appearance similarity 1.00, estimated_prob landed exactly on the threshold 0.70, adding an ambiguous edge to ref_graph. Conversely, the optimized CandidateGenerator safely pruned this car-truck pair because reid_model was unverified/missing. Furthermore, in production, an ambiguous score (0.70) with an unverified vehicle type mismatch should not form an edge without explicit override evidence."
+    }
+  ]
+}

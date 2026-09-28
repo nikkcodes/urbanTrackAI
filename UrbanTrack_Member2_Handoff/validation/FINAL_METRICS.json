@@ -1,0 +1,334 @@
+{
+  "project": "UrbanTrack AI",
+  "tagline": "Probabilistic Vehicle Intelligence Engine",
+  "project_positioning": "UrbanTrack is designed as a city-scale probabilistic vehicle intelligence engine. For the hackathon MVP, we implemented and validated the core pipeline using three cameras from the larger AI City multi-camera environment.",
+  "validation_scope": {
+    "target_dataset": "AI City Challenge 2022 Track 1 (CityFlowV2)",
+    "mvp_slice": [
+      "CAM_S01_C001",
+      "CAM_S01_C002",
+      "CAM_S01_C003"
+    ],
+    "target_expansion_scope": "46 cameras across CityFlowV2 network",
+    "timestamp_semantics": "video_relative",
+    "spatial_semantics": "cityflow_world",
+    "zero_data_fabrication_enforced": true
+  },
+  "perception_summary": {
+    "total_tracklets": 384,
+    "total_observations": 21810,
+    "total_persisted_embeddings": 322,
+    "embedding_dimension": 512,
+    "camera_breakdown": {
+      "CAM_S01_C001": {
+        "tracklets": 107,
+        "embeddings": 94,
+        "reid_model": "osnet_x0_25_aicity",
+        "fps": 10.0,
+        "video_duration_seconds": 195.5,
+        "frames_processed": 1955
+      },
+      "CAM_S01_C002": {
+        "tracklets": 125,
+        "embeddings": 115,
+        "reid_model": "osnet_x0_25_msmt17",
+        "fps": 10.0,
+        "video_duration_seconds": 211.0,
+        "reid_compatibility_status": "incompatible_model_guarded",
+        "frames_processed": 2110
+      },
+      "CAM_S01_C003": {
+        "tracklets": 152,
+        "embeddings": 113,
+        "reid_model": "osnet_x0_25_aicity",
+        "fps": 10.0,
+        "video_duration_seconds": 199.6,
+        "frames_processed": 1996
+      }
+    }
+  },
+  "synchronization": {
+    "source_file": "data/aicity_ground_truth/cam_timestamp/S01.txt",
+    "file_sha256": "c06bb90d5773b88c7da32d3b398b19cef8291859ca61664ba1a70e19ff3f5e72",
+    "offsets_seconds": {
+      "CAM_S01_C001": 0.0,
+      "CAM_S01_C002": 1.64,
+      "CAM_S01_C003": 2.049
+    },
+    "semantics": "video_relative_preserved_plus_synchronized_overlay"
+  },
+  "calibration_and_world_space": {
+    "source_dir": "data/aicity_ground_truth/calibration",
+    "homographies_loaded": [
+      "c001",
+      "c002",
+      "c003"
+    ],
+    "reprojection_errors_px": {
+      "c001": 9.94,
+      "c002": 11.23,
+      "c003": 13.56
+    },
+    "total_observations_projected": 359,
+    "total_observations_count": 384,
+    "world_projection_rate": 0.9349,
+    "horizon_instability_safeguard": {
+      "min_homography_denominator_epsilon": 0.5,
+      "max_world_coordinate_bound_meters": 25000.0,
+      "unstable_horizon_points_rejected": 25,
+      "status_label": "unstable_horizon_denominator",
+      "fabricated_coordinates_substituted": 0,
+      "nan_or_inf_occurrences": 0
+    }
+  },
+  "ground_truth_inventory": {
+    "total_gt_vehicles": 95,
+    "multi_camera_gt_vehicles": 79,
+    "mapped_tracklets_count": 294,
+    "mapped_tracklets_rate": 0.7656,
+    "unmatched_tracklets_count": 89,
+    "ambiguous_tracklets_count": 1,
+    "true_cross_camera_gt_positive_pairs": 308,
+    "cross_camera_negative_pairs": 28380,
+    "linking_consensus_threshold": 0.6,
+    "linking_iou_threshold": 0.4
+  },
+  "candidate_generation": {
+    "theoretical_total_pairs": 73536,
+    "generated_candidate_pairs": 51146,
+    "pruning_reduction_pct": 30.45,
+    "generation_runtime_ms": 9.19,
+    "candidate_recall_pct": 72.08,
+    "retrieved_true_cross_pairs": 222,
+    "total_true_cross_pairs": 308,
+    "pruning_breakdown": {
+      "incompatible_vehicle_type": 20478,
+      "missing_identity_evidence": 1890,
+      "simultaneous_different_cameras": 22,
+      "temporal_horizon_exceeded": 0,
+      "physically_impossible_speed": 0,
+      "strong_plate_contradiction": 0
+    }
+  },
+  "identity_fusion_and_clustering": {
+    "evaluated_candidate_pairs": 51146,
+    "c002_guarded_pairs": 22659,
+    "c001_c003_compatible_pairs": 7264,
+    "pairwise_decisions": {
+      "CONFIRMED": 7,
+      "AMBIGUOUS": 9087,
+      "REJECTED": 42052
+    },
+    "inferred_clusters_count": 355,
+    "cluster_breakdown": {
+      "unconfirmed_singleton": 337,
+      "candidate": 18
+    },
+    "cross_camera_metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_merge_rate": 0.0,
+      "false_non_match_rate": 1.0,
+      "cluster_purity": 0.9558
+    },
+    "overall_metrics": {
+      "precision": 0.2727,
+      "recall": 0.015,
+      "f1_score": 0.0284,
+      "false_merge_rate": 0.000375,
+      "cluster_purity": 0.9558
+    }
+  },
+  "probabilistic_calibration": {
+    "status": "passed",
+    "method": "platt_scaling_logistic",
+    "dev_vehicles_count": 57,
+    "holdout_vehicles_count": 38,
+    "vehicle_leakage_between_splits": 0,
+    "uncalibrated_brier_score": 0.126,
+    "calibrated_brier_score": 0.0227,
+    "brier_improvement": 0.1034,
+    "uncalibrated_ece": 0.3127,
+    "calibrated_ece": 0.0067,
+    "ece_reduction": 0.306,
+    "fitted_parameters": {
+      "coef": 0.5138,
+      "intercept": -3.7468
+    }
+  },
+  "ablation_benchmark": {
+    "Baseline_1_ReID_Only": {
+      "active_evidence": [
+        "appearance_reid"
+      ],
+      "candidates": 51146,
+      "accepted": 731,
+      "ambiguous": 41077,
+      "rejected": 9338,
+      "precision": 0.2308,
+      "recall": 0.0097,
+      "f1_score": 0.0187,
+      "false_merge_rate": 0.000352,
+      "cluster_purity": 0.5884
+    },
+    "Baseline_2_ReID_VehicleType": {
+      "active_evidence": [
+        "appearance_reid",
+        "vehicle_type"
+      ],
+      "candidates": 51146,
+      "accepted": 731,
+      "ambiguous": 41077,
+      "rejected": 9338,
+      "precision": 0.2308,
+      "recall": 0.0097,
+      "f1_score": 0.0187,
+      "false_merge_rate": 0.000352,
+      "cluster_purity": 0.5884
+    },
+    "Baseline_3_Multimodal_Fusion": {
+      "active_evidence": [
+        "appearance_reid",
+        "vehicle_type",
+        "camera_reliability"
+      ],
+      "candidates": 51146,
+      "accepted": 731,
+      "ambiguous": 41077,
+      "rejected": 9338,
+      "precision": 0.2308,
+      "recall": 0.0097,
+      "f1_score": 0.0187,
+      "false_merge_rate": 0.000352,
+      "cluster_purity": 0.5884
+    },
+    "Baseline_4_Multimodal_PhysicalConstraints": {
+      "active_evidence": [
+        "appearance_reid",
+        "vehicle_type",
+        "camera_reliability",
+        "spatiotemporal_constraints"
+      ],
+      "candidates": 51146,
+      "accepted": 36,
+      "ambiguous": 9058,
+      "rejected": 42052,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_merge_rate": 0.0,
+      "cluster_purity": 0.9558
+    },
+    "Baseline_5_Full_UrbanTrack": {
+      "active_evidence": [
+        "appearance_reid",
+        "vehicle_type",
+        "camera_reliability",
+        "spatiotemporal_constraints"
+      ],
+      "candidates": 51146,
+      "accepted": 36,
+      "ambiguous": 9058,
+      "rejected": 42052,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_merge_rate": 0.0,
+      "cluster_purity": 0.9558
+    }
+  },
+  "trajectory_evaluation": {
+    "total_trajectories_evaluated": 355,
+    "transitions_with_world_coordinates": 26,
+    "total_world_distance_meters": 31932.52,
+    "mean_transition_speed_kmh": 254.79,
+    "median_transition_speed_kmh": 9.06,
+    "speed_feasibility_rate": 0.7308
+  },
+  "robustness_benchmarks": {
+    "missing_embeddings_20pct": {
+      "delta_f1": 0.0,
+      "cluster_purity": 0.9694,
+      "failure_mode": "graceful_fallback_to_unconfirmed_singletons"
+    },
+    "missing_embeddings_50pct": {
+      "delta_f1": 0.0,
+      "cluster_purity": 0.9864,
+      "failure_mode": "conservative_rejection_of_sparse_associations"
+    },
+    "vehicle_type_noise_10pct": {
+      "delta_f1": 0.0,
+      "cluster_purity": 0.9626,
+      "failure_mode": "type_pruning_suppresses_mismatched_candidates"
+    },
+    "camera_blackout_c002": {
+      "delta_f1": 0.0,
+      "cluster_purity": 0.9899,
+      "failure_mode": "pipeline_continues_with_surviving_c001_c003_pair"
+    },
+    "sync_jitter_2s": {
+      "delta_f1": 0.0,
+      "cluster_purity": 0.9558,
+      "failure_mode": "widened_temporal_intervals_absorb_mild_jitter"
+    }
+  },
+  "scalability_benchmarks": [
+    {
+      "N": 50,
+      "theoretical_pairs": 1225,
+      "candidates": 905,
+      "pruned_pct": 26.12,
+      "runtime_ms": 0.23
+    },
+    {
+      "N": 100,
+      "theoretical_pairs": 4950,
+      "candidates": 3664,
+      "pruned_pct": 25.98,
+      "runtime_ms": 0.79
+    },
+    {
+      "N": 200,
+      "theoretical_pairs": 19900,
+      "candidates": 13863,
+      "pruned_pct": 30.34,
+      "runtime_ms": 2.42
+    },
+    {
+      "N": 384,
+      "theoretical_pairs": 73536,
+      "candidates": 51146,
+      "pruned_pct": 30.45,
+      "runtime_ms": 8.84
+    },
+    {
+      "N": 500,
+      "theoretical_pairs": 124750,
+      "candidates": 87881,
+      "pruned_pct": 29.55,
+      "runtime_ms": 15.36
+    },
+    {
+      "N": 1000,
+      "theoretical_pairs": 499500,
+      "candidates": 348777,
+      "pruned_pct": 30.17,
+      "runtime_ms": 200.65
+    }
+  ],
+  "leakage_audit": {
+    "status": "passed",
+    "zero_gt_leakage_verified": true,
+    "observations_audited": 384,
+    "violations_found": 0
+  },
+  "test_suite_status": {
+    "total_repository_tests": 399,
+    "passed_tests": 399,
+    "failed_tests": 0,
+    "test_duration_seconds": 49.88,
+    "integration_tests_passed": 11,
+    "validation_tests_passed": 11
+  }
+}

@@ -1,0 +1,12 @@
+model: osnet_x0_25
+optimizer: adam
+learning_rate: 0.0003
+batch_size: 32
+epochs: 2
+workers: 4
+dataset_path: data/reid_dataset
+device: cuda
+amp_enabled: true
+image_size:
+- 256
+- 128

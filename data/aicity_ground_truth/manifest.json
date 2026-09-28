@@ -1,0 +1,41 @@
+{
+  "dataset": "AICity22_Track1_MTMC_Tracking_S01_Metadata",
+  "source": "/Users/yanalavivekreddy/Downloads/AICity22_Track1_MTMC_Tracking",
+  "scenario": "S01",
+  "cameras": [
+    "c001",
+    "c002",
+    "c003"
+  ],
+  "acquired_at": "2026-09-17T18:13:01Z",
+  "files": {
+    "calibration/c001_calibration.txt": {
+      "sha256": "5c8552e1c181513434c32120e331da4a9cf3548610f1042063a5453ffbceedba",
+      "size_bytes": 230
+    },
+    "calibration/c002_calibration.txt": {
+      "sha256": "34ca4afec00f5d8f46ddfca89aa1ead1f9e412f59c367230309e420b12858015",
+      "size_bytes": 227
+    },
+    "calibration/c003_calibration.txt": {
+      "sha256": "d94e551f6876f6e240562e392feba0feedbda1522eb01fbf7219f270d27a3a49",
+      "size_bytes": 228
+    },
+    "cam_timestamp/S01.txt": {
+      "sha256": "c06bb90d5773b88c7da32d3b398b19cef8291859ca61664ba1a70e19ff3f5e72",
+      "size_bytes": 56
+    },
+    "gt/c001_gt.txt": {
+      "sha256": "618a8808b9520506adf660f7714707eec16df4ee35129043217f792e4c3d0599",
+      "size_bytes": 117596
+    },
+    "gt/c002_gt.txt": {
+      "sha256": "6747328b2b0f43b440305ee7ff59ca773408e907a872875abbf91f92e7d3a6c3",
+      "size_bytes": 221236
+    },
+    "gt/c003_gt.txt": {
+      "sha256": "92375f3b083a6a411969cbd641022550cdac13b4ef77bab87488a43877a8b453",
+      "size_bytes": 234321
+    }
+  }
+}

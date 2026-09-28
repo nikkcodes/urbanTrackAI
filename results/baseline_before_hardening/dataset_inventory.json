@@ -1,0 +1,13 @@
+{
+  "total_observations": 384,
+  "cameras": [
+    "CAM_S01_C001",
+    "CAM_S01_C002",
+    "CAM_S01_C003"
+  ],
+  "calibrated_observations": 359,
+  "synchronized_observations": 384,
+  "timestamp_semantics": "video_relative",
+  "synchronized_timestamp_semantics": "aicity_official_synchronized",
+  "coordinate_system": "cityflow_world"
+}

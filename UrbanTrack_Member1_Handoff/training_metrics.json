@@ -1,0 +1,17 @@
+{
+  "model_name": "osnet_x0_25",
+  "dataset": "AI City Challenge 2022 Track 1",
+  "epochs_completed": 2,
+  "batch_size": 32,
+  "image_size": [
+    256,
+    128
+  ],
+  "device": "cuda",
+  "mixed_precision": true,
+  "best_rank1_accuracy": 0.9276,
+  "best_map": 0.9462,
+  "training_time_seconds": 141.2,
+  "weights_file": "models/reid/osnet_x0_25_aicity_best.pth",
+  "timestamp": "2026-09-17T16:13:12.884818+00:00"
+}

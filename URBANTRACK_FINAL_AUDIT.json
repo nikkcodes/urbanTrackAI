@@ -1,6 +1,6 @@
 {
   "title": "UrbanTrack AI \u2014 Final Evidence Audit",
-  "generated_at": "2026-09-17T09:04:57.012166+00:00",
+  "generated_at": "2026-09-28T15:51:42.174869+00:00",
   "source_command": "python scripts/reproduce_all.py",
   "evidence_policy": "Measured outputs only; no self-assigned hackathon score.",
   "capability_matrix": [
@@ -73,7 +73,7 @@
         "scenario": "S01",
         "tracker_input": "mtsc_deepsort_mask_rcnn.txt",
         "source_root": "data/cityflowv2",
-        "generated_at": "2026-09-17T09:06:23.454488+00:00",
+        "generated_at": "2026-09-28T15:53:11.511234+00:00",
         "ground_truth_used_for": "evaluation_only_box_matching",
         "ground_truth_inference_leakage": false,
         "source_videos_extracted": false
@@ -739,11 +739,11 @@
     },
     "all_stages": {
       "stage_0_unit_tests": {
-        "tests_run": 381,
+        "tests_run": 413,
         "failures": 0,
         "errors": 0,
-        "passed": 381,
-        "runtime_seconds": 40.622,
+        "passed": 413,
+        "runtime_seconds": 42.238,
         "status": "PASSED"
       },
       "stage_1_raw_integrity": {
@@ -1189,10 +1189,10 @@
         "candidate_pairs_count": 66556,
         "candidate_reduction_pct": 94.08,
         "candidate_recall_pct": 99.99,
-        "elapsed_total_seconds": 13.973,
-        "elapsed_candidate_gen_seconds": 1.483,
-        "elapsed_fusion_seconds": 12.012,
-        "elapsed_graph_seconds": 0.461,
+        "elapsed_total_seconds": 14.099,
+        "elapsed_candidate_gen_seconds": 1.479,
+        "elapsed_fusion_seconds": 12.247,
+        "elapsed_graph_seconds": 0.353,
         "threshold_used": 0.75,
         "tp": 5814,
         "fp": 163,
@@ -1456,7 +1456,7 @@
           "scenario": "S01",
           "tracker_input": "mtsc_deepsort_mask_rcnn.txt",
           "source_root": "data/cityflowv2",
-          "generated_at": "2026-09-17T09:06:23.454488+00:00",
+          "generated_at": "2026-09-28T15:53:11.511234+00:00",
           "ground_truth_used_for": "evaluation_only_box_matching",
           "ground_truth_inference_leakage": false,
           "source_videos_extracted": false
@@ -2122,7 +2122,7 @@
       },
       "stage_8_candidate_scaling": {
         "benchmark_name": "candidate_generation_scaling",
-        "timestamp": "2026-09-17T14:36:27.207814",
+        "timestamp": "2026-09-28T21:23:15.515253",
         "evaluations": [
           {
             "n_observations": 50,
@@ -2131,9 +2131,9 @@
             "pruned_pairs": 937,
             "reduction_pct": 76.49,
             "candidate_recall_pct": 100.0,
-            "naive_enumeration_ms": 0.05,
-            "indexed_retrieval_ms": 1.33,
-            "speedup_factor": 0.04
+            "naive_enumeration_ms": 0.08,
+            "indexed_retrieval_ms": 1.41,
+            "speedup_factor": 0.06
           },
           {
             "n_observations": 100,
@@ -2142,8 +2142,8 @@
             "pruned_pairs": 3750,
             "reduction_pct": 75.76,
             "candidate_recall_pct": 100.0,
-            "naive_enumeration_ms": 0.25,
-            "indexed_retrieval_ms": 5.38,
+            "naive_enumeration_ms": 0.3,
+            "indexed_retrieval_ms": 5.42,
             "speedup_factor": 0.05
           },
           {
@@ -2153,9 +2153,9 @@
             "pruned_pairs": 15312,
             "reduction_pct": 76.94,
             "candidate_recall_pct": 100.0,
-            "naive_enumeration_ms": 1.1,
-            "indexed_retrieval_ms": 19.93,
-            "speedup_factor": 0.06
+            "naive_enumeration_ms": 1.61,
+            "indexed_retrieval_ms": 20.35,
+            "speedup_factor": 0.08
           },
           {
             "n_observations": 500,
@@ -2164,9 +2164,9 @@
             "pruned_pairs": 109062,
             "reduction_pct": 87.42,
             "candidate_recall_pct": 100.0,
-            "naive_enumeration_ms": 12.78,
-            "indexed_retrieval_ms": 67.34,
-            "speedup_factor": 0.19
+            "naive_enumeration_ms": 24.97,
+            "indexed_retrieval_ms": 69.0,
+            "speedup_factor": 0.36
           },
           {
             "n_observations": 1000,
@@ -2175,16 +2175,16 @@
             "pruned_pairs": 465312,
             "reduction_pct": 93.16,
             "candidate_recall_pct": 100.0,
-            "naive_enumeration_ms": 58.07,
-            "indexed_retrieval_ms": 147.92,
-            "speedup_factor": 0.39
+            "naive_enumeration_ms": 73.1,
+            "indexed_retrieval_ms": 152.39,
+            "speedup_factor": 0.48
           }
         ]
       },
       "stage_8b_fair_end_to_end_scalability": {
         "benchmark_name": "fair_end_to_end_scalability_benchmark",
         "repetitions": 2,
-        "timestamp": "2026-09-17T14:36:45.687432",
+        "timestamp": "2026-09-28T21:23:36.487080",
         "evaluations": [
           {
             "n_observations": 50,
@@ -2200,23 +2200,23 @@
             "recall": 0.0769,
             "f1": 0.1429,
             "baseline_pipeline": {
-              "total_runtime_median_ms": 51.08,
-              "total_runtime_p95_ms": 52.25,
-              "fusion_runtime_median_ms": 49.48,
-              "graph_runtime_median_ms": 1.51,
+              "total_runtime_median_ms": 57.55,
+              "total_runtime_p95_ms": 58.31,
+              "fusion_runtime_median_ms": 55.89,
+              "graph_runtime_median_ms": 1.57,
               "fused_pairs_count": 1225,
               "final_edges": 1
             },
             "optimized_pipeline": {
-              "total_runtime_median_ms": 14.35,
-              "total_runtime_p95_ms": 14.9,
-              "candidate_gen_median_ms": 1.3,
-              "fusion_runtime_median_ms": 12.47,
-              "graph_runtime_median_ms": 0.58,
+              "total_runtime_median_ms": 15.75,
+              "total_runtime_p95_ms": 16.71,
+              "candidate_gen_median_ms": 1.34,
+              "fusion_runtime_median_ms": 13.83,
+              "graph_runtime_median_ms": 0.57,
               "fused_pairs_count": 288,
               "final_edges": 1
             },
-            "speedup_factor": 3.56
+            "speedup_factor": 3.66
           },
           {
             "n_observations": 100,
@@ -2232,23 +2232,23 @@
             "recall": 0.0128,
             "f1": 0.0244,
             "baseline_pipeline": {
-              "total_runtime_median_ms": 209.42,
-              "total_runtime_p95_ms": 210.49,
-              "fusion_runtime_median_ms": 202.95,
-              "graph_runtime_median_ms": 6.22,
+              "total_runtime_median_ms": 253.31,
+              "total_runtime_p95_ms": 261.26,
+              "fusion_runtime_median_ms": 245.87,
+              "graph_runtime_median_ms": 6.9,
               "fused_pairs_count": 4950,
               "final_edges": 4
             },
             "optimized_pipeline": {
-              "total_runtime_median_ms": 61.79,
-              "total_runtime_p95_ms": 62.46,
-              "candidate_gen_median_ms": 5.18,
-              "fusion_runtime_median_ms": 54.14,
-              "graph_runtime_median_ms": 2.46,
+              "total_runtime_median_ms": 63.76,
+              "total_runtime_p95_ms": 67.23,
+              "candidate_gen_median_ms": 5.34,
+              "fusion_runtime_median_ms": 56.23,
+              "graph_runtime_median_ms": 2.19,
               "fused_pairs_count": 1200,
               "final_edges": 4
             },
-            "speedup_factor": 3.39
+            "speedup_factor": 3.97
           },
           {
             "n_observations": 200,
@@ -2264,23 +2264,23 @@
             "recall": 0.0079,
             "f1": 0.0157,
             "baseline_pipeline": {
-              "total_runtime_median_ms": 902.0,
-              "total_runtime_p95_ms": 919.42,
-              "fusion_runtime_median_ms": 856.83,
-              "graph_runtime_median_ms": 44.15,
+              "total_runtime_median_ms": 1007.58,
+              "total_runtime_p95_ms": 1050.46,
+              "fusion_runtime_median_ms": 984.91,
+              "graph_runtime_median_ms": 21.29,
               "fused_pairs_count": 19900,
               "final_edges": 4
             },
             "optimized_pipeline": {
-              "total_runtime_median_ms": 264.71,
-              "total_runtime_p95_ms": 299.16,
-              "candidate_gen_median_ms": 20.95,
-              "fusion_runtime_median_ms": 236.33,
-              "graph_runtime_median_ms": 7.43,
+              "total_runtime_median_ms": 275.82,
+              "total_runtime_p95_ms": 310.7,
+              "candidate_gen_median_ms": 21.3,
+              "fusion_runtime_median_ms": 247.31,
+              "graph_runtime_median_ms": 7.21,
               "fused_pairs_count": 4860,
               "final_edges": 4
             },
-            "speedup_factor": 3.41
+            "speedup_factor": 3.65
           },
           {
             "n_observations": 500,
@@ -2296,29 +2296,29 @@
             "recall": 0.007,
             "f1": 0.0138,
             "baseline_pipeline": {
-              "total_runtime_median_ms": 6591.27,
-              "total_runtime_p95_ms": 7125.44,
-              "fusion_runtime_median_ms": 6251.43,
-              "graph_runtime_median_ms": 160.06,
+              "total_runtime_median_ms": 7729.62,
+              "total_runtime_p95_ms": 8316.09,
+              "fusion_runtime_median_ms": 7525.44,
+              "graph_runtime_median_ms": 186.18,
               "fused_pairs_count": 124750,
               "final_edges": 30
             },
             "optimized_pipeline": {
-              "total_runtime_median_ms": 1132.26,
-              "total_runtime_p95_ms": 1332.07,
-              "candidate_gen_median_ms": 78.56,
-              "fusion_runtime_median_ms": 1029.03,
-              "graph_runtime_median_ms": 24.67,
+              "total_runtime_median_ms": 1069.78,
+              "total_runtime_p95_ms": 1093.59,
+              "candidate_gen_median_ms": 79.72,
+              "fusion_runtime_median_ms": 966.33,
+              "graph_runtime_median_ms": 23.74,
               "fused_pairs_count": 18360,
               "final_edges": 19
             },
-            "speedup_factor": 5.82
+            "speedup_factor": 7.23
           }
         ]
       },
       "stage_8c_large_scale_candidate_pipeline": {
         "benchmark_name": "large_scale_candidate_pipeline_benchmark",
-        "timestamp": "2026-09-17T14:37:10.817772",
+        "timestamp": "2026-09-28T21:24:02.075967",
         "evaluations": [
           {
             "n_observations": 1000,
@@ -2327,11 +2327,11 @@
             "pruned_pairs": 458640,
             "candidate_reduction_pct": 91.82,
             "candidate_recall_pct": 100.0,
-            "candidate_gen_ms": 1149.1,
-            "fusion_ms": 518.17,
-            "graph_assembly_ms": 407.55,
-            "total_pipeline_ms": 2075.6,
-            "peak_memory_mb": 8.65,
+            "candidate_gen_ms": 1161.33,
+            "fusion_ms": 551.84,
+            "graph_assembly_ms": 469.62,
+            "total_pipeline_ms": 2183.07,
+            "peak_memory_mb": 8.66,
             "rejection_breakdown": {
               "temporal_horizon_exceeded": 335790,
               "simultaneous_different_cameras": 0,
@@ -2348,11 +2348,11 @@
             "pruned_pairs": 12276640,
             "candidate_reduction_pct": 98.23,
             "candidate_recall_pct": 100.0,
-            "candidate_gen_ms": 6324.25,
-            "fusion_ms": 521.27,
-            "graph_assembly_ms": 752.0,
-            "total_pipeline_ms": 7597.55,
-            "peak_memory_mb": 29.45,
+            "candidate_gen_ms": 6421.19,
+            "fusion_ms": 558.03,
+            "graph_assembly_ms": 812.29,
+            "total_pipeline_ms": 7791.53,
+            "peak_memory_mb": 29.46,
             "rejection_breakdown": {
               "temporal_horizon_exceeded": 11613790,
               "simultaneous_different_cameras": 0,
@@ -2369,10 +2369,10 @@
             "pruned_pairs": 49549140,
             "candidate_reduction_pct": 99.11,
             "candidate_recall_pct": 100.0,
-            "candidate_gen_ms": 13053.52,
-            "fusion_ms": 521.0,
-            "graph_assembly_ms": 1223.82,
-            "total_pipeline_ms": 14798.4,
+            "candidate_gen_ms": 13061.65,
+            "fusion_ms": 552.13,
+            "graph_assembly_ms": 1322.99,
+            "total_pipeline_ms": 14936.79,
             "peak_memory_mb": 54.24,
             "rejection_breakdown": {
               "temporal_horizon_exceeded": 48211290,
@@ -3018,7 +3018,7 @@
       },
       "stage_11b_system_health": {
         "overall_status": "HEALTHY",
-        "preflight_duration_ms": 0.09,
+        "preflight_duration_ms": 0.08,
         "environment": {
           "status": "PASS",
           "python_version": "3.13.5",
@@ -3032,7 +3032,7 @@
           "camera_feeds": {
             "CAM_001": {
               "classification": "REAL",
-              "source_path": "/Users/yanalavivekreddy/Downloads/urbanTrackAI-member-2 2/data/member1_perception/cam_001",
+              "source_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/member1_perception/cam_001",
               "exists": true,
               "readable": true,
               "status": "READY"
@@ -3054,12 +3054,12 @@
     "acceptance_gates": {
       "GATE_01_all_tests_pass": {
         "status": "PASS",
-        "metric": "381/381 tests passing",
+        "metric": "413/413 tests passing",
         "threshold": "100% pass (0 failures, 0 errors, >= 356 tests)",
         "dataset": "Full test suite (tests/test_*.py)",
-        "source_result": "unittest.TextTestRunner (Ran 381 tests in 40.622s)",
+        "source_result": "unittest.TextTestRunner (Ran 413 tests in 42.238s)",
         "reason_for_threshold": "Zero regression policy across all Member 2 units and integrations",
-        "details": "381/381 unit and integration tests passing cleanly (0 errors, 0 failures)"
+        "details": "413/413 unit and integration tests passing cleanly (0 errors, 0 failures)"
       },
       "GATE_02_raw_manifest_verified": {
         "status": "PASS",
@@ -3135,12 +3135,12 @@
       },
       "GATE_10_scalability_fair_downstream_comparison": {
         "status": "PASS",
-        "metric": "N=500 -> Speedup: 5.82x (85.3% reduction, 100.0% recall)",
+        "metric": "N=500 -> Speedup: 7.23x (85.3% reduction, 100.0% recall)",
         "threshold": ">= 2.0x speedup with >= 99.0% candidate recall and zero duplicated fusion",
         "dataset": "Synthetic scalability benchmark (N=50..500)",
-        "source_result": "benchmark_end_to_end_scalability (Base=6591.27ms, Opt=1132.26ms)",
+        "source_result": "benchmark_end_to_end_scalability (Base=7729.62ms, Opt=1069.78ms)",
         "reason_for_threshold": "Methodological correctness: downstream fusion and graph logic executed exactly once",
-        "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 5.82x measured speedup"
+        "details": "Benchmark measures end-to-end Candidate+Fusion+Graph vs Naive+Fusion+Graph with 7.23x measured speedup"
       },
       "GATE_11_degradation_metrics_dynamic": {
         "status": "PASS",

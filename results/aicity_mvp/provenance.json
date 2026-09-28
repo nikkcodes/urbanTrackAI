@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-09-17T17:53:07Z",
+  "source_handoff_path": "UrbanTrack_Member1_Handoff/output",
+  "config_path": "configs/aicity_mvp.yaml",
+  "pipeline_stages": [
+    "load_aicity_member1_feed",
+    "CandidateGenerator(unsynchronized_mode=True)",
+    "match_observations(reid_guard=True)",
+    "IdentityGraph.build_graph_from_matches",
+    "reconstruct_identity_trajectory(mode=image_space)"
+  ],
+  "zero_fabrication_enforced": true
+}

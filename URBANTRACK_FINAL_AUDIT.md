@@ -1,6 +1,6 @@
 # UrbanTrack AI — Final Evidence Audit
 
-Generated: `2026-09-17T09:04:57.012166+00:00`  
+Generated: `2026-09-28T15:51:42.174869+00:00`  
 Source command: `python scripts/reproduce_all.py`
 
 This is a fact-only audit. It does not assign a hackathon score.

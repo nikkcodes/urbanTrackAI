@@ -1,0 +1,18 @@
+{
+  "calibration_dir": "data/aicity_ground_truth/calibration",
+  "cameras_calibrated": [
+    "c001",
+    "c002",
+    "c003"
+  ],
+  "reprojection_errors": {
+    "c001": 5.499888905989678,
+    "c002": 11.443081339704676,
+    "c003": 11.390840640147406
+  },
+  "file_hashes": {
+    "c001": "5c8552e1c181513434c32120e331da4a9cf3548610f1042063a5453ffbceedba",
+    "c002": "34ca4afec00f5d8f46ddfca89aa1ead1f9e412f59c367230309e420b12858015",
+    "c003": "d94e551f6876f6e240562e392feba0feedbda1522eb01fbf7219f270d27a3a49"
+  }
+}

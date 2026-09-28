@@ -29,3 +29,7 @@ ENV/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Scratch & temporary workspace files
+scratch/
+*.avi

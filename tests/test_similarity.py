@@ -118,6 +118,36 @@ class TestSimilarity(unittest.TestCase):
         with self.assertRaises(ValueError):
             Observation("O1", "C1", t, 17.38, 78.48, plate_confidence=-0.5)
 
+    # Scenario 11: OCR-aware confusable character model (Section 6)
+    def test_ocr_aware_confusable_characters(self):
+        """Visually confusable OCR characters (O/0, B/8, S/5) receive reduced edit penalty."""
+        from inference.similarity import ocr_aware_plate_similarity, CONFUSABLE_OCR_CHAR_PAIRS
+        self.assertIn(frozenset({"O", "0"}), CONFUSABLE_OCR_CHAR_PAIRS)
+        self.assertIn(frozenset({"B", "8"}), CONFUSABLE_OCR_CHAR_PAIRS)
+        self.assertIn(frozenset({"S", "5"}), CONFUSABLE_OCR_CHAR_PAIRS)
+
+        p_orig = "KA01AB1234"
+        # 1 substitution with confusable B vs 8: standard dist = 1.0 (sim 0.90), OCR-aware dist = 0.3 (sim 0.97)
+        p_conf = "KA01A81234"
+        std_score = plate_similarity(p_orig, p_conf, use_ocr_confusion=False)
+        ocr_score = ocr_aware_plate_similarity(p_orig, p_conf)
+        self.assertAlmostEqual(std_score, 0.90, places=2)
+        self.assertGreater(ocr_score, std_score)
+        self.assertAlmostEqual(ocr_score, 0.97, places=2)
+
+        # Multiple confusable substitutions (O vs 0 and B vs 8)
+        p_multi_orig = "MH01AB0123"
+        p_multi_conf = "MH01A8O123"
+        ocr_multi_score = ocr_aware_plate_similarity(p_multi_orig, p_multi_conf)
+        std_multi_score = plate_similarity(p_multi_orig, p_multi_conf, use_ocr_confusion=False)
+        self.assertAlmostEqual(std_multi_score, 0.80, places=2)
+        self.assertGreater(ocr_multi_score, 0.93)
+
+        # Non-confusable substitution receives full standard penalty
+        p_non_conf = "KA01AZ1234"  # B -> Z is not in confusable set
+        non_conf_score = ocr_aware_plate_similarity(p_orig, p_non_conf)
+        self.assertAlmostEqual(non_conf_score, 0.90, places=2)
+
 
 if __name__ == "__main__":
     unittest.main()

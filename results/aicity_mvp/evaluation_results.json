@@ -1,0 +1,39 @@
+{
+  "dataset_name": "AICity_2022_Track1_Member1_Handoff",
+  "dataset_classification": "REAL",
+  "ground_truth_available": false,
+  "evaluation_type": "UNSUPERVISED_INFERENCE_DIAGNOSTICS",
+  "cameras_evaluated": [
+    "CAM_S01_C001",
+    "CAM_S01_C002",
+    "CAM_S01_C003"
+  ],
+  "tracklets_ingested": 384,
+  "candidate_pairs_evaluated": 51146,
+  "candidate_reduction_pct": 30.447671888598784,
+  "pairwise_decisions": {
+    "CONFIRMED": 7,
+    "AMBIGUOUS": 9087,
+    "REJECTED": 42052
+  },
+  "identity_clusters_count": 355,
+  "identity_status_distribution": {
+    "unconfirmed_singleton": 337,
+    "candidate": 18
+  },
+  "reid_compatibility": {
+    "c001_model": "osnet_x0_25_aicity",
+    "c002_model": "osnet_x0_25_msmt17",
+    "c003_model": "osnet_x0_25_aicity",
+    "c002_guard_active": true,
+    "cross_model_pairs_blocked": 22659,
+    "compatible_reid_pairs_evaluated": 7264
+  },
+  "data_limitations": [
+    "No cross-camera ground-truth IDs (zero GT validation claim).",
+    "Plate text is 100% null (zero ANPR text validation claim).",
+    "No camera calibration or world coordinates (zero world GIS claim).",
+    "C002 uses msmt17 weights (degraded Re-ID cross-matching with C001/C003).",
+    "Timestamps are video-relative with no external synchronization offset."
+  ]
+}

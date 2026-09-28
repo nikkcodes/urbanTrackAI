@@ -1,0 +1,18 @@
+{
+  "_status": "UNAVAILABLE_IN_CURRENT_OPERATING_POINT",
+  "_rationale": "At the validated decision threshold (tau=0.70) with conservative C002 Re-ID model guard active and strict spatiotemporal constraints, cross-camera false merge rate is held at 0.000000. True cross-camera pairs (such as GT Vehicle 54 across C001 and C003) achieved a fused score of 0.3279 (calibrated probability 0.0736), which sits below the confirmed admission threshold. Therefore, zero cross-camera false merges occurred and zero multi-camera clusters were formed. In strict adherence to Rule 3 and Rule 11, NO MULTI-CAMERA IDENTITY IS FABRICATED.",
+  "evaluated_true_cross_camera_candidate": {
+    "gt_vehicle_id": 54,
+    "observation_a": "CAM_S01_C001_trk_017",
+    "camera_a": "CAM_S01_C001",
+    "observation_b": "CAM_S01_C003_trk_032",
+    "camera_b": "CAM_S01_C003",
+    "both_cameras_reid_model": "osnet_x0_25_aicity",
+    "appearance_cosine_similarity": 0.5045,
+    "vehicle_type_compatibility": "compatible",
+    "fused_score": 0.3279,
+    "calibrated_probability": 0.0736,
+    "decision_state": "REJECTED",
+    "admission_result": "Preserved as unconfirmed singletons rather than risking false merge."
+  }
+}

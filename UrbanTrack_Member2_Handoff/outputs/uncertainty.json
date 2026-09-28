@@ -1,0 +1,31 @@
+{
+  "calibration_model": {
+    "method": "platt_scaling_logistic",
+    "fitted_weights": {
+      "coef": 0.5138,
+      "intercept": -3.7468
+    },
+    "uncalibrated_brier": 0.126,
+    "calibrated_brier": 0.0227,
+    "uncalibrated_ece": 0.3127,
+    "calibrated_ece": 0.0067,
+    "dev_vehicles": 57,
+    "holdout_vehicles": 38,
+    "zero_leakage_verified": true
+  },
+  "pairwise_decision_distribution": {
+    "REJECTED": 42052,
+    "AMBIGUOUS": 9087,
+    "CONFIRMED": 7
+  },
+  "cluster_status_distribution": {
+    "unconfirmed_singleton": 337,
+    "candidate": 18
+  },
+  "uncertainty_semantics": {
+    "CONFIRMED": "Fused probability >= confirmed threshold (0.70 or 0.75 depending on mode) with supporting identity evidence.",
+    "AMBIGUOUS": "Score within ambiguous band [0.40, 0.70) or incomplete identity evidence.",
+    "REJECTED": "Physically impossible transition, incompatible vehicle type, or guarded cross-model Re-ID.",
+    "unconfirmed_singleton": "Single camera observation not confirmed across multiple cameras; assigned confidence null (not fake 1.0)."
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "_comment": "Real trajectory hypothesis containing ambiguity and uncertainty (UT_ID_0002)",
+  "_provenance": "Reconstructed by TrajectoryEngine; status is unassociated_camera due to lack of OSM graph",
+  "trajectory": {
+    "identity_id": "UT_ID_0002",
+    "observations_count": 3,
+    "cameras_visited": [
+      "CAM_S01_C001"
+    ],
+    "start_timestamp": 0.0,
+    "end_timestamp": 12.6,
+    "total_time_seconds": 12.6,
+    "total_distance_m": 0.0,
+    "overall_confidence": 0.0,
+    "is_ambiguous": true,
+    "most_likely_route": [],
+    "complete_route_nodes": [],
+    "spatial_semantics": "cityflow_world_planar_meters",
+    "temporal_semantics": "synchronized_video_seconds",
+    "segments": [
+      {
+        "segment_id": "CAM_S01_C001_trk_002->CAM_S01_C001_trk_019",
+        "identity_id": "UT_ID_0002",
+        "start_observation": {
+          "observation_id": "CAM_S01_C001_trk_002",
+          "camera_id": "CAM_S01_C001",
+          "timestamp_seconds": 0.0,
+          "node_id": null
+        },
+        "end_observation": {
+          "observation_id": "CAM_S01_C001_trk_019",
+          "camera_id": "CAM_S01_C001",
+          "timestamp_seconds": 10.5,
+          "node_id": null
+        },
+        "time_difference_seconds": 10.5,
+        "candidate_routes": [],
+        "most_likely_route": null,
+        "confidence": 0.0,
+        "is_ambiguous": true,
+        "ambiguity_reason": "Camera could not be associated with road network: start camera 'CAM_S01_C001', destination camera 'CAM_S01_C001'.",
+        "status": "unassociated_camera",
+        "is_gap": false,
+        "gap_duration_seconds": null,
+        "gap_state": null,
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 10.5,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "camera_CAM_S01_C001_local",
+          "used_in_route_scoring": true
+        }
+      },
+      {
+        "segment_id": "CAM_S01_C001_trk_019->CAM_S01_C001_trk_027",
+        "identity_id": "UT_ID_0002",
+        "start_observation": {
+          "observation_id": "CAM_S01_C001_trk_019",
+          "camera_id": "CAM_S01_C001",
+          "timestamp_seconds": 10.5,
+          "node_id": null
+        },
+        "end_observation": {
+          "observation_id": "CAM_S01_C001_trk_027",
+          "camera_id": "CAM_S01_C001",
+          "timestamp_seconds": 12.6,
+          "node_id": null
+        },
+        "time_difference_seconds": 2.1,
+        "candidate_routes": [],
+        "most_likely_route": null,
+        "confidence": 0.0,
+        "is_ambiguous": true,
+        "ambiguity_reason": "Camera could not be associated with road network: start camera 'CAM_S01_C001', destination camera 'CAM_S01_C001'.",
+        "status": "unassociated_camera",
+        "is_gap": false,
+        "gap_duration_seconds": null,
+        "gap_state": null,
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 2.0999999999999996,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "camera_CAM_S01_C001_local",
+          "used_in_route_scoring": true
+        }
+      }
+    ],
+    "gaps_count": 0,
+    "reliability": {
+      "overall_reliability": 0.8,
+      "overall_uncertainty": 0.2,
+      "segments_count": 2
+    },
+    "uncertainty": {
+      "overall_uncertainty": 0.2,
+      "score": 0.2,
+      "level": "low",
+      "global_hypotheses": {
+        "hypothesis_count": 0,
+        "feasible_count": 0,
+        "hypotheses": [],
+        "best_hypothesis_id": null,
+        "ambiguous": false,
+        "route_entropy_bits": 0.0,
+        "normalized_route_dispersion": 0.0,
+        "uncertainty_sources": [
+          "none_detected"
+        ],
+        "note": "relative_likelihood is normalized among feasible hypotheses only. A single surviving hypothesis has relative_likelihood=1.0, meaning it is the only surviving hypothesis under current constraints, NOT that the system is 100% certain."
+      }
+    },
+    "spatial_semantics": "image_space_only",
+    "temporal_semantics": "video_relative"
+  }
+}

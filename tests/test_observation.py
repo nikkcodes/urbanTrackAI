@@ -145,6 +145,56 @@ class TestObservation(unittest.TestCase):
                 longitude=78.0,
             )
 
+    def test_observation_quality_profile_categorical_states(self):
+        """Verify Section 4 observation categorical quality states (VALID, DEGRADED, UNAVAILABLE)."""
+        # Complete valid observation
+        obs_valid = Observation(
+            observation_id="OBS_VAL",
+            camera_id="CAM1",
+            timestamp=datetime.now(),
+            latitude=17.385,
+            longitude=78.486,
+            track_id="trk_01",
+            detection_confidence=0.88,
+            plate="KA01AB1234",
+            plate_bbox=[100.0, 150.0, 200.0, 180.0],
+            appearance_embedding=[0.1] * 512,
+            embedding_model="osnet_x0_25_aicity",
+            synchronized_timestamp_seconds=102.5,
+        )
+        self.assertTrue(obs_valid.plate_bbox_available)
+        self.assertTrue(obs_valid.plate_text_available)
+        self.assertTrue(obs_valid.embedding_available)
+        self.assertTrue(obs_valid.world_coordinate_available)
+        self.assertEqual(obs_valid.world_coordinate_quality, "VALID")
+        self.assertTrue(obs_valid.synchronized_timestamp_available)
+        self.assertEqual(obs_valid.timestamp_quality, "VALID")
+        self.assertEqual(obs_valid.track_quality, "VALID")
+
+        prof = obs_valid.get_quality_profile()
+        self.assertEqual(prof["world_coordinate_quality"], "VALID")
+        self.assertEqual(prof["timestamp_quality"], "VALID")
+        self.assertEqual(prof["track_quality"], "VALID")
+        self.assertTrue(prof["plate_text_available"])
+        self.assertTrue(prof["embedding_available"])
+
+        # Degraded / unavailable observation
+        obs_deg = Observation(
+            observation_id="OBS_DEG",
+            camera_id="CAM2",
+            timestamp_seconds=50.0,
+            data_quality_flags=["near_horizon", "fragmented_track"],
+            detection_confidence=0.30,
+        )
+        self.assertFalse(obs_deg.plate_bbox_available)
+        self.assertFalse(obs_deg.plate_text_available)
+        self.assertFalse(obs_deg.embedding_available)
+        self.assertFalse(obs_deg.world_coordinate_available)
+        self.assertEqual(obs_deg.world_coordinate_quality, "UNAVAILABLE")
+        self.assertFalse(obs_deg.synchronized_timestamp_available)
+        self.assertEqual(obs_deg.timestamp_quality, "DEGRADED")  # video-relative fallback
+        self.assertEqual(obs_deg.track_quality, "UNAVAILABLE")  # no track_id
+
 
 if __name__ == "__main__":
     unittest.main()

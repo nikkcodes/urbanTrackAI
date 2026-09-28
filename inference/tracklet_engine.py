@@ -359,3 +359,168 @@ def match_tracklets(
     }
 
     return match_result
+
+
+@dataclass
+class TrackletAssociationResult:
+    """Result of bipartite tracklet-level association between camera pairs or window."""
+    matched_pairs: List[Tuple[Tracklet, Tracklet, float, Dict[str, Any]]]
+    unassigned_tracklets: List[Tracklet]
+    algorithm: str
+    execution_time_ms: float = 0.0
+    pairwise_evaluations: int = 0
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "algorithm": self.algorithm,
+            "matched_pairs_count": len(self.matched_pairs),
+            "unassigned_count": len(self.unassigned_tracklets),
+            "execution_time_ms": round(self.execution_time_ms, 3),
+            "pairwise_evaluations": self.pairwise_evaluations,
+            "matched_pairs": [
+                {
+                    "source_camera": p[0].camera_id,
+                    "source_track_id": p[0].track_id,
+                    "target_camera": p[1].camera_id,
+                    "target_track_id": p[1].track_id,
+                    "score": round(p[2], 4),
+                    "decision_state": p[3].get("decision_state", "UNKNOWN"),
+                }
+                for p in self.matched_pairs
+            ],
+        }
+
+
+class TrackletAssociator:
+    """
+    Sliding-window bipartite tracklet association engine.
+    Solves 1-to-1 global vehicle identity assignment across camera transitions
+    using Hungarian (linear_sum_assignment) or Greedy matching.
+    """
+
+    def __init__(
+        self,
+        min_score_threshold: float = 0.70,
+        max_time_window_seconds: float = 600.0,
+        camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
+        config: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        self.min_score_threshold = min_score_threshold
+        self.max_time_window_seconds = max_time_window_seconds
+        self.camera_metadata = camera_metadata or {}
+        self.config = config or {}
+
+    def associate_tracklets(
+        self,
+        source_tracklets: List[Tracklet],
+        target_tracklets: List[Tracklet],
+        method: str = "hungarian",
+    ) -> TrackletAssociationResult:
+        """
+        Execute 1-to-1 bipartite assignment from source to target tracklets.
+        """
+        import time
+        t0 = time.perf_counter()
+
+        if not source_tracklets or not target_tracklets:
+            t_elapsed = (time.perf_counter() - t0) * 1000.0
+            unassigned = list(source_tracklets) + list(target_tracklets)
+            return TrackletAssociationResult(
+                matched_pairs=[],
+                unassigned_tracklets=unassigned,
+                algorithm=method,
+                execution_time_ms=t_elapsed,
+                pairwise_evaluations=0,
+            )
+
+        n_src = len(source_tracklets)
+        n_tgt = len(target_tracklets)
+        affinity_matrix = [[0.0 for _ in range(n_tgt)] for _ in range(n_src)]
+        match_records: Dict[Tuple[int, int], Dict[str, Any]] = {}
+        eval_count = 0
+
+        for i, src in enumerate(source_tracklets):
+            for j, tgt in enumerate(target_tracklets):
+                dt = tgt.start_timestamp_seconds - src.end_timestamp_seconds
+                if dt < -10.0 or dt > self.max_time_window_seconds:
+                    continue
+
+                eval_count += 1
+                res = match_tracklets(src, tgt, camera_metadata=self.camera_metadata, config=self.config)
+                score = float(res.get("same_vehicle_score", 0.0))
+                affinity_matrix[i][j] = score
+                match_records[(i, j)] = res
+
+        matched_pairs: List[Tuple[Tracklet, Tracklet, float, Dict[str, Any]]] = []
+        assigned_src: set[int] = set()
+        assigned_tgt: set[int] = set()
+
+        if method == "hungarian":
+            from scipy.optimize import linear_sum_assignment
+            cost_matrix = [[1.0 - affinity_matrix[i][j] for j in range(n_tgt)] for i in range(n_src)]
+            row_ind, col_ind = linear_sum_assignment(cost_matrix)
+            for r, c in zip(row_ind, col_ind):
+                score = affinity_matrix[r][c]
+                if score >= self.min_score_threshold:
+                    rec = match_records.get((r, c), {})
+                    matched_pairs.append((source_tracklets[r], target_tracklets[c], score, rec))
+                    assigned_src.add(r)
+                    assigned_tgt.add(c)
+        elif method == "greedy":
+            all_pairs = []
+            for i in range(n_src):
+                for j in range(n_tgt):
+                    sc = affinity_matrix[i][j]
+                    if sc >= self.min_score_threshold:
+                        all_pairs.append((sc, i, j))
+            all_pairs.sort(key=lambda item: -item[0])
+            for sc, i, j in all_pairs:
+                if i not in assigned_src and j not in assigned_tgt:
+                    rec = match_records.get((i, j), {})
+                    matched_pairs.append((source_tracklets[i], target_tracklets[j], sc, rec))
+                    assigned_src.add(i)
+                    assigned_tgt.add(j)
+        else:
+            raise ValueError(f"Unknown association method: {method}. Must be 'hungarian' or 'greedy'.")
+
+        unassigned = [source_tracklets[i] for i in range(n_src) if i not in assigned_src] + \
+                     [target_tracklets[j] for j in range(n_tgt) if j not in assigned_tgt]
+
+        t_elapsed = (time.perf_counter() - t0) * 1000.0
+        return TrackletAssociationResult(
+            matched_pairs=matched_pairs,
+            unassigned_tracklets=unassigned,
+            algorithm=method,
+            execution_time_ms=t_elapsed,
+            pairwise_evaluations=eval_count,
+        )
+
+    def benchmark_assignment_methods(
+        self,
+        source_tracklets: List[Tracklet],
+        target_tracklets: List[Tracklet],
+    ) -> Dict[str, Any]:
+        """Benchmark Hungarian vs Greedy assignment on identical tracklet pairs."""
+        res_hungarian = self.associate_tracklets(source_tracklets, target_tracklets, method="hungarian")
+        res_greedy = self.associate_tracklets(source_tracklets, target_tracklets, method="greedy")
+
+        h_scores = [p[2] for p in res_hungarian.matched_pairs]
+        g_scores = [p[2] for p in res_greedy.matched_pairs]
+
+        return {
+            "hungarian": {
+                "matches": len(res_hungarian.matched_pairs),
+                "mean_score": round(sum(h_scores) / len(h_scores), 4) if h_scores else 0.0,
+                "execution_time_ms": res_hungarian.execution_time_ms,
+            },
+            "greedy": {
+                "matches": len(res_greedy.matched_pairs),
+                "mean_score": round(sum(g_scores) / len(g_scores), 4) if g_scores else 0.0,
+                "execution_time_ms": res_greedy.execution_time_ms,
+            },
+            "speedup_ratio": (
+                round(res_hungarian.execution_time_ms / res_greedy.execution_time_ms, 2)
+                if res_greedy.execution_time_ms > 0
+                else 1.0
+            ),
+        }

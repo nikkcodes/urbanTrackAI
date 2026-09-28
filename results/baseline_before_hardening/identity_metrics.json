@@ -1,0 +1,46 @@
+{
+  "candidate_recall": {
+    "status": "passed",
+    "candidate_recall": 0.8149,
+    "candidate_recall_pct": 81.49,
+    "total_true_cross_pairs": 308,
+    "retrieved_true_cross_pairs": 251,
+    "missed_true_cross_pairs": 57
+  },
+  "cross_camera_identity_metrics": {
+    "evaluation_scope": "cross_camera_pairs",
+    "decision_threshold": 0.7,
+    "evaluated_gt_positives": 308,
+    "evaluated_gt_negatives": 28380,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 308,
+    "true_negatives": 28380,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "false_non_match_rate": 1.0,
+    "cluster_purity": 0.9558,
+    "total_clusters_evaluated": 355,
+    "multi_camera_clusters_formed": 0
+  },
+  "overall_identity_metrics": {
+    "evaluation_scope": "all_pairs",
+    "decision_threshold": 0.7,
+    "evaluated_gt_positives": 400,
+    "evaluated_gt_negatives": 42671,
+    "true_positives": 6,
+    "false_positives": 16,
+    "false_negatives": 394,
+    "true_negatives": 42655,
+    "precision": 0.2727,
+    "recall": 0.015,
+    "f1_score": 0.0284,
+    "false_merge_rate": 0.000375,
+    "false_non_match_rate": 0.985,
+    "cluster_purity": 0.9558,
+    "total_clusters_evaluated": 355,
+    "multi_camera_clusters_formed": 0
+  }
+}

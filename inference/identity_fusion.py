@@ -7,7 +7,7 @@ between vehicle observations across cameras.
 from typing import Any, Dict, Optional
 
 from schemas.observation_schema import Observation
-from .similarity import appearance_similarity, plate_similarity, vehicle_type_compatibility
+from .similarity import appearance_similarity, are_reid_models_compatible, plate_similarity, vehicle_type_compatibility
 from .spatial import spatial_feasibility
 from .temporal import temporal_feasibility
 
@@ -129,12 +129,30 @@ def match_observations(
     rejection_reason = ""
 
     if type_status == "incompatible":
-        if app_score is None:
+        synonyms = {"auto": "rickshaw", "suv": "car", "sedan": "car", "hatchback": "car", "van": "car"}
+        t_a_raw = str(obs_a.vehicle_type or "").strip().lower()
+        t_b_raw = str(obs_b.vehicle_type or "").strip().lower()
+        t_a_norm = synonyms.get(t_a_raw, t_a_raw)
+        t_b_norm = synonyms.get(t_b_raw, t_b_raw)
+
+        # Hard type contradictions that can never be reconciled (e.g. car vs bus, motorcycle vs truck)
+        hard_contradiction = ("bus" in (t_a_norm, t_b_norm)) or ("motorcycle" in (t_a_norm, t_b_norm)) or ("bicycle" in (t_a_norm, t_b_norm))
+        has_plate_override = (plate_score is not None and plate_score >= 0.85)
+
+        reid_a = getattr(obs_a, "reid_model", None)
+        reid_b = getattr(obs_b, "reid_model", None)
+        has_compatible_reid = (reid_a is not None and reid_b is not None and are_reid_models_compatible(reid_a, reid_b))
+
+        if hard_contradiction:
             is_rejected = True
-            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) and no ReID evidence."
-        elif app_score < 0.75:
+            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type})."
+        elif not has_plate_override and not has_compatible_reid:
             is_rejected = True
-            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) and insufficient ReID evidence ({app_score:.2f} < 0.75)."
+            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) without verified common ReID model space."
+        elif not has_plate_override and (app_score is None or app_score < 0.75):
+            is_rejected = True
+            app_str = f"{app_score:.2f}" if app_score is not None else "missing"
+            rejection_reason = f"Incompatible vehicle types ({obs_a.vehicle_type} vs {obs_b.vehicle_type}) and insufficient ReID evidence ({app_str} < 0.75)."
     elif is_strong_plate_contradiction:
         is_rejected = True
         rejection_reason = f"Strong license plate contradiction ({obs_a.plate} vs {obs_b.plate}, similarity {plate_score:.2f} < 0.35 with verified OCR)."

@@ -1,0 +1,50 @@
+[
+  {
+    "observation_count": 50,
+    "theoretical_pairs": 1225,
+    "generated_candidate_pairs": 905,
+    "search_space_reduction_pct": 26.12,
+    "candidate_generation_runtime_ms": 0.23,
+    "throughput_pairs_per_sec": 5313565
+  },
+  {
+    "observation_count": 100,
+    "theoretical_pairs": 4950,
+    "generated_candidate_pairs": 3664,
+    "search_space_reduction_pct": 25.98,
+    "candidate_generation_runtime_ms": 0.79,
+    "throughput_pairs_per_sec": 6257901
+  },
+  {
+    "observation_count": 200,
+    "theoretical_pairs": 19900,
+    "generated_candidate_pairs": 13863,
+    "search_space_reduction_pct": 30.34,
+    "candidate_generation_runtime_ms": 2.42,
+    "throughput_pairs_per_sec": 8218613
+  },
+  {
+    "observation_count": 384,
+    "theoretical_pairs": 73536,
+    "generated_candidate_pairs": 51146,
+    "search_space_reduction_pct": 30.45,
+    "candidate_generation_runtime_ms": 8.84,
+    "throughput_pairs_per_sec": 8314398
+  },
+  {
+    "observation_count": 500,
+    "theoretical_pairs": 124750,
+    "generated_candidate_pairs": 87881,
+    "search_space_reduction_pct": 29.55,
+    "candidate_generation_runtime_ms": 15.36,
+    "throughput_pairs_per_sec": 8123089
+  },
+  {
+    "observation_count": 1000,
+    "theoretical_pairs": 499500,
+    "generated_candidate_pairs": 348777,
+    "search_space_reduction_pct": 30.17,
+    "candidate_generation_runtime_ms": 200.65,
+    "throughput_pairs_per_sec": 2489394
+  }
+]

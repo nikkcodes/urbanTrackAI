@@ -11,16 +11,83 @@ from schemas.observation_schema import Observation
 from .similarity import time_difference
 
 
-def _extract_obs_temporal(obs: Union[Observation, Dict[str, Any]]) -> Tuple[str, float, Optional[int], Optional[str], Optional[str], Optional[float]]:
-    """Extract (camera_id, timestamp_seconds, frame_id, semantics, ref_id, clock_offset)."""
-    if isinstance(obs, Observation):
+class TemporalObsData:
+    """Encapsulates temporal attributes distinguishing video-relative from synchronized timeline."""
+    def __init__(
+        self,
+        camera_id: str,
+        timestamp_seconds: float,
+        frame_id: Optional[int],
+        timestamp_semantics: Optional[str],
+        time_reference_id: Optional[str],
+        clock_offset_seconds: Optional[float],
+        synchronized_timestamp_seconds: Optional[float] = None,
+        synchronized_timestamp_semantics: Optional[str] = None,
+        synchronized_time_reference_id: Optional[str] = None,
+    ):
+        self.camera_id = camera_id
+        self.timestamp_seconds = timestamp_seconds
+        self.frame_id = frame_id
+        self.timestamp_semantics = timestamp_semantics
+        self.time_reference_id = time_reference_id
+        self.clock_offset_seconds = clock_offset_seconds
+        self.synchronized_timestamp_seconds = synchronized_timestamp_seconds
+        self.synchronized_timestamp_semantics = synchronized_timestamp_semantics
+        self.synchronized_time_reference_id = synchronized_time_reference_id
+
+    def __iter__(self):
+        """Allows unpacking as (cam, t, frame, sem, ref, offset) for full backwards compatibility."""
+        return iter((
+            self.camera_id,
+            self.timestamp_seconds,
+            self.frame_id,
+            self.timestamp_semantics,
+            self.time_reference_id,
+            self.clock_offset_seconds,
+        ))
+
+    def __getitem__(self, idx):
+        """Allows tuple indexing data[0]..data[5] for full backwards compatibility."""
         return (
-            str(obs.camera_id),
-            float(obs.timestamp_seconds),
-            obs.frame_id,
-            getattr(obs, "timestamp_semantics", None),
-            getattr(obs, "time_reference_id", None),
-            getattr(obs, "clock_offset_seconds", None),
+            self.camera_id,
+            self.timestamp_seconds,
+            self.frame_id,
+            self.timestamp_semantics,
+            self.time_reference_id,
+            self.clock_offset_seconds,
+        )[idx]
+
+
+def _extract_obs_temporal(obs: Union[Observation, Dict[str, Any]]) -> TemporalObsData:
+    """
+    Extract temporal attributes distinguishing video-relative from synchronized timeline.
+    Preserves original video-relative timestamps while surfacing synchronized fields.
+    """
+    if isinstance(obs, Observation):
+        prov = getattr(obs, "source_provenance", None) or {}
+        sync_meta = prov.get("synchronization", {}) if isinstance(prov, dict) else {}
+
+        sync_ts = getattr(obs, "synchronized_timestamp_seconds", None)
+        if sync_ts is None and "synchronized_timestamp_seconds" in sync_meta:
+            sync_ts = sync_meta.get("synchronized_timestamp_seconds")
+
+        sync_sem = getattr(obs, "synchronized_timestamp_semantics", None)
+        sync_ref = getattr(obs, "synchronized_time_reference_id", None)
+
+        clock_offset = getattr(obs, "clock_offset_seconds", None)
+        if clock_offset is None and "camera_offset_seconds" in sync_meta:
+            clock_offset = sync_meta.get("camera_offset_seconds")
+
+        return TemporalObsData(
+            camera_id=str(obs.camera_id),
+            timestamp_seconds=float(obs.timestamp_seconds),
+            frame_id=obs.frame_id,
+            timestamp_semantics=getattr(obs, "timestamp_semantics", None),
+            time_reference_id=getattr(obs, "time_reference_id", None),
+            clock_offset_seconds=float(clock_offset) if clock_offset is not None else None,
+            synchronized_timestamp_seconds=float(sync_ts) if sync_ts is not None else None,
+            synchronized_timestamp_semantics=sync_sem,
+            synchronized_time_reference_id=sync_ref,
         )
     if isinstance(obs, dict):
         cam = str(obs.get("camera_id", ""))
@@ -36,7 +103,31 @@ def _extract_obs_temporal(obs: Union[Observation, Dict[str, Any]]) -> Tuple[str,
         sem = obs.get("timestamp_semantics")
         ref = obs.get("time_reference_id")
         offset = obs.get("clock_offset_seconds")
-        return (cam, float(t), frame, sem, ref, float(offset) if offset is not None else None)
+
+        prov = obs.get("source_provenance") or {}
+        sync_meta = prov.get("synchronization", {}) if isinstance(prov, dict) else {}
+
+        sync_ts = obs.get("synchronized_timestamp_seconds")
+        if sync_ts is None and "synchronized_timestamp_seconds" in sync_meta:
+            sync_ts = sync_meta.get("synchronized_timestamp_seconds")
+
+        sync_sem = obs.get("synchronized_timestamp_semantics")
+        sync_ref = obs.get("synchronized_time_reference_id")
+
+        if offset is None and "camera_offset_seconds" in sync_meta:
+            offset = sync_meta.get("camera_offset_seconds")
+
+        return TemporalObsData(
+            camera_id=cam,
+            timestamp_seconds=float(t),
+            frame_id=frame,
+            timestamp_semantics=sem,
+            time_reference_id=ref,
+            clock_offset_seconds=float(offset) if offset is not None else None,
+            synchronized_timestamp_seconds=float(sync_ts) if sync_ts is not None else None,
+            synchronized_timestamp_semantics=sync_sem,
+            synchronized_time_reference_id=sync_ref,
+        )
     raise TypeError(f"Unsupported observation type: {type(obs).__name__}")
 
 
@@ -47,7 +138,7 @@ def _get_camera_meta(cam_id: str, camera_metadata: Optional[Any]) -> Optional[Di
     res = {}
     if isinstance(camera_metadata, dict):
         # Network-level defaults if present in camera_metadata
-        for k in ("timestamp_semantics", "time_reference_id", "clock_offset_seconds", "synchronization_status"):
+        for k in ("timestamp_semantics", "time_reference_id", "clock_offset_seconds", "synchronization_status", "synchronized_time_reference_id"):
             if k in camera_metadata:
                 res[k] = camera_metadata[k]
         val = camera_metadata.get(cam_id)
@@ -85,9 +176,10 @@ def check_temporal_comparability(
 
         DIFFERENT CAMERAS:
             Timestamps can ONLY be compared if an explicit temporal relationship exists:
-            1. Both cameras share the same documented time_reference_id.
-            2. Both explicitly declare synchronized timestamps with a common reference.
-            3. A known clock offset is explicitly documented relative to a shared reference.
+            1. Both observations provide synchronized_timestamp_seconds with a shared reference.
+            2. Both cameras share the same documented time_reference_id.
+            3. Both explicitly declare synchronized timestamps with a common reference.
+            4. A known clock offset is explicitly documented relative to a shared reference.
             Otherwise:
                 comparable = False, status = "unavailable", delta_seconds = None.
                 Reason indicates independent video-relative streams or missing synchronization metadata.
@@ -96,8 +188,19 @@ def check_temporal_comparability(
         Dict containing: comparable, status, reason, delta_seconds, timestamp_semantics,
         time_reference_id, used_in_route_scoring.
     """
-    cam_a, t_a, frame_a, sem_a, ref_a, offset_a = _extract_obs_temporal(obs_a)
-    cam_b, t_b, frame_b, sem_b, ref_b, offset_b = _extract_obs_temporal(obs_b)
+    data_a = _extract_obs_temporal(obs_a)
+    data_b = _extract_obs_temporal(obs_b)
+
+    cam_a = data_a.camera_id
+    cam_b = data_b.camera_id
+    t_a = data_a.timestamp_seconds
+    t_b = data_b.timestamp_seconds
+    sem_a = data_a.timestamp_semantics
+    sem_b = data_b.timestamp_semantics
+    ref_a = data_a.time_reference_id
+    ref_b = data_b.time_reference_id
+    offset_a = data_a.clock_offset_seconds
+    offset_b = data_b.clock_offset_seconds
 
     meta_a = _get_camera_meta(cam_a, camera_metadata)
     meta_b = _get_camera_meta(cam_b, camera_metadata)
@@ -137,7 +240,50 @@ def check_temporal_comparability(
         }
 
     # DIFFERENT CAMERAS
-    # Check for explicit shared time reference or documented synchronization
+
+    # Priority Path A: Direct synchronized timestamps (e.g. CityFlowV2 official synchronization)
+    has_sync_ts = (data_a.synchronized_timestamp_seconds is not None and data_b.synchronized_timestamp_seconds is not None)
+    if has_sync_ts:
+        sync_ref_a = data_a.synchronized_time_reference_id or (meta_a.get("synchronized_time_reference_id") if meta_a else None)
+        sync_ref_b = data_b.synchronized_time_reference_id or (meta_b.get("synchronized_time_reference_id") if meta_b else None)
+        sync_sem_a = data_a.synchronized_timestamp_semantics or "synchronized"
+        sync_sem_b = data_b.synchronized_timestamp_semantics or "synchronized"
+
+        # Explicit reference mismatch check
+        if sync_ref_a is not None and sync_ref_b is not None and sync_ref_a != sync_ref_b:
+            return {
+                "comparable": False,
+                "status": "unavailable",
+                "reason": "mismatched_synchronized_time_reference_ids",
+                "delta_seconds": None,
+                "timestamp_semantics": sync_sem_a,
+                "time_reference_id": f"{sync_ref_a}_vs_{sync_ref_b}",
+                "used_in_route_scoring": False,
+            }
+
+        delta_t = float(data_b.synchronized_timestamp_seconds) - float(data_a.synchronized_timestamp_seconds)
+        if delta_t < 0:
+            return {
+                "comparable": False,
+                "status": "invalid_negative_time",
+                "reason": "negative_elapsed_time_cross_camera",
+                "delta_seconds": None,
+                "timestamp_semantics": sync_sem_a,
+                "time_reference_id": sync_ref_a or "shared_sync",
+                "used_in_route_scoring": False,
+            }
+
+        return {
+            "comparable": True,
+            "status": "available",
+            "reason": f"cross_camera_synchronized_{sync_ref_a or 'official'}",
+            "delta_seconds": round(delta_t, 4),
+            "timestamp_semantics": sync_sem_a,
+            "time_reference_id": sync_ref_a or "shared_sync",
+            "used_in_route_scoring": True,
+        }
+
+    # Priority Path B: Shared time reference with documented clock offsets or explicit synchronized semantics
     sync_status_a = meta_a.get("synchronization_status") if meta_a else None
     sync_status_b = meta_b.get("synchronization_status") if meta_b else None
 
@@ -229,7 +375,7 @@ def check_temporal_comparability(
         "comparable": True,
         "status": "available",
         "reason": f"cross_camera_synchronized_{ref_a or 'network'}",
-        "delta_seconds": delta_t,
+        "delta_seconds": round(delta_t, 4),
         "timestamp_semantics": sem_a or "synchronized",
         "time_reference_id": ref_a or "shared_sync",
         "used_in_route_scoring": True,

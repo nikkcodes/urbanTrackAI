@@ -1,0 +1,126 @@
+{
+  "Baseline_1_ReID_Only": {
+    "config": {
+      "use_plate": false,
+      "use_appearance": true,
+      "use_spatiotemporal": false,
+      "use_vehicle_type": false,
+      "use_camera_reliability": false,
+      "min_score_threshold": 0.7
+    },
+    "active_evidence_sources": [
+      "appearance_reid"
+    ],
+    "candidate_count": 62449,
+    "accepted_associations": 36,
+    "ambiguous_associations": 9104,
+    "rejected_associations": 53309,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "multi_camera_clusters": 0
+  },
+  "Baseline_2_ReID_VehicleType": {
+    "config": {
+      "use_plate": false,
+      "use_appearance": true,
+      "use_spatiotemporal": false,
+      "use_vehicle_type": true,
+      "use_camera_reliability": false,
+      "min_score_threshold": 0.7
+    },
+    "active_evidence_sources": [
+      "appearance_reid",
+      "vehicle_type"
+    ],
+    "candidate_count": 62449,
+    "accepted_associations": 36,
+    "ambiguous_associations": 9104,
+    "rejected_associations": 53309,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "multi_camera_clusters": 0
+  },
+  "Baseline_3_Multimodal_Fusion": {
+    "config": {
+      "use_plate": false,
+      "use_appearance": true,
+      "use_spatiotemporal": false,
+      "use_vehicle_type": true,
+      "use_camera_reliability": true,
+      "min_score_threshold": 0.7
+    },
+    "active_evidence_sources": [
+      "appearance_reid",
+      "vehicle_type",
+      "camera_reliability"
+    ],
+    "candidate_count": 62449,
+    "accepted_associations": 36,
+    "ambiguous_associations": 9104,
+    "rejected_associations": 53309,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "multi_camera_clusters": 0
+  },
+  "Baseline_4_Multimodal_PhysicalConstraints": {
+    "config": {
+      "use_plate": false,
+      "use_appearance": true,
+      "use_spatiotemporal": true,
+      "use_vehicle_type": true,
+      "use_camera_reliability": true,
+      "min_score_threshold": 0.7
+    },
+    "active_evidence_sources": [
+      "appearance_reid",
+      "vehicle_type",
+      "camera_reliability",
+      "spatiotemporal_constraints"
+    ],
+    "candidate_count": 62449,
+    "accepted_associations": 36,
+    "ambiguous_associations": 9104,
+    "rejected_associations": 53309,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "multi_camera_clusters": 0
+  },
+  "Baseline_5_Full_UrbanTrack": {
+    "config": {
+      "use_plate": false,
+      "use_appearance": true,
+      "use_spatiotemporal": true,
+      "use_vehicle_type": true,
+      "use_camera_reliability": true,
+      "min_score_threshold": 0.7
+    },
+    "active_evidence_sources": [
+      "appearance_reid",
+      "vehicle_type",
+      "camera_reliability",
+      "spatiotemporal_constraints"
+    ],
+    "candidate_count": 62449,
+    "accepted_associations": 36,
+    "ambiguous_associations": 9104,
+    "rejected_associations": 53309,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "multi_camera_clusters": 0
+  }
+}

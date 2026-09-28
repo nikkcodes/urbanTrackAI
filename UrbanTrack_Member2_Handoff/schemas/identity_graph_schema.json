@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IdentityGraph",
+  "description": "Global pairwise identity association graph representation.",
+  "type": "object",
+  "required": [
+    "nodes_count",
+    "edges_count",
+    "clusters_count",
+    "edges"
+  ],
+  "properties": {
+    "nodes_count": {
+      "type": "integer",
+      "description": "Total observations/nodes in the graph."
+    },
+    "edges_count": {
+      "type": "integer",
+      "description": "Total confirmed supporting edges between observations."
+    },
+    "clusters_count": {
+      "type": "integer",
+      "description": "Total connected identity clusters formed."
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "score",
+          "probability",
+          "evidence",
+          "explanation"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source observation_id."
+          },
+          "target": {
+            "type": "string",
+            "description": "Target observation_id."
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          },
+          "evidence": {
+            "type": "object",
+            "properties": {
+              "appearance_similarity": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "appearance_status": {
+                "type": "string"
+              },
+              "identity_evidence_available": {
+                "type": "boolean"
+              },
+              "vehicle_type_match": {
+                "type": "boolean"
+              },
+              "vehicle_type_status": {
+                "type": "string"
+              },
+              "temporal_feasibility": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "spatial_feasibility": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "plate_similarity": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            }
+          },
+          "evidence_ledger": {
+            "type": "object"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

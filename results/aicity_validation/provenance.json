@@ -1,0 +1,9 @@
+{
+  "validated_at": "2026-09-21T08:19:16Z",
+  "source_handoff_dir": "UrbanTrack_Member1_Handoff/output",
+  "sync_file": "data/aicity_ground_truth/cam_timestamp/S01.txt",
+  "calibration_dir": "data/aicity_ground_truth/calibration",
+  "gt_dir": "data/aicity_ground_truth/gt",
+  "zero_gt_leakage_enforced": true,
+  "zero_data_fabrication_enforced": true
+}

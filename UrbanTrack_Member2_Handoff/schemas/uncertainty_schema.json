@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UncertaintyReport",
+  "description": "System-wide uncertainty models, Platt calibration parameters, and decision distributions.",
+  "type": "object",
+  "required": [
+    "calibration_model",
+    "pairwise_decision_distribution",
+    "cluster_status_distribution",
+    "uncertainty_semantics"
+  ],
+  "properties": {
+    "calibration_model": {
+      "type": "object",
+      "required": [
+        "method",
+        "fitted_weights",
+        "uncalibrated_brier",
+        "calibrated_brier",
+        "uncalibrated_ece",
+        "calibrated_ece"
+      ],
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "fitted_weights": {
+          "type": "object"
+        },
+        "uncalibrated_brier": {
+          "type": "number"
+        },
+        "calibrated_brier": {
+          "type": "number"
+        },
+        "uncalibrated_ece": {
+          "type": "number"
+        },
+        "calibrated_ece": {
+          "type": "number"
+        },
+        "dev_vehicles": {
+          "type": "integer"
+        },
+        "holdout_vehicles": {
+          "type": "integer"
+        },
+        "zero_leakage_verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pairwise_decision_distribution": {
+      "type": "object"
+    },
+    "cluster_status_distribution": {
+      "type": "object"
+    },
+    "uncertainty_semantics": {
+      "type": "object"
+    }
+  }
+}

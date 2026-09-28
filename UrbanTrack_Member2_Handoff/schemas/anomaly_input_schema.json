@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AnomalyInvestigationInput",
+  "description": "Normalized data contract provided by Member 2 to Member 3's anomaly and diagnostic investigation engine.",
+  "type": "object",
+  "required": [
+    "entity_id",
+    "entity_type",
+    "data_quality_status",
+    "reliability",
+    "uncertainty",
+    "signals",
+    "provenance"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "description": "Unique identifier of investigated entity (identity_id, camera_id, or segment_id)."
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "vehicle",
+        "camera",
+        "segment",
+        "network"
+      ]
+    },
+    "data_quality_status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "incomplete",
+        "invalid"
+      ],
+      "description": "Integrity of the underlying observation data. Malformed inputs must NOT be confused with behavioral anomalies."
+    },
+    "reliability": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Calibrated prior trust in the entity sensors/observations."
+    },
+    "uncertainty": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Propagated uncertainty. NEVER multiplied into anomaly deviation scores."
+    },
+    "signals": {
+      "type": "array",
+      "description": "List of evaluated anomaly candidate signals.",
+      "items": {
+        "type": "object",
+        "required": [
+          "signal_category",
+          "severity",
+          "metric_name",
+          "measured_value",
+          "explanation"
+        ],
+        "properties": {
+          "signal_category": {
+            "type": "string",
+            "enum": [
+              "data_quality",
+              "temporal_inconsistency",
+              "physical_inconsistency",
+              "network_constraint_inconsistency",
+              "behavioral_anomaly",
+              "network_anomaly"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "elevated",
+              "high",
+              "extreme"
+            ]
+          },
+          "metric_name": {
+            "type": "string"
+          },
+          "measured_value": {
+            "type": [
+              "number",
+              "string",
+              "boolean",
+              "null"
+            ]
+          },
+          "threshold_value": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Originating camera feeds, frame intervals, and detection timestamps."
+    }
+  }
+}

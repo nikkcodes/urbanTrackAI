@@ -1,0 +1,41 @@
+{
+  "baseline_frozen_at": "2026-09-21T12:45:00Z",
+  "branch": "member-2",
+  "commit": "208989164c96c99a6e70507fd8911a4d905e9b67",
+  "test_suite_status": {
+    "total_collected": 393,
+    "passed": 384,
+    "failed": 8,
+    "collection_errors": 1,
+    "collection_error_details": "tests/test_aicity_handoff_integration.py (cannot import name 'are_reid_models_compatible' from 'inference.similarity')",
+    "failures": [
+      "tests/test_aicity_validation.py::test_candidate_recall_and_identity_evaluation (TypeError: CandidateGenerator.__init__() got unexpected keyword 'unsynchronized_mode')",
+      "tests/test_aicity_validation.py::test_probabilistic_calibration_disjoint_holdout (TypeError: CandidateGenerator.__init__() got unexpected keyword 'unsynchronized_mode')",
+      "tests/test_aicity_validation.py::test_arbitrary_n_camera_scalability_readiness (TypeError: CandidateGenerator.__init__() got unexpected keyword 'unsynchronized_mode')",
+      "tests/test_core_innovation_hardening.py::TestAB_ReferenceVsOptimizedGraphEquivalence::test_pruned_graph_matches_reference_implementation (AssertionError: 23 != 13)",
+      "tests/test_core_innovation_hardening.py::TestAD_PerformanceBenchmarkSuite::test_master_benchmark_suite_all_pass (AssertionError: 0.95 != 1.0; Scenario 8 Incompatible vehicle type)",
+      "tests/test_edge_cases.py::TestEdgeCases::test_edge_02_clear_different_vehicle_match (AssertionError: 0.7 != 0.0)",
+      "tests/test_final_hackathon_hardening.py::TestFinalHackathonHardening::test_adversarial_suite_explicit_reporting (AssertionError: False is not true; ADV_13)",
+      "tests/test_final_hardening_member2_audit.py::TestFinalHardeningMember2Audit::test_03_negative_contradictions_rejected (AssertionError: 0.35 != 0.0)"
+    ]
+  },
+  "validation_pipeline_metrics": {
+    "theoretical_pairs": 73536,
+    "candidates_generated": 62449,
+    "candidate_reduction_pct": 15.08,
+    "candidate_recall_pct": 81.49,
+    "true_cross_pairs_total": 308,
+    "true_cross_pairs_retrieved": 251,
+    "true_cross_pairs_missed": 57,
+    "cross_camera_precision": 0.0000,
+    "cross_camera_recall": 0.0000,
+    "cross_camera_f1": 0.0000,
+    "cross_camera_fmr": 0.000000,
+    "cluster_purity": 0.9558,
+    "uncalibrated_brier": 0.1057,
+    "uncalibrated_ece": 0.2545,
+    "calibrated_brier": 0.0233,
+    "calibrated_ece": 0.0080,
+    "validation_runtime_seconds": 77.30
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CameraStateDictionary",
+  "description": "Dictionary of operational camera metadata, reliability priors, synchronization offsets, and calibration status.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "object",
+    "required": [
+      "camera_id",
+      "camera_index",
+      "total_tracklets",
+      "fps",
+      "reid_model",
+      "reid_compatibility_status",
+      "camera_reliability",
+      "synchronization",
+      "calibration"
+    ],
+    "properties": {
+      "camera_id": {
+        "type": "string"
+      },
+      "camera_index": {
+        "type": "string"
+      },
+      "total_tracklets": {
+        "type": "integer"
+      },
+      "observations_count": {
+        "type": "integer"
+      },
+      "fps": {
+        "type": "number"
+      },
+      "video_duration_seconds": {
+        "type": "number"
+      },
+      "reid_model": {
+        "type": "string"
+      },
+      "reid_compatibility_status": {
+        "type": "string",
+        "enum": [
+          "compatible",
+          "incompatible_model_guarded"
+        ]
+      },
+      "camera_reliability": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "mean_detection_confidence": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "synchronization": {
+        "type": "object",
+        "required": [
+          "offset_seconds",
+          "status",
+          "semantics"
+        ],
+        "properties": {
+          "offset_seconds": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "semantics": {
+            "type": "string"
+          },
+          "source_file": {
+            "type": "string"
+          }
+        }
+      },
+      "calibration": {
+        "type": "object",
+        "required": [
+          "status",
+          "homography_available",
+          "reprojection_error_px",
+          "coordinate_system",
+          "coordinate_units",
+          "is_wgs84_gps"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "homography_available": {
+            "type": "boolean"
+          },
+          "reprojection_error_px": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "coordinate_system": {
+            "type": "string",
+            "enum": [
+              "cityflow_world",
+              "image"
+            ]
+          },
+          "coordinate_units": {
+            "type": "string"
+          },
+          "is_wgs84_gps": {
+            "type": "boolean",
+            "const": false
+          },
+          "valid_world_projections_count": {
+            "type": "integer"
+          },
+          "unstable_horizon_rejected_count": {
+            "type": "integer"
+          },
+          "source_dir": {
+            "type": "string"
+          }
+        }
+      },
+      "telemetry_aggregates": {
+        "type": [
+          "object",
+          "null"
+        ]
+      }
+    }
+  }
+}

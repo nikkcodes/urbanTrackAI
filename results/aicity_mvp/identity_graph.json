@@ -1,0 +1,2707 @@
+{
+  "nodes_count": 384,
+  "edges_count": 36,
+  "edges": [
+    {
+      "source": "CAM_S01_C001_trk_002",
+      "target": "CAM_S01_C001_trk_019",
+      "score": 0.718,
+      "probability": 0.718,
+      "evidence": {
+        "appearance_similarity": 0.8703,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 10.5,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C001",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 10.5,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8703,
+          "score": 0.8703,
+          "contribution": 0.8703,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 10.5,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.72: Appearance similarity is 0.87 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C001_trk_002",
+      "target": "CAM_S01_C001_trk_027",
+      "score": 0.7238,
+      "probability": 0.7238,
+      "evidence": {
+        "appearance_similarity": 0.8773,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 12.6,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C001",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 12.6,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8773,
+          "score": 0.8773,
+          "contribution": 0.8773,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 12.6,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.72: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_265",
+      "target": "CAM_S01_C002_trk_372",
+      "score": 0.7259,
+      "probability": 0.7259,
+      "evidence": {
+        "appearance_similarity": 0.8799,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 47.1,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 47.1,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8799,
+          "score": 0.8799,
+          "contribution": 0.8799,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 47.1,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_275",
+      "target": "CAM_S01_C002_trk_320",
+      "score": 0.7436,
+      "probability": 0.7436,
+      "evidence": {
+        "appearance_similarity": 0.9013,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 17.6,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 17.6,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9013,
+          "score": 0.9013,
+          "contribution": 0.9013,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 17.6,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.74: Appearance similarity is 0.90 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_303",
+      "target": "CAM_S01_C002_trk_327",
+      "score": 0.7397,
+      "probability": 0.7397,
+      "evidence": {
+        "appearance_similarity": 0.8966,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 10.899999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 10.9,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8966,
+          "score": 0.8966,
+          "contribution": 0.8966,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 10.9,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.74: Appearance similarity is 0.90 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_303",
+      "target": "CAM_S01_C002_trk_334",
+      "score": 0.7124,
+      "probability": 0.7124,
+      "evidence": {
+        "appearance_similarity": 0.8635,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 18.5,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 18.5,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8635,
+          "score": 0.8635,
+          "contribution": 0.8635,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 18.5,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.86 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_303",
+      "target": "CAM_S01_C002_trk_364",
+      "score": 0.7265,
+      "probability": 0.7265,
+      "evidence": {
+        "appearance_similarity": 0.8806,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 24.900000000000002,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 24.9,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8806,
+          "score": 0.8806,
+          "contribution": 0.8806,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 24.9,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_322",
+      "target": "CAM_S01_C002_trk_336",
+      "score": 0.7024,
+      "probability": 0.7024,
+      "evidence": {
+        "appearance_similarity": 0.8514,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 9.900000000000002,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 9.9,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8514,
+          "score": 0.8514,
+          "contribution": 0.8514,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 9.9,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_325",
+      "target": "CAM_S01_C002_trk_372",
+      "score": 0.7214,
+      "probability": 0.7214,
+      "evidence": {
+        "appearance_similarity": 0.8744,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 24.500000000000004,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 24.5,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8744,
+          "score": 0.8744,
+          "contribution": 0.8744,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 24.5,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.72: Appearance similarity is 0.87 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_327",
+      "target": "CAM_S01_C002_trk_364",
+      "score": 0.7309,
+      "probability": 0.7309,
+      "evidence": {
+        "appearance_similarity": 0.886,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 14.000000000000004,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 14.0,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.886,
+          "score": 0.886,
+          "contribution": 0.886,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 14.0,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.89 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_327",
+      "target": "CAM_S01_C002_trk_370",
+      "score": 0.728,
+      "probability": 0.728,
+      "evidence": {
+        "appearance_similarity": 0.8824,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 20.099999999999998,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 20.1,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8824,
+          "score": 0.8824,
+          "contribution": 0.8824,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 20.1,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_334",
+      "target": "CAM_S01_C002_trk_364",
+      "score": 0.727,
+      "probability": 0.727,
+      "evidence": {
+        "appearance_similarity": 0.8812,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 6.400000000000002,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 6.4,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8812,
+          "score": 0.8812,
+          "contribution": 0.8812,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 6.4,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_334",
+      "target": "CAM_S01_C002_trk_474",
+      "score": 0.7053,
+      "probability": 0.7053,
+      "evidence": {
+        "appearance_similarity": 0.8549,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 82.3,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 82.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8549,
+          "score": 0.8549,
+          "contribution": 0.8549,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 82.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_341",
+      "target": "CAM_S01_C002_trk_499",
+      "score": 0.7266,
+      "probability": 0.7266,
+      "evidence": {
+        "appearance_similarity": 0.8807,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 94.2,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 94.2,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8807,
+          "score": 0.8807,
+          "contribution": 0.8807,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 94.2,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_364",
+      "target": "CAM_S01_C002_trk_474",
+      "score": 0.7031,
+      "probability": 0.7031,
+      "evidence": {
+        "appearance_similarity": 0.8522,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 75.89999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 75.9,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8522,
+          "score": 0.8522,
+          "contribution": 0.8522,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 75.9,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_366",
+      "target": "CAM_S01_C002_trk_451",
+      "score": 0.7075,
+      "probability": 0.7075,
+      "evidence": {
+        "appearance_similarity": 0.8575,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 59.8,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 59.8,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8575,
+          "score": 0.8575,
+          "contribution": 0.8575,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 59.8,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.86 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_398",
+      "target": "CAM_S01_C002_trk_399",
+      "score": 0.7,
+      "probability": 0.7,
+      "evidence": {
+        "appearance_similarity": 0.9627,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 0.85,
+        "temporal_status": "tracker_fragmentation_temporal_overlap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 0.09999999999999432,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 0.1,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9627,
+          "score": 0.9627,
+          "contribution": 0.9627,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "contradictory",
+          "detailed_status": "available_contradictory",
+          "value": 0.85,
+          "score": 0.85,
+          "contribution": 0.2975,
+          "delta_t_seconds": 0.1,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.96 (high), vehicle types are compatible (truck vs truck), conflicting tracker evidence on camera CAM_S01_C002 (398 vs 399 within 0.10s)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_403",
+      "target": "CAM_S01_C002_trk_464",
+      "score": 0.7169,
+      "probability": 0.7169,
+      "evidence": {
+        "appearance_similarity": 0.869,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 37.3,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 37.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.869,
+          "score": 0.869,
+          "contribution": 0.869,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 37.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.72: Appearance similarity is 0.87 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_403",
+      "target": "CAM_S01_C002_trk_591",
+      "score": 0.7009,
+      "probability": 0.7009,
+      "evidence": {
+        "appearance_similarity": 0.8496,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 132.7,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 132.7,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8496,
+          "score": 0.8496,
+          "contribution": 0.8496,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 132.7,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_427",
+      "target": "CAM_S01_C002_trk_449",
+      "score": 0.7037,
+      "probability": 0.7037,
+      "evidence": {
+        "appearance_similarity": 0.8529,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 12.599999999999994,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 12.6,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8529,
+          "score": 0.8529,
+          "contribution": 0.8529,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 12.6,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_431",
+      "target": "CAM_S01_C002_trk_464",
+      "score": 0.7222,
+      "probability": 0.7222,
+      "evidence": {
+        "appearance_similarity": 0.8754,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 17.5,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 17.5,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8754,
+          "score": 0.8754,
+          "contribution": 0.8754,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 17.5,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.72: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_431",
+      "target": "CAM_S01_C002_trk_585",
+      "score": 0.7257,
+      "probability": 0.7257,
+      "evidence": {
+        "appearance_similarity": 0.8796,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 108.8,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 108.8,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8796,
+          "score": 0.8796,
+          "contribution": 0.8796,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 108.8,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.73: Appearance similarity is 0.88 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_431",
+      "target": "CAM_S01_C002_trk_591",
+      "score": 0.7077,
+      "probability": 0.7077,
+      "evidence": {
+        "appearance_similarity": 0.8579,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 112.89999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 112.9,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8579,
+          "score": 0.8579,
+          "contribution": 0.8579,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 112.9,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.86 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_464",
+      "target": "CAM_S01_C002_trk_585",
+      "score": 0.7359,
+      "probability": 0.7359,
+      "evidence": {
+        "appearance_similarity": 0.892,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 91.3,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 91.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.892,
+          "score": 0.892,
+          "contribution": 0.892,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 91.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.74: Appearance similarity is 0.89 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_471",
+      "target": "CAM_S01_C002_trk_601",
+      "score": 0.7082,
+      "probability": 0.7082,
+      "evidence": {
+        "appearance_similarity": 0.8585,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 98.0,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 98.0,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8585,
+          "score": 0.8585,
+          "contribution": 0.8585,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 98.0,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.86 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C002_trk_577",
+      "target": "CAM_S01_C002_trk_578",
+      "score": 0.7,
+      "probability": 0.7,
+      "evidence": {
+        "appearance_similarity": 0.954,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 0.85,
+        "temporal_status": "tracker_fragmentation_temporal_overlap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 0.29999999999998295,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C002",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 0.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.954,
+          "score": 0.954,
+          "contribution": 0.954,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "contradictory",
+          "detailed_status": "available_contradictory",
+          "value": 0.85,
+          "score": 0.85,
+          "contribution": 0.2975,
+          "delta_t_seconds": 0.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.95 (high), vehicle types are compatible (truck vs truck), conflicting tracker evidence on camera CAM_S01_C002 (577 vs 578 within 0.30s)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_084",
+      "target": "CAM_S01_C003_trk_105",
+      "score": 0.7905,
+      "probability": 0.7905,
+      "evidence": {
+        "appearance_similarity": 0.9581,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 9.3,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 9.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9581,
+          "score": 0.9581,
+          "contribution": 0.9581,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 9.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.79: Appearance similarity is 0.96 (high), vehicle types are compatible (truck vs truck)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_084",
+      "target": "CAM_S01_C003_trk_110",
+      "score": 0.779,
+      "probability": 0.779,
+      "evidence": {
+        "appearance_similarity": 0.9442,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 11.399999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 11.4,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9442,
+          "score": 0.9442,
+          "contribution": 0.9442,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 11.4,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.78: Appearance similarity is 0.94 (high), vehicle types are compatible (truck vs truck)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_095",
+      "target": "CAM_S01_C003_trk_147",
+      "score": 0.8131,
+      "probability": 0.8131,
+      "evidence": {
+        "appearance_similarity": 0.9856,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 20.299999999999997,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 20.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9856,
+          "score": 0.9856,
+          "contribution": 0.9856,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 20.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.81: Appearance similarity is 0.99 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_095",
+      "target": "CAM_S01_C003_trk_161",
+      "score": 0.8162,
+      "probability": 0.8162,
+      "evidence": {
+        "appearance_similarity": 0.9893,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 27.700000000000003,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 27.7,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9893,
+          "score": 0.9893,
+          "contribution": 0.9893,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 27.7,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.82: Appearance similarity is 0.99 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_105",
+      "target": "CAM_S01_C003_trk_110",
+      "score": 0.811,
+      "probability": 0.811,
+      "evidence": {
+        "appearance_similarity": 0.983,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 2.099999999999998,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 2.1,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.983,
+          "score": 0.983,
+          "contribution": 0.983,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 2.1,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.81: Appearance similarity is 0.98 (high), vehicle types are compatible (truck vs truck)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_147",
+      "target": "CAM_S01_C003_trk_161",
+      "score": 0.8151,
+      "probability": 0.8151,
+      "evidence": {
+        "appearance_similarity": 0.9879,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 7.400000000000006,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 7.4,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9879,
+          "score": 0.9879,
+          "contribution": 0.9879,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 7.4,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.82: Appearance similarity is 0.99 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_182",
+      "target": "CAM_S01_C003_trk_367",
+      "score": 0.7365,
+      "probability": 0.7365,
+      "evidence": {
+        "appearance_similarity": 0.8927,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 101.69999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 101.7,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8927,
+          "score": 0.8927,
+          "contribution": 0.8927,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 101.7,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.74: Appearance similarity is 0.89 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_233",
+      "target": "CAM_S01_C003_trk_289",
+      "score": 0.7019,
+      "probability": 0.7019,
+      "evidence": {
+        "appearance_similarity": 0.8508,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 25.69999999999999,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 25.7,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8508,
+          "score": 0.8508,
+          "contribution": 0.8508,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 25.7,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.70: Appearance similarity is 0.85 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_384",
+      "target": "CAM_S01_C003_trk_399",
+      "score": 0.7144,
+      "probability": 0.7144,
+      "evidence": {
+        "appearance_similarity": 0.8659,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 4.600000000000023,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 4.6,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.8659,
+          "score": 0.8659,
+          "contribution": 0.8659,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 4.6,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.71: Appearance similarity is 0.87 (high), vehicle types are compatible (car vs car)."
+    },
+    {
+      "source": "CAM_S01_C003_trk_387",
+      "target": "CAM_S01_C003_trk_409",
+      "score": 0.7521,
+      "probability": 0.7521,
+      "evidence": {
+        "appearance_similarity": 0.9117,
+        "appearance_status": "available",
+        "identity_evidence_available": true,
+        "vehicle_type_match": true,
+        "vehicle_type_status": "compatible",
+        "temporal_feasibility": 1.0,
+        "temporal_status": "plausible_time_gap",
+        "temporal_evidence": {
+          "comparable": true,
+          "status": "available",
+          "reason": "same_camera_video_relative_valid",
+          "delta_seconds": 7.299999999999983,
+          "timestamp_semantics": "video_relative",
+          "time_reference_id": "CAM_S01_C003",
+          "used_in_route_scoring": true
+        },
+        "spatial_feasibility": 0.5,
+        "plate_similarity": null,
+        "time_difference_seconds": 7.3,
+        "geographic_distance_meters": 0.0,
+        "required_speed_kmh": null
+      },
+      "evidence_ledger": {
+        "plate": {
+          "status": "missing",
+          "detailed_status": "missing",
+          "value": null,
+          "score": null,
+          "confidence": null,
+          "contribution": null,
+          "source": "missing"
+        },
+        "appearance": {
+          "status": "available",
+          "detailed_status": "available_supportive",
+          "value": 0.9117,
+          "score": 0.9117,
+          "contribution": 0.9117,
+          "source": "actual_observation"
+        },
+        "vehicle_type": {
+          "status": "compatible",
+          "detailed_status": "available_supportive",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.3,
+          "source": "actual_observation"
+        },
+        "temporal": {
+          "status": "unverified",
+          "detailed_status": "unverified",
+          "value": 1.0,
+          "score": 1.0,
+          "contribution": 0.35,
+          "delta_t_seconds": 7.3,
+          "source": "actual_observation"
+        },
+        "spatial": {
+          "status": "feasible",
+          "detailed_status": "available_supportive",
+          "value": 0.5,
+          "score": 0.5,
+          "contribution": 0.175,
+          "distance_meters": 0.0,
+          "source": "unavailable"
+        }
+      },
+      "explanation": "Estimated match probability is 0.75: Appearance similarity is 0.91 (high), vehicle types are compatible (car vs car)."
+    }
+  ],
+  "clusters_count": 355
+}

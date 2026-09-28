@@ -66,6 +66,7 @@ class CandidateGenerator:
         min_score_threshold: float = 0.70,
         camera_metadata: Optional[Dict[str, Dict[str, Any]]] = None,
         config: Optional[Dict[str, Any]] = None,
+        unsynchronized_mode: bool = False,
     ) -> None:
         self.max_speed_kmh = max_speed_kmh
         self.max_time_window_seconds = max_time_window_seconds
@@ -74,6 +75,7 @@ class CandidateGenerator:
         self.min_probability_threshold = thresh
         self.camera_metadata = camera_metadata or {}
         self.config = config or {}
+        self.unsynchronized_mode = unsynchronized_mode
 
     def generate_candidates(
         self,
@@ -222,6 +224,9 @@ class CandidateGenerator:
                 # 2. Vehicle type compatibility (only prune when both are known and incompatible)
                 norm_b = item_b[3]
                 if norm_a and norm_b and norm_a != norm_b:
+                    if self.unsynchronized_mode:
+                        rejection_counts["incompatible_vehicle_type"] += 1
+                        continue
                     # TWO-STAGE GATE: 
                     # We have a vehicle-type mismatch. 
                     # We only admit this candidate to fusion if there is independent evidence (i.e. ReID model compatibility).

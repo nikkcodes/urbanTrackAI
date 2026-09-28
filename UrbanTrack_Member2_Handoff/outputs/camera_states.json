@@ -1,0 +1,122 @@
+{
+  "CAM_S01_C001": {
+    "camera_id": "CAM_S01_C001",
+    "camera_index": "c001",
+    "total_tracklets": 107,
+    "observations_count": 7229,
+    "fps": 10.0,
+    "video_duration_seconds": 195.5,
+    "reid_model": "osnet_x0_25_aicity",
+    "reid_compatibility_status": "compatible",
+    "camera_reliability": 0.8012,
+    "mean_detection_confidence": 0.7986,
+    "synchronization": {
+      "offset_seconds": 0.0,
+      "status": "synchronized",
+      "semantics": "video_relative_plus_synchronized_overlay",
+      "source_file": "data/aicity_ground_truth/cam_timestamp/S01.txt"
+    },
+    "calibration": {
+      "status": "calibrated",
+      "homography_available": true,
+      "reprojection_error_px": 5.499888905989678,
+      "coordinate_system": "cityflow_world",
+      "coordinate_units": "meters",
+      "is_wgs84_gps": false,
+      "valid_world_projections_count": 95,
+      "unstable_horizon_rejected_count": 12,
+      "source_dir": "data/aicity_ground_truth/calibration"
+    },
+    "telemetry_aggregates": {
+      "telemetry_frame_count": 52,
+      "mean_reliability": 0.7385,
+      "min_reliability": 0.686,
+      "max_reliability": 0.823,
+      "mean_blur": 0.7389,
+      "mean_brightness": 0.6049,
+      "mean_occlusion": 0.0064,
+      "frame_detection_confidence_mean": 0.7095
+    },
+    "frames_processed": 1955
+  },
+  "CAM_S01_C002": {
+    "camera_id": "CAM_S01_C002",
+    "camera_index": "c002",
+    "total_tracklets": 125,
+    "observations_count": 6702,
+    "fps": 10.0,
+    "video_duration_seconds": 211.0,
+    "reid_model": "osnet_x0_25_msmt17",
+    "reid_compatibility_status": "incompatible_model_guarded",
+    "camera_reliability": 0.7558,
+    "mean_detection_confidence": 0.7766,
+    "synchronization": {
+      "offset_seconds": 1.64,
+      "status": "synchronized",
+      "semantics": "video_relative_plus_synchronized_overlay",
+      "source_file": "data/aicity_ground_truth/cam_timestamp/S01.txt"
+    },
+    "calibration": {
+      "status": "calibrated",
+      "homography_available": true,
+      "reprojection_error_px": 11.443081339704676,
+      "coordinate_system": "cityflow_world",
+      "coordinate_units": "meters",
+      "is_wgs84_gps": false,
+      "valid_world_projections_count": 112,
+      "unstable_horizon_rejected_count": 13,
+      "source_dir": "data/aicity_ground_truth/calibration"
+    },
+    "telemetry_aggregates": {
+      "telemetry_frame_count": 147,
+      "mean_reliability": 0.7432,
+      "min_reliability": 0.663,
+      "max_reliability": 0.802,
+      "mean_blur": 0.875,
+      "mean_brightness": 0.5268,
+      "mean_occlusion": 0.0896,
+      "frame_detection_confidence_mean": 0.7613
+    },
+    "frames_processed": 2110
+  },
+  "CAM_S01_C003": {
+    "camera_id": "CAM_S01_C003",
+    "camera_index": "c003",
+    "total_tracklets": 152,
+    "observations_count": 7879,
+    "fps": 10.0,
+    "video_duration_seconds": 199.6,
+    "reid_model": "osnet_x0_25_aicity",
+    "reid_compatibility_status": "compatible",
+    "camera_reliability": 0.6279,
+    "mean_detection_confidence": 0.7112,
+    "synchronization": {
+      "offset_seconds": 2.049,
+      "status": "synchronized",
+      "semantics": "video_relative_plus_synchronized_overlay",
+      "source_file": "data/aicity_ground_truth/cam_timestamp/S01.txt"
+    },
+    "calibration": {
+      "status": "calibrated",
+      "homography_available": true,
+      "reprojection_error_px": 11.390840640147406,
+      "coordinate_system": "cityflow_world",
+      "coordinate_units": "meters",
+      "is_wgs84_gps": false,
+      "valid_world_projections_count": 152,
+      "unstable_horizon_rejected_count": 0,
+      "source_dir": "data/aicity_ground_truth/calibration"
+    },
+    "telemetry_aggregates": {
+      "telemetry_frame_count": 18,
+      "mean_reliability": 0.6562,
+      "min_reliability": 0.627,
+      "max_reliability": 0.701,
+      "mean_blur": 0.4755,
+      "mean_brightness": 0.6102,
+      "mean_occlusion": 0.0469,
+      "frame_detection_confidence_mean": 0.7285
+    },
+    "frames_processed": 1996
+  }
+}

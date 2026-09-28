@@ -1,0 +1,39 @@
+{
+  "dataset": "AI City Challenge 2022 Track 1",
+  "generated_at": "2026-09-17T14:20:59.973545+00:00",
+  "processed_cameras": 2,
+  "successful_cameras": 2,
+  "failed_cameras": 0,
+  "cameras": [
+    {
+      "camera_id": "CAM_S01_C001",
+      "scene": "S01",
+      "camera": "c001",
+      "split": "train",
+      "video_path_relative": "train/S01/c001/vdo.avi",
+      "ground_truth_path_relative": "train/S01/c001/gt/gt.txt",
+      "calibration_path_relative": "train/S01/c001/calibration.txt",
+      "output_directory": "data/output/CAM_S01_C001",
+      "status": "success",
+      "frames_processed": 1955,
+      "elapsed_seconds": 195.5,
+      "processing_timestamp": "2026-09-17T14:17:03.337024+00:00",
+      "error": null
+    },
+    {
+      "camera_id": "CAM_S01_C002",
+      "scene": "S01",
+      "camera": "c002",
+      "split": "train",
+      "video_path_relative": "train/S01/c002/vdo.avi",
+      "ground_truth_path_relative": "train/S01/c002/gt/gt.txt",
+      "calibration_path_relative": "train/S01/c002/calibration.txt",
+      "output_directory": "data/output/CAM_S01_C002",
+      "status": "success",
+      "frames_processed": 2110,
+      "elapsed_seconds": 211.0,
+      "processing_timestamp": "2026-09-17T14:20:21.134849+00:00",
+      "error": null
+    }
+  ]
+}

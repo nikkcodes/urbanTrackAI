@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "calibration_method": "platt_scaling",
+  "dev_vehicles_count": 57,
+  "holdout_vehicles_count": 38,
+  "dev_pairs_evaluated": 13103,
+  "holdout_pairs_evaluated": 5749,
+  "uncalibrated_brier_score": 0.1057,
+  "calibrated_brier_score": 0.0233,
+  "brier_score_improvement": 0.0824,
+  "uncalibrated_ece": 0.2545,
+  "calibrated_ece": 0.008,
+  "ece_reduction": 0.2465,
+  "calibrator_weights": {
+    "coef": 0.0413,
+    "intercept": -4.016
+  }
+}

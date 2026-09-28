@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InferredIdentity",
+  "description": "Standardized Member 2 inferred vehicle identity hypothesis from multi-camera graph clustering.",
+  "type": "object",
+  "required": [
+    "identity_id",
+    "identity_status",
+    "admission_status",
+    "cameras",
+    "observation_ids",
+    "observations_count",
+    "consistency",
+    "evidence_summary"
+  ],
+  "properties": {
+    "identity_id": {
+      "type": "string",
+      "description": "Unique Member 2 inferred global vehicle identity identifier (e.g. UT_ID_0001). Distinct from GT IDs."
+    },
+    "identity_status": {
+      "type": "string",
+      "enum": [
+        "candidate",
+        "unconfirmed_singleton"
+      ],
+      "description": "Cluster identity status. 'candidate' indicates multi-observation candidate; 'unconfirmed_singleton' indicates isolated observation."
+    },
+    "admission_status": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "unconfirmed_singleton",
+        "ambiguous",
+        "rejected_merge"
+      ],
+      "description": "Final admission status following cluster-level physical consistency audit."
+    },
+    "cameras": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of distinct camera identifiers where this vehicle was observed."
+    },
+    "observation_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of Member 1 camera-local tracklet observation IDs linked to this identity."
+    },
+    "observations_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total count of member observations in this identity hypothesis."
+    },
+    "vehicle_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "car",
+        "truck",
+        "bus",
+        "suv",
+        "vehicle",
+        null
+      ],
+      "description": "Consensus vehicle classification."
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Calibrated identity confidence score in [0.0, 1.0]. Null for unconfirmed singletons to preserve conservative uncertainty."
+    },
+    "consistency": {
+      "type": "object",
+      "required": [
+        "is_consistent",
+        "status",
+        "temporal_consistency",
+        "spatial_consistency",
+        "vehicle_type_consistency"
+      ],
+      "properties": {
+        "is_consistent": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "consistent",
+            "inconsistent",
+            "insufficient_evidence",
+            "unverified",
+            "singleton"
+          ]
+        },
+        "consistency_score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "temporal_consistency": {
+          "type": "string",
+          "enum": [
+            "consistent",
+            "inconsistent",
+            "unavailable",
+            "unverified"
+          ]
+        },
+        "spatial_consistency": {
+          "type": "string",
+          "enum": [
+            "consistent",
+            "inconsistent",
+            "unavailable"
+          ]
+        },
+        "vehicle_type_consistency": {
+          "type": "string",
+          "enum": [
+            "compatible",
+            "incompatible",
+            "unknown"
+          ]
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "contradictory_edges": {
+          "type": "array"
+        },
+        "supporting_edges": {
+          "type": "array"
+        },
+        "temporal_conflicts": {
+          "type": "integer"
+        },
+        "topology_conflicts": {
+          "type": "integer"
+        },
+        "identity_evidence_coverage": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "internal_consistency": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "required": [
+        "appearance",
+        "plate",
+        "temporal",
+        "spatial",
+        "vehicle_type"
+      ],
+      "properties": {
+        "appearance": {
+          "type": "string"
+        },
+        "plate": {
+          "type": "string"
+        },
+        "temporal": {
+          "type": "string"
+        },
+        "spatial": {
+          "type": "string"
+        },
+        "vehicle_type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

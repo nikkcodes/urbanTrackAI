@@ -1,0 +1,177 @@
+{
+  "_comment": "Real pairwise match result with AMBIGUOUS decision state",
+  "_provenance": "Evaluated by IdentityFusion engine; score within ambiguous band, incomplete identity evidence",
+  "pairwise_match": {
+    "observation_a": "CAM_S01_C001_trk_001",
+    "observation_b": "CAM_S01_C001_trk_056",
+    "evidence": {
+      "appearance_similarity": null,
+      "appearance_status": "missing",
+      "identity_evidence_available": false,
+      "vehicle_type_match": true,
+      "vehicle_type_status": "compatible",
+      "temporal_feasibility": 1.0,
+      "temporal_status": "plausible_time_gap",
+      "temporal_evidence": {
+        "comparable": true,
+        "status": "available",
+        "reason": "same_camera_video_relative_valid",
+        "delta_seconds": 34.6,
+        "timestamp_semantics": "video_relative",
+        "time_reference_id": "CAM_S01_C001",
+        "used_in_route_scoring": true
+      },
+      "spatial_feasibility": 0.5,
+      "plate_similarity": null,
+      "time_difference_seconds": 34.6,
+      "geographic_distance_meters": 0.0,
+      "required_speed_kmh": null
+    },
+    "evidence_ledger": {
+      "plate": {
+        "status": "missing",
+        "detailed_status": "missing",
+        "value": null,
+        "score": null,
+        "confidence": null,
+        "contribution": null,
+        "source": "missing"
+      },
+      "appearance": {
+        "status": "missing",
+        "detailed_status": "missing",
+        "value": null,
+        "score": null,
+        "contribution": null,
+        "source": "actual_observation"
+      },
+      "vehicle_type": {
+        "status": "compatible",
+        "detailed_status": "available_supportive",
+        "value": 1.0,
+        "score": 1.0,
+        "contribution": 0.3,
+        "source": "actual_observation"
+      },
+      "temporal": {
+        "status": "unverified",
+        "detailed_status": "unverified",
+        "value": 1.0,
+        "score": 1.0,
+        "contribution": 0.35,
+        "delta_t_seconds": 34.6,
+        "source": "actual_observation"
+      },
+      "spatial": {
+        "status": "feasible",
+        "detailed_status": "available_supportive",
+        "value": 0.5,
+        "score": 0.5,
+        "contribution": 0.175,
+        "distance_meters": 0.0,
+        "source": "unavailable"
+      }
+    },
+    "same_vehicle_probability": 0.4125,
+    "same_vehicle_score": 0.4125,
+    "identity_evidence_score": 0.4125,
+    "calibrated_probability": 0.1166,
+    "calibration_details": {
+      "calibrated": true,
+      "method": "platt_scaling_logistic",
+      "uncalibrated_heuristic_score": 0.4125
+    },
+    "decision_state": "AMBIGUOUS",
+    "operating_thresholds": {
+      "confirmed": 0.75,
+      "ambiguous": 0.4
+    },
+    "explanation": "Estimated match probability is 0.41: Appearance evidence unavailable, vehicle types are compatible (car vs car).",
+    "observation_reliability": {
+      "observation_a": {
+        "observation_id": "CAM_S01_C001_trk_001",
+        "camera_id": "CAM_S01_C001",
+        "observation_quality": 0.6386,
+        "identity_evidence_quality": 0.5,
+        "reliability": 0.5832,
+        "overall_reliability": 0.5832,
+        "uncertainty": 0.4168,
+        "uncertainty_level": "moderate",
+        "available_evidence": [
+          "camera_reliability",
+          "appearance_embedding",
+          "detection_confidence",
+          "metadata_completeness"
+        ],
+        "missing_evidence": [
+          "plate_evidence"
+        ],
+        "degradation_factors": [],
+        "factors": {
+          "camera_reliability": 0.7385,
+          "appearance_quality": 1.0,
+          "detection_confidence": 0.7584,
+          "metadata_completeness": 0.6667,
+          "observation_quality": 0.6386,
+          "identity_evidence_quality": 0.5,
+          "composite_reliability": 0.5832
+        },
+        "explanation": "Observation 'CAM_S01_C001_trk_001' on camera 'CAM_S01_C001' (composite trust: 0.58): physical observation quality is moderate (0.64); identity evidence has Re-ID embedding but missing plate.",
+        "camera_reliability": 0.7385,
+        "detection_confidence": 0.7584,
+        "reid_reliability": 1.0
+      },
+      "observation_b": {
+        "observation_id": "CAM_S01_C001_trk_056",
+        "camera_id": "CAM_S01_C001",
+        "observation_quality": 0.6666,
+        "identity_evidence_quality": 0.0,
+        "reliability": 0.4,
+        "overall_reliability": 0.4,
+        "uncertainty": 0.6,
+        "uncertainty_level": "high",
+        "available_evidence": [
+          "camera_reliability",
+          "detection_confidence",
+          "metadata_completeness"
+        ],
+        "missing_evidence": [
+          "plate_evidence",
+          "appearance_embedding"
+        ],
+        "degradation_factors": [],
+        "factors": {
+          "camera_reliability": 0.7944,
+          "appearance_quality": 0.0,
+          "detection_confidence": 0.7023,
+          "metadata_completeness": 0.6667,
+          "observation_quality": 0.6666,
+          "identity_evidence_quality": 0.0,
+          "composite_reliability": 0.4
+        },
+        "explanation": "Observation 'CAM_S01_C001_trk_056' on camera 'CAM_S01_C001' (composite trust: 0.40): physical observation quality is moderate (0.67); identity evidence is incomplete because no Re-ID embedding or license plate is available.",
+        "camera_reliability": 0.7944,
+        "detection_confidence": 0.7023
+      },
+      "endpoint_reliability": 0.483
+    },
+    "reliability": {
+      "observation_a": "CAM_S01_C001_trk_001",
+      "observation_b": "CAM_S01_C001_trk_056",
+      "match_probability": 0.4125,
+      "endpoint_reliability": 0.483,
+      "evidence_quality": 0.4,
+      "combined_reliability": 0.1364,
+      "uncertainty": 0.8636,
+      "explanation": "Identity match between 'CAM_S01_C001_trk_001' and 'CAM_S01_C001_trk_056' has reliability 0.14 (uncertainty: 0.86): endpoint reliability 0.48, supported by spatio-temporal feasibility only (no direct visual/plate identity evidence)."
+    },
+    "uncertainty": 0.8636,
+    "uncertainty_details": {
+      "score": 0.8636,
+      "level": "critical",
+      "explanation": "Identity match between 'CAM_S01_C001_trk_001' and 'CAM_S01_C001_trk_056' has reliability 0.14 (uncertainty: 0.86): endpoint reliability 0.48, supported by spatio-temporal feasibility only (no direct visual/plate identity evidence)."
+    },
+    "observation_a_id": "CAM_S01_C001_trk_001",
+    "observation_b_id": "CAM_S01_C001_trk_056"
+  }
+}

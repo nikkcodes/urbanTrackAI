@@ -111,6 +111,9 @@ class Observation:
     time_reference_id: Optional[str] = None
     clock_offset_seconds: Optional[float] = None
     time_uncertainty_seconds: Optional[float] = None
+    synchronized_timestamp_seconds: Optional[float] = None
+    synchronized_timestamp_semantics: Optional[str] = None
+    synchronized_time_reference_id: Optional[str] = None
     source_provenance: Optional[Dict[str, Any]] = None
     source_dataset: Optional[str] = None
     source_video: Optional[str] = None
@@ -125,6 +128,85 @@ class Observation:
     @property
     def coordinate_system(self) -> str:
         return self.point_coordinate_system
+
+    @property
+    def plate_bbox_available(self) -> bool:
+        return self.plate_bbox is not None and len(self.plate_bbox) >= 4
+
+    @property
+    def plate_text_available(self) -> bool:
+        return bool((self.plate and self.plate.strip()) or (self.plate_text and self.plate_text.strip()))
+
+    @property
+    def embedding_available(self) -> bool:
+        return bool(self.appearance_embedding is not None and len(self.appearance_embedding) > 0)
+
+    @property
+    def world_coordinate_available(self) -> bool:
+        return bool(self.world_position is not None or (self.latitude is not None and self.longitude is not None))
+
+    @property
+    def world_coordinate_quality(self) -> str:
+        """Categorical quality state: VALID | DEGRADED | UNAVAILABLE (per SIH Section 4)."""
+        if not self.world_coordinate_available:
+            return "UNAVAILABLE"
+        flags = [f.lower() for f in (self.data_quality_flags or [])]
+        if any("horizon" in f or "degraded" in f or "poor" in f or "distortion" in f for f in flags):
+            return "DEGRADED"
+        if self.latitude is not None and not (-90.0 <= self.latitude <= 90.0):
+            return "DEGRADED"
+        if self.longitude is not None and not (-180.0 <= self.longitude <= 180.0):
+            return "DEGRADED"
+        return "VALID"
+
+    @property
+    def synchronized_timestamp_available(self) -> bool:
+        return self.synchronized_timestamp_seconds is not None
+
+    @property
+    def timestamp_quality(self) -> str:
+        """Categorical quality state: VALID | DEGRADED | UNAVAILABLE (per SIH Section 4)."""
+        if self.synchronized_timestamp_seconds is not None:
+            if self.time_uncertainty_seconds is not None and self.time_uncertainty_seconds > 2.0:
+                return "DEGRADED"
+            return "VALID"
+        if getattr(self, "timestamp_seconds", None) is not None:
+            # Video relative timestamps have lower synchronization certainty across cameras
+            return "DEGRADED"
+        return "UNAVAILABLE"
+
+    @property
+    def track_quality(self) -> str:
+        """Categorical tracklet quality: VALID | DEGRADED | UNAVAILABLE (per SIH Section 4)."""
+        tid = getattr(self, "track_id", None) or getattr(self, "local_track_id", None)
+        if not tid:
+            return "UNAVAILABLE"
+        det_conf = getattr(self, "detection_confidence", None)
+        if det_conf is not None and det_conf < 0.40:
+            return "DEGRADED"
+        flags = [f.lower() for f in (self.data_quality_flags or [])]
+        if any("fragmented" in f or "jitter" in f or "occlusion" in f for f in flags):
+            return "DEGRADED"
+        return "VALID"
+
+    def get_quality_profile(self) -> Dict[str, Any]:
+        """
+        Produce categorical quality metadata vector per SIH26127 Section 4.
+        Never invents numerical values where directly measurable values do not exist.
+        """
+        return {
+            "detection_confidence": self.detection_confidence,
+            "track_quality": self.track_quality,
+            "plate_bbox_available": self.plate_bbox_available,
+            "plate_text_available": self.plate_text_available,
+            "ocr_confidence": self.ocr_confidence,
+            "embedding_available": self.embedding_available,
+            "embedding_model": self.embedding_model,
+            "world_coordinate_available": self.world_coordinate_available,
+            "world_coordinate_quality": self.world_coordinate_quality,
+            "synchronized_timestamp_available": self.synchronized_timestamp_available,
+            "timestamp_quality": self.timestamp_quality,
+        }
 
     def __init__(
         self,
@@ -160,6 +242,9 @@ class Observation:
         time_reference_id: Optional[str] = None,
         clock_offset_seconds: Optional[float] = None,
         time_uncertainty_seconds: Optional[float] = None,
+        synchronized_timestamp_seconds: Optional[float] = None,
+        synchronized_timestamp_semantics: Optional[str] = None,
+        synchronized_time_reference_id: Optional[str] = None,
         source_provenance: Optional[Dict[str, Any]] = None,
         source_dataset: Optional[str] = None,
         source_video: Optional[str] = None,
@@ -398,6 +483,16 @@ class Observation:
         else:
             self.time_uncertainty_seconds = None
 
+        if synchronized_timestamp_seconds is not None:
+            if not isinstance(synchronized_timestamp_seconds, (int, float)):
+                raise TypeError("synchronized_timestamp_seconds must be a number or None.")
+            self.synchronized_timestamp_seconds = float(synchronized_timestamp_seconds)
+        else:
+            self.synchronized_timestamp_seconds = None
+
+        self.synchronized_timestamp_semantics = str(synchronized_timestamp_semantics).strip() if synchronized_timestamp_semantics is not None else None
+        self.synchronized_time_reference_id = str(synchronized_time_reference_id).strip() if synchronized_time_reference_id is not None else None
+
         if source_provenance is not None:
             if not isinstance(source_provenance, dict):
                 raise TypeError("source_provenance must be a dictionary or None.")
@@ -485,6 +580,12 @@ class Observation:
             d["clock_offset_seconds"] = self.clock_offset_seconds
         if self.time_uncertainty_seconds is not None:
             d["time_uncertainty_seconds"] = self.time_uncertainty_seconds
+        if self.synchronized_timestamp_seconds is not None:
+            d["synchronized_timestamp_seconds"] = self.synchronized_timestamp_seconds
+        if self.synchronized_timestamp_semantics is not None:
+            d["synchronized_timestamp_semantics"] = self.synchronized_timestamp_semantics
+        if self.synchronized_time_reference_id is not None:
+            d["synchronized_time_reference_id"] = self.synchronized_time_reference_id
         if self.source_provenance is not None:
             d["source_provenance"] = self.source_provenance
         return d
@@ -572,6 +673,9 @@ class Observation:
             time_reference_id=time_ref_id,
             clock_offset_seconds=clock_offset,
             time_uncertainty_seconds=time_unc,
+            synchronized_timestamp_seconds=data.get("synchronized_timestamp_seconds"),
+            synchronized_timestamp_semantics=data.get("synchronized_timestamp_semantics"),
+            synchronized_time_reference_id=data.get("synchronized_time_reference_id"),
             source_provenance=data.get("source_provenance"),
             source_dataset=source_dataset,
             source_video=source_video,

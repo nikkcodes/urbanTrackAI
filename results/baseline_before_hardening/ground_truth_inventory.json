@@ -1,0 +1,13 @@
+{
+  "total_official_gt_vehicles": 95,
+  "mapped_observations_count": 294,
+  "unmatched_observations_count": 89,
+  "ambiguous_observations_count": 1,
+  "mapped_gt_vehicles_count": 95,
+  "multi_camera_gt_vehicles_count": 79,
+  "file_hashes": {
+    "c001": "618a8808b9520506adf660f7714707eec16df4ee35129043217f792e4c3d0599",
+    "c002": "6747328b2b0f43b440305ee7ff59ca773408e907a872875abbf91f92e7d3a6c3",
+    "c003": "92375f3b083a6a411969cbd641022550cdac13b4ef77bab87488a43877a8b453"
+  }
+}

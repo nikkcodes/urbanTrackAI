@@ -1,0 +1,19 @@
+{
+  "source_file": "data/aicity_ground_truth/cam_timestamp/S01.txt",
+  "file_sha256": "c06bb90d5773b88c7da32d3b398b19cef8291859ca61664ba1a70e19ff3f5e72",
+  "scenario": "S01",
+  "offsets_by_camera": {
+    "CAM_S01_C001": 0.0,
+    "CAM_S01_C002": 1.64,
+    "CAM_S01_C003": 2.049,
+    "CAM_S01_C004": 2.177,
+    "CAM_S01_C005": 2.235
+  },
+  "raw_offsets": {
+    "c001": 0.0,
+    "c002": 1.64,
+    "c003": 2.049,
+    "c004": 2.177,
+    "c005": 2.235
+  }
+}

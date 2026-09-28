@@ -1,0 +1,5207 @@
+{
+  "CAM_S01_C001_trk_001": {
+    "observation_id": "CAM_S01_C001_trk_001",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 1,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 51,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_002": {
+    "observation_id": "CAM_S01_C001_trk_002",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 2,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 92,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_003": {
+    "observation_id": "CAM_S01_C001_trk_003",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 3,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 107,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_006": {
+    "observation_id": "CAM_S01_C001_trk_006",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 6,
+    "gt_vehicle_id": 34,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 17,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6491,
+    "competing_ids": {
+      "34": 17
+    }
+  },
+  "CAM_S01_C001_trk_008": {
+    "observation_id": "CAM_S01_C001_trk_008",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 8,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 46,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_012": {
+    "observation_id": "CAM_S01_C001_trk_012",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 12,
+    "gt_vehicle_id": 7,
+    "match_status": "matched",
+    "frames_evaluated": 26,
+    "overlapping_frames": 18,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6346,
+    "competing_ids": {
+      "7": 18
+    }
+  },
+  "CAM_S01_C001_trk_017": {
+    "observation_id": "CAM_S01_C001_trk_017",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 17,
+    "gt_vehicle_id": 54,
+    "match_status": "matched",
+    "frames_evaluated": 26,
+    "overlapping_frames": 18,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6299,
+    "competing_ids": {
+      "54": 18
+    }
+  },
+  "CAM_S01_C001_trk_019": {
+    "observation_id": "CAM_S01_C001_trk_019",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 19,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_022": {
+    "observation_id": "CAM_S01_C001_trk_022",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 22,
+    "gt_vehicle_id": 35,
+    "match_status": "matched",
+    "frames_evaluated": 20,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.818,
+    "competing_ids": {
+      "35": 9
+    }
+  },
+  "CAM_S01_C001_trk_023": {
+    "observation_id": "CAM_S01_C001_trk_023",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 23,
+    "gt_vehicle_id": 9,
+    "match_status": "matched",
+    "frames_evaluated": 32,
+    "overlapping_frames": 20,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6132,
+    "competing_ids": {
+      "9": 20
+    }
+  },
+  "CAM_S01_C001_trk_025": {
+    "observation_id": "CAM_S01_C001_trk_025",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 25,
+    "gt_vehicle_id": 8,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.502,
+    "competing_ids": {
+      "8": 11
+    }
+  },
+  "CAM_S01_C001_trk_027": {
+    "observation_id": "CAM_S01_C001_trk_027",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 27,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1790,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_029": {
+    "observation_id": "CAM_S01_C001_trk_029",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 29,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 35,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6882,
+    "competing_ids": {
+      "36": 22
+    }
+  },
+  "CAM_S01_C001_trk_032": {
+    "observation_id": "CAM_S01_C001_trk_032",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 32,
+    "gt_vehicle_id": 10,
+    "match_status": "matched",
+    "frames_evaluated": 19,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5255,
+    "competing_ids": {
+      "10": 8
+    }
+  },
+  "CAM_S01_C001_trk_037": {
+    "observation_id": "CAM_S01_C001_trk_037",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 37,
+    "gt_vehicle_id": 37,
+    "match_status": "matched",
+    "frames_evaluated": 15,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4756,
+    "competing_ids": {
+      "37": 3
+    }
+  },
+  "CAM_S01_C001_trk_039": {
+    "observation_id": "CAM_S01_C001_trk_039",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 39,
+    "gt_vehicle_id": 11,
+    "match_status": "matched",
+    "frames_evaluated": 19,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5233,
+    "competing_ids": {
+      "11": 9
+    }
+  },
+  "CAM_S01_C001_trk_042": {
+    "observation_id": "CAM_S01_C001_trk_042",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 42,
+    "gt_vehicle_id": 12,
+    "match_status": "matched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4709,
+    "competing_ids": {
+      "12": 1
+    }
+  },
+  "CAM_S01_C001_trk_045": {
+    "observation_id": "CAM_S01_C001_trk_045",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 45,
+    "gt_vehicle_id": 13,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5035,
+    "competing_ids": {
+      "13": 7
+    }
+  },
+  "CAM_S01_C001_trk_047": {
+    "observation_id": "CAM_S01_C001_trk_047",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 47,
+    "gt_vehicle_id": 14,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 13,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.548,
+    "competing_ids": {
+      "14": 13
+    }
+  },
+  "CAM_S01_C001_trk_049": {
+    "observation_id": "CAM_S01_C001_trk_049",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 49,
+    "gt_vehicle_id": 15,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5184,
+    "competing_ids": {
+      "15": 6
+    }
+  },
+  "CAM_S01_C001_trk_050": {
+    "observation_id": "CAM_S01_C001_trk_050",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 50,
+    "gt_vehicle_id": 38,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4721,
+    "competing_ids": {
+      "38": 8
+    }
+  },
+  "CAM_S01_C001_trk_053": {
+    "observation_id": "CAM_S01_C001_trk_053",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 53,
+    "gt_vehicle_id": 17,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5417,
+    "competing_ids": {
+      "17": 6
+    }
+  },
+  "CAM_S01_C001_trk_054": {
+    "observation_id": "CAM_S01_C001_trk_054",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 54,
+    "gt_vehicle_id": 16,
+    "match_status": "matched",
+    "frames_evaluated": 18,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.56,
+    "competing_ids": {
+      "16": 14
+    }
+  },
+  "CAM_S01_C001_trk_056": {
+    "observation_id": "CAM_S01_C001_trk_056",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 56,
+    "gt_vehicle_id": 27,
+    "match_status": "matched",
+    "frames_evaluated": 96,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5359,
+    "competing_ids": {
+      "27": 5
+    }
+  },
+  "CAM_S01_C001_trk_059": {
+    "observation_id": "CAM_S01_C001_trk_059",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 59,
+    "gt_vehicle_id": 55,
+    "match_status": "matched",
+    "frames_evaluated": 15,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4675,
+    "competing_ids": {
+      "55": 11
+    }
+  },
+  "CAM_S01_C001_trk_061": {
+    "observation_id": "CAM_S01_C001_trk_061",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 61,
+    "gt_vehicle_id": 18,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4698,
+    "competing_ids": {
+      "18": 6
+    }
+  },
+  "CAM_S01_C001_trk_064": {
+    "observation_id": "CAM_S01_C001_trk_064",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 64,
+    "gt_vehicle_id": 18,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6827,
+    "competing_ids": {
+      "18": 1
+    }
+  },
+  "CAM_S01_C001_trk_067": {
+    "observation_id": "CAM_S01_C001_trk_067",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 67,
+    "gt_vehicle_id": 39,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 13,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4739,
+    "competing_ids": {
+      "39": 13
+    }
+  },
+  "CAM_S01_C001_trk_069": {
+    "observation_id": "CAM_S01_C001_trk_069",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 69,
+    "gt_vehicle_id": 19,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4574,
+    "competing_ids": {
+      "19": 5
+    }
+  },
+  "CAM_S01_C001_trk_073": {
+    "observation_id": "CAM_S01_C001_trk_073",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 73,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 46,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_076": {
+    "observation_id": "CAM_S01_C001_trk_076",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 76,
+    "gt_vehicle_id": 20,
+    "match_status": "matched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5015,
+    "competing_ids": {
+      "20": 11
+    }
+  },
+  "CAM_S01_C001_trk_077": {
+    "observation_id": "CAM_S01_C001_trk_077",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 77,
+    "gt_vehicle_id": 41,
+    "match_status": "matched",
+    "frames_evaluated": 99,
+    "overlapping_frames": 46,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6569,
+    "competing_ids": {
+      "41": 46
+    }
+  },
+  "CAM_S01_C001_trk_078": {
+    "observation_id": "CAM_S01_C001_trk_078",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 78,
+    "gt_vehicle_id": 21,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4762,
+    "competing_ids": {
+      "21": 3
+    }
+  },
+  "CAM_S01_C001_trk_080": {
+    "observation_id": "CAM_S01_C001_trk_080",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 80,
+    "gt_vehicle_id": 27,
+    "match_status": "matched",
+    "frames_evaluated": 227,
+    "overlapping_frames": 223,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7102,
+    "competing_ids": {
+      "27": 223
+    }
+  },
+  "CAM_S01_C001_trk_082": {
+    "observation_id": "CAM_S01_C001_trk_082",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 82,
+    "gt_vehicle_id": 29,
+    "match_status": "matched",
+    "frames_evaluated": 224,
+    "overlapping_frames": 41,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7257,
+    "competing_ids": {
+      "29": 41
+    }
+  },
+  "CAM_S01_C001_trk_084": {
+    "observation_id": "CAM_S01_C001_trk_084",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 84,
+    "gt_vehicle_id": 22,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5282,
+    "competing_ids": {
+      "22": 9
+    }
+  },
+  "CAM_S01_C001_trk_079": {
+    "observation_id": "CAM_S01_C001_trk_079",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 79,
+    "gt_vehicle_id": 42,
+    "match_status": "matched",
+    "frames_evaluated": 135,
+    "overlapping_frames": 97,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6802,
+    "competing_ids": {
+      "42": 97
+    }
+  },
+  "CAM_S01_C001_trk_088": {
+    "observation_id": "CAM_S01_C001_trk_088",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 88,
+    "gt_vehicle_id": 24,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5446,
+    "competing_ids": {
+      "24": 6
+    }
+  },
+  "CAM_S01_C001_trk_091": {
+    "observation_id": "CAM_S01_C001_trk_091",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 91,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_090": {
+    "observation_id": "CAM_S01_C001_trk_090",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 90,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 42,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_092": {
+    "observation_id": "CAM_S01_C001_trk_092",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 92,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_093": {
+    "observation_id": "CAM_S01_C001_trk_093",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 93,
+    "gt_vehicle_id": 40,
+    "match_status": "matched",
+    "frames_evaluated": 11,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6881,
+    "competing_ids": {
+      "40": 10
+    }
+  },
+  "CAM_S01_C001_trk_094": {
+    "observation_id": "CAM_S01_C001_trk_094",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 94,
+    "gt_vehicle_id": 25,
+    "match_status": "matched",
+    "frames_evaluated": 15,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4517,
+    "competing_ids": {
+      "25": 7
+    }
+  },
+  "CAM_S01_C001_trk_103": {
+    "observation_id": "CAM_S01_C001_trk_103",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 103,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 72,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_104": {
+    "observation_id": "CAM_S01_C001_trk_104",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 104,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_106": {
+    "observation_id": "CAM_S01_C001_trk_106",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 106,
+    "gt_vehicle_id": 26,
+    "match_status": "matched",
+    "frames_evaluated": 86,
+    "overlapping_frames": 50,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6075,
+    "competing_ids": {
+      "26": 50
+    }
+  },
+  "CAM_S01_C001_trk_109": {
+    "observation_id": "CAM_S01_C001_trk_109",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 109,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 125,
+    "overlapping_frames": 61,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6853,
+    "competing_ids": {
+      "32": 61
+    }
+  },
+  "CAM_S01_C001_trk_108": {
+    "observation_id": "CAM_S01_C001_trk_108",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 108,
+    "gt_vehicle_id": 43,
+    "match_status": "matched",
+    "frames_evaluated": 48,
+    "overlapping_frames": 38,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5983,
+    "competing_ids": {
+      "43": 38
+    }
+  },
+  "CAM_S01_C001_trk_114": {
+    "observation_id": "CAM_S01_C001_trk_114",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 114,
+    "gt_vehicle_id": 31,
+    "match_status": "matched",
+    "frames_evaluated": 47,
+    "overlapping_frames": 43,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7937,
+    "competing_ids": {
+      "31": 43
+    }
+  },
+  "CAM_S01_C001_trk_120": {
+    "observation_id": "CAM_S01_C001_trk_120",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 120,
+    "gt_vehicle_id": 31,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7249,
+    "competing_ids": {
+      "31": 14
+    }
+  },
+  "CAM_S01_C001_trk_123": {
+    "observation_id": "CAM_S01_C001_trk_123",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 123,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7559,
+    "competing_ids": {
+      "32": 1
+    }
+  },
+  "CAM_S01_C001_trk_125": {
+    "observation_id": "CAM_S01_C001_trk_125",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 125,
+    "gt_vehicle_id": 28,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 16,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6318,
+    "competing_ids": {
+      "28": 16
+    }
+  },
+  "CAM_S01_C001_trk_129": {
+    "observation_id": "CAM_S01_C001_trk_129",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 129,
+    "gt_vehicle_id": 28,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6578,
+    "competing_ids": {
+      "28": 22
+    }
+  },
+  "CAM_S01_C001_trk_133": {
+    "observation_id": "CAM_S01_C001_trk_133",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 133,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 55,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_139": {
+    "observation_id": "CAM_S01_C001_trk_139",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 139,
+    "gt_vehicle_id": 44,
+    "match_status": "matched",
+    "frames_evaluated": 96,
+    "overlapping_frames": 79,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.645,
+    "competing_ids": {
+      "44": 79
+    }
+  },
+  "CAM_S01_C001_trk_140": {
+    "observation_id": "CAM_S01_C001_trk_140",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 140,
+    "gt_vehicle_id": 45,
+    "match_status": "matched",
+    "frames_evaluated": 48,
+    "overlapping_frames": 35,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6834,
+    "competing_ids": {
+      "45": 35
+    }
+  },
+  "CAM_S01_C001_trk_141": {
+    "observation_id": "CAM_S01_C001_trk_141",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 141,
+    "gt_vehicle_id": 46,
+    "match_status": "matched",
+    "frames_evaluated": 89,
+    "overlapping_frames": 57,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6878,
+    "competing_ids": {
+      "46": 57
+    }
+  },
+  "CAM_S01_C001_trk_142": {
+    "observation_id": "CAM_S01_C001_trk_142",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 142,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 33,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6872,
+    "competing_ids": {
+      "47": 22
+    }
+  },
+  "CAM_S01_C001_trk_145": {
+    "observation_id": "CAM_S01_C001_trk_145",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 145,
+    "gt_vehicle_id": 45,
+    "match_status": "matched",
+    "frames_evaluated": 40,
+    "overlapping_frames": 26,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6605,
+    "competing_ids": {
+      "45": 26
+    }
+  },
+  "CAM_S01_C001_trk_147": {
+    "observation_id": "CAM_S01_C001_trk_147",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 147,
+    "gt_vehicle_id": 48,
+    "match_status": "matched",
+    "frames_evaluated": 25,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5861,
+    "competing_ids": {
+      "48": 14
+    }
+  },
+  "CAM_S01_C001_trk_148": {
+    "observation_id": "CAM_S01_C001_trk_148",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 148,
+    "gt_vehicle_id": 49,
+    "match_status": "matched",
+    "frames_evaluated": 30,
+    "overlapping_frames": 20,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5838,
+    "competing_ids": {
+      "49": 20
+    }
+  },
+  "CAM_S01_C001_trk_151": {
+    "observation_id": "CAM_S01_C001_trk_151",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 151,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 92,
+    "overlapping_frames": 56,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7508,
+    "competing_ids": {
+      "47": 56
+    }
+  },
+  "CAM_S01_C001_trk_153": {
+    "observation_id": "CAM_S01_C001_trk_153",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 153,
+    "gt_vehicle_id": 50,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5785,
+    "competing_ids": {
+      "50": 10
+    }
+  },
+  "CAM_S01_C001_trk_157": {
+    "observation_id": "CAM_S01_C001_trk_157",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 157,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_162": {
+    "observation_id": "CAM_S01_C001_trk_162",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 162,
+    "gt_vehicle_id": 51,
+    "match_status": "matched",
+    "frames_evaluated": 18,
+    "overlapping_frames": 15,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7287,
+    "competing_ids": {
+      "51": 15
+    }
+  },
+  "CAM_S01_C001_trk_160": {
+    "observation_id": "CAM_S01_C001_trk_160",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 160,
+    "gt_vehicle_id": 74,
+    "match_status": "matched",
+    "frames_evaluated": 418,
+    "overlapping_frames": 357,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6912,
+    "competing_ids": {
+      "74": 357
+    }
+  },
+  "CAM_S01_C001_trk_167": {
+    "observation_id": "CAM_S01_C001_trk_167",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 167,
+    "gt_vehicle_id": 62,
+    "match_status": "matched",
+    "frames_evaluated": 195,
+    "overlapping_frames": 156,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6032,
+    "competing_ids": {
+      "62": 156
+    }
+  },
+  "CAM_S01_C001_trk_171": {
+    "observation_id": "CAM_S01_C001_trk_171",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 171,
+    "gt_vehicle_id": 56,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.448,
+    "competing_ids": {
+      "56": 3
+    }
+  },
+  "CAM_S01_C001_trk_169": {
+    "observation_id": "CAM_S01_C001_trk_169",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 169,
+    "gt_vehicle_id": 73,
+    "match_status": "matched",
+    "frames_evaluated": 337,
+    "overlapping_frames": 216,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6769,
+    "competing_ids": {
+      "73": 216
+    }
+  },
+  "CAM_S01_C001_trk_174": {
+    "observation_id": "CAM_S01_C001_trk_174",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 174,
+    "gt_vehicle_id": 57,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5564,
+    "competing_ids": {
+      "57": 10
+    }
+  },
+  "CAM_S01_C001_trk_177": {
+    "observation_id": "CAM_S01_C001_trk_177",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 177,
+    "gt_vehicle_id": 58,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 12,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5173,
+    "competing_ids": {
+      "58": 12
+    }
+  },
+  "CAM_S01_C001_trk_182": {
+    "observation_id": "CAM_S01_C001_trk_182",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 182,
+    "gt_vehicle_id": 59,
+    "match_status": "matched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4663,
+    "competing_ids": {
+      "59": 5
+    }
+  },
+  "CAM_S01_C001_trk_184": {
+    "observation_id": "CAM_S01_C001_trk_184",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 184,
+    "gt_vehicle_id": 60,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4163,
+    "competing_ids": {
+      "60": 2
+    }
+  },
+  "CAM_S01_C001_trk_187": {
+    "observation_id": "CAM_S01_C001_trk_187",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 187,
+    "gt_vehicle_id": 61,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5781,
+    "competing_ids": {
+      "61": 6
+    }
+  },
+  "CAM_S01_C001_trk_192": {
+    "observation_id": "CAM_S01_C001_trk_192",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 192,
+    "gt_vehicle_id": 64,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 3,
+    "consensus_ratio": 0.6667,
+    "mean_iou": 0.4993,
+    "competing_ids": {
+      "63": 1,
+      "64": 2
+    }
+  },
+  "CAM_S01_C001_trk_193": {
+    "observation_id": "CAM_S01_C001_trk_193",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 193,
+    "gt_vehicle_id": 63,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.766,
+    "competing_ids": {
+      "63": 4
+    }
+  },
+  "CAM_S01_C001_trk_195": {
+    "observation_id": "CAM_S01_C001_trk_195",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 195,
+    "gt_vehicle_id": 64,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7287,
+    "competing_ids": {
+      "64": 5
+    }
+  },
+  "CAM_S01_C001_trk_197": {
+    "observation_id": "CAM_S01_C001_trk_197",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 197,
+    "gt_vehicle_id": 68,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 3,
+    "consensus_ratio": 0.6667,
+    "mean_iou": 0.573,
+    "competing_ids": {
+      "66": 1,
+      "68": 2
+    }
+  },
+  "CAM_S01_C001_trk_207": {
+    "observation_id": "CAM_S01_C001_trk_207",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 207,
+    "gt_vehicle_id": 68,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7847,
+    "competing_ids": {
+      "68": 1
+    }
+  },
+  "CAM_S01_C001_trk_214": {
+    "observation_id": "CAM_S01_C001_trk_214",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 214,
+    "gt_vehicle_id": 66,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8007,
+    "competing_ids": {
+      "66": 6
+    }
+  },
+  "CAM_S01_C001_trk_215": {
+    "observation_id": "CAM_S01_C001_trk_215",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 215,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_216": {
+    "observation_id": "CAM_S01_C001_trk_216",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 216,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_225": {
+    "observation_id": "CAM_S01_C001_trk_225",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 225,
+    "gt_vehicle_id": 69,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4272,
+    "competing_ids": {
+      "69": 1
+    }
+  },
+  "CAM_S01_C001_trk_227": {
+    "observation_id": "CAM_S01_C001_trk_227",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 227,
+    "gt_vehicle_id": 70,
+    "match_status": "matched",
+    "frames_evaluated": 29,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6092,
+    "competing_ids": {
+      "70": 14
+    }
+  },
+  "CAM_S01_C001_trk_229": {
+    "observation_id": "CAM_S01_C001_trk_229",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 229,
+    "gt_vehicle_id": 71,
+    "match_status": "matched",
+    "frames_evaluated": 415,
+    "overlapping_frames": 93,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7091,
+    "competing_ids": {
+      "71": 93
+    }
+  },
+  "CAM_S01_C001_trk_230": {
+    "observation_id": "CAM_S01_C001_trk_230",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 230,
+    "gt_vehicle_id": 78,
+    "match_status": "matched",
+    "frames_evaluated": 124,
+    "overlapping_frames": 68,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6379,
+    "competing_ids": {
+      "78": 68
+    }
+  },
+  "CAM_S01_C001_trk_232": {
+    "observation_id": "CAM_S01_C001_trk_232",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 232,
+    "gt_vehicle_id": 81,
+    "match_status": "matched",
+    "frames_evaluated": 119,
+    "overlapping_frames": 53,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6707,
+    "competing_ids": {
+      "81": 53
+    }
+  },
+  "CAM_S01_C001_trk_233": {
+    "observation_id": "CAM_S01_C001_trk_233",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 233,
+    "gt_vehicle_id": 52,
+    "match_status": "matched",
+    "frames_evaluated": 58,
+    "overlapping_frames": 39,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6608,
+    "competing_ids": {
+      "52": 39
+    }
+  },
+  "CAM_S01_C001_trk_234": {
+    "observation_id": "CAM_S01_C001_trk_234",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 234,
+    "gt_vehicle_id": 53,
+    "match_status": "matched",
+    "frames_evaluated": 82,
+    "overlapping_frames": 56,
+    "consensus_ratio": 0.7679,
+    "mean_iou": 0.6415,
+    "competing_ids": {
+      "53": 43,
+      "77": 13
+    }
+  },
+  "CAM_S01_C001_trk_235": {
+    "observation_id": "CAM_S01_C001_trk_235",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 235,
+    "gt_vehicle_id": 75,
+    "match_status": "matched",
+    "frames_evaluated": 65,
+    "overlapping_frames": 58,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5986,
+    "competing_ids": {
+      "75": 58
+    }
+  },
+  "CAM_S01_C001_trk_236": {
+    "observation_id": "CAM_S01_C001_trk_236",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 236,
+    "gt_vehicle_id": 76,
+    "match_status": "matched",
+    "frames_evaluated": 67,
+    "overlapping_frames": 53,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6388,
+    "competing_ids": {
+      "76": 53
+    }
+  },
+  "CAM_S01_C001_trk_240": {
+    "observation_id": "CAM_S01_C001_trk_240",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 240,
+    "gt_vehicle_id": 77,
+    "match_status": "matched",
+    "frames_evaluated": 53,
+    "overlapping_frames": 43,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.658,
+    "competing_ids": {
+      "77": 43
+    }
+  },
+  "CAM_S01_C001_trk_241": {
+    "observation_id": "CAM_S01_C001_trk_241",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 241,
+    "gt_vehicle_id": 86,
+    "match_status": "matched",
+    "frames_evaluated": 122,
+    "overlapping_frames": 77,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6466,
+    "competing_ids": {
+      "86": 77
+    }
+  },
+  "CAM_S01_C001_trk_242": {
+    "observation_id": "CAM_S01_C001_trk_242",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 242,
+    "gt_vehicle_id": 77,
+    "match_status": "matched",
+    "frames_evaluated": 20,
+    "overlapping_frames": 20,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7973,
+    "competing_ids": {
+      "77": 20
+    }
+  },
+  "CAM_S01_C001_trk_246": {
+    "observation_id": "CAM_S01_C001_trk_246",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 246,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_247": {
+    "observation_id": "CAM_S01_C001_trk_247",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 247,
+    "gt_vehicle_id": 80,
+    "match_status": "matched",
+    "frames_evaluated": 80,
+    "overlapping_frames": 49,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6144,
+    "competing_ids": {
+      "80": 49
+    }
+  },
+  "CAM_S01_C001_trk_249": {
+    "observation_id": "CAM_S01_C001_trk_249",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 249,
+    "gt_vehicle_id": 82,
+    "match_status": "matched",
+    "frames_evaluated": 81,
+    "overlapping_frames": 53,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6191,
+    "competing_ids": {
+      "82": 53
+    }
+  },
+  "CAM_S01_C001_trk_250": {
+    "observation_id": "CAM_S01_C001_trk_250",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 250,
+    "gt_vehicle_id": 88,
+    "match_status": "matched",
+    "frames_evaluated": 226,
+    "overlapping_frames": 142,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.722,
+    "competing_ids": {
+      "88": 142
+    }
+  },
+  "CAM_S01_C001_trk_251": {
+    "observation_id": "CAM_S01_C001_trk_251",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 251,
+    "gt_vehicle_id": 86,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7344,
+    "competing_ids": {
+      "86": 4
+    }
+  },
+  "CAM_S01_C001_trk_252": {
+    "observation_id": "CAM_S01_C001_trk_252",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 252,
+    "gt_vehicle_id": 85,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5256,
+    "competing_ids": {
+      "85": 3
+    }
+  },
+  "CAM_S01_C001_trk_253": {
+    "observation_id": "CAM_S01_C001_trk_253",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 253,
+    "gt_vehicle_id": 85,
+    "match_status": "matched",
+    "frames_evaluated": 52,
+    "overlapping_frames": 45,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6826,
+    "competing_ids": {
+      "85": 45
+    }
+  },
+  "CAM_S01_C001_trk_255": {
+    "observation_id": "CAM_S01_C001_trk_255",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 255,
+    "gt_vehicle_id": 72,
+    "match_status": "matched",
+    "frames_evaluated": 115,
+    "overlapping_frames": 86,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6527,
+    "competing_ids": {
+      "72": 86
+    }
+  },
+  "CAM_S01_C001_trk_256": {
+    "observation_id": "CAM_S01_C001_trk_256",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 256,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C001_trk_258": {
+    "observation_id": "CAM_S01_C001_trk_258",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 258,
+    "gt_vehicle_id": 93,
+    "match_status": "matched",
+    "frames_evaluated": 18,
+    "overlapping_frames": 16,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7463,
+    "competing_ids": {
+      "93": 16
+    }
+  },
+  "CAM_S01_C001_trk_259": {
+    "observation_id": "CAM_S01_C001_trk_259",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 259,
+    "gt_vehicle_id": 93,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8361,
+    "competing_ids": {
+      "93": 2
+    }
+  },
+  "CAM_S01_C001_trk_261": {
+    "observation_id": "CAM_S01_C001_trk_261",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 261,
+    "gt_vehicle_id": 94,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4584,
+    "competing_ids": {
+      "94": 7
+    }
+  },
+  "CAM_S01_C001_trk_264": {
+    "observation_id": "CAM_S01_C001_trk_264",
+    "camera_id": "CAM_S01_C001",
+    "local_track_id": 264,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_261": {
+    "observation_id": "CAM_S01_C002_trk_261",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 261,
+    "gt_vehicle_id": 2,
+    "match_status": "matched",
+    "frames_evaluated": 78,
+    "overlapping_frames": 37,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6537,
+    "competing_ids": {
+      "2": 37
+    }
+  },
+  "CAM_S01_C002_trk_265": {
+    "observation_id": "CAM_S01_C002_trk_265",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 265,
+    "gt_vehicle_id": 1,
+    "match_status": "matched",
+    "frames_evaluated": 133,
+    "overlapping_frames": 101,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.713,
+    "competing_ids": {
+      "1": 101
+    }
+  },
+  "CAM_S01_C002_trk_266": {
+    "observation_id": "CAM_S01_C002_trk_266",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 266,
+    "gt_vehicle_id": 26,
+    "match_status": "matched",
+    "frames_evaluated": 614,
+    "overlapping_frames": 611,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6826,
+    "competing_ids": {
+      "26": 611
+    }
+  },
+  "CAM_S01_C002_trk_267": {
+    "observation_id": "CAM_S01_C002_trk_267",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 267,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 87,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_268": {
+    "observation_id": "CAM_S01_C002_trk_268",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 268,
+    "gt_vehicle_id": 4,
+    "match_status": "matched",
+    "frames_evaluated": 58,
+    "overlapping_frames": 51,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6475,
+    "competing_ids": {
+      "4": 51
+    }
+  },
+  "CAM_S01_C002_trk_269": {
+    "observation_id": "CAM_S01_C002_trk_269",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 269,
+    "gt_vehicle_id": 5,
+    "match_status": "matched",
+    "frames_evaluated": 61,
+    "overlapping_frames": 55,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6244,
+    "competing_ids": {
+      "5": 55
+    }
+  },
+  "CAM_S01_C002_trk_270": {
+    "observation_id": "CAM_S01_C002_trk_270",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 270,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 36,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_271": {
+    "observation_id": "CAM_S01_C002_trk_271",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 271,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_274": {
+    "observation_id": "CAM_S01_C002_trk_274",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 274,
+    "gt_vehicle_id": 2,
+    "match_status": "matched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6193,
+    "competing_ids": {
+      "2": 10
+    }
+  },
+  "CAM_S01_C002_trk_275": {
+    "observation_id": "CAM_S01_C002_trk_275",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 275,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_277": {
+    "observation_id": "CAM_S01_C002_trk_277",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 277,
+    "gt_vehicle_id": 34,
+    "match_status": "matched",
+    "frames_evaluated": 12,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4654,
+    "competing_ids": {
+      "34": 4
+    }
+  },
+  "CAM_S01_C002_trk_281": {
+    "observation_id": "CAM_S01_C002_trk_281",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 281,
+    "gt_vehicle_id": 6,
+    "match_status": "matched",
+    "frames_evaluated": 58,
+    "overlapping_frames": 27,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.557,
+    "competing_ids": {
+      "6": 27
+    }
+  },
+  "CAM_S01_C002_trk_282": {
+    "observation_id": "CAM_S01_C002_trk_282",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 282,
+    "gt_vehicle_id": 34,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.761,
+    "competing_ids": {
+      "34": 4
+    }
+  },
+  "CAM_S01_C002_trk_286": {
+    "observation_id": "CAM_S01_C002_trk_286",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 286,
+    "gt_vehicle_id": 7,
+    "match_status": "matched",
+    "frames_evaluated": 19,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5256,
+    "competing_ids": {
+      "7": 7
+    }
+  },
+  "CAM_S01_C002_trk_288": {
+    "observation_id": "CAM_S01_C002_trk_288",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 288,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_291": {
+    "observation_id": "CAM_S01_C002_trk_291",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 291,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 24,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_293": {
+    "observation_id": "CAM_S01_C002_trk_293",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 293,
+    "gt_vehicle_id": 54,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5556,
+    "competing_ids": {
+      "54": 7
+    }
+  },
+  "CAM_S01_C002_trk_299": {
+    "observation_id": "CAM_S01_C002_trk_299",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 299,
+    "gt_vehicle_id": 8,
+    "match_status": "matched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4405,
+    "competing_ids": {
+      "8": 3
+    }
+  },
+  "CAM_S01_C002_trk_301": {
+    "observation_id": "CAM_S01_C002_trk_301",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 301,
+    "gt_vehicle_id": 9,
+    "match_status": "matched",
+    "frames_evaluated": 31,
+    "overlapping_frames": 18,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6078,
+    "competing_ids": {
+      "9": 18
+    }
+  },
+  "CAM_S01_C002_trk_303": {
+    "observation_id": "CAM_S01_C002_trk_303",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 303,
+    "gt_vehicle_id": 37,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4792,
+    "competing_ids": {
+      "37": 4
+    }
+  },
+  "CAM_S01_C002_trk_306": {
+    "observation_id": "CAM_S01_C002_trk_306",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 306,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 24,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5875,
+    "competing_ids": {
+      "36": 19
+    }
+  },
+  "CAM_S01_C002_trk_309": {
+    "observation_id": "CAM_S01_C002_trk_309",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 309,
+    "gt_vehicle_id": 10,
+    "match_status": "matched",
+    "frames_evaluated": 95,
+    "overlapping_frames": 56,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.661,
+    "competing_ids": {
+      "10": 56
+    }
+  },
+  "CAM_S01_C002_trk_312": {
+    "observation_id": "CAM_S01_C002_trk_312",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 312,
+    "gt_vehicle_id": 11,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5488,
+    "competing_ids": {
+      "11": 14
+    }
+  },
+  "CAM_S01_C002_trk_318": {
+    "observation_id": "CAM_S01_C002_trk_318",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 318,
+    "gt_vehicle_id": 12,
+    "match_status": "matched",
+    "frames_evaluated": 11,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.472,
+    "competing_ids": {
+      "12": 8
+    }
+  },
+  "CAM_S01_C002_trk_320": {
+    "observation_id": "CAM_S01_C002_trk_320",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 320,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_322": {
+    "observation_id": "CAM_S01_C002_trk_322",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 322,
+    "gt_vehicle_id": 15,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 11,
+    "consensus_ratio": 0.9091,
+    "mean_iou": 0.6287,
+    "competing_ids": {
+      "13": 1,
+      "15": 10
+    }
+  },
+  "CAM_S01_C002_trk_325": {
+    "observation_id": "CAM_S01_C002_trk_325",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 325,
+    "gt_vehicle_id": 13,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6557,
+    "competing_ids": {
+      "13": 6
+    }
+  },
+  "CAM_S01_C002_trk_327": {
+    "observation_id": "CAM_S01_C002_trk_327",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 327,
+    "gt_vehicle_id": 14,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4458,
+    "competing_ids": {
+      "14": 5
+    }
+  },
+  "CAM_S01_C002_trk_331": {
+    "observation_id": "CAM_S01_C002_trk_331",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 331,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_334": {
+    "observation_id": "CAM_S01_C002_trk_334",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 334,
+    "gt_vehicle_id": 16,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4457,
+    "competing_ids": {
+      "16": 6
+    }
+  },
+  "CAM_S01_C002_trk_336": {
+    "observation_id": "CAM_S01_C002_trk_336",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 336,
+    "gt_vehicle_id": 18,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 3,
+    "consensus_ratio": 0.6667,
+    "mean_iou": 0.6284,
+    "competing_ids": {
+      "17": 1,
+      "18": 2
+    }
+  },
+  "CAM_S01_C002_trk_341": {
+    "observation_id": "CAM_S01_C002_trk_341",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 341,
+    "gt_vehicle_id": 17,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7171,
+    "competing_ids": {
+      "17": 1
+    }
+  },
+  "CAM_S01_C002_trk_344": {
+    "observation_id": "CAM_S01_C002_trk_344",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 344,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_351": {
+    "observation_id": "CAM_S01_C002_trk_351",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 351,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_356": {
+    "observation_id": "CAM_S01_C002_trk_356",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 356,
+    "gt_vehicle_id": 18,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6311,
+    "competing_ids": {
+      "18": 1
+    }
+  },
+  "CAM_S01_C002_trk_359": {
+    "observation_id": "CAM_S01_C002_trk_359",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 359,
+    "gt_vehicle_id": 19,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4245,
+    "competing_ids": {
+      "19": 1
+    }
+  },
+  "CAM_S01_C002_trk_364": {
+    "observation_id": "CAM_S01_C002_trk_364",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 364,
+    "gt_vehicle_id": 20,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5043,
+    "competing_ids": {
+      "20": 5
+    }
+  },
+  "CAM_S01_C002_trk_366": {
+    "observation_id": "CAM_S01_C002_trk_366",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 366,
+    "gt_vehicle_id": 23,
+    "match_status": "matched",
+    "frames_evaluated": 114,
+    "overlapping_frames": 71,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.604,
+    "competing_ids": {
+      "23": 71
+    }
+  },
+  "CAM_S01_C002_trk_368": {
+    "observation_id": "CAM_S01_C002_trk_368",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 368,
+    "gt_vehicle_id": 24,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4714,
+    "competing_ids": {
+      "24": 1
+    }
+  },
+  "CAM_S01_C002_trk_369": {
+    "observation_id": "CAM_S01_C002_trk_369",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 369,
+    "gt_vehicle_id": 21,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.702,
+    "competing_ids": {
+      "21": 8
+    }
+  },
+  "CAM_S01_C002_trk_370": {
+    "observation_id": "CAM_S01_C002_trk_370",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 370,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_372": {
+    "observation_id": "CAM_S01_C002_trk_372",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 372,
+    "gt_vehicle_id": 24,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6883,
+    "competing_ids": {
+      "24": 7
+    }
+  },
+  "CAM_S01_C002_trk_376": {
+    "observation_id": "CAM_S01_C002_trk_376",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 376,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_379": {
+    "observation_id": "CAM_S01_C002_trk_379",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 379,
+    "gt_vehicle_id": 25,
+    "match_status": "matched",
+    "frames_evaluated": 90,
+    "overlapping_frames": 66,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6778,
+    "competing_ids": {
+      "25": 66
+    }
+  },
+  "CAM_S01_C002_trk_380": {
+    "observation_id": "CAM_S01_C002_trk_380",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 380,
+    "gt_vehicle_id": 25,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8075,
+    "competing_ids": {
+      "25": 8
+    }
+  },
+  "CAM_S01_C002_trk_382": {
+    "observation_id": "CAM_S01_C002_trk_382",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 382,
+    "gt_vehicle_id": 5,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4134,
+    "competing_ids": {
+      "5": 1
+    }
+  },
+  "CAM_S01_C002_trk_374": {
+    "observation_id": "CAM_S01_C002_trk_374",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 374,
+    "gt_vehicle_id": 5,
+    "match_status": "matched",
+    "frames_evaluated": 61,
+    "overlapping_frames": 57,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6564,
+    "competing_ids": {
+      "5": 57
+    }
+  },
+  "CAM_S01_C002_trk_387": {
+    "observation_id": "CAM_S01_C002_trk_387",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 387,
+    "gt_vehicle_id": 28,
+    "match_status": "matched",
+    "frames_evaluated": 172,
+    "overlapping_frames": 116,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7194,
+    "competing_ids": {
+      "28": 116
+    }
+  },
+  "CAM_S01_C002_trk_391": {
+    "observation_id": "CAM_S01_C002_trk_391",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 391,
+    "gt_vehicle_id": 6,
+    "match_status": "matched",
+    "frames_evaluated": 42,
+    "overlapping_frames": 39,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6339,
+    "competing_ids": {
+      "6": 39
+    }
+  },
+  "CAM_S01_C002_trk_394": {
+    "observation_id": "CAM_S01_C002_trk_394",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 394,
+    "gt_vehicle_id": 27,
+    "match_status": "matched",
+    "frames_evaluated": 97,
+    "overlapping_frames": 81,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6351,
+    "competing_ids": {
+      "27": 81
+    }
+  },
+  "CAM_S01_C002_trk_396": {
+    "observation_id": "CAM_S01_C002_trk_396",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 396,
+    "gt_vehicle_id": 29,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5568,
+    "competing_ids": {
+      "29": 5
+    }
+  },
+  "CAM_S01_C002_trk_398": {
+    "observation_id": "CAM_S01_C002_trk_398",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 398,
+    "gt_vehicle_id": 29,
+    "match_status": "matched",
+    "frames_evaluated": 129,
+    "overlapping_frames": 90,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.685,
+    "competing_ids": {
+      "29": 90
+    }
+  },
+  "CAM_S01_C002_trk_399": {
+    "observation_id": "CAM_S01_C002_trk_399",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 399,
+    "gt_vehicle_id": 29,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7113,
+    "competing_ids": {
+      "29": 1
+    }
+  },
+  "CAM_S01_C002_trk_403": {
+    "observation_id": "CAM_S01_C002_trk_403",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 403,
+    "gt_vehicle_id": 30,
+    "match_status": "matched",
+    "frames_evaluated": 99,
+    "overlapping_frames": 68,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6389,
+    "competing_ids": {
+      "30": 68
+    }
+  },
+  "CAM_S01_C002_trk_405": {
+    "observation_id": "CAM_S01_C002_trk_405",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 405,
+    "gt_vehicle_id": 31,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4907,
+    "competing_ids": {
+      "31": 4
+    }
+  },
+  "CAM_S01_C002_trk_406": {
+    "observation_id": "CAM_S01_C002_trk_406",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 406,
+    "gt_vehicle_id": 31,
+    "match_status": "matched",
+    "frames_evaluated": 88,
+    "overlapping_frames": 67,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.647,
+    "competing_ids": {
+      "31": 67
+    }
+  },
+  "CAM_S01_C002_trk_409": {
+    "observation_id": "CAM_S01_C002_trk_409",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 409,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_412": {
+    "observation_id": "CAM_S01_C002_trk_412",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 412,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6941,
+    "competing_ids": {
+      "32": 22
+    }
+  },
+  "CAM_S01_C002_trk_419": {
+    "observation_id": "CAM_S01_C002_trk_419",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 419,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 59,
+    "overlapping_frames": 23,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6782,
+    "competing_ids": {
+      "32": 23
+    }
+  },
+  "CAM_S01_C002_trk_426": {
+    "observation_id": "CAM_S01_C002_trk_426",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 426,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_427": {
+    "observation_id": "CAM_S01_C002_trk_427",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 427,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 32,
+    "overlapping_frames": 29,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7129,
+    "competing_ids": {
+      "33": 29
+    }
+  },
+  "CAM_S01_C002_trk_429": {
+    "observation_id": "CAM_S01_C002_trk_429",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 429,
+    "gt_vehicle_id": 53,
+    "match_status": "matched",
+    "frames_evaluated": 334,
+    "overlapping_frames": 278,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6738,
+    "competing_ids": {
+      "53": 278
+    }
+  },
+  "CAM_S01_C002_trk_431": {
+    "observation_id": "CAM_S01_C002_trk_431",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 431,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_433": {
+    "observation_id": "CAM_S01_C002_trk_433",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 433,
+    "gt_vehicle_id": 52,
+    "match_status": "matched",
+    "frames_evaluated": 769,
+    "overlapping_frames": 737,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6394,
+    "competing_ids": {
+      "52": 737
+    }
+  },
+  "CAM_S01_C002_trk_436": {
+    "observation_id": "CAM_S01_C002_trk_436",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 436,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 79,
+    "overlapping_frames": 47,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7041,
+    "competing_ids": {
+      "33": 47
+    }
+  },
+  "CAM_S01_C002_trk_437": {
+    "observation_id": "CAM_S01_C002_trk_437",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 437,
+    "gt_vehicle_id": 44,
+    "match_status": "matched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4065,
+    "competing_ids": {
+      "44": 2
+    }
+  },
+  "CAM_S01_C002_trk_441": {
+    "observation_id": "CAM_S01_C002_trk_441",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 441,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_442": {
+    "observation_id": "CAM_S01_C002_trk_442",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 442,
+    "gt_vehicle_id": 46,
+    "match_status": "matched",
+    "frames_evaluated": 12,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.421,
+    "competing_ids": {
+      "46": 1
+    }
+  },
+  "CAM_S01_C002_trk_443": {
+    "observation_id": "CAM_S01_C002_trk_443",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 443,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_446": {
+    "observation_id": "CAM_S01_C002_trk_446",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 446,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7517,
+    "competing_ids": {
+      "47": 2
+    }
+  },
+  "CAM_S01_C002_trk_447": {
+    "observation_id": "CAM_S01_C002_trk_447",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 447,
+    "gt_vehicle_id": 48,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5551,
+    "competing_ids": {
+      "48": 14
+    }
+  },
+  "CAM_S01_C002_trk_449": {
+    "observation_id": "CAM_S01_C002_trk_449",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 449,
+    "gt_vehicle_id": 49,
+    "match_status": "matched",
+    "frames_evaluated": 24,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5824,
+    "competing_ids": {
+      "49": 19
+    }
+  },
+  "CAM_S01_C002_trk_451": {
+    "observation_id": "CAM_S01_C002_trk_451",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 451,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_454": {
+    "observation_id": "CAM_S01_C002_trk_454",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 454,
+    "gt_vehicle_id": 50,
+    "match_status": "matched",
+    "frames_evaluated": 21,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5015,
+    "competing_ids": {
+      "50": 14
+    }
+  },
+  "CAM_S01_C002_trk_455": {
+    "observation_id": "CAM_S01_C002_trk_455",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 455,
+    "gt_vehicle_id": 75,
+    "match_status": "matched",
+    "frames_evaluated": 92,
+    "overlapping_frames": 50,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5873,
+    "competing_ids": {
+      "75": 50
+    }
+  },
+  "CAM_S01_C002_trk_457": {
+    "observation_id": "CAM_S01_C002_trk_457",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 457,
+    "gt_vehicle_id": 51,
+    "match_status": "matched",
+    "frames_evaluated": 25,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5836,
+    "competing_ids": {
+      "51": 22
+    }
+  },
+  "CAM_S01_C002_trk_459": {
+    "observation_id": "CAM_S01_C002_trk_459",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 459,
+    "gt_vehicle_id": 76,
+    "match_status": "matched",
+    "frames_evaluated": 84,
+    "overlapping_frames": 32,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6451,
+    "competing_ids": {
+      "76": 32
+    }
+  },
+  "CAM_S01_C002_trk_464": {
+    "observation_id": "CAM_S01_C002_trk_464",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 464,
+    "gt_vehicle_id": 77,
+    "match_status": "matched",
+    "frames_evaluated": 165,
+    "overlapping_frames": 81,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6595,
+    "competing_ids": {
+      "77": 81
+    }
+  },
+  "CAM_S01_C002_trk_466": {
+    "observation_id": "CAM_S01_C002_trk_466",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 466,
+    "gt_vehicle_id": 56,
+    "match_status": "matched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4446,
+    "competing_ids": {
+      "56": 4
+    }
+  },
+  "CAM_S01_C002_trk_468": {
+    "observation_id": "CAM_S01_C002_trk_468",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 468,
+    "gt_vehicle_id": 57,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4397,
+    "competing_ids": {
+      "57": 2
+    }
+  },
+  "CAM_S01_C002_trk_471": {
+    "observation_id": "CAM_S01_C002_trk_471",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 471,
+    "gt_vehicle_id": 57,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.769,
+    "competing_ids": {
+      "57": 3
+    }
+  },
+  "CAM_S01_C002_trk_470": {
+    "observation_id": "CAM_S01_C002_trk_470",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 470,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_472": {
+    "observation_id": "CAM_S01_C002_trk_472",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 472,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_474": {
+    "observation_id": "CAM_S01_C002_trk_474",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 474,
+    "gt_vehicle_id": 59,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4329,
+    "competing_ids": {
+      "59": 1
+    }
+  },
+  "CAM_S01_C002_trk_475": {
+    "observation_id": "CAM_S01_C002_trk_475",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 475,
+    "gt_vehicle_id": 60,
+    "match_status": "matched",
+    "frames_evaluated": 12,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5044,
+    "competing_ids": {
+      "60": 8
+    }
+  },
+  "CAM_S01_C002_trk_484": {
+    "observation_id": "CAM_S01_C002_trk_484",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 484,
+    "gt_vehicle_id": 61,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7421,
+    "competing_ids": {
+      "61": 4
+    }
+  },
+  "CAM_S01_C002_trk_487": {
+    "observation_id": "CAM_S01_C002_trk_487",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 487,
+    "gt_vehicle_id": null,
+    "match_status": "ambiguous",
+    "frames_evaluated": 3,
+    "overlapping_frames": 2,
+    "consensus_ratio": 0.5,
+    "mean_iou": 0.4569,
+    "competing_ids": {
+      "63": 1,
+      "64": 1
+    }
+  },
+  "CAM_S01_C002_trk_492": {
+    "observation_id": "CAM_S01_C002_trk_492",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 492,
+    "gt_vehicle_id": 63,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6311,
+    "competing_ids": {
+      "63": 4
+    }
+  },
+  "CAM_S01_C002_trk_499": {
+    "observation_id": "CAM_S01_C002_trk_499",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 499,
+    "gt_vehicle_id": 64,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6518,
+    "competing_ids": {
+      "64": 3
+    }
+  },
+  "CAM_S01_C002_trk_502": {
+    "observation_id": "CAM_S01_C002_trk_502",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 502,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_506": {
+    "observation_id": "CAM_S01_C002_trk_506",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 506,
+    "gt_vehicle_id": 66,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4638,
+    "competing_ids": {
+      "66": 1
+    }
+  },
+  "CAM_S01_C002_trk_510": {
+    "observation_id": "CAM_S01_C002_trk_510",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 510,
+    "gt_vehicle_id": 66,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.687,
+    "competing_ids": {
+      "66": 1
+    }
+  },
+  "CAM_S01_C002_trk_517": {
+    "observation_id": "CAM_S01_C002_trk_517",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 517,
+    "gt_vehicle_id": 67,
+    "match_status": "matched",
+    "frames_evaluated": 11,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4676,
+    "competing_ids": {
+      "67": 9
+    }
+  },
+  "CAM_S01_C002_trk_518": {
+    "observation_id": "CAM_S01_C002_trk_518",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 518,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_523": {
+    "observation_id": "CAM_S01_C002_trk_523",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 523,
+    "gt_vehicle_id": 79,
+    "match_status": "matched",
+    "frames_evaluated": 308,
+    "overlapping_frames": 279,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5508,
+    "competing_ids": {
+      "79": 279
+    }
+  },
+  "CAM_S01_C002_trk_524": {
+    "observation_id": "CAM_S01_C002_trk_524",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 524,
+    "gt_vehicle_id": 69,
+    "match_status": "matched",
+    "frames_evaluated": 12,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4321,
+    "competing_ids": {
+      "69": 3
+    }
+  },
+  "CAM_S01_C002_trk_527": {
+    "observation_id": "CAM_S01_C002_trk_527",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 527,
+    "gt_vehicle_id": 80,
+    "match_status": "matched",
+    "frames_evaluated": 191,
+    "overlapping_frames": 147,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6173,
+    "competing_ids": {
+      "80": 147
+    }
+  },
+  "CAM_S01_C002_trk_528": {
+    "observation_id": "CAM_S01_C002_trk_528",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 528,
+    "gt_vehicle_id": 73,
+    "match_status": "matched",
+    "frames_evaluated": 107,
+    "overlapping_frames": 72,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6454,
+    "competing_ids": {
+      "73": 72
+    }
+  },
+  "CAM_S01_C002_trk_530": {
+    "observation_id": "CAM_S01_C002_trk_530",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 530,
+    "gt_vehicle_id": 74,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7327,
+    "competing_ids": {
+      "74": 19
+    }
+  },
+  "CAM_S01_C002_trk_531": {
+    "observation_id": "CAM_S01_C002_trk_531",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 531,
+    "gt_vehicle_id": 70,
+    "match_status": "matched",
+    "frames_evaluated": 109,
+    "overlapping_frames": 64,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6336,
+    "competing_ids": {
+      "70": 64
+    }
+  },
+  "CAM_S01_C002_trk_535": {
+    "observation_id": "CAM_S01_C002_trk_535",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 535,
+    "gt_vehicle_id": 76,
+    "match_status": "matched",
+    "frames_evaluated": 76,
+    "overlapping_frames": 71,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6828,
+    "competing_ids": {
+      "76": 71
+    }
+  },
+  "CAM_S01_C002_trk_539": {
+    "observation_id": "CAM_S01_C002_trk_539",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 539,
+    "gt_vehicle_id": 75,
+    "match_status": "matched",
+    "frames_evaluated": 39,
+    "overlapping_frames": 27,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7575,
+    "competing_ids": {
+      "75": 27
+    }
+  },
+  "CAM_S01_C002_trk_541": {
+    "observation_id": "CAM_S01_C002_trk_541",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 541,
+    "gt_vehicle_id": 82,
+    "match_status": "matched",
+    "frames_evaluated": 121,
+    "overlapping_frames": 87,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6213,
+    "competing_ids": {
+      "82": 87
+    }
+  },
+  "CAM_S01_C002_trk_545": {
+    "observation_id": "CAM_S01_C002_trk_545",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 545,
+    "gt_vehicle_id": 83,
+    "match_status": "matched",
+    "frames_evaluated": 111,
+    "overlapping_frames": 75,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5904,
+    "competing_ids": {
+      "83": 75
+    }
+  },
+  "CAM_S01_C002_trk_552": {
+    "observation_id": "CAM_S01_C002_trk_552",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 552,
+    "gt_vehicle_id": 85,
+    "match_status": "matched",
+    "frames_evaluated": 97,
+    "overlapping_frames": 62,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6995,
+    "competing_ids": {
+      "85": 62
+    }
+  },
+  "CAM_S01_C002_trk_554": {
+    "observation_id": "CAM_S01_C002_trk_554",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 554,
+    "gt_vehicle_id": 87,
+    "match_status": "matched",
+    "frames_evaluated": 131,
+    "overlapping_frames": 90,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.678,
+    "competing_ids": {
+      "87": 90
+    }
+  },
+  "CAM_S01_C002_trk_558": {
+    "observation_id": "CAM_S01_C002_trk_558",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 558,
+    "gt_vehicle_id": 84,
+    "match_status": "matched",
+    "frames_evaluated": 247,
+    "overlapping_frames": 209,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6802,
+    "competing_ids": {
+      "84": 209
+    }
+  },
+  "CAM_S01_C002_trk_560": {
+    "observation_id": "CAM_S01_C002_trk_560",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 560,
+    "gt_vehicle_id": 3,
+    "match_status": "matched",
+    "frames_evaluated": 95,
+    "overlapping_frames": 37,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6191,
+    "competing_ids": {
+      "3": 37
+    }
+  },
+  "CAM_S01_C002_trk_571": {
+    "observation_id": "CAM_S01_C002_trk_571",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 571,
+    "gt_vehicle_id": 87,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7455,
+    "competing_ids": {
+      "87": 2
+    }
+  },
+  "CAM_S01_C002_trk_575": {
+    "observation_id": "CAM_S01_C002_trk_575",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 575,
+    "gt_vehicle_id": 89,
+    "match_status": "matched",
+    "frames_evaluated": 109,
+    "overlapping_frames": 71,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6776,
+    "competing_ids": {
+      "89": 71
+    }
+  },
+  "CAM_S01_C002_trk_577": {
+    "observation_id": "CAM_S01_C002_trk_577",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 577,
+    "gt_vehicle_id": 87,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7121,
+    "competing_ids": {
+      "87": 1
+    }
+  },
+  "CAM_S01_C002_trk_578": {
+    "observation_id": "CAM_S01_C002_trk_578",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 578,
+    "gt_vehicle_id": 87,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.618,
+    "competing_ids": {
+      "87": 5
+    }
+  },
+  "CAM_S01_C002_trk_579": {
+    "observation_id": "CAM_S01_C002_trk_579",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 579,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_583": {
+    "observation_id": "CAM_S01_C002_trk_583",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 583,
+    "gt_vehicle_id": 87,
+    "match_status": "matched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7663,
+    "competing_ids": {
+      "87": 5
+    }
+  },
+  "CAM_S01_C002_trk_584": {
+    "observation_id": "CAM_S01_C002_trk_584",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 584,
+    "gt_vehicle_id": 90,
+    "match_status": "matched",
+    "frames_evaluated": 123,
+    "overlapping_frames": 82,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.656,
+    "competing_ids": {
+      "90": 82
+    }
+  },
+  "CAM_S01_C002_trk_585": {
+    "observation_id": "CAM_S01_C002_trk_585",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 585,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 105,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_588": {
+    "observation_id": "CAM_S01_C002_trk_588",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 588,
+    "gt_vehicle_id": 71,
+    "match_status": "matched",
+    "frames_evaluated": 16,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4165,
+    "competing_ids": {
+      "71": 4
+    }
+  },
+  "CAM_S01_C002_trk_589": {
+    "observation_id": "CAM_S01_C002_trk_589",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 589,
+    "gt_vehicle_id": 91,
+    "match_status": "matched",
+    "frames_evaluated": 117,
+    "overlapping_frames": 98,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6497,
+    "competing_ids": {
+      "91": 98
+    }
+  },
+  "CAM_S01_C002_trk_591": {
+    "observation_id": "CAM_S01_C002_trk_591",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 591,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 48,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_592": {
+    "observation_id": "CAM_S01_C002_trk_592",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 592,
+    "gt_vehicle_id": 92,
+    "match_status": "matched",
+    "frames_evaluated": 94,
+    "overlapping_frames": 87,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6584,
+    "competing_ids": {
+      "92": 87
+    }
+  },
+  "CAM_S01_C002_trk_596": {
+    "observation_id": "CAM_S01_C002_trk_596",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 596,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 32,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_599": {
+    "observation_id": "CAM_S01_C002_trk_599",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 599,
+    "gt_vehicle_id": 93,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4365,
+    "competing_ids": {
+      "93": 2
+    }
+  },
+  "CAM_S01_C002_trk_601": {
+    "observation_id": "CAM_S01_C002_trk_601",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 601,
+    "gt_vehicle_id": 93,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 5,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8501,
+    "competing_ids": {
+      "93": 5
+    }
+  },
+  "CAM_S01_C002_trk_602": {
+    "observation_id": "CAM_S01_C002_trk_602",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 602,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C002_trk_603": {
+    "observation_id": "CAM_S01_C002_trk_603",
+    "camera_id": "CAM_S01_C002",
+    "local_track_id": 603,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_001": {
+    "observation_id": "CAM_S01_C003_trk_001",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 1,
+    "gt_vehicle_id": 1,
+    "match_status": "matched",
+    "frames_evaluated": 18,
+    "overlapping_frames": 15,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7376,
+    "competing_ids": {
+      "1": 15
+    }
+  },
+  "CAM_S01_C003_trk_002": {
+    "observation_id": "CAM_S01_C003_trk_002",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 2,
+    "gt_vehicle_id": 9,
+    "match_status": "matched",
+    "frames_evaluated": 124,
+    "overlapping_frames": 119,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7328,
+    "competing_ids": {
+      "9": 119
+    }
+  },
+  "CAM_S01_C003_trk_003": {
+    "observation_id": "CAM_S01_C003_trk_003",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 3,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 120,
+    "overlapping_frames": 118,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7003,
+    "competing_ids": {
+      "36": 118
+    }
+  },
+  "CAM_S01_C003_trk_004": {
+    "observation_id": "CAM_S01_C003_trk_004",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 4,
+    "gt_vehicle_id": 11,
+    "match_status": "matched",
+    "frames_evaluated": 89,
+    "overlapping_frames": 82,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7333,
+    "competing_ids": {
+      "11": 82
+    }
+  },
+  "CAM_S01_C003_trk_011": {
+    "observation_id": "CAM_S01_C003_trk_011",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 11,
+    "gt_vehicle_id": 34,
+    "match_status": "matched",
+    "frames_evaluated": 71,
+    "overlapping_frames": 36,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6844,
+    "competing_ids": {
+      "34": 36
+    }
+  },
+  "CAM_S01_C003_trk_012": {
+    "observation_id": "CAM_S01_C003_trk_012",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 12,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_015": {
+    "observation_id": "CAM_S01_C003_trk_015",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 15,
+    "gt_vehicle_id": 34,
+    "match_status": "matched",
+    "frames_evaluated": 15,
+    "overlapping_frames": 15,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6285,
+    "competing_ids": {
+      "34": 15
+    }
+  },
+  "CAM_S01_C003_trk_014": {
+    "observation_id": "CAM_S01_C003_trk_014",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 14,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6869,
+    "competing_ids": {
+      "36": 2
+    }
+  },
+  "CAM_S01_C003_trk_017": {
+    "observation_id": "CAM_S01_C003_trk_017",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 17,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_021": {
+    "observation_id": "CAM_S01_C003_trk_021",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 21,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 14,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_022": {
+    "observation_id": "CAM_S01_C003_trk_022",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 22,
+    "gt_vehicle_id": 7,
+    "match_status": "matched",
+    "frames_evaluated": 12,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4274,
+    "competing_ids": {
+      "7": 1
+    }
+  },
+  "CAM_S01_C003_trk_026": {
+    "observation_id": "CAM_S01_C003_trk_026",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 26,
+    "gt_vehicle_id": 7,
+    "match_status": "matched",
+    "frames_evaluated": 53,
+    "overlapping_frames": 40,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6514,
+    "competing_ids": {
+      "7": 40
+    }
+  },
+  "CAM_S01_C003_trk_029": {
+    "observation_id": "CAM_S01_C003_trk_029",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 29,
+    "gt_vehicle_id": 35,
+    "match_status": "matched",
+    "frames_evaluated": 116,
+    "overlapping_frames": 24,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6799,
+    "competing_ids": {
+      "35": 24
+    }
+  },
+  "CAM_S01_C003_trk_030": {
+    "observation_id": "CAM_S01_C003_trk_030",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 30,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 11,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6885,
+    "competing_ids": {
+      "36": 11
+    }
+  },
+  "CAM_S01_C003_trk_032": {
+    "observation_id": "CAM_S01_C003_trk_032",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 32,
+    "gt_vehicle_id": 54,
+    "match_status": "matched",
+    "frames_evaluated": 81,
+    "overlapping_frames": 49,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5956,
+    "competing_ids": {
+      "54": 49
+    }
+  },
+  "CAM_S01_C003_trk_041": {
+    "observation_id": "CAM_S01_C003_trk_041",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 41,
+    "gt_vehicle_id": 8,
+    "match_status": "matched",
+    "frames_evaluated": 53,
+    "overlapping_frames": 23,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5334,
+    "competing_ids": {
+      "8": 23
+    }
+  },
+  "CAM_S01_C003_trk_010": {
+    "observation_id": "CAM_S01_C003_trk_010",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 10,
+    "gt_vehicle_id": 10,
+    "match_status": "matched",
+    "frames_evaluated": 23,
+    "overlapping_frames": 20,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6711,
+    "competing_ids": {
+      "10": 20
+    }
+  },
+  "CAM_S01_C003_trk_053": {
+    "observation_id": "CAM_S01_C003_trk_053",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 53,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_060": {
+    "observation_id": "CAM_S01_C003_trk_060",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 60,
+    "gt_vehicle_id": 37,
+    "match_status": "matched",
+    "frames_evaluated": 82,
+    "overlapping_frames": 32,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.518,
+    "competing_ids": {
+      "37": 32
+    }
+  },
+  "CAM_S01_C003_trk_061": {
+    "observation_id": "CAM_S01_C003_trk_061",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 61,
+    "gt_vehicle_id": 36,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7575,
+    "competing_ids": {
+      "36": 6
+    }
+  },
+  "CAM_S01_C003_trk_062": {
+    "observation_id": "CAM_S01_C003_trk_062",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 62,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_063": {
+    "observation_id": "CAM_S01_C003_trk_063",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 63,
+    "gt_vehicle_id": 12,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 22,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5688,
+    "competing_ids": {
+      "12": 22
+    }
+  },
+  "CAM_S01_C003_trk_067": {
+    "observation_id": "CAM_S01_C003_trk_067",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 67,
+    "gt_vehicle_id": 13,
+    "match_status": "matched",
+    "frames_evaluated": 61,
+    "overlapping_frames": 37,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.656,
+    "competing_ids": {
+      "13": 37
+    }
+  },
+  "CAM_S01_C003_trk_068": {
+    "observation_id": "CAM_S01_C003_trk_068",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 68,
+    "gt_vehicle_id": 44,
+    "match_status": "matched",
+    "frames_evaluated": 717,
+    "overlapping_frames": 698,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5271,
+    "competing_ids": {
+      "44": 698
+    }
+  },
+  "CAM_S01_C003_trk_075": {
+    "observation_id": "CAM_S01_C003_trk_075",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 75,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 694,
+    "overlapping_frames": 668,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8807,
+    "competing_ids": {
+      "33": 668
+    }
+  },
+  "CAM_S01_C003_trk_077": {
+    "observation_id": "CAM_S01_C003_trk_077",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 77,
+    "gt_vehicle_id": 12,
+    "match_status": "matched",
+    "frames_evaluated": 16,
+    "overlapping_frames": 15,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.724,
+    "competing_ids": {
+      "12": 15
+    }
+  },
+  "CAM_S01_C003_trk_080": {
+    "observation_id": "CAM_S01_C003_trk_080",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 80,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_084": {
+    "observation_id": "CAM_S01_C003_trk_084",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 84,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_085": {
+    "observation_id": "CAM_S01_C003_trk_085",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 85,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_076": {
+    "observation_id": "CAM_S01_C003_trk_076",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 76,
+    "gt_vehicle_id": 15,
+    "match_status": "matched",
+    "frames_evaluated": 33,
+    "overlapping_frames": 26,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7006,
+    "competing_ids": {
+      "15": 26
+    }
+  },
+  "CAM_S01_C003_trk_092": {
+    "observation_id": "CAM_S01_C003_trk_092",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 92,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_094": {
+    "observation_id": "CAM_S01_C003_trk_094",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 94,
+    "gt_vehicle_id": 14,
+    "match_status": "matched",
+    "frames_evaluated": 84,
+    "overlapping_frames": 32,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5257,
+    "competing_ids": {
+      "14": 32
+    }
+  },
+  "CAM_S01_C003_trk_095": {
+    "observation_id": "CAM_S01_C003_trk_095",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 95,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8879,
+    "competing_ids": {
+      "33": 1
+    }
+  },
+  "CAM_S01_C003_trk_099": {
+    "observation_id": "CAM_S01_C003_trk_099",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 99,
+    "gt_vehicle_id": 17,
+    "match_status": "matched",
+    "frames_evaluated": 49,
+    "overlapping_frames": 30,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6587,
+    "competing_ids": {
+      "17": 30
+    }
+  },
+  "CAM_S01_C003_trk_103": {
+    "observation_id": "CAM_S01_C003_trk_103",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 103,
+    "gt_vehicle_id": 18,
+    "match_status": "matched",
+    "frames_evaluated": 34,
+    "overlapping_frames": 29,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6662,
+    "competing_ids": {
+      "18": 29
+    }
+  },
+  "CAM_S01_C003_trk_105": {
+    "observation_id": "CAM_S01_C003_trk_105",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 105,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.887,
+    "competing_ids": {
+      "33": 3
+    }
+  },
+  "CAM_S01_C003_trk_106": {
+    "observation_id": "CAM_S01_C003_trk_106",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 106,
+    "gt_vehicle_id": 38,
+    "match_status": "matched",
+    "frames_evaluated": 49,
+    "overlapping_frames": 36,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5257,
+    "competing_ids": {
+      "38": 36
+    }
+  },
+  "CAM_S01_C003_trk_108": {
+    "observation_id": "CAM_S01_C003_trk_108",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 108,
+    "gt_vehicle_id": 16,
+    "match_status": "matched",
+    "frames_evaluated": 77,
+    "overlapping_frames": 40,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5978,
+    "competing_ids": {
+      "16": 40
+    }
+  },
+  "CAM_S01_C003_trk_110": {
+    "observation_id": "CAM_S01_C003_trk_110",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 110,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8901,
+    "competing_ids": {
+      "33": 3
+    }
+  },
+  "CAM_S01_C003_trk_112": {
+    "observation_id": "CAM_S01_C003_trk_112",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 112,
+    "gt_vehicle_id": 55,
+    "match_status": "matched",
+    "frames_evaluated": 48,
+    "overlapping_frames": 31,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4929,
+    "competing_ids": {
+      "55": 31
+    }
+  },
+  "CAM_S01_C003_trk_114": {
+    "observation_id": "CAM_S01_C003_trk_114",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 114,
+    "gt_vehicle_id": 39,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4868,
+    "competing_ids": {
+      "39": 14
+    }
+  },
+  "CAM_S01_C003_trk_119": {
+    "observation_id": "CAM_S01_C003_trk_119",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 119,
+    "gt_vehicle_id": 19,
+    "match_status": "matched",
+    "frames_evaluated": 24,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.53,
+    "competing_ids": {
+      "19": 19
+    }
+  },
+  "CAM_S01_C003_trk_123": {
+    "observation_id": "CAM_S01_C003_trk_123",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 123,
+    "gt_vehicle_id": 20,
+    "match_status": "matched",
+    "frames_evaluated": 82,
+    "overlapping_frames": 40,
+    "consensus_ratio": 0.975,
+    "mean_iou": 0.6364,
+    "competing_ids": {
+      "19": 1,
+      "20": 39
+    }
+  },
+  "CAM_S01_C003_trk_131": {
+    "observation_id": "CAM_S01_C003_trk_131",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 131,
+    "gt_vehicle_id": 22,
+    "match_status": "matched",
+    "frames_evaluated": 66,
+    "overlapping_frames": 38,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.563,
+    "competing_ids": {
+      "22": 38
+    }
+  },
+  "CAM_S01_C003_trk_132": {
+    "observation_id": "CAM_S01_C003_trk_132",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 132,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 21,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_129": {
+    "observation_id": "CAM_S01_C003_trk_129",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 129,
+    "gt_vehicle_id": 21,
+    "match_status": "matched",
+    "frames_evaluated": 40,
+    "overlapping_frames": 27,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6697,
+    "competing_ids": {
+      "21": 27
+    }
+  },
+  "CAM_S01_C003_trk_137": {
+    "observation_id": "CAM_S01_C003_trk_137",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 137,
+    "gt_vehicle_id": 24,
+    "match_status": "matched",
+    "frames_evaluated": 50,
+    "overlapping_frames": 30,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6678,
+    "competing_ids": {
+      "24": 30
+    }
+  },
+  "CAM_S01_C003_trk_142": {
+    "observation_id": "CAM_S01_C003_trk_142",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 142,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_138": {
+    "observation_id": "CAM_S01_C003_trk_138",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 138,
+    "gt_vehicle_id": 25,
+    "match_status": "matched",
+    "frames_evaluated": 38,
+    "overlapping_frames": 28,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6735,
+    "competing_ids": {
+      "25": 28
+    }
+  },
+  "CAM_S01_C003_trk_147": {
+    "observation_id": "CAM_S01_C003_trk_147",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 147,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8874,
+    "competing_ids": {
+      "33": 2
+    }
+  },
+  "CAM_S01_C003_trk_150": {
+    "observation_id": "CAM_S01_C003_trk_150",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 150,
+    "gt_vehicle_id": 24,
+    "match_status": "matched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 2,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7962,
+    "competing_ids": {
+      "24": 2
+    }
+  },
+  "CAM_S01_C003_trk_155": {
+    "observation_id": "CAM_S01_C003_trk_155",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 155,
+    "gt_vehicle_id": 48,
+    "match_status": "matched",
+    "frames_evaluated": 378,
+    "overlapping_frames": 337,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6526,
+    "competing_ids": {
+      "48": 337
+    }
+  },
+  "CAM_S01_C003_trk_157": {
+    "observation_id": "CAM_S01_C003_trk_157",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 157,
+    "gt_vehicle_id": 49,
+    "match_status": "matched",
+    "frames_evaluated": 248,
+    "overlapping_frames": 217,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7046,
+    "competing_ids": {
+      "49": 217
+    }
+  },
+  "CAM_S01_C003_trk_160": {
+    "observation_id": "CAM_S01_C003_trk_160",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 160,
+    "gt_vehicle_id": 40,
+    "match_status": "matched",
+    "frames_evaluated": 40,
+    "overlapping_frames": 27,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4814,
+    "competing_ids": {
+      "40": 27
+    }
+  },
+  "CAM_S01_C003_trk_161": {
+    "observation_id": "CAM_S01_C003_trk_161",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 161,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8844,
+    "competing_ids": {
+      "33": 1
+    }
+  },
+  "CAM_S01_C003_trk_164": {
+    "observation_id": "CAM_S01_C003_trk_164",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 164,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 47,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4921,
+    "competing_ids": {
+      "47": 9
+    }
+  },
+  "CAM_S01_C003_trk_165": {
+    "observation_id": "CAM_S01_C003_trk_165",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 165,
+    "gt_vehicle_id": 42,
+    "match_status": "matched",
+    "frames_evaluated": 129,
+    "overlapping_frames": 90,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6398,
+    "competing_ids": {
+      "42": 90
+    }
+  },
+  "CAM_S01_C003_trk_166": {
+    "observation_id": "CAM_S01_C003_trk_166",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 166,
+    "gt_vehicle_id": 26,
+    "match_status": "matched",
+    "frames_evaluated": 26,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5644,
+    "competing_ids": {
+      "26": 11
+    }
+  },
+  "CAM_S01_C003_trk_167": {
+    "observation_id": "CAM_S01_C003_trk_167",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 167,
+    "gt_vehicle_id": 51,
+    "match_status": "matched",
+    "frames_evaluated": 96,
+    "overlapping_frames": 76,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.644,
+    "competing_ids": {
+      "51": 76
+    }
+  },
+  "CAM_S01_C003_trk_171": {
+    "observation_id": "CAM_S01_C003_trk_171",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 171,
+    "gt_vehicle_id": 27,
+    "match_status": "matched",
+    "frames_evaluated": 44,
+    "overlapping_frames": 33,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6709,
+    "competing_ids": {
+      "27": 33
+    }
+  },
+  "CAM_S01_C003_trk_177": {
+    "observation_id": "CAM_S01_C003_trk_177",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 177,
+    "gt_vehicle_id": 29,
+    "match_status": "matched",
+    "frames_evaluated": 43,
+    "overlapping_frames": 30,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7003,
+    "competing_ids": {
+      "29": 30
+    }
+  },
+  "CAM_S01_C003_trk_182": {
+    "observation_id": "CAM_S01_C003_trk_182",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 182,
+    "gt_vehicle_id": 43,
+    "match_status": "matched",
+    "frames_evaluated": 63,
+    "overlapping_frames": 53,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6322,
+    "competing_ids": {
+      "43": 53
+    }
+  },
+  "CAM_S01_C003_trk_183": {
+    "observation_id": "CAM_S01_C003_trk_183",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 183,
+    "gt_vehicle_id": 48,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6409,
+    "competing_ids": {
+      "48": 1
+    }
+  },
+  "CAM_S01_C003_trk_192": {
+    "observation_id": "CAM_S01_C003_trk_192",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 192,
+    "gt_vehicle_id": 31,
+    "match_status": "matched",
+    "frames_evaluated": 31,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6533,
+    "competing_ids": {
+      "31": 19
+    }
+  },
+  "CAM_S01_C003_trk_197": {
+    "observation_id": "CAM_S01_C003_trk_197",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 197,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_198": {
+    "observation_id": "CAM_S01_C003_trk_198",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 198,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4743,
+    "competing_ids": {
+      "32": 6
+    }
+  },
+  "CAM_S01_C003_trk_199": {
+    "observation_id": "CAM_S01_C003_trk_199",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 199,
+    "gt_vehicle_id": 28,
+    "match_status": "matched",
+    "frames_evaluated": 114,
+    "overlapping_frames": 85,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6409,
+    "competing_ids": {
+      "28": 85
+    }
+  },
+  "CAM_S01_C003_trk_201": {
+    "observation_id": "CAM_S01_C003_trk_201",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 201,
+    "gt_vehicle_id": 28,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8343,
+    "competing_ids": {
+      "28": 9
+    }
+  },
+  "CAM_S01_C003_trk_202": {
+    "observation_id": "CAM_S01_C003_trk_202",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 202,
+    "gt_vehicle_id": 32,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5446,
+    "competing_ids": {
+      "32": 4
+    }
+  },
+  "CAM_S01_C003_trk_212": {
+    "observation_id": "CAM_S01_C003_trk_212",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 212,
+    "gt_vehicle_id": 50,
+    "match_status": "matched",
+    "frames_evaluated": 67,
+    "overlapping_frames": 44,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.738,
+    "competing_ids": {
+      "50": 44
+    }
+  },
+  "CAM_S01_C003_trk_214": {
+    "observation_id": "CAM_S01_C003_trk_214",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 214,
+    "gt_vehicle_id": 33,
+    "match_status": "matched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 3,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7761,
+    "competing_ids": {
+      "33": 3
+    }
+  },
+  "CAM_S01_C003_trk_218": {
+    "observation_id": "CAM_S01_C003_trk_218",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 218,
+    "gt_vehicle_id": 45,
+    "match_status": "matched",
+    "frames_evaluated": 46,
+    "overlapping_frames": 40,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6592,
+    "competing_ids": {
+      "45": 40
+    }
+  },
+  "CAM_S01_C003_trk_219": {
+    "observation_id": "CAM_S01_C003_trk_219",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 219,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_221": {
+    "observation_id": "CAM_S01_C003_trk_221",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 221,
+    "gt_vehicle_id": 46,
+    "match_status": "matched",
+    "frames_evaluated": 46,
+    "overlapping_frames": 41,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6058,
+    "competing_ids": {
+      "46": 41
+    }
+  },
+  "CAM_S01_C003_trk_217": {
+    "observation_id": "CAM_S01_C003_trk_217",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 217,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 26,
+    "overlapping_frames": 26,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6303,
+    "competing_ids": {
+      "47": 26
+    }
+  },
+  "CAM_S01_C003_trk_230": {
+    "observation_id": "CAM_S01_C003_trk_230",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 230,
+    "gt_vehicle_id": 47,
+    "match_status": "matched",
+    "frames_evaluated": 21,
+    "overlapping_frames": 16,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6726,
+    "competing_ids": {
+      "47": 16
+    }
+  },
+  "CAM_S01_C003_trk_233": {
+    "observation_id": "CAM_S01_C003_trk_233",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 233,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_234": {
+    "observation_id": "CAM_S01_C003_trk_234",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 234,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_237": {
+    "observation_id": "CAM_S01_C003_trk_237",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 237,
+    "gt_vehicle_id": 51,
+    "match_status": "matched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7465,
+    "competing_ids": {
+      "51": 7
+    }
+  },
+  "CAM_S01_C003_trk_247": {
+    "observation_id": "CAM_S01_C003_trk_247",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 247,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_249": {
+    "observation_id": "CAM_S01_C003_trk_249",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 249,
+    "gt_vehicle_id": 56,
+    "match_status": "matched",
+    "frames_evaluated": 28,
+    "overlapping_frames": 26,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5845,
+    "competing_ids": {
+      "56": 26
+    }
+  },
+  "CAM_S01_C003_trk_260": {
+    "observation_id": "CAM_S01_C003_trk_260",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 260,
+    "gt_vehicle_id": 89,
+    "match_status": "matched",
+    "frames_evaluated": 780,
+    "overlapping_frames": 37,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7674,
+    "competing_ids": {
+      "89": 37
+    }
+  },
+  "CAM_S01_C003_trk_262": {
+    "observation_id": "CAM_S01_C003_trk_262",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 262,
+    "gt_vehicle_id": 56,
+    "match_status": "matched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4803,
+    "competing_ids": {
+      "56": 8
+    }
+  },
+  "CAM_S01_C003_trk_264": {
+    "observation_id": "CAM_S01_C003_trk_264",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 264,
+    "gt_vehicle_id": 60,
+    "match_status": "matched",
+    "frames_evaluated": 42,
+    "overlapping_frames": 26,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7712,
+    "competing_ids": {
+      "60": 26
+    }
+  },
+  "CAM_S01_C003_trk_267": {
+    "observation_id": "CAM_S01_C003_trk_267",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 267,
+    "gt_vehicle_id": 57,
+    "match_status": "matched",
+    "frames_evaluated": 49,
+    "overlapping_frames": 36,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5977,
+    "competing_ids": {
+      "57": 36
+    }
+  },
+  "CAM_S01_C003_trk_271": {
+    "observation_id": "CAM_S01_C003_trk_271",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 271,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 11,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_272": {
+    "observation_id": "CAM_S01_C003_trk_272",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 272,
+    "gt_vehicle_id": 58,
+    "match_status": "matched",
+    "frames_evaluated": 50,
+    "overlapping_frames": 29,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5471,
+    "competing_ids": {
+      "58": 29
+    }
+  },
+  "CAM_S01_C003_trk_275": {
+    "observation_id": "CAM_S01_C003_trk_275",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 275,
+    "gt_vehicle_id": 59,
+    "match_status": "matched",
+    "frames_evaluated": 76,
+    "overlapping_frames": 34,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5262,
+    "competing_ids": {
+      "59": 34
+    }
+  },
+  "CAM_S01_C003_trk_274": {
+    "observation_id": "CAM_S01_C003_trk_274",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 274,
+    "gt_vehicle_id": 61,
+    "match_status": "matched",
+    "frames_evaluated": 30,
+    "overlapping_frames": 27,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6928,
+    "competing_ids": {
+      "61": 27
+    }
+  },
+  "CAM_S01_C003_trk_280": {
+    "observation_id": "CAM_S01_C003_trk_280",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 280,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_281": {
+    "observation_id": "CAM_S01_C003_trk_281",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 281,
+    "gt_vehicle_id": 63,
+    "match_status": "matched",
+    "frames_evaluated": 32,
+    "overlapping_frames": 7,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4507,
+    "competing_ids": {
+      "63": 7
+    }
+  },
+  "CAM_S01_C003_trk_286": {
+    "observation_id": "CAM_S01_C003_trk_286",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 286,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_288": {
+    "observation_id": "CAM_S01_C003_trk_288",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 288,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 16,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_289": {
+    "observation_id": "CAM_S01_C003_trk_289",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 289,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 3,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_290": {
+    "observation_id": "CAM_S01_C003_trk_290",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 290,
+    "gt_vehicle_id": 64,
+    "match_status": "matched",
+    "frames_evaluated": 33,
+    "overlapping_frames": 32,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7094,
+    "competing_ids": {
+      "64": 32
+    }
+  },
+  "CAM_S01_C003_trk_291": {
+    "observation_id": "CAM_S01_C003_trk_291",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 291,
+    "gt_vehicle_id": 63,
+    "match_status": "matched",
+    "frames_evaluated": 19,
+    "overlapping_frames": 17,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6118,
+    "competing_ids": {
+      "63": 17
+    }
+  },
+  "CAM_S01_C003_trk_294": {
+    "observation_id": "CAM_S01_C003_trk_294",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 294,
+    "gt_vehicle_id": 62,
+    "match_status": "matched",
+    "frames_evaluated": 39,
+    "overlapping_frames": 29,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6763,
+    "competing_ids": {
+      "62": 29
+    }
+  },
+  "CAM_S01_C003_trk_299": {
+    "observation_id": "CAM_S01_C003_trk_299",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 299,
+    "gt_vehicle_id": 62,
+    "match_status": "matched",
+    "frames_evaluated": 37,
+    "overlapping_frames": 23,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5479,
+    "competing_ids": {
+      "62": 23
+    }
+  },
+  "CAM_S01_C003_trk_300": {
+    "observation_id": "CAM_S01_C003_trk_300",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 300,
+    "gt_vehicle_id": 65,
+    "match_status": "matched",
+    "frames_evaluated": 38,
+    "overlapping_frames": 23,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4807,
+    "competing_ids": {
+      "65": 23
+    }
+  },
+  "CAM_S01_C003_trk_302": {
+    "observation_id": "CAM_S01_C003_trk_302",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 302,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_303": {
+    "observation_id": "CAM_S01_C003_trk_303",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 303,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_305": {
+    "observation_id": "CAM_S01_C003_trk_305",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 305,
+    "gt_vehicle_id": 66,
+    "match_status": "matched",
+    "frames_evaluated": 16,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5543,
+    "competing_ids": {
+      "66": 10
+    }
+  },
+  "CAM_S01_C003_trk_308": {
+    "observation_id": "CAM_S01_C003_trk_308",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 308,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 15,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_310": {
+    "observation_id": "CAM_S01_C003_trk_310",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 310,
+    "gt_vehicle_id": 66,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 9,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6019,
+    "competing_ids": {
+      "66": 9
+    }
+  },
+  "CAM_S01_C003_trk_311": {
+    "observation_id": "CAM_S01_C003_trk_311",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 311,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 29,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_312": {
+    "observation_id": "CAM_S01_C003_trk_312",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 312,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 2,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_315": {
+    "observation_id": "CAM_S01_C003_trk_315",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 315,
+    "gt_vehicle_id": 67,
+    "match_status": "matched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 4,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4864,
+    "competing_ids": {
+      "67": 4
+    }
+  },
+  "CAM_S01_C003_trk_316": {
+    "observation_id": "CAM_S01_C003_trk_316",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 316,
+    "gt_vehicle_id": 69,
+    "match_status": "matched",
+    "frames_evaluated": 39,
+    "overlapping_frames": 32,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5902,
+    "competing_ids": {
+      "69": 32
+    }
+  },
+  "CAM_S01_C003_trk_318": {
+    "observation_id": "CAM_S01_C003_trk_318",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 318,
+    "gt_vehicle_id": 67,
+    "match_status": "matched",
+    "frames_evaluated": 13,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7268,
+    "competing_ids": {
+      "67": 11
+    }
+  },
+  "CAM_S01_C003_trk_319": {
+    "observation_id": "CAM_S01_C003_trk_319",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 319,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_320": {
+    "observation_id": "CAM_S01_C003_trk_320",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 320,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 16,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_323": {
+    "observation_id": "CAM_S01_C003_trk_323",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 323,
+    "gt_vehicle_id": 68,
+    "match_status": "matched",
+    "frames_evaluated": 22,
+    "overlapping_frames": 20,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5198,
+    "competing_ids": {
+      "68": 20
+    }
+  },
+  "CAM_S01_C003_trk_324": {
+    "observation_id": "CAM_S01_C003_trk_324",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 324,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_329": {
+    "observation_id": "CAM_S01_C003_trk_329",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 329,
+    "gt_vehicle_id": 68,
+    "match_status": "matched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5084,
+    "competing_ids": {
+      "68": 6
+    }
+  },
+  "CAM_S01_C003_trk_328": {
+    "observation_id": "CAM_S01_C003_trk_328",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 328,
+    "gt_vehicle_id": 70,
+    "match_status": "matched",
+    "frames_evaluated": 43,
+    "overlapping_frames": 30,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6099,
+    "competing_ids": {
+      "70": 30
+    }
+  },
+  "CAM_S01_C003_trk_331": {
+    "observation_id": "CAM_S01_C003_trk_331",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 331,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 10,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_332": {
+    "observation_id": "CAM_S01_C003_trk_332",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 332,
+    "gt_vehicle_id": 71,
+    "match_status": "matched",
+    "frames_evaluated": 432,
+    "overlapping_frames": 423,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6437,
+    "competing_ids": {
+      "71": 423
+    }
+  },
+  "CAM_S01_C003_trk_333": {
+    "observation_id": "CAM_S01_C003_trk_333",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 333,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_335": {
+    "observation_id": "CAM_S01_C003_trk_335",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 335,
+    "gt_vehicle_id": 70,
+    "match_status": "matched",
+    "frames_evaluated": 53,
+    "overlapping_frames": 49,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7237,
+    "competing_ids": {
+      "70": 49
+    }
+  },
+  "CAM_S01_C003_trk_340": {
+    "observation_id": "CAM_S01_C003_trk_340",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 340,
+    "gt_vehicle_id": 72,
+    "match_status": "matched",
+    "frames_evaluated": 160,
+    "overlapping_frames": 98,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6057,
+    "competing_ids": {
+      "72": 98
+    }
+  },
+  "CAM_S01_C003_trk_341": {
+    "observation_id": "CAM_S01_C003_trk_341",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 341,
+    "gt_vehicle_id": 74,
+    "match_status": "matched",
+    "frames_evaluated": 39,
+    "overlapping_frames": 31,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6702,
+    "competing_ids": {
+      "74": 31
+    }
+  },
+  "CAM_S01_C003_trk_343": {
+    "observation_id": "CAM_S01_C003_trk_343",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 343,
+    "gt_vehicle_id": 73,
+    "match_status": "matched",
+    "frames_evaluated": 21,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7103,
+    "competing_ids": {
+      "73": 19
+    }
+  },
+  "CAM_S01_C003_trk_342": {
+    "observation_id": "CAM_S01_C003_trk_342",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 342,
+    "gt_vehicle_id": 70,
+    "match_status": "matched",
+    "frames_evaluated": 6,
+    "overlapping_frames": 6,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8023,
+    "competing_ids": {
+      "70": 6
+    }
+  },
+  "CAM_S01_C003_trk_350": {
+    "observation_id": "CAM_S01_C003_trk_350",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 350,
+    "gt_vehicle_id": 52,
+    "match_status": "matched",
+    "frames_evaluated": 27,
+    "overlapping_frames": 19,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5844,
+    "competing_ids": {
+      "52": 19
+    }
+  },
+  "CAM_S01_C003_trk_352": {
+    "observation_id": "CAM_S01_C003_trk_352",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 352,
+    "gt_vehicle_id": 53,
+    "match_status": "matched",
+    "frames_evaluated": 23,
+    "overlapping_frames": 12,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6382,
+    "competing_ids": {
+      "53": 12
+    }
+  },
+  "CAM_S01_C003_trk_357": {
+    "observation_id": "CAM_S01_C003_trk_357",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 357,
+    "gt_vehicle_id": 75,
+    "match_status": "matched",
+    "frames_evaluated": 26,
+    "overlapping_frames": 17,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5692,
+    "competing_ids": {
+      "75": 17
+    }
+  },
+  "CAM_S01_C003_trk_360": {
+    "observation_id": "CAM_S01_C003_trk_360",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 360,
+    "gt_vehicle_id": 76,
+    "match_status": "matched",
+    "frames_evaluated": 24,
+    "overlapping_frames": 12,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6238,
+    "competing_ids": {
+      "76": 12
+    }
+  },
+  "CAM_S01_C003_trk_362": {
+    "observation_id": "CAM_S01_C003_trk_362",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 362,
+    "gt_vehicle_id": 77,
+    "match_status": "matched",
+    "frames_evaluated": 23,
+    "overlapping_frames": 10,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5432,
+    "competing_ids": {
+      "77": 10
+    }
+  },
+  "CAM_S01_C003_trk_365": {
+    "observation_id": "CAM_S01_C003_trk_365",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 365,
+    "gt_vehicle_id": 78,
+    "match_status": "matched",
+    "frames_evaluated": 77,
+    "overlapping_frames": 67,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6286,
+    "competing_ids": {
+      "78": 67
+    }
+  },
+  "CAM_S01_C003_trk_366": {
+    "observation_id": "CAM_S01_C003_trk_366",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 366,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 167,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_367": {
+    "observation_id": "CAM_S01_C003_trk_367",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 367,
+    "gt_vehicle_id": 81,
+    "match_status": "matched",
+    "frames_evaluated": 63,
+    "overlapping_frames": 50,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6343,
+    "competing_ids": {
+      "81": 50
+    }
+  },
+  "CAM_S01_C003_trk_368": {
+    "observation_id": "CAM_S01_C003_trk_368",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 368,
+    "gt_vehicle_id": 80,
+    "match_status": "matched",
+    "frames_evaluated": 19,
+    "overlapping_frames": 14,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5402,
+    "competing_ids": {
+      "80": 14
+    }
+  },
+  "CAM_S01_C003_trk_370": {
+    "observation_id": "CAM_S01_C003_trk_370",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 370,
+    "gt_vehicle_id": 82,
+    "match_status": "matched",
+    "frames_evaluated": 23,
+    "overlapping_frames": 13,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5672,
+    "competing_ids": {
+      "82": 13
+    }
+  },
+  "CAM_S01_C003_trk_371": {
+    "observation_id": "CAM_S01_C003_trk_371",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 371,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 82,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_374": {
+    "observation_id": "CAM_S01_C003_trk_374",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 374,
+    "gt_vehicle_id": 86,
+    "match_status": "matched",
+    "frames_evaluated": 58,
+    "overlapping_frames": 29,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6556,
+    "competing_ids": {
+      "86": 29
+    }
+  },
+  "CAM_S01_C003_trk_376": {
+    "observation_id": "CAM_S01_C003_trk_376",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 376,
+    "gt_vehicle_id": 85,
+    "match_status": "matched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 11,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.4946,
+    "competing_ids": {
+      "85": 11
+    }
+  },
+  "CAM_S01_C003_trk_377": {
+    "observation_id": "CAM_S01_C003_trk_377",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 377,
+    "gt_vehicle_id": 86,
+    "match_status": "matched",
+    "frames_evaluated": 8,
+    "overlapping_frames": 8,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7873,
+    "competing_ids": {
+      "86": 8
+    }
+  },
+  "CAM_S01_C003_trk_380": {
+    "observation_id": "CAM_S01_C003_trk_380",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 380,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 7,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_381": {
+    "observation_id": "CAM_S01_C003_trk_381",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 381,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 17,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_384": {
+    "observation_id": "CAM_S01_C003_trk_384",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 384,
+    "gt_vehicle_id": 90,
+    "match_status": "matched",
+    "frames_evaluated": 34,
+    "overlapping_frames": 23,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7583,
+    "competing_ids": {
+      "90": 23
+    }
+  },
+  "CAM_S01_C003_trk_386": {
+    "observation_id": "CAM_S01_C003_trk_386",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 386,
+    "gt_vehicle_id": 89,
+    "match_status": "matched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 1,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.8253,
+    "competing_ids": {
+      "89": 1
+    }
+  },
+  "CAM_S01_C003_trk_387": {
+    "observation_id": "CAM_S01_C003_trk_387",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 387,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 4,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_392": {
+    "observation_id": "CAM_S01_C003_trk_392",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 392,
+    "gt_vehicle_id": 91,
+    "match_status": "matched",
+    "frames_evaluated": 40,
+    "overlapping_frames": 31,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.7526,
+    "competing_ids": {
+      "91": 31
+    }
+  },
+  "CAM_S01_C003_trk_393": {
+    "observation_id": "CAM_S01_C003_trk_393",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 393,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 33,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_399": {
+    "observation_id": "CAM_S01_C003_trk_399",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 399,
+    "gt_vehicle_id": 92,
+    "match_status": "matched",
+    "frames_evaluated": 34,
+    "overlapping_frames": 24,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6789,
+    "competing_ids": {
+      "92": 24
+    }
+  },
+  "CAM_S01_C003_trk_410": {
+    "observation_id": "CAM_S01_C003_trk_410",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 410,
+    "gt_vehicle_id": 95,
+    "match_status": "matched",
+    "frames_evaluated": 55,
+    "overlapping_frames": 38,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.5942,
+    "competing_ids": {
+      "95": 38
+    }
+  },
+  "CAM_S01_C003_trk_409": {
+    "observation_id": "CAM_S01_C003_trk_409",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 409,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_411": {
+    "observation_id": "CAM_S01_C003_trk_411",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 411,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 5,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_412": {
+    "observation_id": "CAM_S01_C003_trk_412",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 412,
+    "gt_vehicle_id": 93,
+    "match_status": "matched",
+    "frames_evaluated": 28,
+    "overlapping_frames": 25,
+    "consensus_ratio": 1.0,
+    "mean_iou": 0.6353,
+    "competing_ids": {
+      "93": 25
+    }
+  },
+  "CAM_S01_C003_trk_414": {
+    "observation_id": "CAM_S01_C003_trk_414",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 414,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 1,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_419": {
+    "observation_id": "CAM_S01_C003_trk_419",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 419,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  },
+  "CAM_S01_C003_trk_422": {
+    "observation_id": "CAM_S01_C003_trk_422",
+    "camera_id": "CAM_S01_C003",
+    "local_track_id": 422,
+    "gt_vehicle_id": null,
+    "match_status": "unmatched",
+    "frames_evaluated": 9,
+    "overlapping_frames": 0,
+    "consensus_ratio": 0.0,
+    "mean_iou": 0.0,
+    "competing_ids": {}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "cameras": {
+    "CAM_S01_C001": {
+      "total_tracklets": 107,
+      "with_embeddings": 94,
+      "reid_model": "osnet_x0_25_aicity"
+    },
+    "CAM_S01_C002": {
+      "total_tracklets": 125,
+      "with_embeddings": 115,
+      "reid_model": "osnet_x0_25_msmt17"
+    },
+    "CAM_S01_C003": {
+      "total_tracklets": 152,
+      "with_embeddings": 113,
+      "reid_model": "osnet_x0_25_aicity"
+    }
+  },
+  "total_tracklets": 384,
+  "valid_embeddings": 322,
+  "timestamp_semantics": "video_relative",
+  "coordinate_system": "image"
+}

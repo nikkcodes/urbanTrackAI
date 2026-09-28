@@ -9,6 +9,7 @@ import math
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from schemas.observation_schema import Observation
+from .reid_compatibility import are_reid_models_compatible, ReIDModelCompatibilityLayer
 
 
 def _levenshtein_distance(s1: str, s2: str) -> int:
@@ -30,25 +31,108 @@ def _levenshtein_distance(s1: str, s2: str) -> int:
     return previous_row[-1]
 
 
-def plate_similarity(plate1: Optional[str], plate2: Optional[str]) -> float:
+CONFUSABLE_OCR_CHAR_PAIRS = {
+    frozenset({"O", "0"}),
+    frozenset({"I", "1"}),
+    frozenset({"S", "5"}),
+    frozenset({"B", "8"}),
+    frozenset({"Z", "2"}),
+    frozenset({"G", "6"}),
+    frozenset({"D", "0"}),
+    frozenset({"Q", "0"}),
+}
+
+
+def _ocr_weighted_edit_distance(s1: str, s2: str, confusable_cost: float = 0.3) -> float:
+    """
+    Weighted Levenshtein distance with reduced substitution cost for visually confusable OCR characters.
+    Confusable substitutions cost `confusable_cost` (default 0.3) instead of 1.0.
+    Standard substitutions, insertions, and deletions cost 1.0.
+    """
+    if len(s1) < len(s2):
+        return _ocr_weighted_edit_distance(s2, s1, confusable_cost=confusable_cost)
+    if len(s2) == 0:
+        return float(len(s1))
+
+    previous_row: List[float] = [float(j) for j in range(len(s2) + 1)]
+    for i, c1 in enumerate(s1):
+        current_row: List[float] = [float(i + 1)]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1.0
+            deletions = current_row[j] + 1.0
+            if c1 == c2:
+                sub_cost = 0.0
+            elif frozenset({c1, c2}) in CONFUSABLE_OCR_CHAR_PAIRS:
+                sub_cost = confusable_cost
+            else:
+                sub_cost = 1.0
+            substitutions = previous_row[j] + sub_cost
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    return previous_row[-1]
+
+
+def ocr_aware_plate_similarity(
+    plate1: Optional[str],
+    plate2: Optional[str],
+    confusable_cost: float = 0.3,
+) -> float:
+    """
+    Compare two OCR plate strings using a deterministic confusable-character optical model (Section 6).
+    
+    Handles:
+        - Confusable OCR character pairs (O/0, I/1, S/5, B/8, Z/2, G/6, D/0, Q/0)
+        - Partial plate prefix/suffix matching
+        - Insertion / deletion of noisy characters
+    """
+    if plate1 is None or plate2 is None:
+        return 0.0
+
+    s1 = "".join(c.upper() for c in str(plate1) if c.isalnum())
+    s2 = "".join(c.upper() for c in str(plate2) if c.isalnum())
+
+    if not s1 or not s2:
+        return 0.0
+
+    if s1 == s2:
+        return 1.0
+
+    max_len = max(len(s1), len(s2))
+    dist = _ocr_weighted_edit_distance(s1, s2, confusable_cost=confusable_cost)
+    similarity = 1.0 - (dist / max_len)
+    return max(0.0, min(1.0, round(similarity, 4)))
+
+
+def plate_similarity(
+    plate1: Optional[str],
+    plate2: Optional[str],
+    use_ocr_confusion: bool = False,
+    confusable_cost: float = 0.3,
+) -> float:
     """
     Compare two OCR plate strings and return a normalized similarity score between 0.0 and 1.0.
 
     Handles:
         - Exact match (1.0)
         - Small OCR errors (normalized edit distance ratio)
+        - Confusable OCR characters when use_ocr_confusion=True
         - Different strings (low score near 0.0)
         - Missing plates (returns 0.0)
 
     Args:
         plate1: First license plate string or None.
         plate2: Second license plate string or None.
+        use_ocr_confusion: If True, uses confusable OCR character substitution model.
+        confusable_cost: Cost for confusable character substitution (default: 0.3).
 
     Returns:
         float: Normalized similarity score in [0.0, 1.0].
     """
     if plate1 is None or plate2 is None:
         return 0.0
+
+    if use_ocr_confusion:
+        return ocr_aware_plate_similarity(plate1, plate2, confusable_cost=confusable_cost)
 
     s1 = "".join(c.upper() for c in str(plate1) if c.isalnum())
     s2 = "".join(c.upper() for c in str(plate2) if c.isalnum())

@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "zero_gt_leakage_verified": true,
+  "observations_audited": 384,
+  "forbidden_keys_checked": [
+    "gt_vehicle_id",
+    "global_gt_id",
+    "target_id",
+    "true_vehicle_id"
+  ],
+  "violations_found": 0,
+  "violations": []
+}

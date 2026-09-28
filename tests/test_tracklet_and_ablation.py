@@ -23,6 +23,8 @@ from inference.similarity import (
 )
 from inference.tracklet_engine import (
     Tracklet,
+    TrackletAssociationResult,
+    TrackletAssociator,
     aggregate_observations_into_tracklets,
     aggregate_plate_votes,
     match_tracklets,
@@ -165,6 +167,62 @@ class TestTrackletAndAblation(unittest.TestCase):
         # Verify 0 false merges across degradation levels
         for row in deg_report["plate_dropout_curve"]:
             self.assertEqual(row["false_merges"], 0)
+
+    # 9. Test TrackletAssociator (Hungarian & Greedy bipartite matching)
+    def test_09_tracklet_associator_hungarian_and_greedy(self):
+        meta = {
+            "cam1": {"latitude": 12.9716, "longitude": 77.5946, "time_reference_id": "city_sync_grid"},
+            "cam2": {"latitude": 12.9750, "longitude": 77.5980, "time_reference_id": "city_sync_grid"},
+        }
+        # Vehicle 1: KA01AA1111 on cam1, then cam2
+        v1_c1 = Observation(camera_id="cam1", track_id="v1", frame_id=1, timestamp_seconds=10.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=self.emb_a, latitude=12.9716, longitude=77.5946)
+        v1_c2 = Observation(camera_id="cam2", track_id="v1_tgt", frame_id=50, timestamp_seconds=45.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=self.emb_a, latitude=12.9750, longitude=77.5980)
+
+        # Vehicle 2: KA02BB2222 on cam1, then cam2
+        v2_c1 = Observation(camera_id="cam1", track_id="v2", frame_id=2, timestamp_seconds=12.0, vehicle_type="car", plate="KA02BB2222", appearance_embedding=self.emb_diff, latitude=12.9716, longitude=77.5946)
+        v2_c2 = Observation(camera_id="cam2", track_id="v2_tgt", frame_id=55, timestamp_seconds=48.0, vehicle_type="car", plate="KA02BB2222", appearance_embedding=self.emb_diff, latitude=12.9750, longitude=77.5980)
+
+        trks_c1 = aggregate_observations_into_tracklets([v1_c1, v2_c1], camera_metadata=meta)
+        trks_c2 = aggregate_observations_into_tracklets([v1_c2, v2_c2], camera_metadata=meta)
+
+        associator = TrackletAssociator(min_score_threshold=0.70, camera_metadata=meta)
+
+        # Test Hungarian matching
+        res_h = associator.associate_tracklets(trks_c1, trks_c2, method="hungarian")
+        self.assertIsInstance(res_h, TrackletAssociationResult)
+        self.assertEqual(res_h.algorithm, "hungarian")
+        self.assertEqual(len(res_h.matched_pairs), 2)
+        self.assertEqual(len(res_h.unassigned_tracklets), 0)
+
+        # Test Greedy matching
+        res_g = associator.associate_tracklets(trks_c1, trks_c2, method="greedy")
+        self.assertEqual(res_g.algorithm, "greedy")
+        self.assertEqual(len(res_g.matched_pairs), 2)
+        self.assertEqual(len(res_g.unassigned_tracklets), 0)
+
+        # Check serialization
+        d = res_h.to_dict()
+        self.assertEqual(d["matched_pairs_count"], 2)
+        self.assertEqual(d["unassigned_count"], 0)
+
+    # 10. Test benchmark_assignment_methods
+    def test_10_benchmark_assignment_methods(self):
+        meta = {
+            "cam1": {"latitude": 12.9716, "longitude": 77.5946, "time_reference_id": "city_sync_grid"},
+            "cam2": {"latitude": 12.9750, "longitude": 77.5980, "time_reference_id": "city_sync_grid"},
+        }
+        v1_c1 = Observation(camera_id="cam1", track_id="v1", frame_id=1, timestamp_seconds=10.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=self.emb_a, latitude=12.9716, longitude=77.5946)
+        v1_c2 = Observation(camera_id="cam2", track_id="v1_tgt", frame_id=50, timestamp_seconds=45.0, vehicle_type="car", plate="KA01AA1111", appearance_embedding=self.emb_a, latitude=12.9750, longitude=77.5980)
+
+        trks_c1 = aggregate_observations_into_tracklets([v1_c1], camera_metadata=meta)
+        trks_c2 = aggregate_observations_into_tracklets([v1_c2], camera_metadata=meta)
+
+        associator = TrackletAssociator(min_score_threshold=0.70, camera_metadata=meta)
+        bench = associator.benchmark_assignment_methods(trks_c1, trks_c2)
+        self.assertIn("hungarian", bench)
+        self.assertIn("greedy", bench)
+        self.assertEqual(bench["hungarian"]["matches"], 1)
+        self.assertEqual(bench["greedy"]["matches"], 1)
 
 
 if __name__ == "__main__":

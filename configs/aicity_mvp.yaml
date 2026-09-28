@@ -1,0 +1,52 @@
+# UrbanTrack AI — AI City 2022 Challenge Track 1 (Member 1 Handoff) Configuration
+# Defines ingestion, pipeline parameters, and output artifacts for the 3-camera MVP.
+
+dataset:
+  name: "AICity_2022_Track1_Member1_Handoff"
+  classification: "REAL"
+  handoff_path: "UrbanTrack_Member1_Handoff/output"
+  fps: 10.0
+  coordinate_system: "image"
+  timestamp_semantics: "video_relative"
+  cameras:
+    - camera_id: "CAM_S01_C001"
+      reid_model: "osnet_x0_25_aicity"
+      fps: 10.0
+      coordinate_system: "image"
+      timestamp_semantics: "video_relative"
+    - camera_id: "CAM_S01_C002"
+      reid_model: "osnet_x0_25_msmt17"
+      fps: 10.0
+      coordinate_system: "image"
+      timestamp_semantics: "video_relative"
+    - camera_id: "CAM_S01_C003"
+      reid_model: "osnet_x0_25_aicity"
+      fps: 10.0
+      coordinate_system: "image"
+      timestamp_semantics: "video_relative"
+
+pipeline:
+  candidate_generation:
+    unsynchronized_mode: true
+    min_probability_threshold: 0.65
+    max_time_window_seconds: 7200.0
+  identity_fusion:
+    min_score_threshold: 0.70
+    missing_evidence_score: 0.50
+    allow_cross_model_reid: false
+  identity_graph:
+    min_score_threshold: 0.70
+  trajectory_engine:
+    mode: "image_space"
+    fallback_enabled: true
+
+output:
+  results_dir: "results/aicity_mvp"
+  artifacts:
+    normalized_observations: "normalized_observations.json"
+    inferred_identities: "inferred_identities.json"
+    identity_graph: "identity_graph.json"
+    trajectories: "trajectories.json"
+    evaluation_results: "evaluation_results.json"
+    data_inventory: "data_inventory.json"
+    provenance: "provenance.json"

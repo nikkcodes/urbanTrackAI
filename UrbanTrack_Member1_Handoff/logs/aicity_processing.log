@@ -1,0 +1,4 @@
+2026-09-21T11:01:46+0530 [INFO] ============================================================
+2026-09-21T11:01:46+0530 [INFO] AI City Batch Processor started.
+2026-09-21T11:01:46+0530 [INFO] Args: split=train, max_cameras=None, camera_filter=CAM_S01_C002, resume=False, overwrite=True, workers=1
+2026-09-21T11:01:46+0530 [INFO] Cleaned 5 runtime artifacts.

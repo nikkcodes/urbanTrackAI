@@ -40,11 +40,15 @@ from .reliability_engine import (
 from .road_graph import RoadEdge, RoadGraph, RoadNode
 from .similarity import (
     appearance_similarity,
+    are_reid_models_compatible,
+    CONFUSABLE_OCR_CHAR_PAIRS,
     geographic_distance,
+    ocr_aware_plate_similarity,
     plate_similarity,
     time_difference,
     vehicle_type_compatibility,
 )
+from .reid_compatibility import ReIDModelCompatibilityLayer
 from .spatial import spatial_feasibility
 from .sparse_engine import (
     detect_observation_gaps,
@@ -123,10 +127,14 @@ __all__ = [
     "load_member1_perception_feed",
     "verify_raw_data_integrity",
     "plate_similarity",
+    "ocr_aware_plate_similarity",
+    "CONFUSABLE_OCR_CHAR_PAIRS",
     "appearance_similarity",
     "vehicle_type_compatibility",
     "time_difference",
     "geographic_distance",
+    "are_reid_models_compatible",
+    "ReIDModelCompatibilityLayer",
     "temporal_feasibility",
     "spatial_feasibility",
     "match_observations",

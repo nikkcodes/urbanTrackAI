@@ -258,7 +258,29 @@ def infer_sparse_gap(
             metadata={"unassociated_cameras": unassoc},
         )
 
-    # 3. Same Node (Stationary)
+    # 3. Check for long temporal gap (discontinuous journey) per Section 9 and Section 16
+    max_gap_duration_seconds = float(config.get("max_gap_duration_seconds", 7200.0))
+    effective_dt = delta_t if delta_t is not None else (t_b - t_a if t_b is not None and t_a is not None else None)
+    if effective_dt is not None and effective_dt > max_gap_duration_seconds:
+        return SparseObservationGap(
+            gap_id=gap_id,
+            identity_id=identity_id,
+            start_observation=start_obs_dict,
+            end_observation=end_obs_dict,
+            gap_duration_seconds=effective_dt,
+            start_node_id=node_a,
+            end_node_id=node_b,
+            candidate_routes=[],
+            confidence=0.0,
+            is_ambiguous=False,
+            ambiguity_reason=f"Temporal gap of {effective_dt:.1f}s exceeds maximum continuous travel threshold ({max_gap_duration_seconds:.1f}s).",
+            status="discontinuous_journey",
+            gap_state="discontinuous_journey",
+            unobserved_intermediate_nodes=[],
+            metadata={"delta_t_seconds": effective_dt, "discontinuous_journey": True},
+        )
+
+    # 4. Same Node (Stationary)
     if node_a == node_b:
         c_route = CandidateRoute(
             route_id="route_stationary",

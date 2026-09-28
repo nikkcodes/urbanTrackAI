@@ -1,0 +1,258 @@
+{
+  "handoff_version": "2.0.0-mvp",
+  "generated_at": "2026-09-17T19:15:00Z",
+  "repository": "urbantrack-ai",
+  "branch": "member-2",
+  "source_commit": "30dc4c462cd28b29917d8a9384db6dbe3b388c5a",
+  "pipeline_boundary": {
+    "upstream_provider": "Member 1 (Perception: YOLOv8 + OSNet Re-ID)",
+    "current_layer": "Member 2 (Probabilistic Vehicle Intelligence: Reliability, Fusion, Graph, Trajectory, Calibration)",
+    "downstream_consumer": "Member 3 (City Mobility Analytics, Simulation, GIS, Dashboard, Applications)"
+  },
+  "data_scope": {
+    "cameras_included": [
+      "CAM_S01_C001",
+      "CAM_S01_C002",
+      "CAM_S01_C003"
+    ],
+    "total_cameras": 3,
+    "total_tracklets": 384,
+    "total_frame_observations": 21810,
+    "total_embeddings": 322,
+    "embedding_dimension": 512,
+    "fps": 10.0,
+    "dataset_classification": "REAL",
+    "target_benchmark": "AI City Challenge 2022 Track 1 (CityFlowV2) Scenario S01",
+    "video_durations_seconds": {
+      "CAM_S01_C001": 195.5,
+      "CAM_S01_C002": 211.0,
+      "CAM_S01_C003": 199.6
+    },
+    "frames_processed": {
+      "CAM_S01_C001": 1955,
+      "CAM_S01_C002": 2110,
+      "CAM_S01_C003": 1996
+    },
+    "synchronization_offsets_seconds": {
+      "CAM_S01_C001": 0.0,
+      "CAM_S01_C002": 1.64,
+      "CAM_S01_C003": 2.049
+    },
+    "observations_per_camera": {
+      "CAM_S01_C001": 7229,
+      "CAM_S01_C002": 6702,
+      "CAM_S01_C003": 7879
+    },
+    "tracklets_per_camera": {
+      "CAM_S01_C001": 107,
+      "CAM_S01_C002": 125,
+      "CAM_S01_C003": 152
+    }
+  },
+  "validation_scope": {
+    "empirical_validation_cameras": [
+      "CAM_S01_C001",
+      "CAM_S01_C002",
+      "CAM_S01_C003"
+    ],
+    "official_gt_vehicles": 95,
+    "multi_camera_gt_vehicles": 79,
+    "true_cross_camera_gt_positive_pairs": 308,
+    "cross_camera_negative_pairs": 28380,
+    "candidate_recall": 0.7208,
+    "false_merge_rate": 0.0,
+    "cluster_purity": 0.9558,
+    "calibrated_brier_score": 0.0227,
+    "calibrated_ece": 0.0067,
+    "total_repo_tests_passed": 399,
+    "total_inferred_identities": 355,
+    "confirmed_identities": 11,
+    "rejected_merges": 7,
+    "unconfirmed_singletons": 337,
+    "total_trajectories": 355,
+    "valid_world_projections": 359,
+    "horizon_rejected_projections": 25
+  },
+  "semantics": {
+    "identity_semantics": "identity_id is an inferred system identity (e.g. UT_ID_0001); GT IDs are strictly evaluation-only",
+    "temporal_semantics": "Authoritative elapsed time is video_relative (timestamp_seconds = frame_id / fps); synchronized time is a separate overlay, NOT wall-clock UTC",
+    "spatial_semantics": "cityflow_world planar metric coordinates in meters from homography ground contact; NOT WGS84 GPS latitude/longitude",
+    "plate_semantics": "AI City benchmark video plates are privacy-censored; plate text is genuinely null/unavailable; no ANPR accuracy claimed"
+  },
+  "files_included": [
+    {
+      "path": "MEMBER2_HANDOFF.md",
+      "description": "Executive handoff overview, pipeline boundary, and what Member 3 can trust vs treat as uncertain.",
+      "sha256": "b943a34009915cb26966bd3af9fd28b6c915e8dbc023ee5a2c72f7da90ee92ad",
+      "size_bytes": 11175
+    },
+    {
+      "path": "INTERFACE_CONTRACT.md",
+      "description": "Field-by-field normative interface contract for identities, trajectories, camera states, and evidence.",
+      "sha256": "0a30f0d961cc40eef4bee48cda49d48b66faecb4664544a204e9258cc2d95b59",
+      "size_bytes": 20015
+    },
+    {
+      "path": "DATA_DICTIONARY.md",
+      "description": "Comprehensive data dictionary defining all output keys, types, nullability, sources, and caveats.",
+      "sha256": "1a621200fadb33463ec5bdfae21d97da45676227b1eaad13320c85a56bb7f985",
+      "size_bytes": 13878
+    },
+    {
+      "path": "SOURCE_AND_PROVENANCE.md",
+      "description": "Authoritative lineage tracking Member 1 perception, AI City metadata, Member 2 inference, and GT labels.",
+      "sha256": "3eb72aeb0496328abac5b229fbcccc0bb62cecc30ce5e39a287e887336c3da0d",
+      "size_bytes": 7171
+    },
+    {
+      "path": "VALIDATION_STATUS.md",
+      "description": "Complete empirical audit of 3-camera validation results, ablations, calibration, and test suite.",
+      "sha256": "a6604444a5ff1efb5d1a7d3361bf6ad638c21bf8476e30e53bb733cfc1dc522a",
+      "size_bytes": 8955
+    },
+    {
+      "path": "RUN_INSTRUCTIONS.md",
+      "description": "Deterministic reproduction commands, environment specifications, and test execution procedures.",
+      "sha256": "44f5087d73c8f85ef259ba4e1c2adc121e290e01af77fbf310e4cd6a8b571b8e",
+      "size_bytes": 7542
+    },
+    {
+      "path": "schemas/inferred_identity_schema.json",
+      "description": "JSON Schema (Draft-07) for inferred vehicle identity hypotheses.",
+      "sha256": "d2f6921813d8bf014d1574f586158890d8fc82c070701e4822da8c83fb511881",
+      "size_bytes": 4828
+    },
+    {
+      "path": "schemas/trajectory_schema.json",
+      "description": "JSON Schema (Draft-07) for reconstructed vehicle trajectory objects.",
+      "sha256": "9096133ce2fdd62b29f5c343dd05463539745a5d2e3565d91c8f42b3ebcd08d7",
+      "size_bytes": 4535
+    },
+    {
+      "path": "schemas/identity_graph_schema.json",
+      "description": "JSON Schema (Draft-07) for global pairwise identity association graph.",
+      "sha256": "f8c6e60e56ee4e2ad04439d8923222e0e13e054a72443c581c94c2ebad056d40",
+      "size_bytes": 2662
+    },
+    {
+      "path": "schemas/camera_state_schema.json",
+      "description": "JSON Schema (Draft-07) for camera operational state, telemetry, sync, and calibration.",
+      "sha256": "adca4907b8158f678eabf5f6d1c8bcc0ea5afafc4e576c0f550a3a2a0777103a",
+      "size_bytes": 3131
+    },
+    {
+      "path": "schemas/uncertainty_schema.json",
+      "description": "JSON Schema (Draft-07) for calibration parameters, uncertainty scores, and decision distribution.",
+      "sha256": "fb86264473314073c73558fa1fc1953af4575d534b8124ca0752553935361916",
+      "size_bytes": 1462
+    },
+    {
+      "path": "schemas/anomaly_input_schema.json",
+      "description": "JSON Schema (Draft-07) for downstream anomaly investigation input entities.",
+      "sha256": "88ba1a8cf7eaf24c65a5e7b02d85b9b06bc2952c1a399ba92abc2332720897ca",
+      "size_bytes": 2870
+    },
+    {
+      "path": "outputs/inferred_identities.json",
+      "description": "Complete list of 355 inferred vehicle identity hypotheses across the 3-camera MVP.",
+      "sha256": "5de0296ecfd8d6eb380474844d8db37f99e6da7ae7c1d518b5b4a56d37c5e7e1",
+      "size_bytes": 413188
+    },
+    {
+      "path": "outputs/identity_graph.json",
+      "description": "Global association graph containing 384 nodes and 36 confirmed supporting edges.",
+      "sha256": "fb4f7fbbb0c3cb7771d8cc2d821f1e2f33887b49f06270c38b7d41d46f245ebe",
+      "size_bytes": 88244
+    },
+    {
+      "path": "outputs/trajectories.json",
+      "description": "Reconstructed trajectory hypotheses (355 entries) with waypoints and segments.",
+      "sha256": "3058de06efc2c27bc8dfdc4c8d7e2e2b9c3e7a50ec8c90a5f6beb8631df5f99f",
+      "size_bytes": 234594
+    },
+    {
+      "path": "outputs/camera_states.json",
+      "description": "Operational metadata, reliability scores, offsets, and calibration for C001, C002, and C003.",
+      "sha256": "56752395a87116025ad6e710398f92babf9a23e7b0958feb6d3b8d16bede3d81",
+      "size_bytes": 4008
+    },
+    {
+      "path": "outputs/uncertainty.json",
+      "description": "Platt scaling logistic parameters, Brier/ECE scores, and uncertainty distribution.",
+      "sha256": "073fcf57c0670c93596cd8c158533c072050241760482fcf38e1687b18bf2597",
+      "size_bytes": 1071
+    },
+    {
+      "path": "outputs/validation_summary.json",
+      "description": "Consolidated validation metrics ledger.",
+      "sha256": "3f08c92bbbc7223cc2f86fd21568fa0f6d2146c6c042d91f70be9db27a811408",
+      "size_bytes": 4061
+    },
+    {
+      "path": "examples/confirmed_vehicle.json",
+      "description": "Real confirmed multi-observation identity cluster (UT_ID_0002).",
+      "sha256": "aad0e4f5cbdf587e2a5c8a1a18f28e4d1dd684b426c31e5d5acbc895518b8844",
+      "size_bytes": 1696
+    },
+    {
+      "path": "examples/single_camera_vehicle.json",
+      "description": "Real single-camera unconfirmed singleton identity hypothesis (UT_ID_0001).",
+      "sha256": "0623b1a2379776cb9252c60f044ef94b6f4fb98ee6c6170db9f7dd9a2d0e2e3d",
+      "size_bytes": 1344
+    },
+    {
+      "path": "examples/ambiguous_vehicle.json",
+      "description": "Real pairwise match result evaluated as AMBIGUOUS.",
+      "sha256": "0c44ed0a2a96eba24204873bae7183d24f0b5c31712d4924193d82bfcf9c25c2",
+      "size_bytes": 6465
+    },
+    {
+      "path": "examples/rejected_match.json",
+      "description": "Real pairwise match result evaluated as REJECTED.",
+      "sha256": "88ed2b7d8d9338144be7b0af2c583e58a4fb956f3902d1455ee902b6aa77f230",
+      "size_bytes": 6536
+    },
+    {
+      "path": "examples/multi_camera_vehicle.json",
+      "description": "Explicit documentation of multi-camera cluster state at current conservative operating threshold.",
+      "sha256": "24c9ff25157a36645c812901dbb78ec03f55f5dd602f3cd3d80acdc2b629a066",
+      "size_bytes": 1194
+    },
+    {
+      "path": "examples/uncertain_trajectory.json",
+      "description": "Real trajectory hypothesis containing ambiguity and unassociated camera state (UT_ID_0002).",
+      "sha256": "dd13cac7f864f8b1986dd3d563f61daac72f9e4d614dd606d40afcb06143f4d5",
+      "size_bytes": 4243
+    },
+    {
+      "path": "validation/FINAL_METRICS.json",
+      "description": "Full machine-readable validation metrics file.",
+      "sha256": "de21f22993a2ff80c6131223d01c8f5cc56f3ce0e0777ee09acfe4f813fd4b63",
+      "size_bytes": 9388
+    },
+    {
+      "path": "validation/FINAL_VALIDATION_STATUS.md",
+      "description": "Full validation status report covering sections A through S.",
+      "sha256": "c4f6582abf0ce737e87a12f897bffad8d01585713844060669899426bed56572",
+      "size_bytes": 18290
+    },
+    {
+      "path": "validation/ABLATION_RESULTS.json",
+      "description": "5-way ablation experiment results on identical evaluation cohort.",
+      "sha256": "9a0610cf8640b202c9ca3656454d45716493dff28a50bf6b15fed5944cdbd136",
+      "size_bytes": 3339
+    },
+    {
+      "path": "validation/ROBUSTNESS_RESULTS.json",
+      "description": "Controlled perturbation stress test results across 5 noise scenarios.",
+      "sha256": "23f3eda2e63850257fa8d1141bcca0730726a0b7aa14fe936e49f133297df202",
+      "size_bytes": 1273
+    },
+    {
+      "path": "validation/SCALABILITY_RESULTS.json",
+      "description": "Runtime and search space pruning benchmark from N=50 to N=1000.",
+      "sha256": "f27b536796ac77558466166800f31b453f3fcb221ebb8b58a821969022b86243",
+      "size_bytes": 1425
+    }
+  ]
+}
