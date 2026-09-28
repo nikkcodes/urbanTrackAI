@@ -1,0 +1,151 @@
+{
+  "audit_metadata": {
+    "title": "UrbanTrack AI — Production Execution Path Trace",
+    "timestamp": "2026-09-28T16:20:00Z",
+    "scope": "Member 2 Multi-Camera Association & Trajectory Engine",
+    "empirical_dataset": "AI City Challenge 2022 Track 1 (CAM_S01_C001, CAM_S01_C002, CAM_S01_C003)"
+  },
+  "execution_pipeline_steps": [
+    {
+      "step_index": 1,
+      "stage_name": "Observation Ingestion",
+      "file": "inference/observation_loader.py",
+      "function": "load_aicity_member1_feed",
+      "caller": "scripts/run_aicity_validation.py (lines 75-79), scripts/run_aicity_mvp.py (lines 59-63)",
+      "inputs": {
+        "output_dir": "UrbanTrack_Member1_Handoff/output",
+        "camera_ids": ["CAM_S01_C001", "CAM_S01_C002", "CAM_S01_C003"],
+        "fps": 10.0
+      },
+      "outputs": "List[Observation] (N=384 tracklet observations across 3 cameras)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 2,
+      "stage_name": "Temporal Synchronization",
+      "file": "inference/aicity_synchronizer.py",
+      "function": "AICitySynchronizer.attach_synchronization",
+      "caller": "scripts/run_aicity_validation.py (lines 83-89)",
+      "inputs": {
+        "sync_file": "data/aicity_ground_truth/cam_timestamp/S01.txt",
+        "observations": "List[Observation]"
+      },
+      "outputs": "List[Observation] with calibrated synchronized_timestamp_seconds and timestamp_quality='VALID'",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 3,
+      "stage_name": "Tracklet Construction & Aggregation",
+      "file": "inference/tracklet_engine.py",
+      "function": "aggregate_observations_into_tracklets",
+      "caller": "inference/tracklet_engine.py, tests/test_tracklet_and_ablation.py (baseline: test/benchmark; target: canonical production)",
+      "inputs": {
+        "observations": "List[Observation]",
+        "camera_metadata": "Dict[str, Any]"
+      },
+      "outputs": "List[Tracklet] (consolidated tracklets with pooled embeddings, plate consensus, temporal bounds)",
+      "usage_classification": "baseline-test-only, upgraded-to-production in Phase 2"
+    },
+    {
+      "step_index": 4,
+      "stage_name": "Candidate Generation",
+      "file": "inference/candidate_generation.py",
+      "function": "CandidateGenerator.generate_candidates",
+      "caller": "scripts/run_aicity_validation.py (lines 109-123), scripts/run_aicity_mvp.py (lines 127-135)",
+      "inputs": {
+        "observations": "List[Observation]",
+        "max_time_window_seconds": 7200.0,
+        "min_probability_threshold": 0.65
+      },
+      "outputs": "Tuple[List[Tuple[Observation, Observation]], Dict[str, int]] (admitted candidate pairs and rejection breakdown)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 5,
+      "stage_name": "Hierarchical Identity Fusion",
+      "file": "inference/identity_fusion.py",
+      "function": "match_observations",
+      "caller": "scripts/run_aicity_validation.py (lines 131-142), scripts/run_aicity_mvp.py (lines 168-171), inference/tracklet_engine.py (match_tracklets)",
+      "inputs": {
+        "obs_a": "Observation",
+        "obs_b": "Observation",
+        "camera_metadata": "Optional[Dict[str, Any]]",
+        "config": "Optional[Dict[str, Any]]"
+      },
+      "outputs": "Dict[str, Any] (match result with same_vehicle_score, decision_state, evidence breakdown)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 6,
+      "stage_name": "Tracklet-Level Bipartite Association",
+      "file": "inference/tracklet_engine.py",
+      "function": "TrackletAssociator.associate_tracklets",
+      "caller": "tests/test_tracklet_and_ablation.py (baseline: benchmark/test only; Phase 2 integrates into canonical production)",
+      "inputs": {
+        "source_tracklets": "List[Tracklet]",
+        "target_tracklets": "List[Tracklet]",
+        "method": "'hungarian' | 'greedy'"
+      },
+      "outputs": "TrackletAssociationResult (1-to-1 matched pairs, unassigned tracklets, runtime)",
+      "usage_classification": "baseline-test-only, upgraded-to-production in Phase 2"
+    },
+    {
+      "step_index": 7,
+      "stage_name": "Identity Graph & Global Clustering",
+      "file": "inference/identity_graph.py",
+      "function": "IdentityGraph.build_graph_from_matches / get_candidate_identities",
+      "caller": "scripts/run_aicity_validation.py (lines 151-156), scripts/run_aicity_mvp.py (lines 197-205)",
+      "inputs": {
+        "observations": "List[Observation]",
+        "candidates": "List[Tuple[Observation, Observation]]",
+        "match_results": "List[Dict[str, Any]]"
+      },
+      "outputs": "IdentityGraph instance with nodes, edges, audit ledgers; List[Dict[str, Any]] (candidate vehicle clusters)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 8,
+      "stage_name": "Trajectory Reconstruction",
+      "file": "inference/trajectory_engine.py",
+      "function": "reconstruct_identity_trajectory",
+      "caller": "scripts/run_aicity_validation.py (lines 160-175), scripts/run_aicity_mvp.py (lines 236-244)",
+      "inputs": {
+        "identity_data": "Dict[str, Any] (cluster dictionary)",
+        "road_graph": "RoadGraph",
+        "config": "Dict[str, Any]"
+      },
+      "outputs": "ReconstructedTrajectory (ordered waypoints, timestamps, speed estimates, segment flags)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 9,
+      "stage_name": "Missing-Camera Route Inference",
+      "file": "inference/sparse_engine.py",
+      "function": "infer_sparse_gap",
+      "caller": "inference/trajectory_engine.py (lines 280-310), tests/test_sparse_trajectory.py",
+      "inputs": {
+        "gap_start": "Waypoint",
+        "gap_end": "Waypoint",
+        "road_graph": "RoadGraph",
+        "max_gap_duration_seconds": 1800.0
+      },
+      "outputs": "SparseInferenceResult (route hypotheses, plausibility scores, 'discontinuous_journey' for long gaps)",
+      "usage_classification": "production-used"
+    },
+    {
+      "step_index": 10,
+      "stage_name": "Output Contracts & Member 3 Handshake",
+      "file": "member3/adapters/member2_adapter.py",
+      "function": "adapt_member2_to_member3",
+      "caller": "scripts/run_aicity_mvp.py, tests/test_aicity_handoff_integration.py",
+      "inputs": {
+        "identities": "List[Dict[str, Any]]",
+        "trajectories": "List[Dict[str, Any]]",
+        "camera_states": "List[Dict[str, Any]]",
+        "uncertainty": "Dict[str, Any]"
+      },
+      "outputs": "Validated JSON files adhering strictly to Member 3 schemas",
+      "usage_classification": "production-used"
+    }
+  ]
+}

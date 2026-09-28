@@ -1,7 +1,7 @@
 {
-  "candidate_pairs_evaluated": 62449,
+  "candidate_pairs_evaluated": 71645,
   "pairwise_decisions": {
-    "REJECTED": 25769,
+    "REJECTED": 34965,
     "AMBIGUOUS": 36673,
     "CONFIRMED": 7
   },

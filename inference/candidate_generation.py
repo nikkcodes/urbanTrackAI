@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from schemas.observation_schema import Observation
 from .identity_fusion import match_observations
-from .similarity import geographic_distance, plate_similarity, vehicle_type_compatibility
+from .similarity import HARD_INCOMPATIBLE_VEHICLE_TYPES, geographic_distance, plate_similarity, vehicle_type_compatibility
 from .temporal import check_temporal_comparability
 
 
@@ -221,22 +221,18 @@ class CandidateGenerator:
                                 rejection_counts["physically_impossible_speed"] += 1
                                 continue
 
-                # 2. Vehicle type compatibility (only prune when both are known and incompatible)
+                # 2. Vehicle type compatibility under hierarchical evidence semantics (Phase 6)
+                # In unsynchronized mode without clock synchrony, strictly prune any type mismatch.
+                # In synchronized mode, only prune genuine physical impossibilities (e.g. car vs bus);
+                # confusable visual classes (car vs truck) are admitted to fusion.
                 norm_b = item_b[3]
                 if norm_a and norm_b and norm_a != norm_b:
                     if self.unsynchronized_mode:
                         rejection_counts["incompatible_vehicle_type"] += 1
                         continue
-                    # TWO-STAGE GATE: 
-                    # We have a vehicle-type mismatch. 
-                    # We only admit this candidate to fusion if there is independent evidence (i.e. ReID model compatibility).
-                    reid_a = item_a[13]
-                    reid_b = item_b[13]
-                    if not (reid_a and reid_b and reid_a == reid_b):
-                        # Incompatible embedding models. Fusion will have NO identity evidence since plates are censored.
+                    if (norm_a, norm_b) in HARD_INCOMPATIBLE_VEHICLE_TYPES:
                         rejection_counts["incompatible_vehicle_type"] += 1
                         continue
-                    # Else: They have compatible ReID models. Admit them to fusion so appearance similarity can be checked.
 
                 # 3. Strong license plate contradiction
                 clean_plate_b = item_b[7]

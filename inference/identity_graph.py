@@ -978,6 +978,84 @@ class IdentityGraph:
             "evidence": match_res.get("evidence"),
         }
 
+    def explain_association(
+        self,
+        obs_id_a: str,
+        obs_id_b: str,
+    ) -> Dict[str, Any]:
+        """
+        Explain why two tracklets/observations were associated into a confirmed identity edge.
+        Returns the structured multi-evidence ledger answering:
+        'Why were these tracklets associated?'
+        """
+        if obs_id_a not in self.nodes or obs_id_b not in self.nodes:
+            missing = [nid for nid in (obs_id_a, obs_id_b) if nid not in self.nodes]
+            return {
+                "tracklet_a": obs_id_a,
+                "tracklet_b": obs_id_b,
+                "associated": False,
+                "decision": "UNKNOWN_OBSERVATION",
+                "decision_reason": f"Observation(s) {missing} not in graph.",
+            }
+
+        # Look for explicit edge in self.edges
+        target_edge = None
+        for edge in self.edges:
+            src = edge.get("source")
+            tgt = edge.get("target")
+            if (src == obs_id_a and tgt == obs_id_b) or (src == obs_id_b and tgt == obs_id_a):
+                target_edge = edge
+                break
+
+        if target_edge is None:
+            non_merge = self.explain_non_merge(obs_id_a, obs_id_b)
+            return {
+                "tracklet_a": obs_id_a,
+                "tracklet_b": obs_id_b,
+                "associated": False,
+                "decision": "REJECTED" if not non_merge.get("merged") else "TRANSITIVELY_MERGED",
+                "decision_reason": non_merge.get("reason", "No association edge exists between these observations."),
+                "details": non_merge,
+            }
+
+        ev = target_edge.get("evidence", {})
+        ledger = target_edge.get("evidence_ledger") or {}
+
+        return {
+            "tracklet_a": obs_id_a,
+            "tracklet_b": obs_id_b,
+            "associated": True,
+            "decision": "CONFIRMED",
+            "decision_reason": target_edge.get("explanation", "Association score met confirmation threshold with valid physical and appearance evidence."),
+            "score": target_edge.get("score"),
+            "probability": target_edge.get("probability"),
+            "temporal_evidence": {
+                "delta_t_seconds": ev.get("time_difference_seconds"),
+                "status": "valid_positive_elapsed_time",
+            },
+            "physical_evidence": {
+                "distance_meters": ev.get("spatial_distance_meters"),
+                "speed_kmh": ev.get("required_speed_kmh"),
+                "status": "feasible_speed",
+            },
+            "plate_evidence": {
+                "similarity": ev.get("plate_similarity"),
+                "available": ev.get("plate_evidence_available", False),
+            },
+            "reid_evidence": {
+                "similarity": ev.get("appearance_similarity"),
+                "available": ev.get("appearance_evidence_available", False),
+            },
+            "type_evidence": {
+                "compatible": ev.get("vehicle_type_match"),
+                "status": "compatible" if ev.get("vehicle_type_match") else "unknown",
+            },
+            "quality_evidence": {
+                "reliability_weight": ev.get("camera_reliability_weight", 1.0),
+            },
+            "evidence_ledger": ledger,
+        }
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert graph structure to a serializable dictionary representation."""
         return {

@@ -1,11 +1,11 @@
 {
   "candidate_recall": {
     "status": "passed",
-    "candidate_recall": 0.8149,
-    "candidate_recall_pct": 81.49,
+    "candidate_recall": 1.0,
+    "candidate_recall_pct": 100.0,
     "total_true_cross_pairs": 308,
-    "retrieved_true_cross_pairs": 251,
-    "missed_true_cross_pairs": 57
+    "retrieved_true_cross_pairs": 308,
+    "missed_true_cross_pairs": 0
   },
   "cross_camera_identity_metrics": {
     "evaluation_scope": "cross_camera_pairs",

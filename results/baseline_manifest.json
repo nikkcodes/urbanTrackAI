@@ -1,0 +1,79 @@
+{
+  "baseline_snapshot": {
+    "timestamp": "2026-09-28T16:18:00Z",
+    "git_commit": "29bd69bb888ddc02771f40874351f4ee1f536b88",
+    "branch": "member-2",
+    "repository": "https://github.com/nikkcodes/urbanTrackAI.git",
+    "environment": {
+      "python_version": "3.13.5 (v3.13.5:6cb20a219a8, Jun 11 2025, 12:23:45) [Clang 16.0.0 (clang-1600.0.26.6)]",
+      "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+      "machine": "arm64",
+      "cpu": "Apple M3 (8 cores)",
+      "total_ram_bytes": 8589934592,
+      "total_ram_gb": 8.0,
+      "dependencies": {
+        "numpy": "2.4.1",
+        "scipy": "1.17.0",
+        "scikit-learn": "1.8.0",
+        "pytest": "9.1.1",
+        "pyyaml": "6.0.3",
+        "joblib": "1.5.3"
+      }
+    },
+    "test_suite": {
+      "total_tests": 435,
+      "passed": 435,
+      "failed": 0,
+      "errors": 0,
+      "runtime_seconds": 52.36
+    },
+    "benchmark_results": {
+      "multicamera_v1_controlled": {
+        "observations": 1500,
+        "total_possible_pairs": 1124250,
+        "candidate_pairs": 66556,
+        "candidate_reduction_pct": 94.08,
+        "candidate_recall_pct": 99.99,
+        "precision": 0.9727,
+        "recall": 0.8613,
+        "f1_score": 0.9136,
+        "cluster_purity": 0.8956
+      }
+    },
+    "cityflow_results": {
+      "dataset": "CityFlowV2 S01 C001, C002, C003",
+      "tracklets_count": 384,
+      "gt_cross_camera_pairs": 308,
+      "candidate_recall_pct": 81.49,
+      "retrieved_gt_cross_pairs": 251,
+      "missed_gt_cross_pairs": 57,
+      "cluster_purity": 0.9558,
+      "reid_models": {
+        "c001": "osnet_x0_25_aicity",
+        "c002": "osnet_x0_25_msmt17 (unaligned feature space; cosine comparison blocked)",
+        "c003": "osnet_x0_25_aicity"
+      },
+      "plates_readable": 0
+    },
+    "calibration_results": {
+      "method": "platt_scaling_logistic",
+      "dev_pairs": 13103,
+      "holdout_pairs": 5749,
+      "uncalibrated_brier": 0.1361,
+      "calibrated_brier": 0.0233,
+      "brier_improvement": 0.1128,
+      "uncalibrated_ece": 0.3017,
+      "calibrated_ece": 0.0080,
+      "ece_reduction": 0.2937
+    },
+    "scalability_results": {
+      "n_10000_observations": {
+        "theoretical_pairs": 49995000,
+        "candidates_admitted": 444000,
+        "reduction_pct": 99.11,
+        "candidate_gen_seconds": 13.06,
+        "peak_memory_mb": 54.2
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # UrbanTrack AI — Final Evidence Audit
 
-Generated: `2026-09-28T15:51:42.174869+00:00`  
+Generated: `2026-09-28T16:58:54.350898+00:00`  
 Source command: `python scripts/reproduce_all.py`
 
 This is a fact-only audit. It does not assign a hackathon score.
@@ -13,12 +13,17 @@ This is a fact-only audit. It does not assign a hackathon score.
 | `native_cityflowv2_ingestion` | **VERIFIED_BY_EXECUTION** | stage_7c_cityflowv2_s01 |
 | `ground_truth_isolation` | **VERIFIED_BY_EXECUTION** | cityflow metadata ground_truth_inference_leakage=false |
 | `identity_fusion_and_identity_graph` | **VERIFIED_BY_EXECUTION** | stage_5_full_fusion_real_data, stage_7b_multicamera_benchmark |
+| `tracklet_bipartite_association` | **VERIFIED_BY_EXECUTION** | stage_7e_canonical_10tier_ablation (Tiers F-J Hungarian 1-to-1 matching) |
+| `hierarchical_evidence_semantics` | **VERIFIED_BY_EXECUTION** | inference/similarity.py (EvidenceState enum, soft confusable vehicle type preservation) |
+| `reid_model_compatibility_blocking` | **VERIFIED_BY_EXECUTION** | stage_7e_canonical_10tier_ablation (msmt17 vs aicity blocked) |
+| `two_level_physical_feasibility` | **VERIFIED_BY_EXECUTION** | inference/spatial.py and candidate_generation (120 km/h bound + travel-time intervals) |
 | `osnet_512d_boundary` | **VERIFIED_BY_EXECUTION** | stage_3_real_member1_feed and CityFlow missing-evidence flags |
 | `dev_fit_freeze_holdout_calibration` | **VERIFIED_BY_EXECUTION** | stage_7d_probability_calibration |
 | `trajectory_and_missing_camera_reasoning` | **VERIFIED_BY_EXECUTION** | stage_11_trajectory_inference |
 | `robustness_adversarial_counterfactual` | **VERIFIED_BY_EXECUTION** | stage_9_degradation_benchmark, stage_10_adversarial_suite |
 | `scalability_1k_5k_10k` | **VERIFIED_BY_EXECUTION** | stage_8c_large_scale_candidate_pipeline |
 | `reproducible_machine_json` | **VERIFIED_BY_EXECUTION** | benchmark_results.json and this audit |
+| `multi_camera_scope_boundary` | **DATASET_LIMITATION** | Real empirical data scope strictly C001, C002, C003; 46-camera empirical dataset not provided |
 | `frontend_map_visualization` | **NOT_IMPLEMENTED** | No frontend/map application present in supplied project. |
 | `production_deployment` | **NOT_VERIFIED** | No deployment environment or live multi-camera service supplied. |
 

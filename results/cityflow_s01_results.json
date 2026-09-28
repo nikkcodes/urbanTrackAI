@@ -5,7 +5,7 @@
     "scenario": "S01",
     "tracker_input": "mtsc_deepsort_mask_rcnn.txt",
     "source_root": "data/cityflowv2",
-    "generated_at": "2026-09-28T15:53:11.511234+00:00",
+    "generated_at": "2026-09-28T17:00:37.345147+00:00",
     "ground_truth_used_for": "evaluation_only_box_matching",
     "ground_truth_inference_leakage": false,
     "source_videos_extracted": false

@@ -42,11 +42,13 @@ from .similarity import (
     appearance_similarity,
     are_reid_models_compatible,
     CONFUSABLE_OCR_CHAR_PAIRS,
+    EvidenceState,
     geographic_distance,
     ocr_aware_plate_similarity,
     plate_similarity,
     time_difference,
     vehicle_type_compatibility,
+    vehicle_type_evidence,
 )
 from .reid_compatibility import ReIDModelCompatibilityLayer
 from .spatial import spatial_feasibility
@@ -70,6 +72,7 @@ from .tracklet_engine import (
     match_tracklets,
     pool_embeddings,
 )
+from .canonical_ablation import run_canonical_10tier_ablation
 from .similarity import evaluate_reid_distribution, evaluate_reid_only_baseline, validate_and_normalize_embedding
 
 from .adversarial_suite import run_adversarial_suite
@@ -131,6 +134,8 @@ __all__ = [
     "CONFUSABLE_OCR_CHAR_PAIRS",
     "appearance_similarity",
     "vehicle_type_compatibility",
+    "vehicle_type_evidence",
+    "EvidenceState",
     "time_difference",
     "geographic_distance",
     "are_reid_models_compatible",
@@ -166,6 +171,7 @@ __all__ = [
     "build_sparse_gap_trace",
     "build_global_trajectory_trace",
     "evaluate_reid_only_baseline",
+    "run_canonical_10tier_ablation",
 ]
 
 

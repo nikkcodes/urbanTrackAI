@@ -323,6 +323,84 @@ def evaluate_reid_distribution(
     }
 
 
+from enum import Enum
+
+
+class EvidenceState(str, Enum):
+    """
+    Explicit 6-tier evidence semantic states for multimodal fusion.
+    Prevents weak mismatches from unconditionally vetoing strong independent evidence.
+    """
+    IMPOSSIBLE = "IMPOSSIBLE"
+    STRONGLY_NEGATIVE = "STRONGLY_NEGATIVE"
+    WEAK_NEGATIVE = "WEAK_NEGATIVE"
+    NEUTRAL = "NEUTRAL"
+    SUPPORTING = "SUPPORTING"
+    STRONG_SUPPORT = "STRONG_SUPPORT"
+
+
+HARD_INCOMPATIBLE_VEHICLE_TYPES = {
+    ("car", "bus"), ("bus", "car"),
+    ("car", "motorcycle"), ("motorcycle", "car"),
+    ("car", "bicycle"), ("bicycle", "car"),
+    ("bus", "motorcycle"), ("motorcycle", "bus"),
+    ("truck", "motorcycle"), ("motorcycle", "truck"),
+    ("bus", "bicycle"), ("bicycle", "bus"),
+    ("truck", "bicycle"), ("bicycle", "truck"),
+}
+
+CONFUSABLE_VEHICLE_TYPES = {
+    ("car", "truck"), ("truck", "car"),
+    ("suv", "truck"), ("truck", "suv"),
+    ("van", "truck"), ("truck", "van"),
+}
+
+
+def vehicle_type_evidence(
+    type1: Optional[str], type2: Optional[str]
+) -> Tuple[float, str, EvidenceState]:
+    """
+    Evaluate vehicle type evidence under explicit 6-tier hierarchical semantics.
+
+    - Exact match or synonym -> (1.0, 'compatible', SUPPORTING)
+    - Confusable visual classes (car vs truck) -> (0.40, 'incompatible', WEAK_NEGATIVE)
+    - Genuinely impossible contradiction (car vs bus) -> (0.0, 'incompatible', IMPOSSIBLE)
+    - Missing / unknown -> (0.50, 'unknown', NEUTRAL)
+    """
+    if not type1 or not type2:
+        return 0.5, "unknown", EvidenceState.NEUTRAL
+
+    t1 = str(type1).strip().lower()
+    t2 = str(type2).strip().lower()
+
+    if t1 == t2:
+        return 1.0, "compatible", EvidenceState.SUPPORTING
+
+    synonyms = {
+        "auto": "rickshaw",
+        "suv": "car",
+        "sedan": "car",
+        "hatchback": "car",
+        "van": "car",
+    }
+    norm1 = synonyms.get(t1, t1)
+    norm2 = synonyms.get(t2, t2)
+
+    if norm1 == norm2:
+        return 1.0, "compatible", EvidenceState.SUPPORTING
+
+    if (norm1, norm2) in HARD_INCOMPATIBLE_VEHICLE_TYPES:
+        return 0.0, "incompatible", EvidenceState.IMPOSSIBLE
+
+    if (norm1, norm2) in CONFUSABLE_VEHICLE_TYPES:
+        return 0.40, "incompatible", EvidenceState.WEAK_NEGATIVE
+
+    if (norm1, norm2) == ("truck", "bus") or (norm1, norm2) == ("bus", "truck"):
+        return 0.10, "incompatible", EvidenceState.STRONGLY_NEGATIVE
+
+    return 0.20, "incompatible", EvidenceState.WEAK_NEGATIVE
+
+
 def vehicle_type_compatibility(
     type1: Optional[str], type2: Optional[str]
 ) -> Tuple[float, str]:
@@ -342,30 +420,11 @@ def vehicle_type_compatibility(
     Returns:
         Tuple[float, str]: (compatibility_score, status_label)
     """
-    if not type1 or not type2:
-        return 0.5, "unknown"
-
-    t1 = str(type1).strip().lower()
-    t2 = str(type2).strip().lower()
-
-    if t1 == t2:
-        return 1.0, "compatible"
-
-    # Hierarchy mapping / synonyms if needed
-    synonyms = {
-        "auto": "rickshaw",
-        "suv": "car",
-        "sedan": "car",
-        "hatchback": "car",
-        "van": "car",
-    }
-    norm1 = synonyms.get(t1, t1)
-    norm2 = synonyms.get(t2, t2)
-
-    if norm1 == norm2:
-        return 1.0, "compatible"
-
-    return 0.0, "incompatible"
+    score, status, _ = vehicle_type_evidence(type1, type2)
+    # Ensure backward-compatible (0.0, 'incompatible') for non-identical types
+    if status == "incompatible":
+        return 0.0, "incompatible"
+    return score, status
 
 
 def time_difference(
