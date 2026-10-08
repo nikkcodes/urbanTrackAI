@@ -1,0 +1,1432 @@
+{
+  "CAM_S01_C001": {
+    "camera_id": "CAM_S01_C001",
+    "camera_number": "C001",
+    "scenario": "S01",
+    "location": {
+      "latitude": 42.52554,
+      "longitude": -90.72348
+    },
+    "location_source": "cam_loc/S01.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "John F. Kennedy Road",
+      "intersection": "Northwest Arterial & John F. Kennedy Road (Southeast corner)"
+    },
+    "direction": {
+      "description": "North-Northwest viewing northbound traffic entering intersection",
+      "bearing_deg": 335.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted on SE corner mast arm along JFK Rd; views northbound traffic entering Northwest Arterial junction."
+  },
+  "CAM_S01_C002": {
+    "camera_id": "CAM_S01_C002",
+    "camera_number": "C002",
+    "scenario": "S01",
+    "location": {
+      "latitude": 42.52578,
+      "longitude": -90.72372
+    },
+    "location_source": "cam_loc/S01.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "John F. Kennedy Road",
+      "intersection": "Northwest Arterial & John F. Kennedy Road (Northwest corner)"
+    },
+    "direction": {
+      "description": "South-Southeast viewing southbound traffic entering intersection",
+      "bearing_deg": 155.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted on NW corner of JFK Rd; views southbound traffic crossing Northwest Arterial."
+  },
+  "CAM_S01_C003": {
+    "camera_id": "CAM_S01_C003",
+    "camera_number": "C003",
+    "scenario": "S01",
+    "location": {
+      "latitude": 42.52572,
+      "longitude": -90.72338
+    },
+    "location_source": "cam_loc/S01.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Northwest Arterial (IA-32)",
+      "intersection": "Northwest Arterial & John F. Kennedy Road (Northeast approach)"
+    },
+    "direction": {
+      "description": "West-Southwest viewing westbound traffic on Northwest Arterial",
+      "bearing_deg": 248.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted along NE approach on Northwest Arterial; views westbound traffic entering intersection."
+  },
+  "CAM_S01_C004": {
+    "camera_id": "CAM_S01_C004",
+    "camera_number": "C004",
+    "scenario": "S01",
+    "location": {
+      "latitude": 42.5256,
+      "longitude": -90.72382
+    },
+    "location_source": "cam_loc/S01.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Northwest Arterial (IA-32)",
+      "intersection": "Northwest Arterial & John F. Kennedy Road (Southwest approach)"
+    },
+    "direction": {
+      "description": "East-Northeast viewing eastbound traffic on Northwest Arterial",
+      "bearing_deg": 68.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted along SW approach on Northwest Arterial; views eastbound lanes entering intersection."
+  },
+  "CAM_S01_C005": {
+    "camera_id": "CAM_S01_C005",
+    "camera_number": "C005",
+    "scenario": "S01",
+    "location": {
+      "latitude": 42.52582,
+      "longitude": -90.72358
+    },
+    "location_source": "cam_loc/S01.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "John F. Kennedy Road",
+      "intersection": "Northwest Arterial & John F. Kennedy Road (North leg)"
+    },
+    "direction": {
+      "description": "South-Southwest viewing intersection interior from north leg",
+      "bearing_deg": 190.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted on northern signal mast arm; provides interior intersection overview looking south."
+  },
+  "CAM_S03_C010": {
+    "camera_id": "CAM_S03_C010",
+    "camera_number": "C010",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.496955,
+      "longitude": -90.673875
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Hill Street",
+      "intersection": "Hill Street & West 5th Street (North approach)"
+    },
+    "direction": {
+      "description": "North-Northeast along Hill Street in Cable Car Square district",
+      "bearing_deg": 26.2
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Hill St north approach above W 5th St."
+  },
+  "CAM_S03_C011": {
+    "camera_id": "CAM_S03_C011",
+    "camera_number": "C011",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.49672,
+      "longitude": -90.674117
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Hill Street",
+      "intersection": "Hill Street & West 5th Street / Burch Street"
+    },
+    "direction": {
+      "description": "South along Hill Street towards West 3rd Street",
+      "bearing_deg": 182.1
+    },
+    "confidence": "HIGH",
+    "notes": "Located at 5th & Hill St intersection; views southbound flow down the hill."
+  },
+  "CAM_S03_C012": {
+    "camera_id": "CAM_S03_C012",
+    "camera_number": "C012",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.496583,
+      "longitude": -90.674257
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "West 5th Street",
+      "intersection": "West 5th Street & Alpine Street"
+    },
+    "direction": {
+      "description": "West-Northwest along West 5th Street towards Alpine Street",
+      "bearing_deg": 299.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors climb up W 5th St residential incline."
+  },
+  "CAM_S03_C013": {
+    "camera_id": "CAM_S03_C013",
+    "camera_number": "C013",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.496419,
+      "longitude": -90.674342
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Hill Street",
+      "intersection": "Hill Street & West 3rd Street"
+    },
+    "direction": {
+      "description": "Northeast along Hill Street towards West 4th Street",
+      "bearing_deg": 56.3
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors bottom of Hill St at W 3rd St."
+  },
+  "CAM_S03_C014": {
+    "camera_id": "CAM_S03_C014",
+    "camera_number": "C014",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.496281,
+      "longitude": -90.674605
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "West 3rd Street",
+      "intersection": "West 3rd Street & Summit Street"
+    },
+    "direction": {
+      "description": "Southwest along West 3rd Street towards Fenelon Place",
+      "bearing_deg": 215.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors W 3rd St traffic near Summit St."
+  },
+  "CAM_S03_C015": {
+    "camera_id": "CAM_S03_C015",
+    "camera_number": "C015",
+    "scenario": "S03",
+    "location": {
+      "latitude": 42.496384,
+      "longitude": -90.674818
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Alpine Street",
+      "intersection": "Alpine Street & West 3rd / 4th Street"
+    },
+    "direction": {
+      "description": "West-Northwest along Alpine Street connecting 3rd and 5th Streets",
+      "bearing_deg": 282.8
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Alpine St transition corridor between hillside avenues."
+  },
+  "CAM_S04_C016": {
+    "camera_id": "CAM_S04_C016",
+    "camera_number": "C016",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.500983,
+      "longitude": -90.669833
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "West 9th Street / Loras Boulevard",
+      "intersection": "Loras Boulevard & Bluff Street (Jackson Park District)"
+    },
+    "direction": {
+      "description": "Southwest along Loras Boulevard towards downtown",
+      "bearing_deg": 237.3
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors east gateway of Loras Blvd near Bluff St."
+  },
+  "CAM_S04_C017": {
+    "camera_id": "CAM_S04_C017",
+    "camera_number": "C017",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.500217,
+      "longitude": -90.673775
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Loras Boulevard (East merge)"
+    },
+    "direction": {
+      "description": "East along University Avenue approaching Loras Boulevard",
+      "bearing_deg": 95.7
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors University Ave inbound eastbound traffic toward Loras Blvd."
+  },
+  "CAM_S04_C018": {
+    "camera_id": "CAM_S04_C018",
+    "camera_number": "C018",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.500256,
+      "longitude": -90.67466
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Highland Place / West 11th Street"
+    },
+    "direction": {
+      "description": "Southwest along Loras Boulevard",
+      "bearing_deg": 215.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Loras Blvd west of Highland Place."
+  },
+  "CAM_S04_C019": {
+    "camera_id": "CAM_S04_C019",
+    "camera_number": "C019",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.500145,
+      "longitude": -90.674927
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Chestnut Street"
+    },
+    "direction": {
+      "description": "North-Northwest along Loras Boulevard towards Cox Street",
+      "bearing_deg": 331.7
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors northwest-bound flow on Loras Blvd."
+  },
+  "CAM_S04_C020": {
+    "camera_id": "CAM_S04_C020",
+    "camera_number": "C020",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.500048,
+      "longitude": -90.675048
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Cox Street"
+    },
+    "direction": {
+      "description": "East along Loras Boulevard approaching Cox Street",
+      "bearing_deg": 91.6
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Loras Blvd at Cox St intersection."
+  },
+  "CAM_S04_C021": {
+    "camera_id": "CAM_S04_C021",
+    "camera_number": "C021",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499989,
+      "longitude": -90.675201
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Cox Street"
+    },
+    "direction": {
+      "description": "West-Southwest along University Avenue towards Nevada Street",
+      "bearing_deg": 254.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors University Ave westbound traffic past Cox St."
+  },
+  "CAM_S04_C022": {
+    "camera_id": "CAM_S04_C022",
+    "camera_number": "C022",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499228,
+      "longitude": -90.680404
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Alpine Street"
+    },
+    "direction": {
+      "description": "East-Northeast along University Avenue",
+      "bearing_deg": 79.2
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors eastbound traffic approaching Allison-Henderson Park."
+  },
+  "CAM_S04_C023": {
+    "camera_id": "CAM_S04_C023",
+    "camera_number": "C023",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499234,
+      "longitude": -90.680561
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Nevada Street"
+    },
+    "direction": {
+      "description": "Northeast along University Avenue at Nevada Street",
+      "bearing_deg": 47.0
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors University Ave & Nevada St junction."
+  },
+  "CAM_S04_C024": {
+    "camera_id": "CAM_S04_C024",
+    "camera_number": "C024",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499221,
+      "longitude": -90.680759
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Nevada Street",
+      "intersection": "Nevada Street & University Avenue"
+    },
+    "direction": {
+      "description": "North-Northwest along Nevada Street towards Loras College",
+      "bearing_deg": 346.1
+    },
+    "confidence": "MEDIUM",
+    "notes": "Monitors northbound traffic on Nevada St feeding into campus."
+  },
+  "CAM_S04_C025": {
+    "camera_id": "CAM_S04_C025",
+    "camera_number": "C025",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499178,
+      "longitude": -90.681085
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard north of Allison-Henderson Park"
+    },
+    "direction": {
+      "description": "East-Southeast along Loras Boulevard",
+      "bearing_deg": 103.8
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Loras Blvd northern segment beside park."
+  },
+  "CAM_S04_C026": {
+    "camera_id": "CAM_S04_C026",
+    "camera_number": "C026",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.49909,
+      "longitude": -90.681629
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Grandview Avenue (East junction)"
+    },
+    "direction": {
+      "description": "West-Southwest along University Avenue past Allison-Henderson Park",
+      "bearing_deg": 258.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors main westbound arterial traffic by park."
+  },
+  "CAM_S04_C027": {
+    "camera_id": "CAM_S04_C027",
+    "camera_number": "C027",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498394,
+      "longitude": -90.688026
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Glen Oak Street"
+    },
+    "direction": {
+      "description": "East along University Avenue towards Finley Hospital",
+      "bearing_deg": 89.2
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors eastbound traffic along hospital corridor."
+  },
+  "CAM_S04_C028": {
+    "camera_id": "CAM_S04_C028",
+    "camera_number": "C028",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498366,
+      "longitude": -90.688205
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & College Street / Finley Hospital"
+    },
+    "direction": {
+      "description": "Southeast into Finley Hospital entrance / College Street",
+      "bearing_deg": 136.7
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors turn movements into UnityPoint Health Finley Hospital."
+  },
+  "CAM_S04_C029": {
+    "camera_id": "CAM_S04_C029",
+    "camera_number": "C029",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499005,
+      "longitude": -90.693166
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Custer Street / Adair Street"
+    },
+    "direction": {
+      "description": "East-Southeast along University Avenue",
+      "bearing_deg": 117.2
+    },
+    "confidence": "MEDIUM",
+    "notes": "Long FOV coverage along University Ave near Custer St."
+  },
+  "CAM_S04_C030": {
+    "camera_id": "CAM_S04_C030",
+    "camera_number": "C030",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.4993,
+      "longitude": -90.693626
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Bennett Street / Delhi Street"
+    },
+    "direction": {
+      "description": "Southeast along University Avenue at University of Dubuque",
+      "bearing_deg": 152.2
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors University Ave campus approach."
+  },
+  "CAM_S04_C031": {
+    "camera_id": "CAM_S04_C031",
+    "camera_number": "C031",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499314,
+      "longitude": -90.693734
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Mineral Street (East approach)"
+    },
+    "direction": {
+      "description": "South-Southwest along Mineral Street crossing University Avenue",
+      "bearing_deg": 210.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors south approach from Mineral St onto University Ave."
+  },
+  "CAM_S04_C032": {
+    "camera_id": "CAM_S04_C032",
+    "camera_number": "C032",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499376,
+      "longitude": -90.693814
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Kirk Street"
+    },
+    "direction": {
+      "description": "West along University Avenue towards Kirk Street",
+      "bearing_deg": 275.5
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors westbound lanes approaching commercial segment."
+  },
+  "CAM_S04_C033": {
+    "camera_id": "CAM_S04_C033",
+    "camera_number": "C033",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499453,
+      "longitude": -90.694488
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Asbury Road",
+      "intersection": "Asbury Road & Cherry Street"
+    },
+    "direction": {
+      "description": "West along Asbury Road towards Flora Park",
+      "bearing_deg": 279.7
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Asbury Road diagonal corridor."
+  },
+  "CAM_S04_C034": {
+    "camera_id": "CAM_S04_C034",
+    "camera_number": "C034",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499784,
+      "longitude": -90.696075
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Kirk Street (West approach)"
+    },
+    "direction": {
+      "description": "East-Southeast along University Avenue",
+      "bearing_deg": 120.9
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors eastbound traffic along commercial shopping district."
+  },
+  "CAM_S04_C035": {
+    "camera_id": "CAM_S04_C035",
+    "camera_number": "C035",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499836,
+      "longitude": -90.696285
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Delhi Street / Excalibur area"
+    },
+    "direction": {
+      "description": "South-Southwest along University Avenue",
+      "bearing_deg": 211.0
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors retail center frontage on University Ave."
+  },
+  "CAM_S04_C036": {
+    "camera_id": "CAM_S04_C036",
+    "camera_number": "C036",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.499709,
+      "longitude": -90.696522
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Mineral Street (West approach)"
+    },
+    "direction": {
+      "description": "Southwest along University Avenue towards Loras Blvd fork",
+      "bearing_deg": 235.6
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors westbound transition to Loras Blvd fork."
+  },
+  "CAM_S04_C037": {
+    "camera_id": "CAM_S04_C037",
+    "camera_number": "C037",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498993,
+      "longitude": -90.698158
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Loras Boulevard (West fork)"
+    },
+    "direction": {
+      "description": "East-Northeast along University Avenue from fork",
+      "bearing_deg": 61.1
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors fork divergence between University Ave and Loras Blvd."
+  },
+  "CAM_S04_C038": {
+    "camera_id": "CAM_S04_C038",
+    "camera_number": "C038",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498765,
+      "longitude": -90.698493
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Asbury Road",
+      "intersection": "Asbury Road & University Avenue junction"
+    },
+    "direction": {
+      "description": "South-Southwest along Asbury Road",
+      "bearing_deg": 197.2
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Asbury Road entrance to University Ave corridor."
+  },
+  "CAM_S04_C039": {
+    "camera_id": "CAM_S04_C039",
+    "camera_number": "C039",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498721,
+      "longitude": -90.69865
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Cherry Street (Flora Park entrance)"
+    },
+    "direction": {
+      "description": "North-Northwest along Cherry Street by Flora Park",
+      "bearing_deg": 326.4
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors park access and northern turning movements."
+  },
+  "CAM_S04_C040": {
+    "camera_id": "CAM_S04_C040",
+    "camera_number": "C040",
+    "scenario": "S04",
+    "location": {
+      "latitude": 42.498655,
+      "longitude": -90.698649
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & McPoland Avenue / Pennsylvania Avenue"
+    },
+    "direction": {
+      "description": "West along University Avenue toward city border",
+      "bearing_deg": 272.8
+    },
+    "confidence": "HIGH",
+    "notes": "Western terminus camera along University Ave monitored corridor."
+  },
+  "CAM_S02_C006": {
+    "camera_id": "CAM_S02_C006",
+    "camera_number": "C006",
+    "scenario": "S02",
+    "location": {
+      "latitude": 42.49196,
+      "longitude": -90.72355
+    },
+    "location_source": "cam_loc/S02.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 & Century Drive (Westbound lanes east of junction)"
+    },
+    "direction": {
+      "description": "East along US-20 westbound lanes towards Century Drive",
+      "bearing_deg": 85.0
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors westbound US-20 traffic arriving at Century Dr signal from the west."
+  },
+  "CAM_S02_C007": {
+    "camera_id": "CAM_S02_C007",
+    "camera_number": "C007",
+    "scenario": "S02",
+    "location": {
+      "latitude": 42.49208,
+      "longitude": -90.72375
+    },
+    "location_source": "cam_loc/S02.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Century Drive",
+      "intersection": "US-20 & Century Drive (North approach)"
+    },
+    "direction": {
+      "description": "South along Century Drive crossing Dodge Street",
+      "bearing_deg": 180.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted north of Dodge St; views southbound vehicles exiting commercial corridor on Century Dr."
+  },
+  "CAM_S02_C008": {
+    "camera_id": "CAM_S02_C008",
+    "camera_number": "C008",
+    "scenario": "S02",
+    "location": {
+      "latitude": 42.4919,
+      "longitude": -90.7237
+    },
+    "location_source": "cam_loc/S02.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20) Median",
+      "intersection": "US-20 & Century Drive (Median crossover)"
+    },
+    "direction": {
+      "description": "North across westbound US-20 lanes towards Century Drive",
+      "bearing_deg": 355.0
+    },
+    "confidence": "HIGH",
+    "notes": "Mounted in median dividing US-20; monitors crossover and turn lanes."
+  },
+  "CAM_S02_C009": {
+    "camera_id": "CAM_S02_C009",
+    "camera_number": "C009",
+    "scenario": "S02",
+    "location": {
+      "latitude": 42.49182,
+      "longitude": -90.72385
+    },
+    "location_source": "cam_loc/S02.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 & Century Drive (Eastbound lanes west of junction)"
+    },
+    "direction": {
+      "description": "West along US-20 eastbound lanes towards Century Drive",
+      "bearing_deg": 265.0
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors eastbound US-20 traffic arriving at Century Dr intersection."
+  },
+  "CAM_S05_C010": {
+    "camera_id": "CAM_S05_C010",
+    "camera_number": "C010",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.496955,
+      "longitude": -90.673875
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Hill Street",
+      "intersection": "Hill Street & West 5th Street (North approach)"
+    },
+    "direction": {
+      "description": "North-Northeast along Hill Street in Cable Car Square district",
+      "bearing_deg": 26.2
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S03_C010 at Hill St & W 5th St."
+  },
+  "CAM_S05_C016": {
+    "camera_id": "CAM_S05_C016",
+    "camera_number": "C016",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.500983,
+      "longitude": -90.669833
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "West 9th Street / Loras Boulevard",
+      "intersection": "Loras Boulevard & Bluff Street (Jackson Park District)"
+    },
+    "direction": {
+      "description": "Southwest along Loras Boulevard towards downtown",
+      "bearing_deg": 237.3
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C016 on University Avenue corridor."
+  },
+  "CAM_S05_C017": {
+    "camera_id": "CAM_S05_C017",
+    "camera_number": "C017",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.500217,
+      "longitude": -90.673775
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Loras Boulevard (East merge)"
+    },
+    "direction": {
+      "description": "East along University Avenue approaching Loras Boulevard",
+      "bearing_deg": 95.7
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C017 on University Avenue corridor."
+  },
+  "CAM_S05_C018": {
+    "camera_id": "CAM_S05_C018",
+    "camera_number": "C018",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.500256,
+      "longitude": -90.67466
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Highland Place / West 11th Street"
+    },
+    "direction": {
+      "description": "Southwest along Loras Boulevard",
+      "bearing_deg": 215.9
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C018 on University Avenue corridor."
+  },
+  "CAM_S05_C019": {
+    "camera_id": "CAM_S05_C019",
+    "camera_number": "C019",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.500145,
+      "longitude": -90.674927
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Chestnut Street"
+    },
+    "direction": {
+      "description": "North-Northwest along Loras Boulevard towards Cox Street",
+      "bearing_deg": 331.7
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C019 on University Avenue corridor."
+  },
+  "CAM_S05_C020": {
+    "camera_id": "CAM_S05_C020",
+    "camera_number": "C020",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.500048,
+      "longitude": -90.675048
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard & Cox Street"
+    },
+    "direction": {
+      "description": "East along Loras Boulevard approaching Cox Street",
+      "bearing_deg": 91.6
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C020 on University Avenue corridor."
+  },
+  "CAM_S05_C021": {
+    "camera_id": "CAM_S05_C021",
+    "camera_number": "C021",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499989,
+      "longitude": -90.675201
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Cox Street"
+    },
+    "direction": {
+      "description": "West-Southwest along University Avenue towards Nevada Street",
+      "bearing_deg": 254.9
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C021 on University Avenue corridor."
+  },
+  "CAM_S05_C022": {
+    "camera_id": "CAM_S05_C022",
+    "camera_number": "C022",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499228,
+      "longitude": -90.680404
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Alpine Street"
+    },
+    "direction": {
+      "description": "East-Northeast along University Avenue",
+      "bearing_deg": 79.2
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C022 on University Avenue corridor."
+  },
+  "CAM_S05_C023": {
+    "camera_id": "CAM_S05_C023",
+    "camera_number": "C023",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499234,
+      "longitude": -90.680561
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Nevada Street"
+    },
+    "direction": {
+      "description": "Northeast along University Avenue at Nevada Street",
+      "bearing_deg": 47.0
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C023 on University Avenue corridor."
+  },
+  "CAM_S05_C024": {
+    "camera_id": "CAM_S05_C024",
+    "camera_number": "C024",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499221,
+      "longitude": -90.680759
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Nevada Street",
+      "intersection": "Nevada Street & University Avenue"
+    },
+    "direction": {
+      "description": "North-Northwest along Nevada Street towards Loras College",
+      "bearing_deg": 346.1
+    },
+    "confidence": "MEDIUM",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C024 on University Avenue corridor."
+  },
+  "CAM_S05_C025": {
+    "camera_id": "CAM_S05_C025",
+    "camera_number": "C025",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499178,
+      "longitude": -90.681085
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Loras Boulevard",
+      "intersection": "Loras Boulevard north of Allison-Henderson Park"
+    },
+    "direction": {
+      "description": "East-Southeast along Loras Boulevard",
+      "bearing_deg": 103.8
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C025 on University Avenue corridor."
+  },
+  "CAM_S05_C026": {
+    "camera_id": "CAM_S05_C026",
+    "camera_number": "C026",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.49909,
+      "longitude": -90.681629
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Grandview Avenue (East junction)"
+    },
+    "direction": {
+      "description": "West-Southwest along University Avenue past Allison-Henderson Park",
+      "bearing_deg": 258.9
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C026 on University Avenue corridor."
+  },
+  "CAM_S05_C027": {
+    "camera_id": "CAM_S05_C027",
+    "camera_number": "C027",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.498394,
+      "longitude": -90.688026
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Glen Oak Street"
+    },
+    "direction": {
+      "description": "East along University Avenue towards Finley Hospital",
+      "bearing_deg": 89.2
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C027 on University Avenue corridor."
+  },
+  "CAM_S05_C028": {
+    "camera_id": "CAM_S05_C028",
+    "camera_number": "C028",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.498366,
+      "longitude": -90.688205
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & College Street / Finley Hospital"
+    },
+    "direction": {
+      "description": "Southeast into Finley Hospital entrance / College Street",
+      "bearing_deg": 136.7
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C028 on University Avenue corridor."
+  },
+  "CAM_S05_C029": {
+    "camera_id": "CAM_S05_C029",
+    "camera_number": "C029",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499005,
+      "longitude": -90.693166
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Custer Street / Adair Street"
+    },
+    "direction": {
+      "description": "East-Southeast along University Avenue",
+      "bearing_deg": 117.2
+    },
+    "confidence": "MEDIUM",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C029 on University Avenue corridor."
+  },
+  "CAM_S05_C033": {
+    "camera_id": "CAM_S05_C033",
+    "camera_number": "C033",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499453,
+      "longitude": -90.694488
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Asbury Road",
+      "intersection": "Asbury Road & Cherry Street"
+    },
+    "direction": {
+      "description": "West along Asbury Road towards Flora Park",
+      "bearing_deg": 279.7
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C033 on University Avenue corridor."
+  },
+  "CAM_S05_C034": {
+    "camera_id": "CAM_S05_C034",
+    "camera_number": "C034",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499784,
+      "longitude": -90.696075
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Kirk Street (West approach)"
+    },
+    "direction": {
+      "description": "East-Southeast along University Avenue",
+      "bearing_deg": 120.9
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C034 on University Avenue corridor."
+  },
+  "CAM_S05_C035": {
+    "camera_id": "CAM_S05_C035",
+    "camera_number": "C035",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499836,
+      "longitude": -90.696285
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Delhi Street / Excalibur area"
+    },
+    "direction": {
+      "description": "South-Southwest along University Avenue",
+      "bearing_deg": 211.0
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C035 on University Avenue corridor."
+  },
+  "CAM_S05_C036": {
+    "camera_id": "CAM_S05_C036",
+    "camera_number": "C036",
+    "scenario": "S05",
+    "location": {
+      "latitude": 42.499709,
+      "longitude": -90.696522
+    },
+    "location_source": "cam_loc/S0345.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "University Avenue",
+      "intersection": "University Avenue & Mineral Street (West approach)"
+    },
+    "direction": {
+      "description": "Southwest along University Avenue towards Loras Blvd fork",
+      "bearing_deg": 235.6
+    },
+    "confidence": "HIGH",
+    "notes": "Scenario S05 video stream utilizing the same physical sensor and camera pole as CAM_S04_C036 on University Avenue corridor."
+  },
+  "CAM_S06_C041": {
+    "camera_id": "CAM_S06_C041",
+    "camera_number": "C041",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.491239,
+      "longitude": -90.701509
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 & Center Grove / University Avenue interchange"
+    },
+    "direction": {
+      "description": "Northeast along US-20 eastbound ramp / Center Grove",
+      "bearing_deg": 69.6
+    },
+    "confidence": "HIGH",
+    "notes": "Eastern anchor of US-20 highway camera corridor at Center Grove."
+  },
+  "CAM_S06_C042": {
+    "camera_id": "CAM_S06_C042",
+    "camera_number": "C042",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.492023,
+      "longitude": -90.714816
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 & Cedar Cross Road"
+    },
+    "direction": {
+      "description": "Northeast along US-20 crossing Cedar Cross Road",
+      "bearing_deg": 66.1
+    },
+    "confidence": "HIGH",
+    "notes": "Major signalized junction at US-20 and Cedar Cross Rd."
+  },
+  "CAM_S06_C043": {
+    "camera_id": "CAM_S06_C043",
+    "camera_number": "C043",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.49185,
+      "longitude": -90.720616
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 south of Kennedy Mall"
+    },
+    "direction": {
+      "description": "Northeast along US-20 adjacent to Kennedy Mall",
+      "bearing_deg": 55.8
+    },
+    "confidence": "HIGH",
+    "notes": "Highway camera monitoring US-20 shopping mall bypass."
+  },
+  "CAM_S06_C044": {
+    "camera_id": "CAM_S06_C044",
+    "camera_number": "C044",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.490369,
+      "longitude": -90.732608
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 between Northwest Arterial and Wacker Drive"
+    },
+    "direction": {
+      "description": "Southeast along US-20 approaching commercial center",
+      "bearing_deg": 136.7
+    },
+    "confidence": "HIGH",
+    "notes": "Arterial camera on US-20 segment between NW Arterial and Wacker Dr."
+  },
+  "CAM_S06_C045": {
+    "camera_id": "CAM_S06_C045",
+    "camera_number": "C045",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.488532,
+      "longitude": -90.739334
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20 Frontage)",
+      "intersection": "Dodge Street near Walmart Supercenter (4200 Dodge St)"
+    },
+    "direction": {
+      "description": "Southeast along Dodge Street frontage road",
+      "bearing_deg": 117.8
+    },
+    "confidence": "HIGH",
+    "notes": "Monitors Dodge St frontage access road fronting Walmart."
+  },
+  "CAM_S06_C046": {
+    "camera_id": "CAM_S06_C046",
+    "camera_number": "C046",
+    "scenario": "S06",
+    "location": {
+      "latitude": 42.486478,
+      "longitude": -90.746993
+    },
+    "location_source": "cam_loc/S06.png",
+    "location_method": "map_georeferenced",
+    "location_precision": "approximate",
+    "road_context": {
+      "road": "Dodge Street (US-20)",
+      "intersection": "US-20 & Old Highway Road interchange"
+    },
+    "direction": {
+      "description": "Northeast along US-20 from western city boundary",
+      "bearing_deg": 39.8
+    },
+    "confidence": "HIGH",
+    "notes": "Westernmost camera on US-20 monitoring vehicles entering Dubuque."
+  }
+}

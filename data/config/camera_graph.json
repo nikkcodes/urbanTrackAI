@@ -1,0 +1,1947 @@
+{
+  "nodes": [
+    "CAM_S01_C001",
+    "CAM_S01_C002",
+    "CAM_S01_C003",
+    "CAM_S01_C004",
+    "CAM_S01_C005",
+    "CAM_S02_C006",
+    "CAM_S02_C007",
+    "CAM_S02_C008",
+    "CAM_S02_C009",
+    "CAM_S03_C010",
+    "CAM_S03_C011",
+    "CAM_S03_C012",
+    "CAM_S03_C013",
+    "CAM_S03_C014",
+    "CAM_S03_C015",
+    "CAM_S04_C016",
+    "CAM_S04_C017",
+    "CAM_S04_C018",
+    "CAM_S04_C019",
+    "CAM_S04_C020",
+    "CAM_S04_C021",
+    "CAM_S04_C022",
+    "CAM_S04_C023",
+    "CAM_S04_C024",
+    "CAM_S04_C025",
+    "CAM_S04_C026",
+    "CAM_S04_C027",
+    "CAM_S04_C028",
+    "CAM_S04_C029",
+    "CAM_S04_C030",
+    "CAM_S04_C031",
+    "CAM_S04_C032",
+    "CAM_S04_C033",
+    "CAM_S04_C034",
+    "CAM_S04_C035",
+    "CAM_S04_C036",
+    "CAM_S04_C037",
+    "CAM_S04_C038",
+    "CAM_S04_C039",
+    "CAM_S04_C040",
+    "CAM_S05_C010",
+    "CAM_S05_C016",
+    "CAM_S05_C017",
+    "CAM_S05_C018",
+    "CAM_S05_C019",
+    "CAM_S05_C020",
+    "CAM_S05_C021",
+    "CAM_S05_C022",
+    "CAM_S05_C023",
+    "CAM_S05_C024",
+    "CAM_S05_C025",
+    "CAM_S05_C026",
+    "CAM_S05_C027",
+    "CAM_S05_C028",
+    "CAM_S05_C029",
+    "CAM_S05_C033",
+    "CAM_S05_C034",
+    "CAM_S05_C035",
+    "CAM_S05_C036",
+    "CAM_S06_C041",
+    "CAM_S06_C042",
+    "CAM_S06_C043",
+    "CAM_S06_C044",
+    "CAM_S06_C045",
+    "CAM_S06_C046"
+  ],
+  "edges": [
+    {
+      "source": "CAM_S01_C001",
+      "target": "CAM_S01_C002",
+      "relationship": "possible_transition",
+      "distance_m": 33.2,
+      "bearing_deg": 323.6,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C001",
+      "target": "CAM_S01_C003",
+      "relationship": "possible_transition",
+      "distance_m": 21.6,
+      "bearing_deg": 22.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C001",
+      "target": "CAM_S01_C004",
+      "relationship": "possible_transition",
+      "distance_m": 28.6,
+      "bearing_deg": 283.5,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C001",
+      "target": "CAM_S01_C005",
+      "relationship": "possible_transition",
+      "distance_m": 32.2,
+      "bearing_deg": 345.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C002",
+      "target": "CAM_S01_C001",
+      "relationship": "possible_transition",
+      "distance_m": 33.2,
+      "bearing_deg": 143.6,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C002",
+      "target": "CAM_S01_C003",
+      "relationship": "possible_transition",
+      "distance_m": 28.6,
+      "bearing_deg": 103.5,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C002",
+      "target": "CAM_S01_C004",
+      "relationship": "possible_transition",
+      "distance_m": 21.6,
+      "bearing_deg": 202.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C003",
+      "target": "CAM_S01_C001",
+      "relationship": "possible_transition",
+      "distance_m": 21.6,
+      "bearing_deg": 202.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C003",
+      "target": "CAM_S01_C002",
+      "relationship": "possible_transition",
+      "distance_m": 28.6,
+      "bearing_deg": 283.5,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C003",
+      "target": "CAM_S01_C004",
+      "relationship": "possible_transition",
+      "distance_m": 38.4,
+      "bearing_deg": 249.7,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C003",
+      "target": "CAM_S01_C005",
+      "relationship": "possible_transition",
+      "distance_m": 19.8,
+      "bearing_deg": 304.2,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C004",
+      "target": "CAM_S01_C001",
+      "relationship": "possible_transition",
+      "distance_m": 28.6,
+      "bearing_deg": 103.5,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C004",
+      "target": "CAM_S01_C002",
+      "relationship": "possible_transition",
+      "distance_m": 21.6,
+      "bearing_deg": 22.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C004",
+      "target": "CAM_S01_C003",
+      "relationship": "possible_transition",
+      "distance_m": 38.4,
+      "bearing_deg": 69.7,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C004",
+      "target": "CAM_S01_C005",
+      "relationship": "possible_transition",
+      "distance_m": 31.4,
+      "bearing_deg": 38.8,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C005",
+      "target": "CAM_S01_C001",
+      "relationship": "possible_transition",
+      "distance_m": 32.2,
+      "bearing_deg": 165.3,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C005",
+      "target": "CAM_S01_C003",
+      "relationship": "possible_transition",
+      "distance_m": 19.8,
+      "bearing_deg": 124.2,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S01_C005",
+      "target": "CAM_S01_C004",
+      "relationship": "possible_transition",
+      "distance_m": 31.4,
+      "bearing_deg": 218.8,
+      "evidence": [
+        "cam_loc/S01.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C006",
+      "target": "CAM_S02_C007",
+      "relationship": "possible_transition",
+      "distance_m": 21.1,
+      "bearing_deg": 309.1,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C006",
+      "target": "CAM_S02_C008",
+      "relationship": "possible_transition",
+      "distance_m": 14.0,
+      "bearing_deg": 241.5,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C007",
+      "target": "CAM_S02_C006",
+      "relationship": "possible_transition",
+      "distance_m": 21.1,
+      "bearing_deg": 129.1,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C007",
+      "target": "CAM_S02_C008",
+      "relationship": "possible_transition",
+      "distance_m": 20.4,
+      "bearing_deg": 168.4,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C007",
+      "target": "CAM_S02_C009",
+      "relationship": "possible_transition",
+      "distance_m": 30.1,
+      "bearing_deg": 195.8,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C008",
+      "target": "CAM_S02_C006",
+      "relationship": "possible_transition",
+      "distance_m": 14.0,
+      "bearing_deg": 61.5,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C008",
+      "target": "CAM_S02_C007",
+      "relationship": "possible_transition",
+      "distance_m": 20.4,
+      "bearing_deg": 348.4,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C008",
+      "target": "CAM_S02_C009",
+      "relationship": "possible_transition",
+      "distance_m": 15.2,
+      "bearing_deg": 234.1,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C009",
+      "target": "CAM_S02_C008",
+      "relationship": "possible_transition",
+      "distance_m": 15.2,
+      "bearing_deg": 54.1,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S02_C009",
+      "target": "CAM_S02_C006",
+      "relationship": "possible_transition",
+      "distance_m": 29.1,
+      "bearing_deg": 57.7,
+      "evidence": [
+        "cam_loc/S02.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S03_C010",
+      "target": "CAM_S03_C011",
+      "relationship": "possible_transition",
+      "distance_m": 32.8,
+      "bearing_deg": 217.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C011",
+      "target": "CAM_S03_C010",
+      "relationship": "possible_transition",
+      "distance_m": 32.8,
+      "bearing_deg": 37.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C011",
+      "target": "CAM_S03_C012",
+      "relationship": "possible_transition",
+      "distance_m": 19.1,
+      "bearing_deg": 217.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C012",
+      "target": "CAM_S03_C011",
+      "relationship": "possible_transition",
+      "distance_m": 19.1,
+      "bearing_deg": 37.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C011",
+      "target": "CAM_S03_C013",
+      "relationship": "possible_transition",
+      "distance_m": 38.2,
+      "bearing_deg": 208.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C013",
+      "target": "CAM_S03_C011",
+      "relationship": "possible_transition",
+      "distance_m": 38.2,
+      "bearing_deg": 28.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C012",
+      "target": "CAM_S03_C015",
+      "relationship": "possible_transition",
+      "distance_m": 51.0,
+      "bearing_deg": 244.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C015",
+      "target": "CAM_S03_C012",
+      "relationship": "possible_transition",
+      "distance_m": 51.0,
+      "bearing_deg": 64.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C013",
+      "target": "CAM_S03_C014",
+      "relationship": "possible_transition",
+      "distance_m": 26.5,
+      "bearing_deg": 234.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C014",
+      "target": "CAM_S03_C013",
+      "relationship": "possible_transition",
+      "distance_m": 26.5,
+      "bearing_deg": 54.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S03_C013",
+      "target": "CAM_S03_C015",
+      "relationship": "possible_transition",
+      "distance_m": 39.2,
+      "bearing_deg": 264.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S03_C015",
+      "target": "CAM_S03_C013",
+      "relationship": "possible_transition",
+      "distance_m": 39.2,
+      "bearing_deg": 84.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S03_C014",
+      "target": "CAM_S03_C015",
+      "relationship": "possible_transition",
+      "distance_m": 20.9,
+      "bearing_deg": 303.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S03_C015",
+      "target": "CAM_S03_C014",
+      "relationship": "possible_transition",
+      "distance_m": 20.9,
+      "bearing_deg": 123.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C016",
+      "target": "CAM_S04_C017",
+      "relationship": "possible_transition",
+      "distance_m": 334.2,
+      "bearing_deg": 255.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C017",
+      "target": "CAM_S04_C016",
+      "relationship": "possible_transition",
+      "distance_m": 334.2,
+      "bearing_deg": 75.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C016",
+      "target": "CAM_S04_C018",
+      "relationship": "possible_transition",
+      "distance_m": 403.9,
+      "bearing_deg": 258.5,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C018",
+      "target": "CAM_S04_C016",
+      "relationship": "possible_transition",
+      "distance_m": 403.9,
+      "bearing_deg": 78.5,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C017",
+      "target": "CAM_S04_C018",
+      "relationship": "possible_transition",
+      "distance_m": 72.7,
+      "bearing_deg": 273.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C018",
+      "target": "CAM_S04_C017",
+      "relationship": "possible_transition",
+      "distance_m": 72.7,
+      "bearing_deg": 93.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C018",
+      "target": "CAM_S04_C019",
+      "relationship": "possible_transition",
+      "distance_m": 25.1,
+      "bearing_deg": 240.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C019",
+      "target": "CAM_S04_C018",
+      "relationship": "possible_transition",
+      "distance_m": 25.1,
+      "bearing_deg": 60.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C019",
+      "target": "CAM_S04_C020",
+      "relationship": "possible_transition",
+      "distance_m": 14.7,
+      "bearing_deg": 222.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C020",
+      "target": "CAM_S04_C019",
+      "relationship": "possible_transition",
+      "distance_m": 14.7,
+      "bearing_deg": 42.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C020",
+      "target": "CAM_S04_C021",
+      "relationship": "possible_transition",
+      "distance_m": 14.2,
+      "bearing_deg": 242.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C021",
+      "target": "CAM_S04_C020",
+      "relationship": "possible_transition",
+      "distance_m": 14.2,
+      "bearing_deg": 62.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C021",
+      "target": "CAM_S04_C017",
+      "relationship": "possible_transition",
+      "distance_m": 119.6,
+      "bearing_deg": 77.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C017",
+      "target": "CAM_S04_C021",
+      "relationship": "possible_transition",
+      "distance_m": 119.6,
+      "bearing_deg": 257.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C020",
+      "target": "CAM_S04_C022",
+      "relationship": "possible_transition",
+      "distance_m": 448.5,
+      "bearing_deg": 258.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C022",
+      "target": "CAM_S04_C020",
+      "relationship": "possible_transition",
+      "distance_m": 448.5,
+      "bearing_deg": 78.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C021",
+      "target": "CAM_S04_C022",
+      "relationship": "possible_transition",
+      "distance_m": 434.9,
+      "bearing_deg": 258.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C022",
+      "target": "CAM_S04_C021",
+      "relationship": "possible_transition",
+      "distance_m": 434.9,
+      "bearing_deg": 78.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C021",
+      "target": "CAM_S04_C023",
+      "relationship": "possible_transition",
+      "distance_m": 447.4,
+      "bearing_deg": 259.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C023",
+      "target": "CAM_S04_C021",
+      "relationship": "possible_transition",
+      "distance_m": 447.4,
+      "bearing_deg": 79.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C022",
+      "target": "CAM_S04_C023",
+      "relationship": "possible_transition",
+      "distance_m": 12.9,
+      "bearing_deg": 273.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C023",
+      "target": "CAM_S04_C022",
+      "relationship": "possible_transition",
+      "distance_m": 12.9,
+      "bearing_deg": 93.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C023",
+      "target": "CAM_S04_C024",
+      "relationship": "possible_transition",
+      "distance_m": 16.3,
+      "bearing_deg": 264.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C024",
+      "target": "CAM_S04_C023",
+      "relationship": "possible_transition",
+      "distance_m": 16.3,
+      "bearing_deg": 84.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C023",
+      "target": "CAM_S04_C025",
+      "relationship": "possible_transition",
+      "distance_m": 43.4,
+      "bearing_deg": 261.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C025",
+      "target": "CAM_S04_C023",
+      "relationship": "possible_transition",
+      "distance_m": 43.4,
+      "bearing_deg": 81.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C022",
+      "target": "CAM_S04_C026",
+      "relationship": "possible_transition",
+      "distance_m": 101.6,
+      "bearing_deg": 261.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C026",
+      "target": "CAM_S04_C022",
+      "relationship": "possible_transition",
+      "distance_m": 101.6,
+      "bearing_deg": 81.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C025",
+      "target": "CAM_S04_C026",
+      "relationship": "possible_transition",
+      "distance_m": 45.7,
+      "bearing_deg": 257.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C026",
+      "target": "CAM_S04_C025",
+      "relationship": "possible_transition",
+      "distance_m": 45.7,
+      "bearing_deg": 77.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C024",
+      "target": "CAM_S04_C025",
+      "relationship": "possible_transition",
+      "distance_m": 27.2,
+      "bearing_deg": 259.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C025",
+      "target": "CAM_S04_C024",
+      "relationship": "possible_transition",
+      "distance_m": 27.2,
+      "bearing_deg": 79.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C026",
+      "target": "CAM_S04_C027",
+      "relationship": "possible_transition",
+      "distance_m": 530.1,
+      "bearing_deg": 261.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C027",
+      "target": "CAM_S04_C026",
+      "relationship": "possible_transition",
+      "distance_m": 530.1,
+      "bearing_deg": 81.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C027",
+      "target": "CAM_S04_C028",
+      "relationship": "possible_transition",
+      "distance_m": 15.0,
+      "bearing_deg": 258.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C028",
+      "target": "CAM_S04_C027",
+      "relationship": "possible_transition",
+      "distance_m": 15.0,
+      "bearing_deg": 78.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C027",
+      "target": "CAM_S04_C029",
+      "relationship": "possible_transition",
+      "distance_m": 426.8,
+      "bearing_deg": 279.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C029",
+      "target": "CAM_S04_C027",
+      "relationship": "possible_transition",
+      "distance_m": 426.8,
+      "bearing_deg": 99.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C028",
+      "target": "CAM_S04_C029",
+      "relationship": "possible_transition",
+      "distance_m": 412.9,
+      "bearing_deg": 279.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C029",
+      "target": "CAM_S04_C028",
+      "relationship": "possible_transition",
+      "distance_m": 412.9,
+      "bearing_deg": 99.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C029",
+      "target": "CAM_S04_C030",
+      "relationship": "possible_transition",
+      "distance_m": 50.0,
+      "bearing_deg": 311.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C030",
+      "target": "CAM_S04_C029",
+      "relationship": "possible_transition",
+      "distance_m": 50.0,
+      "bearing_deg": 131.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C030",
+      "target": "CAM_S04_C031",
+      "relationship": "possible_transition",
+      "distance_m": 9.0,
+      "bearing_deg": 280.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C031",
+      "target": "CAM_S04_C030",
+      "relationship": "possible_transition",
+      "distance_m": 9.0,
+      "bearing_deg": 100.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C030",
+      "target": "CAM_S04_C032",
+      "relationship": "possible_transition",
+      "distance_m": 17.6,
+      "bearing_deg": 298.7,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C032",
+      "target": "CAM_S04_C030",
+      "relationship": "possible_transition",
+      "distance_m": 17.6,
+      "bearing_deg": 118.7,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C031",
+      "target": "CAM_S04_C032",
+      "relationship": "possible_transition",
+      "distance_m": 9.5,
+      "bearing_deg": 316.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C032",
+      "target": "CAM_S04_C031",
+      "relationship": "possible_transition",
+      "distance_m": 9.5,
+      "bearing_deg": 136.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C032",
+      "target": "CAM_S04_C034",
+      "relationship": "possible_transition",
+      "distance_m": 190.8,
+      "bearing_deg": 283.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C034",
+      "target": "CAM_S04_C032",
+      "relationship": "possible_transition",
+      "distance_m": 190.8,
+      "bearing_deg": 103.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C034",
+      "target": "CAM_S04_C035",
+      "relationship": "possible_transition",
+      "distance_m": 18.2,
+      "bearing_deg": 288.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C035",
+      "target": "CAM_S04_C034",
+      "relationship": "possible_transition",
+      "distance_m": 18.2,
+      "bearing_deg": 108.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C035",
+      "target": "CAM_S04_C036",
+      "relationship": "possible_transition",
+      "distance_m": 24.0,
+      "bearing_deg": 234.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C036",
+      "target": "CAM_S04_C035",
+      "relationship": "possible_transition",
+      "distance_m": 24.0,
+      "bearing_deg": 54.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C036",
+      "target": "CAM_S04_C037",
+      "relationship": "possible_transition",
+      "distance_m": 156.0,
+      "bearing_deg": 239.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C037",
+      "target": "CAM_S04_C036",
+      "relationship": "possible_transition",
+      "distance_m": 156.0,
+      "bearing_deg": 59.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C037",
+      "target": "CAM_S04_C038",
+      "relationship": "possible_transition",
+      "distance_m": 37.4,
+      "bearing_deg": 227.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C038",
+      "target": "CAM_S04_C037",
+      "relationship": "possible_transition",
+      "distance_m": 37.4,
+      "bearing_deg": 47.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C038",
+      "target": "CAM_S04_C033",
+      "relationship": "possible_transition",
+      "distance_m": 337.1,
+      "bearing_deg": 76.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C033",
+      "target": "CAM_S04_C038",
+      "relationship": "possible_transition",
+      "distance_m": 337.1,
+      "bearing_deg": 256.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C037",
+      "target": "CAM_S04_C039",
+      "relationship": "possible_transition",
+      "distance_m": 50.4,
+      "bearing_deg": 233.1,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C039",
+      "target": "CAM_S04_C037",
+      "relationship": "possible_transition",
+      "distance_m": 50.4,
+      "bearing_deg": 53.1,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C038",
+      "target": "CAM_S04_C039",
+      "relationship": "possible_transition",
+      "distance_m": 13.8,
+      "bearing_deg": 249.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C039",
+      "target": "CAM_S04_C038",
+      "relationship": "possible_transition",
+      "distance_m": 13.8,
+      "bearing_deg": 69.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S04_C039",
+      "target": "CAM_S04_C040",
+      "relationship": "possible_transition",
+      "distance_m": 7.3,
+      "bearing_deg": 179.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S04_C040",
+      "target": "CAM_S04_C039",
+      "relationship": "possible_transition",
+      "distance_m": 7.3,
+      "bearing_deg": 359.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C046",
+      "target": "CAM_S06_C045",
+      "relationship": "possible_transition",
+      "distance_m": 668.3,
+      "bearing_deg": 70.0,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C046",
+      "target": "CAM_S06_C044",
+      "relationship": "possible_transition",
+      "distance_m": 1256.4,
+      "bearing_deg": 69.9,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S06_C045",
+      "target": "CAM_S06_C044",
+      "relationship": "possible_transition",
+      "distance_m": 588.1,
+      "bearing_deg": 69.7,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C044",
+      "target": "CAM_S06_C043",
+      "relationship": "possible_transition",
+      "distance_m": 997.0,
+      "bearing_deg": 80.5,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C043",
+      "target": "CAM_S06_C042",
+      "relationship": "possible_transition",
+      "distance_m": 475.9,
+      "bearing_deg": 87.7,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C042",
+      "target": "CAM_S06_C041",
+      "relationship": "possible_transition",
+      "distance_m": 1094.6,
+      "bearing_deg": 94.6,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C041",
+      "target": "CAM_S06_C042",
+      "relationship": "possible_transition",
+      "distance_m": 1094.6,
+      "bearing_deg": 274.6,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C042",
+      "target": "CAM_S06_C043",
+      "relationship": "possible_transition",
+      "distance_m": 475.9,
+      "bearing_deg": 267.7,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C043",
+      "target": "CAM_S06_C044",
+      "relationship": "possible_transition",
+      "distance_m": 997.0,
+      "bearing_deg": 260.5,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C044",
+      "target": "CAM_S06_C045",
+      "relationship": "possible_transition",
+      "distance_m": 588.1,
+      "bearing_deg": 249.7,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S06_C044",
+      "target": "CAM_S06_C046",
+      "relationship": "possible_transition",
+      "distance_m": 1256.4,
+      "bearing_deg": 249.9,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S06_C045",
+      "target": "CAM_S06_C046",
+      "relationship": "possible_transition",
+      "distance_m": 668.3,
+      "bearing_deg": 250.0,
+      "evidence": [
+        "cam_loc/S06.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C016",
+      "target": "CAM_S05_C017",
+      "relationship": "possible_transition",
+      "distance_m": 334.2,
+      "bearing_deg": 255.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C017",
+      "target": "CAM_S05_C016",
+      "relationship": "possible_transition",
+      "distance_m": 334.2,
+      "bearing_deg": 75.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C016",
+      "target": "CAM_S05_C018",
+      "relationship": "possible_transition",
+      "distance_m": 403.9,
+      "bearing_deg": 258.5,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C018",
+      "target": "CAM_S05_C016",
+      "relationship": "possible_transition",
+      "distance_m": 403.9,
+      "bearing_deg": 78.5,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C017",
+      "target": "CAM_S05_C018",
+      "relationship": "possible_transition",
+      "distance_m": 72.7,
+      "bearing_deg": 273.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C018",
+      "target": "CAM_S05_C017",
+      "relationship": "possible_transition",
+      "distance_m": 72.7,
+      "bearing_deg": 93.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C018",
+      "target": "CAM_S05_C019",
+      "relationship": "possible_transition",
+      "distance_m": 25.1,
+      "bearing_deg": 240.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C019",
+      "target": "CAM_S05_C018",
+      "relationship": "possible_transition",
+      "distance_m": 25.1,
+      "bearing_deg": 60.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C019",
+      "target": "CAM_S05_C020",
+      "relationship": "possible_transition",
+      "distance_m": 14.7,
+      "bearing_deg": 222.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C020",
+      "target": "CAM_S05_C019",
+      "relationship": "possible_transition",
+      "distance_m": 14.7,
+      "bearing_deg": 42.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C020",
+      "target": "CAM_S05_C021",
+      "relationship": "possible_transition",
+      "distance_m": 14.2,
+      "bearing_deg": 242.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C021",
+      "target": "CAM_S05_C020",
+      "relationship": "possible_transition",
+      "distance_m": 14.2,
+      "bearing_deg": 62.4,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C021",
+      "target": "CAM_S05_C017",
+      "relationship": "possible_transition",
+      "distance_m": 119.6,
+      "bearing_deg": 77.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C017",
+      "target": "CAM_S05_C021",
+      "relationship": "possible_transition",
+      "distance_m": 119.6,
+      "bearing_deg": 257.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C020",
+      "target": "CAM_S05_C022",
+      "relationship": "possible_transition",
+      "distance_m": 448.5,
+      "bearing_deg": 258.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S05_C022",
+      "target": "CAM_S05_C020",
+      "relationship": "possible_transition",
+      "distance_m": 448.5,
+      "bearing_deg": 78.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S05_C021",
+      "target": "CAM_S05_C022",
+      "relationship": "possible_transition",
+      "distance_m": 434.9,
+      "bearing_deg": 258.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C022",
+      "target": "CAM_S05_C021",
+      "relationship": "possible_transition",
+      "distance_m": 434.9,
+      "bearing_deg": 78.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C021",
+      "target": "CAM_S05_C023",
+      "relationship": "possible_transition",
+      "distance_m": 447.4,
+      "bearing_deg": 259.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C023",
+      "target": "CAM_S05_C021",
+      "relationship": "possible_transition",
+      "distance_m": 447.4,
+      "bearing_deg": 79.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C022",
+      "target": "CAM_S05_C023",
+      "relationship": "possible_transition",
+      "distance_m": 12.9,
+      "bearing_deg": 273.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C023",
+      "target": "CAM_S05_C022",
+      "relationship": "possible_transition",
+      "distance_m": 12.9,
+      "bearing_deg": 93.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C023",
+      "target": "CAM_S05_C024",
+      "relationship": "possible_transition",
+      "distance_m": 16.3,
+      "bearing_deg": 264.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C024",
+      "target": "CAM_S05_C023",
+      "relationship": "possible_transition",
+      "distance_m": 16.3,
+      "bearing_deg": 84.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C023",
+      "target": "CAM_S05_C025",
+      "relationship": "possible_transition",
+      "distance_m": 43.4,
+      "bearing_deg": 261.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C025",
+      "target": "CAM_S05_C023",
+      "relationship": "possible_transition",
+      "distance_m": 43.4,
+      "bearing_deg": 81.8,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C022",
+      "target": "CAM_S05_C026",
+      "relationship": "possible_transition",
+      "distance_m": 101.6,
+      "bearing_deg": 261.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C026",
+      "target": "CAM_S05_C022",
+      "relationship": "possible_transition",
+      "distance_m": 101.6,
+      "bearing_deg": 81.3,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C025",
+      "target": "CAM_S05_C026",
+      "relationship": "possible_transition",
+      "distance_m": 45.7,
+      "bearing_deg": 257.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C026",
+      "target": "CAM_S05_C025",
+      "relationship": "possible_transition",
+      "distance_m": 45.7,
+      "bearing_deg": 77.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C024",
+      "target": "CAM_S05_C025",
+      "relationship": "possible_transition",
+      "distance_m": 27.2,
+      "bearing_deg": 259.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S05_C025",
+      "target": "CAM_S05_C024",
+      "relationship": "possible_transition",
+      "distance_m": 27.2,
+      "bearing_deg": 79.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "source": "CAM_S05_C026",
+      "target": "CAM_S05_C027",
+      "relationship": "possible_transition",
+      "distance_m": 530.1,
+      "bearing_deg": 261.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C027",
+      "target": "CAM_S05_C026",
+      "relationship": "possible_transition",
+      "distance_m": 530.1,
+      "bearing_deg": 81.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C027",
+      "target": "CAM_S05_C028",
+      "relationship": "possible_transition",
+      "distance_m": 15.0,
+      "bearing_deg": 258.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C028",
+      "target": "CAM_S05_C027",
+      "relationship": "possible_transition",
+      "distance_m": 15.0,
+      "bearing_deg": 78.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C027",
+      "target": "CAM_S05_C029",
+      "relationship": "possible_transition",
+      "distance_m": 426.8,
+      "bearing_deg": 279.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C029",
+      "target": "CAM_S05_C027",
+      "relationship": "possible_transition",
+      "distance_m": 426.8,
+      "bearing_deg": 99.2,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C028",
+      "target": "CAM_S05_C029",
+      "relationship": "possible_transition",
+      "distance_m": 412.9,
+      "bearing_deg": 279.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C029",
+      "target": "CAM_S05_C028",
+      "relationship": "possible_transition",
+      "distance_m": 412.9,
+      "bearing_deg": 99.9,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C034",
+      "target": "CAM_S05_C035",
+      "relationship": "possible_transition",
+      "distance_m": 18.2,
+      "bearing_deg": 288.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C035",
+      "target": "CAM_S05_C034",
+      "relationship": "possible_transition",
+      "distance_m": 18.2,
+      "bearing_deg": 108.6,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C035",
+      "target": "CAM_S05_C036",
+      "relationship": "possible_transition",
+      "distance_m": 24.0,
+      "bearing_deg": 234.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C036",
+      "target": "CAM_S05_C035",
+      "relationship": "possible_transition",
+      "distance_m": 24.0,
+      "bearing_deg": 54.0,
+      "evidence": [
+        "cam_loc/S0345.png"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C010",
+      "target": "CAM_S05_C017",
+      "relationship": "possible_transition",
+      "distance_m": 362.8,
+      "bearing_deg": 1.3,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C017",
+      "target": "CAM_S05_C010",
+      "relationship": "possible_transition",
+      "distance_m": 362.8,
+      "bearing_deg": 181.3,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C033",
+      "target": "CAM_S05_C034",
+      "relationship": "possible_transition",
+      "distance_m": 135.2,
+      "bearing_deg": 285.8,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C034",
+      "target": "CAM_S05_C033",
+      "relationship": "possible_transition",
+      "distance_m": 135.2,
+      "bearing_deg": 105.8,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C029",
+      "target": "CAM_S05_C034",
+      "relationship": "possible_transition",
+      "distance_m": 253.7,
+      "bearing_deg": 290.0,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "source": "CAM_S05_C034",
+      "target": "CAM_S05_C029",
+      "relationship": "possible_transition",
+      "distance_m": 253.7,
+      "bearing_deg": 110.0,
+      "evidence": [
+        "cam_loc/S0345.png",
+        "validation/S05/gt/gt.txt"
+      ],
+      "confidence": "HIGH"
+    }
+  ]
+}

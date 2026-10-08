@@ -2,20 +2,22 @@
     "dataset_root": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking",
     "splits_scanned": [
         "train",
-        "validation"
+        "validation",
+        "test"
     ],
-    "generation_timestamp": "2026-09-17T08:34:36.748828+00:00",
-    "scene_count": 5,
+    "generation_timestamp": "2026-10-05T13:23:15.257189+00:00",
+    "scene_count": 6,
     "scenes": [
         "S01",
         "S02",
         "S03",
         "S04",
-        "S05"
+        "S05",
+        "S06"
     ],
-    "camera_count": 59,
+    "camera_count": 65,
     "ground_truth_cameras": 59,
-    "calibration_cameras": 59,
+    "calibration_cameras": 65,
     "cameras": [
         {
             "scene": "S01",
@@ -665,6 +667,72 @@
             "video_path_relative": "validation\\S05\\c036\\vdo.avi",
             "ground_truth_path_relative": "validation\\S05\\c036\\gt\\gt.txt",
             "calibration_path_relative": "validation\\S05\\c036\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c041",
+            "camera_id": "CAM_S06_C041",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c041\\vdo.avi",
+            "video_path_relative": "test\\S06\\c041\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c041\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c042",
+            "camera_id": "CAM_S06_C042",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c042\\vdo.avi",
+            "video_path_relative": "test\\S06\\c042\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c042\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c043",
+            "camera_id": "CAM_S06_C043",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c043\\vdo.avi",
+            "video_path_relative": "test\\S06\\c043\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c043\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c044",
+            "camera_id": "CAM_S06_C044",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c044\\vdo.avi",
+            "video_path_relative": "test\\S06\\c044\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c044\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c045",
+            "camera_id": "CAM_S06_C045",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c045\\vdo.avi",
+            "video_path_relative": "test\\S06\\c045\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c045\\calibration.txt"
+        },
+        {
+            "scene": "S06",
+            "camera": "c046",
+            "camera_id": "CAM_S06_C046",
+            "split": "test",
+            "video_name": "vdo.avi",
+            "video_path": "C:\\Users\\kanis\\Downloads\\AICity22_Track1_MTMC_Tracking\\test\\S06\\c046\\vdo.avi",
+            "video_path_relative": "test\\S06\\c046\\vdo.avi",
+            "ground_truth_path_relative": null,
+            "calibration_path_relative": "test\\S06\\c046\\calibration.txt"
         }
     ]
 }

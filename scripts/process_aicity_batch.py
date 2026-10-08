@@ -324,9 +324,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--split",
-        choices=("train", "validation", "both"),
+        choices=("train", "validation", "test", "both"),
         default="train",
-        help="Dataset split to process (train, validation, or both). Default: train.",
+        help="Dataset split to process (train, validation, test, or both). Default: train.",
     )
     parser.add_argument(
         "--max-cameras",
