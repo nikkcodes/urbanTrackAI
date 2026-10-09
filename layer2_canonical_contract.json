@@ -1,0 +1,574 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "contract_metadata": {
+    "title": "UrbanTrack AI \u2014 Layer 2 Canonical Input/Output Contract",
+    "version": "1.0.0",
+    "date": "2026-10-08",
+    "layer": "Layer 2 \u2014 Multi-Camera Intelligence, Association & Identity Fusion",
+    "producer": "Frozen Layer 1 Perception Baseline (UrbanTrack_Member1_Handoff 2)",
+    "consumer": "Layer 2 Multi-Camera Association Engine",
+    "status": "FROZEN_CANONICAL_SPECIFICATION"
+  },
+  "1_canonical_tracklet_record": {
+    "description": "Normalized Layer 2 representation of one camera-local vehicle tracklet.",
+    "schema": {
+      "type": "object",
+      "required": [
+        "scenario_id",
+        "camera_id",
+        "track_id",
+        "global_vehicle_id",
+        "temporal",
+        "motion",
+        "appearance",
+        "vehicle",
+        "anpr",
+        "spatial",
+        "quality"
+      ],
+      "properties": {
+        "scenario_id": {
+          "type": "string",
+          "enum": [
+            "S01",
+            "S02",
+            "S03",
+            "S04",
+            "S05",
+            "S06"
+          ],
+          "description": "Operational scenario identifier."
+        },
+        "camera_id": {
+          "type": "string",
+          "pattern": "^CAM_S[0-9]{2}_C[0-9]{3}$",
+          "description": "Canonical scenario-qualified camera identifier."
+        },
+        "track_id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Camera-local ByteTrack tracklet identifier."
+        },
+        "global_vehicle_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Global cross-camera vehicle identity. MUST be null prior to global association."
+        },
+        "temporal": {
+          "type": "object",
+          "required": [
+            "start_frame",
+            "end_frame",
+            "duration_frames",
+            "fps",
+            "start_raw_timestamp",
+            "end_raw_timestamp",
+            "start_raw_seconds",
+            "end_raw_seconds",
+            "start_sync_timestamp",
+            "end_sync_timestamp",
+            "start_sync_seconds",
+            "end_sync_seconds",
+            "duration_seconds"
+          ],
+          "properties": {
+            "start_frame": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end_frame": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duration_frames": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "fps": {
+              "type": "number",
+              "minimum": 1.0
+            },
+            "start_raw_timestamp": {
+              "type": "string",
+              "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"
+            },
+            "end_raw_timestamp": {
+              "type": "string",
+              "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"
+            },
+            "start_raw_seconds": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "end_raw_seconds": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "start_sync_timestamp": {
+              "type": "string",
+              "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"
+            },
+            "end_sync_timestamp": {
+              "type": "string",
+              "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"
+            },
+            "start_sync_seconds": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "end_sync_seconds": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "duration_seconds": {
+              "type": "number",
+              "minimum": 0.0
+            }
+          }
+        },
+        "motion": {
+          "type": "object",
+          "required": [
+            "trajectory_pixels",
+            "trajectory_length",
+            "average_velocity_px",
+            "direction"
+          ],
+          "properties": {
+            "trajectory_pixels": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            },
+            "trajectory_length": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "average_velocity_px": {
+              "type": "number",
+              "minimum": 0.0
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "appearance": {
+          "type": "object",
+          "required": [
+            "has_embedding",
+            "appearance_embedding",
+            "embedding_dim",
+            "embedding_quality",
+            "reid_model",
+            "reid_compatibility_group"
+          ],
+          "properties": {
+            "has_embedding": {
+              "type": "boolean"
+            },
+            "appearance_embedding": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "number"
+              }
+            },
+            "embedding_dim": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "embedding_quality": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "reid_model": {
+              "type": "string"
+            },
+            "reid_compatibility_group": {
+              "type": "string",
+              "enum": [
+                "AICITY_VEHICLE_V1",
+                "MSMT17_PERSON_BASELINE",
+                "NONE"
+              ]
+            }
+          }
+        },
+        "vehicle": {
+          "type": "object",
+          "required": [
+            "vehicle_type",
+            "average_detector_confidence"
+          ],
+          "properties": {
+            "vehicle_type": {
+              "type": "string",
+              "enum": [
+                "car",
+                "truck",
+                "bus",
+                "van",
+                "suv",
+                "unknown"
+              ]
+            },
+            "average_detector_confidence": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0.0,
+              "maximum": 1.0
+            }
+          }
+        },
+        "anpr": {
+          "type": "object",
+          "required": [
+            "has_plate_detection",
+            "has_readable_ocr",
+            "aggregated_plate_text",
+            "ocr_confidence",
+            "ocr_readings_count",
+            "plate_detections_count",
+            "ocr_consensus_ratio"
+          ],
+          "properties": {
+            "has_plate_detection": {
+              "type": "boolean"
+            },
+            "has_readable_ocr": {
+              "type": "boolean"
+            },
+            "aggregated_plate_text": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ocr_confidence": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "ocr_readings_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "plate_detections_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ocr_consensus_ratio": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0.0,
+              "maximum": 1.0
+            }
+          }
+        },
+        "spatial": {
+          "type": "object",
+          "required": [
+            "camera_latitude",
+            "camera_longitude",
+            "camera_bearing_deg",
+            "camera_confidence",
+            "road_context",
+            "projected_vehicle_coordinates"
+          ],
+          "properties": {
+            "camera_latitude": {
+              "type": "number"
+            },
+            "camera_longitude": {
+              "type": "number"
+            },
+            "camera_bearing_deg": {
+              "type": "number"
+            },
+            "camera_confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MEDIUM",
+                "LOW"
+              ]
+            },
+            "road_context": {
+              "type": "object"
+            },
+            "projected_vehicle_coordinates": {
+              "type": "null",
+              "description": "Precomputed vehicle WGS84 positions are unavailable in Layer 1 perception JSONs and must be null."
+            }
+          }
+        },
+        "quality": {
+          "type": "object",
+          "required": [
+            "camera_reliability",
+            "missing_evidence"
+          ],
+          "properties": {
+            "camera_reliability": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0
+            },
+            "missing_evidence": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "APPEARANCE_EMBEDDING",
+                  "READABLE_OCR",
+                  "PLATE_DETECTION",
+                  "MOTION_DIRECTION"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "2_join_contract": {
+    "join_key": [
+      "camera_id",
+      "track_id"
+    ],
+    "primary_sources": {
+      "tracklet_structure": "trajectories.json",
+      "frame_observations": "observations.json",
+      "camera_metadata": "camera_locations.json",
+      "camera_metrics": "perception_summary.json"
+    },
+    "join_rules": {
+      "temporal_matching": "First observation of track_id matches start_frame; last observation matches end_frame.",
+      "anpr_aggregation": "Group non-null plate_number readings by alphanumeric string, select majority vote.",
+      "detector_confidence": "Average vehicle detection confidence over all matched observation frames.",
+      "direction_aggregation": "Majority vote across non-stationary frame direction values, or infer from start/end centroids."
+    }
+  },
+  "3_timestamp_synchronization_contract": {
+    "formula": "t_sync = t_raw + delta_t_scenario_offset",
+    "authoritative_metadata": "data/cityflowv2/cam_timestamp/<SCENARIO>.txt",
+    "scenario_offsets_seconds": {
+      "S01": {
+        "c001": 0.0,
+        "c002": 1.64,
+        "c003": 2.049,
+        "c004": 2.177,
+        "c005": 2.235
+      },
+      "S02": {
+        "c006": 0.0,
+        "c007": 0.061,
+        "c008": 0.421,
+        "c009": 0.66
+      },
+      "S03": {
+        "c010": 8.715,
+        "c011": 8.457,
+        "c012": 5.879,
+        "c013": 0.0,
+        "c014": 5.042,
+        "c015": 8.492
+      },
+      "S04": {
+        "c016": 0.0,
+        "c017": 14.318,
+        "c018": 29.955,
+        "c019": 26.979,
+        "c020": 25.905,
+        "c021": 39.973,
+        "c022": 49.422,
+        "c023": 45.716,
+        "c024": 50.853,
+        "c025": 50.263,
+        "c026": 70.45,
+        "c027": 85.097,
+        "c028": 100.11,
+        "c029": 125.788,
+        "c030": 124.319,
+        "c031": 125.033,
+        "c032": 125.199,
+        "c033": 150.893,
+        "c034": 140.218,
+        "c035": 165.568,
+        "c036": 170.797,
+        "c037": 170.567,
+        "c038": 175.426,
+        "c039": 175.644,
+        "c040": 175.838
+      },
+      "S05": {
+        "c010": 0.0,
+        "c016": 0.0,
+        "c017": 0.0,
+        "c018": 0.0,
+        "c019": 0.0,
+        "c020": 0.0,
+        "c021": 0.0,
+        "c022": 0.0,
+        "c023": 0.0,
+        "c024": 0.0,
+        "c025": 0.0,
+        "c026": 0.0,
+        "c027": 0.0,
+        "c028": 0.0,
+        "c029": 0.0,
+        "c033": 0.0,
+        "c034": 0.0,
+        "c035": 0.0,
+        "c036": 0.0
+      },
+      "S06": {
+        "c041": 0.0,
+        "c042": 0.0,
+        "c043": 0.0,
+        "c044": 0.0,
+        "c045": 0.0,
+        "c046": 0.0
+      }
+    },
+    "fps_exceptions": {
+      "CAM_S03_C015": 8.0,
+      "all_other_64_cameras": 10.0
+    },
+    "direction_independent_rule": "Origin and destination are assigned by comparing start_sync_seconds: earlier tracklet is origin, later is destination. Never assume camera alphabetical order defines travel direction."
+  },
+  "4_camera_graph_contract": {
+    "source_file": "data/config/camera_graph.json",
+    "total_nodes": 65,
+    "total_edges": 170,
+    "bidirectional_pairs": 84,
+    "one_way_edges": [
+      {
+        "source": "CAM_S02_C007",
+        "target": "CAM_S02_C009",
+        "distance_m": 30.1
+      },
+      {
+        "source": "CAM_S02_C009",
+        "target": "CAM_S02_C006",
+        "distance_m": 29.1
+      }
+    ],
+    "semantic_role": "SOFT_BAYESIAN_PRIOR",
+    "hard_pruning_allowed": false,
+    "cross_scenario_edges": 0
+  },
+  "5_reid_compatibility_contract": {
+    "compatibility_groups": {
+      "AICITY_VEHICLE_V1": {
+        "model_tag": "osnet_x0_25_aicity",
+        "dimension": 512,
+        "cameras_count": 64,
+        "valid_comparison_rule": "Cosine similarity permitted only when both tracklets belong to AICITY_VEHICLE_V1."
+      },
+      "MSMT17_PERSON_BASELINE": {
+        "model_tag": "osnet_x0_25_msmt17",
+        "dimension": 512,
+        "cameras_count": 1,
+        "cameras": [
+          "CAM_S01_C002"
+        ],
+        "valid_comparison_rule": "Incompatible with AICITY_VEHICLE_V1. Direct cosine similarity strictly prohibited."
+      }
+    },
+    "c002_fallback_policy": "For pairs involving CAM_S01_C002, appearance evidence is marked INCOMPATIBLE_SPACES with similarity=null. Association relies on spatio-temporal, topology, OCR, and vehicle type."
+  },
+  "6_ocr_anpr_contract": {
+    "status": "OPTIONAL_EVIDENCE",
+    "mandatory_filter": false,
+    "normalization": "Uppercase ASCII alphanumeric only (regex: [^A-Z0-9]).",
+    "comparison_metrics": {
+      "exact_match": "Score 1.0",
+      "levenshtein_distance": "1.0 - (edit_dist / max(len_a, len_b))",
+      "missing_ocr": "Score null; zero penalty, zero boost"
+    }
+  },
+  "7_missing_evidence_contract": {
+    "principles": [
+      "Absence of evidence is not evidence of absence.",
+      "Missing modalities result in null evidence scores and trigger dynamic weight redistribution.",
+      "Uncertainty score increases proportionally to missing modality weight."
+    ]
+  },
+  "8_candidate_pair_contract": {
+    "schema": {
+      "type": "object",
+      "required": [
+        "scenario_id",
+        "origin_tracklet_id",
+        "destination_tracklet_id",
+        "chronological_direction",
+        "delta_t_seconds",
+        "camera_distance_m",
+        "implied_speed_mps",
+        "temporal_feasibility",
+        "topology_relation",
+        "topology_prior",
+        "appearance_evidence",
+        "ocr_evidence",
+        "vehicle_type_evidence",
+        "evidence_quality"
+      ]
+    }
+  },
+  "9_layer2_output_contract": {
+    "artifacts": [
+      "identity_associations.json",
+      "journey_hypotheses.json",
+      "multicam_intelligence.json",
+      "rejected_associations.json"
+    ],
+    "global_id_format": "GV_<SCENARIO>_<SEQUENCE:05d>",
+    "prohibition": "Global IDs must never overwrite camera-local track_id."
+  },
+  "10_machine_checkable_invariants": [
+    "INV-01: NO_CROSS_SCENARIO_ASSOCIATION",
+    "INV-02: NO_INCOMPATIBLE_REID_COMPARISON",
+    "INV-03: NO_NEGATIVE_CHRONOLOGICAL_TIME",
+    "INV-04: NO_ALPHABETICAL_ORDERING_ASSUMPTION",
+    "INV-05: SYNCHRONIZED_TIMESTAMPS_EXPLICIT",
+    "INV-06: HETEROGENEOUS_FPS_HANDLED",
+    "INV-07: MISSING_EMBEDDINGS_NON_FATAL",
+    "INV-08: MISSING_OCR_NON_FATAL",
+    "INV-09: NO_CROSS_SCENARIO_GRAPH_EDGES",
+    "INV-10: LOCAL_TRACK_ID_PRESERVATION",
+    "INV-11: AUDITABLE_EVIDENCE_RECORD",
+    "INV-12: AUDITABLE_REJECTION_RECORD"
+  ],
+  "11_known_layer2_limitations": [
+    "CAM_S01_C002 uses incompatible MSMT17 weights in frozen baseline handoff.",
+    "Sparse OCR coverage (10.8% overall, 17 cameras zero success).",
+    "No precomputed synchronized timestamps in Layer 1 JSONs.",
+    "No precomputed vehicle WGS84 positions in Layer 1 JSONs."
+  ],
+  "12_final_verdict": "LAYER2_CANONICAL_CONTRACT = READY"
+}

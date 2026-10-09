@@ -1,0 +1,130 @@
+{
+  "execution_metadata": {
+    "timestamp_utc": "2026-10-08T19:17:25Z",
+    "runtime_seconds": 51.793,
+    "peak_memory_mb": 344.3,
+    "max_speed_threshold_mps": 45.0,
+    "max_time_threshold_seconds": 120.0
+  },
+  "dataset_scale": {
+    "total_cameras": 65,
+    "total_tracklets": 7448,
+    "theoretical_global_pairs": 27732628,
+    "theoretical_intra_scenario_pairs": 9160912,
+    "cross_scenario_pairs_eliminated": 18571716
+  },
+  "candidate_generation_metrics": {
+    "candidate_pairs_generated": 3780333,
+    "intra_scenario_pairs_rejected": 5380579,
+    "reduction_percentage_vs_global": 86.3686,
+    "reduction_percentage_vs_intra_scenario": 58.7341,
+    "rejection_breakdown": {
+      "REJECT_SAME_CAMERA": 741750,
+      "REJECT_EXCEED_MAX_TIME": 3286519,
+      "REJECT_EXCESSIVE_SPEED": 834814,
+      "REJECT_NEGATIVE_TIME": 517496
+    }
+  },
+  "scenario_breakdown": {
+    "S01": {
+      "tracklet_count": 625,
+      "theoretical_pairs": 195000,
+      "candidate_pairs": 127464,
+      "rejected_pairs": 67536,
+      "reduction_percentage": 34.63,
+      "rejection_breakdown": {
+        "REJECT_SAME_CAMERA": 39309,
+        "REJECT_EXCEED_MAX_TIME": 28227
+      },
+      "runtime_seconds": 1.347
+    },
+    "S02": {
+      "tracklet_count": 730,
+      "theoretical_pairs": 266085,
+      "candidate_pairs": 162756,
+      "rejected_pairs": 103329,
+      "reduction_percentage": 38.83,
+      "rejection_breakdown": {
+        "REJECT_SAME_CAMERA": 67444,
+        "REJECT_EXCEED_MAX_TIME": 35885
+      },
+      "runtime_seconds": 1.696
+    },
+    "S03": {
+      "tracklet_count": 219,
+      "theoretical_pairs": 23871,
+      "candidate_pairs": 16894,
+      "rejected_pairs": 6977,
+      "reduction_percentage": 29.23,
+      "rejection_breakdown": {
+        "REJECT_SAME_CAMERA": 4182,
+        "REJECT_EXCESSIVE_SPEED": 137,
+        "REJECT_EXCEED_MAX_TIME": 2658
+      },
+      "runtime_seconds": 0.158
+    },
+    "S04": {
+      "tracklet_count": 781,
+      "theoretical_pairs": 304590,
+      "candidate_pairs": 222006,
+      "rejected_pairs": 82584,
+      "reduction_percentage": 27.11,
+      "rejection_breakdown": {
+        "REJECT_SAME_CAMERA": 14272,
+        "REJECT_EXCESSIVE_SPEED": 18897,
+        "REJECT_EXCEED_MAX_TIME": 32664,
+        "REJECT_NEGATIVE_TIME": 16751
+      },
+      "runtime_seconds": 2.129
+    },
+    "S05": {
+      "tracklet_count": 3921,
+      "theoretical_pairs": 7685160,
+      "candidate_pairs": 2975518,
+      "rejected_pairs": 4709642,
+      "reduction_percentage": 61.28,
+      "rejection_breakdown": {
+        "REJECT_SAME_CAMERA": 498620,
+        "REJECT_NEGATIVE_TIME": 471763,
+        "REJECT_EXCESSIVE_SPEED": 642329,
+        "REJECT_EXCEED_MAX_TIME": 3096930
+      },
+      "runtime_seconds": 41.178
+    },
+    "S06": {
+      "tracklet_count": 1172,
+      "theoretical_pairs": 686206,
+      "candidate_pairs": 275695,
+      "rejected_pairs": 410511,
+      "reduction_percentage": 59.82,
+      "rejection_breakdown": {
+        "REJECT_NEGATIVE_TIME": 28982,
+        "REJECT_SAME_CAMERA": 117923,
+        "REJECT_EXCESSIVE_SPEED": 173451,
+        "REJECT_EXCEED_MAX_TIME": 90155
+      },
+      "runtime_seconds": 3.699
+    }
+  },
+  "special_subsystem_handling": {
+    "cam_s01_c002_reid": {
+      "model": "osnet_x0_25_msmt17",
+      "compatibility_status": "Strictly marked incompatible (compatible=False) against AICity vehicle cameras; appearance cosine similarity prohibited.",
+      "preserved_as_candidates": true
+    },
+    "missing_embeddings": {
+      "total_missing_in_dataset": 868,
+      "handling": "Missing appearance embedding does NOT disqualify candidate pairs; preserved as candidates for multimodal fusion."
+    },
+    "anpr_ocr": {
+      "handling": "Plate availability flags carried in metadata; no identity decisions or filtering made at retrieval stage."
+    },
+    "vehicle_type": {
+      "handling": "Type agreement carried as evidence metadata (EXACT_MATCH vs MISMATCH); mismatch does not disqualify candidate pairs."
+    }
+  },
+  "recall_evaluation": {
+    "status": "CANDIDATE RECALL NOT MEASURED",
+    "statement": "Candidate recall is not claimed or fabricated because evaluation against ground-truth vehicle identities belongs to the downstream association evaluation stage."
+  }
+}

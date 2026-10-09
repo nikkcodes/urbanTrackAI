@@ -1,0 +1,89 @@
+{
+  "speed_sensitivity": [
+    {
+      "speed_threshold_mps": 20.0,
+      "speed_threshold_kmh": 72.0,
+      "candidate_count": 5914668,
+      "reduction_percentage_global": 78.67,
+      "s01_gt_recovered": 101,
+      "s01_gt_recall_pct": 32.79
+    },
+    {
+      "speed_threshold_mps": 30.0,
+      "speed_threshold_kmh": 108.0,
+      "candidate_count": 6469444,
+      "reduction_percentage_global": 76.67,
+      "s01_gt_recovered": 108,
+      "s01_gt_recall_pct": 35.06
+    },
+    {
+      "speed_threshold_mps": 40.0,
+      "speed_threshold_kmh": 144.0,
+      "candidate_count": 6763250,
+      "reduction_percentage_global": 75.61,
+      "s01_gt_recovered": 108,
+      "s01_gt_recall_pct": 35.06
+    },
+    {
+      "speed_threshold_mps": 45.0,
+      "speed_threshold_kmh": 162.0,
+      "candidate_count": 6863626,
+      "reduction_percentage_global": 75.25,
+      "s01_gt_recovered": 109,
+      "s01_gt_recall_pct": 35.39
+    },
+    {
+      "speed_threshold_mps": 50.0,
+      "speed_threshold_kmh": 180.0,
+      "candidate_count": 6945301,
+      "reduction_percentage_global": 74.96,
+      "s01_gt_recovered": 112,
+      "s01_gt_recall_pct": 36.36
+    },
+    {
+      "speed_threshold_mps": 60.0,
+      "speed_threshold_kmh": 216.0,
+      "candidate_count": 7067787,
+      "reduction_percentage_global": 74.51,
+      "s01_gt_recovered": 112,
+      "s01_gt_recall_pct": 36.36
+    }
+  ],
+  "gap_sensitivity": [
+    {
+      "max_temporal_gap_seconds": 30.0,
+      "candidate_count": 585368,
+      "reduction_percentage_global": 97.89,
+      "s01_gt_recovered": 92,
+      "s01_gt_recall_pct": 29.87
+    },
+    {
+      "max_temporal_gap_seconds": 60.0,
+      "candidate_count": 1635375,
+      "reduction_percentage_global": 94.1,
+      "s01_gt_recovered": 107,
+      "s01_gt_recall_pct": 34.74
+    },
+    {
+      "max_temporal_gap_seconds": 120.0,
+      "candidate_count": 3577107,
+      "reduction_percentage_global": 87.1,
+      "s01_gt_recovered": 109,
+      "s01_gt_recall_pct": 35.39
+    },
+    {
+      "max_temporal_gap_seconds": 300.0,
+      "candidate_count": 6547416,
+      "reduction_percentage_global": 76.39,
+      "s01_gt_recovered": 109,
+      "s01_gt_recall_pct": 35.39
+    },
+    {
+      "max_temporal_gap_seconds": "CURRENT_PRODUCTION (UNBOUNDED)",
+      "candidate_count": 6863626,
+      "reduction_percentage_global": 75.25,
+      "s01_gt_recovered": 109,
+      "s01_gt_recall_pct": 35.39
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "experiment_name": "c002_aicity_reid_extraction",
+  "timestamp_utc": "2026-10-08T17:10:04.734376+00:00",
+  "source_video_path": "/Users/yanalavivekreddy/Downloads/AICity22_Track1_MTMC_Tracking/train/S01/c002/vdo.avi",
+  "source_observations_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/UrbanTrack_Member1_Handoff/output/CAM_S01_C002/observations.json",
+  "source_trajectories_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/UrbanTrack_Member1_Handoff/output/CAM_S01_C002/trajectories.json",
+  "checkpoint_path": "/Users/yanalavivekreddy/Projects/urbantrack-ai/UrbanTrack_Member1_Handoff/osnet_x0_25_aicity_best.pth",
+  "model_name": "osnet_x0_25",
+  "reid_model": "osnet_x0_25_aicity",
+  "embedding_dim": 512,
+  "extraction_semantics": "First-appearance frame crop frame[y1:y2, x1:x2], gate min_size >= 32x32, 256x128 bilinear resize, ImageNet normalization, 512-D L2-normalized vector",
+  "total_c002_tracks": 125,
+  "successful_embeddings": 115,
+  "failed_embeddings": 10,
+  "failed_track_ids": [
+    281,
+    433,
+    455,
+    523,
+    527,
+    541,
+    552,
+    558,
+    560,
+    603
+  ],
+  "failure_reasons": {
+    "281": "Crop dimensions (41x30) below minimum gate 32x32",
+    "433": "Crop dimensions (41x31) below minimum gate 32x32",
+    "455": "Crop dimensions (44x28) below minimum gate 32x32",
+    "523": "Crop dimensions (51x28) below minimum gate 32x32",
+    "527": "Crop dimensions (37x29) below minimum gate 32x32",
+    "541": "Crop dimensions (51x31) below minimum gate 32x32",
+    "552": "Crop dimensions (40x31) below minimum gate 32x32",
+    "558": "Crop dimensions (49x31) below minimum gate 32x32",
+    "560": "Crop dimensions (47x31) below minimum gate 32x32",
+    "603": "Crop dimensions (47x29) below minimum gate 32x32"
+  },
+  "environment_metadata": {
+    "python_version": "3.13.5",
+    "torch_version": "2.14.1",
+    "torchvision_version": "0.29.1",
+    "torchreid_version": "0.2.5",
+    "opencv_version": "5.0.0",
+    "device": "cpu",
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "machine": "arm64"
+  },
+  "baseline_verification": {
+    "immutability_verified": true,
+    "baseline_sha256": {
+      "observations": "e24e3f9238214070aa94a56a26566d778ad64fac77b205375b6468be044373f4",
+      "trajectories": "48d30e26d16168ee3215639aff3c5a33c39f27ae5e95ff788591639ab1fd06de",
+      "checkpoint": "06b502be83d0881d501c6cdfe73947a28452b51a3bd14d0525e6f879815a3dc5",
+      "extractor": "c06cf7714f4595a8ca8760672f6c4e45009dd2ed71c528eccb8e54a83f914652"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "dataset": "AI City Challenge 2022 Track 1 / CityFlowV2 S01",
+  "total_gt_positives": 308,
+  "gt_positives_reaching_fusion": 308,
+  "candidate_recall_percentage": 100.0,
+  "gt_decision_breakdown": {
+    "CONFIRMED": 34,
+    "AMBIGUOUS": 274,
+    "REJECTED": 0
+  },
+  "confusion_matrix": {
+    "TP_confirmed_gt": 34,
+    "FP_false_merge": 3584,
+    "FN_rejected_gt": 0,
+    "TN_rejected_neg": 1389,
+    "ambiguous_gt_preserved": 274,
+    "ambiguous_neg_preserved": 122183
+  },
+  "metrics": {
+    "precision_percentage": 0.94,
+    "confirmed_recall_percentage": 11.04,
+    "permissive_recall_percentage": 100.0,
+    "f1_score": 0.0173,
+    "false_merge_rate_percentage": 99.06,
+    "cluster_purity_percentage": 0.94
+  }
+}

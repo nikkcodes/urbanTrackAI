@@ -1,0 +1,55 @@
+{
+  "validation_timestamp_utc": "2026-10-08T19:17:25Z",
+  "invariants_verified": {
+    "NO_CROSS_SCENARIO_CANDIDATES": {
+      "passed": true,
+      "cross_scenario_candidates_detected": 0,
+      "cross_scenario_pairs_eliminated": 18571716
+    },
+    "SAME_CAMERA_EXCLUSION": {
+      "passed": true,
+      "same_camera_candidates_detected": 0,
+      "same_camera_pairs_rejected": 741750
+    },
+    "CHRONOLOGICAL_ORDERING_AND_NEGATIVE_TIME": {
+      "passed": true,
+      "negative_time_candidates_detected": 0,
+      "negative_time_pairs_rejected": 517496,
+      "reverse_direction_bug_prevented": true
+    },
+    "BOUNDARY_ZERO_TIME_EXCLUSION": {
+      "passed": true,
+      "zero_time_candidates_detected": 0,
+      "zero_time_pairs_rejected": 0
+    },
+    "SPEED_FEASIBILITY_ENVELOPE": {
+      "passed": true,
+      "excessive_speed_candidates_detected": 0,
+      "excessive_speed_pairs_rejected": 834814,
+      "max_speed_mps": 45.0
+    },
+    "REJECTION_LEDGER_INTEGRITY": {
+      "passed": true,
+      "all_rejections_have_machine_readable_reason_code": true,
+      "all_rejections_have_reason_detail": true
+    },
+    "C002_INCOMPATIBLE_REID_PRESERVATION": {
+      "passed": true,
+      "c002_tracklets_preserved_without_rejection": true,
+      "direct_cross_model_cosine_similarity_avoided": true
+    },
+    "MISSING_EMBEDDING_PRESERVATION": {
+      "passed": true,
+      "missing_embedding_tracklets_preserved_without_rejection": true
+    },
+    "VEHICLE_TYPE_TOLERANCE": {
+      "passed": true,
+      "vehicle_type_mismatches_preserved_as_candidates": true
+    },
+    "DETERMINISTIC_EXECUTION": {
+      "passed": true,
+      "deterministic_sorting_keys_used": true
+    }
+  },
+  "overall_status": "PASS"
+}

@@ -1,0 +1,517 @@
+{
+  "audit_metadata": {
+    "audit_name": "UrbanTrack AI Layer 1 to Layer 2 Input Boundary Audit",
+    "timestamp": "2026-10-08T23:37:00Z",
+    "input_directory": "UrbanTrack_Member1_Handoff 2",
+    "audit_status": "PASS",
+    "classification": "B = READY WITH KNOWN LIMITATIONS"
+  },
+  "1_camera_inventory": {
+    "total_streams": 65,
+    "expected_streams": 65,
+    "streams_confirmed": true,
+    "scenario_counts": {
+      "S01": 5,
+      "S02": 4,
+      "S03": 6,
+      "S04": 25,
+      "S05": 19,
+      "S06": 6
+    },
+    "unique_numeric_cameras": 46,
+    "reused_numeric_cameras": {
+      "C010": [
+        "S03",
+        "S05"
+      ],
+      "C016": [
+        "S04",
+        "S05"
+      ],
+      "C017": [
+        "S04",
+        "S05"
+      ],
+      "C018": [
+        "S04",
+        "S05"
+      ],
+      "C019": [
+        "S04",
+        "S05"
+      ],
+      "C020": [
+        "S04",
+        "S05"
+      ],
+      "C021": [
+        "S04",
+        "S05"
+      ],
+      "C022": [
+        "S04",
+        "S05"
+      ],
+      "C023": [
+        "S04",
+        "S05"
+      ],
+      "C024": [
+        "S04",
+        "S05"
+      ],
+      "C025": [
+        "S04",
+        "S05"
+      ],
+      "C026": [
+        "S04",
+        "S05"
+      ],
+      "C027": [
+        "S04",
+        "S05"
+      ],
+      "C028": [
+        "S04",
+        "S05"
+      ],
+      "C029": [
+        "S04",
+        "S05"
+      ],
+      "C033": [
+        "S04",
+        "S05"
+      ],
+      "C034": [
+        "S04",
+        "S05"
+      ],
+      "C035": [
+        "S04",
+        "S05"
+      ],
+      "C036": [
+        "S04",
+        "S05"
+      ]
+    },
+    "scenario_qualified_ids_unique": true
+  },
+  "2_required_files": {
+    "per_camera_file_counts": {
+      "observations.json": 65,
+      "trajectories.json": 65,
+      "perception_summary.json": 65,
+      "camera_metrics.json": 65
+    },
+    "total_expected_per_file": 65,
+    "missing_files": {
+      "observations.json": [],
+      "trajectories.json": [],
+      "perception_summary.json": [],
+      "camera_metrics.json": []
+    },
+    "config_files": {
+      "camera_graph.json": {
+        "exists": true,
+        "size_bytes": 47646
+      },
+      "camera_locations.json": {
+        "exists": true,
+        "size_bytes": 47182
+      },
+      "aicity_manifest.json": {
+        "exists": true,
+        "size_bytes": 35216
+      }
+    }
+  },
+  "3_trajectories_schema": {
+    "total_tracks": 7448,
+    "keys_present_across_all_tracks": [
+      "appearance_embedding",
+      "average_velocity_px",
+      "duration_frames",
+      "embedding_dim",
+      "embedding_quality",
+      "end_frame",
+      "reid_model",
+      "start_frame",
+      "track_id",
+      "trajectory",
+      "trajectory_length",
+      "vehicle_type"
+    ],
+    "missing_expected_fields_in_schema": [
+      "start_timestamp",
+      "end_timestamp",
+      "velocity_vector",
+      "direction_heading",
+      "license_plate",
+      "ocr_text",
+      "detection_confidence"
+    ],
+    "key_presence_and_null_rates": {
+      "appearance_embedding": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 868,
+        "null_pct": 11.65
+      },
+      "average_velocity_px": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "duration_frames": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "embedding_dim": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "embedding_quality": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 868,
+        "null_pct": 11.65
+      },
+      "end_frame": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "reid_model": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "start_frame": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "track_id": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "trajectory": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "trajectory_length": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "vehicle_type": {
+        "present_count": 7448,
+        "present_pct": 100.0,
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    }
+  },
+  "4_reid_compatibility": {
+    "total_tracks": 7448,
+    "tracks_with_embeddings": 6580,
+    "tracks_without_embeddings": 868,
+    "overall_embedding_coverage_pct": 88.35,
+    "overall_missing_embedding_pct": 11.65,
+    "reid_models": {
+      "osnet_x0_25_aicity": 7323,
+      "osnet_x0_25_msmt17": 125
+    },
+    "model_compatibility_groups": {
+      "group_1_aicity_vehicle": {
+        "model": "osnet_x0_25_aicity",
+        "cameras_count": 64,
+        "tracks_count": 7323,
+        "valid_embeddings": 6465,
+        "null_embeddings": 858,
+        "dimension": 512,
+        "status": "MUTUALLY_COMPATIBLE"
+      },
+      "group_2_msmt17_person": {
+        "model": "osnet_x0_25_msmt17",
+        "cameras_count": 1,
+        "cameras": [
+          "CAM_S01_C002"
+        ],
+        "tracks_count": 125,
+        "valid_embeddings": 115,
+        "null_embeddings": 10,
+        "dimension": 512,
+        "status": "INCOMPATIBLE_WITH_AICITY"
+      }
+    },
+    "critical_finding": "CAM_S01_C002 in frozen baseline handoff uses MSMT17 weights, incompatible with AICity fine-tuned weights in the other 64 cameras."
+  },
+  "5_temporal_data": {
+    "frame_number_present": true,
+    "raw_video_timestamp_present": true,
+    "timestamp_format": "HH:MM:SS.mmm",
+    "fps_present": true,
+    "fps_distribution": {
+      "10.0": 64,
+      "8.0": 1
+    },
+    "synchronized_timestamp_present_in_layer1": false,
+    "synchronized_timestamp_cameras_count": 0,
+    "layer2_requirement": "Layer 2 must ingest external scenario start offsets (cam_timestamp/<SCENARIO>.txt) and compute synchronized timestamps."
+  },
+  "6_spatial_gis_data": {
+    "camera_locations_file": "data/config/camera_locations.json",
+    "camera_locations_count": 65,
+    "coordinate_system": "WGS84 decimal degrees (latitude, longitude)",
+    "bounding_box": "Dubuque, Iowa [42.40N - 42.60N, -90.80W - -90.60W]",
+    "calibration_homographies_in_handoff": false,
+    "calibration_path_reference": "Provided via aicity_manifest.json pointing to external dataset root",
+    "projected_vehicle_wgs84_in_json": false,
+    "raw_vehicle_coordinates": "2D image sensor pixels (bbox, centroid, trajectory)",
+    "gis_projection_utility_present": true
+  },
+  "7_camera_graph": {
+    "total_nodes": 65,
+    "total_edges": 170,
+    "reciprocal_directed_edges": 168,
+    "one_way_directed_edges": 2,
+    "one_way_edge_details": [
+      {
+        "source": "CAM_S02_C007",
+        "target": "CAM_S02_C009",
+        "dist_m": 30.1
+      },
+      {
+        "source": "CAM_S02_C009",
+        "target": "CAM_S02_C006",
+        "dist_m": 29.1
+      }
+    ],
+    "relationship_semantics": "possible_transition",
+    "soft_prior_guidance": "Edges represent physical road topology corridors and must be used as a soft prior, never as a hard pruning filter.",
+    "edges_by_scenario": {
+      "S01": 18,
+      "S02": 10,
+      "S03": 14,
+      "S04": 66,
+      "S06": 12,
+      "S05": 50
+    },
+    "distance_m": {
+      "min": 7.3,
+      "max": 1256.4,
+      "mean": 179.7
+    }
+  },
+  "8_ocr_data": {
+    "total_plates_detected": 364968,
+    "total_ocr_attempts": 364968,
+    "total_ocr_successes": 39408,
+    "total_ocr_failures": 325560,
+    "overall_ocr_success_rate_pct": 10.8,
+    "cameras_with_readable_ocr_count": 48,
+    "cameras_with_plates_but_zero_ocr_count": 17,
+    "cameras_with_zero_plates_count": 0,
+    "cameras_with_zero_ocr_list": [
+      "CAM_S02_C009",
+      "CAM_S03_C010",
+      "CAM_S03_C011",
+      "CAM_S04_C017",
+      "CAM_S04_C018",
+      "CAM_S04_C019",
+      "CAM_S04_C020",
+      "CAM_S04_C024",
+      "CAM_S04_C025",
+      "CAM_S04_C033",
+      "CAM_S04_C035",
+      "CAM_S05_C023",
+      "CAM_S05_C035",
+      "CAM_S06_C041",
+      "CAM_S06_C042",
+      "CAM_S06_C045",
+      "CAM_S06_C046"
+    ],
+    "ocr_fields_in_trajectories": false,
+    "ocr_fields_in_observations": true,
+    "layer2_requirement": "OCR is sparse (10.8% overall, 17 cams zero success). Layer 2 must aggregate frame plates to track level and use OCR as opportunistic bonus."
+  },
+  "9_data_integrity": {
+    "duplicate_track_ids_in_trajectories": {},
+    "duplicate_obs_ids_in_observations": {},
+    "invalid_timestamps": {},
+    "invalid_bboxes": {},
+    "nan_inf_embeddings_count": 0,
+    "wrong_dim_embeddings_count": 0,
+    "norm_not_one_count": 0,
+    "zero_norm_count": 0,
+    "schema_inconsistencies": []
+  },
+  "10_scale_metrics": {
+    "total_cameras": 65,
+    "total_tracklets": 7448,
+    "total_observations": 761935,
+    "total_frames": 128538,
+    "total_embeddings": 6580,
+    "total_plates_detected": 364968,
+    "total_ocr_texts": 39408,
+    "largest_camera_by_observations": {
+      "camera_id": "CAM_S05_C022",
+      "observations": 47046,
+      "tracks": 153
+    },
+    "largest_camera_by_tracks": {
+      "camera_id": "CAM_S05_C033",
+      "tracks": 384,
+      "observations": 40854
+    },
+    "scenario_breakdown": {
+      "S01": {
+        "cams": 5,
+        "tracks": 625,
+        "observations": 41888,
+        "frames": 10281,
+        "embeddings": 491,
+        "null_embeddings": 134,
+        "plates": 18978,
+        "ocr_success": 1509
+      },
+      "S02": {
+        "cams": 4,
+        "tracks": 730,
+        "observations": 35268,
+        "frames": 8109,
+        "embeddings": 618,
+        "null_embeddings": 112,
+        "plates": 16724,
+        "ocr_success": 1404
+      },
+      "S03": {
+        "cams": 6,
+        "tracks": 219,
+        "observations": 62048,
+        "frames": 13517,
+        "embeddings": 211,
+        "null_embeddings": 8,
+        "plates": 37990,
+        "ocr_success": 8487
+      },
+      "S04": {
+        "cams": 25,
+        "tracks": 781,
+        "observations": 79482,
+        "frames": 10780,
+        "embeddings": 728,
+        "null_embeddings": 53,
+        "plates": 40102,
+        "ocr_success": 2694
+      },
+      "S05": {
+        "cams": 19,
+        "tracks": 3921,
+        "observations": 476569,
+        "frames": 73845,
+        "embeddings": 3741,
+        "null_embeddings": 180,
+        "plates": 238139,
+        "ocr_success": 25312
+      },
+      "S06": {
+        "cams": 6,
+        "tracks": 1172,
+        "observations": 66680,
+        "frames": 12006,
+        "embeddings": 791,
+        "null_embeddings": 381,
+        "plates": 13035,
+        "ocr_success": 2
+      }
+    }
+  },
+  "11_layer_boundary": {
+    "available_from_layer_1": [
+      "65 scenario-qualified video stream outputs (S01-S06)",
+      "Per-camera detections, bboxes, centroids, pixel velocities, and directions in observations.json",
+      "Per-camera ByteTrack tracklets with pixel trajectory paths in trajectories.json",
+      "512-D L2-normalized OSNet appearance embeddings for 88.35% of tracks",
+      "Per-frame environmental quality metrics and camera reliability scores",
+      "Static georeferenced WGS84 camera locations and bearings in camera_locations.json",
+      "Static camera network transition topology graph (170 edges) in camera_graph.json",
+      "Dataset manifest and homography GIS projection utility"
+    ],
+    "must_be_implemented_by_layer_2": [
+      "Multi-camera timestamp synchronization via scenario offset ingestion",
+      "FPS normalization for frame-to-time conversion (handling 8.0 FPS CAM_S03_C015)",
+      "Tracklet-level OCR aggregation and string normalization from observations.json",
+      "Spatio-temporal velocity windowing and direction-aware temporal feasibility gating",
+      "Soft topological prior integration using camera_graph.json transition distances",
+      "Cross-camera appearance association using 512-D cosine similarity in compatible AICity space",
+      "Explicit fallback strategy for CAM_S01_C002 MSMT17 embedding incompatibility",
+      "Multi-modal fusion (appearance + spatio-temporal + topology + OCR)",
+      "Global identity assignment (Hungarian / Linear Assignment) across cameras",
+      "Scenario partitioning (strict isolation of S01-S06 to prevent cross-scenario collision)",
+      "Generation of multicam_intelligence.json and cross-camera vehicle journey graphs"
+    ]
+  },
+  "12_critical_blockers_and_limitations": {
+    "blockers": [],
+    "known_limitations": [
+      {
+        "limitation_id": "LIM-01",
+        "title": "C002 Re-ID Embedding Space Incompatibility",
+        "description": "CAM_S01_C002 uses osnet_x0_25_msmt17 while all other 64 cameras use osnet_x0_25_aicity. Direct cosine similarity in S01 involving C002 is mathematically invalid in the frozen baseline.",
+        "mitigation": "Layer 2 must either use the isolated C002 AICity re-extraction experiment (Step 8) or rely on spatio-temporal/OCR matching for C002 in S01."
+      },
+      {
+        "limitation_id": "LIM-02",
+        "title": "Absence of Synchronized Timestamps in Perception JSONs",
+        "description": "All timestamps in observations.json are raw video-relative strings (HH:MM:SS.mmm). Synchronized timestamps are not provided.",
+        "mitigation": "Layer 2 must ingest cam_timestamp/<SCENARIO>.txt and apply offsets to frame timestamps."
+      },
+      {
+        "limitation_id": "LIM-03",
+        "title": "Absence of Timestamps and OCR in trajectories.json",
+        "description": "trajectories.json only contains frame indices (start_frame, end_frame) and lacks timestamps and plate text.",
+        "mitigation": "Layer 2 must ingest both trajectories.json and observations.json, joining on (camera_id, track_id)."
+      },
+      {
+        "limitation_id": "LIM-04",
+        "title": "Sparse OCR Availability",
+        "description": "Only 10.8% of plate detections yield readable text, and 17 cameras have 0 readable OCR.",
+        "mitigation": "Layer 2 must treat OCR as an opportunistic verification bonus, never a mandatory gating requirement."
+      },
+      {
+        "limitation_id": "LIM-05",
+        "title": "Null Appearance Embeddings on Short/Edge Tracklets",
+        "description": "868 tracklets (11.65%) have appearance_embedding = null due to extreme occlusion, blur, or edge bounding boxes.",
+        "mitigation": "Layer 2 must support spatio-temporal + topology fallback for tracklets lacking embeddings."
+      },
+      {
+        "limitation_id": "LIM-06",
+        "title": "Heterogeneous Frame Rate in S03",
+        "description": "CAM_S03_C015 operates at 8.0 FPS while all other 64 cameras operate at 10.0 FPS.",
+        "mitigation": "Layer 2 must use camera-specific FPS from perception_summary.json or observations.json rather than assuming constant 10.0 FPS."
+      }
+    ]
+  },
+  "audit_conclusion": {
+    "final_classification": "B = READY WITH KNOWN LIMITATIONS",
+    "verdict": "LAYER2_INPUT_AUDIT = PASS"
+  }
+}

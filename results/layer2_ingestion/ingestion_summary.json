@@ -1,0 +1,43 @@
+{
+  "status": "READY",
+  "provenance": {
+    "source_layer1_root": "UrbanTrack_Member1_Handoff 2",
+    "timestamp_metadata_root": "data/cityflowv2/cam_timestamp",
+    "contract_version": "1.0.0",
+    "generation_timestamp": "2026-10-08T18:24:22Z"
+  },
+  "scale": {
+    "total_cameras": 65,
+    "total_tracklets": 7448,
+    "total_observations_joined": 761935,
+    "runtime_seconds": 7.37,
+    "peak_memory_mb": 755.14
+  },
+  "breakdown": {
+    "scenario_tracklet_counts": {
+      "S01": 625,
+      "S02": 730,
+      "S03": 219,
+      "S04": 781,
+      "S05": 3921,
+      "S06": 1172
+    },
+    "reid_compatibility_groups": {
+      "AICITY_VEHICLE_V1": 6465,
+      "NONE": 868,
+      "MSMT17_PERSON_BASELINE": 115
+    },
+    "embeddings_present": 6580,
+    "embeddings_null": 868,
+    "plate_detections_count": 5361,
+    "readable_ocr_count": 8
+  },
+  "synchronization": {
+    "cameras_synchronized": 65,
+    "offsets_applied": true,
+    "heterogeneous_fps_handled": true
+  },
+  "join_failures_count": 0,
+  "join_failures": [],
+  "validation_status": "PASS"
+}

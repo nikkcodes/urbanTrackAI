@@ -1,0 +1,850 @@
+{
+  "accounting_verification": {
+    "global_theoretical_calculated": 27732628,
+    "global_theoretical_reported": 27732628,
+    "sum_cross_plus_intra": 27732628,
+    "global_accounting_match": true,
+    "intra_theoretical_calculated": 9160912,
+    "sum_intra_components": 9160912,
+    "intra_accounting_match": true,
+    "components": {
+      "cross_scenario_eliminated": 18571716,
+      "same_camera_rejected": 741750,
+      "negative_time_rejected": 712742,
+      "zero_time_rejected": 4019,
+      "excessive_speed_rejected": 838775,
+      "candidate_pairs": 6863626
+    }
+  },
+  "scenario_breakdown": {
+    "S01": {
+      "tracklet_count": 625,
+      "camera_count": 5,
+      "theoretical_intra_scenario_pairs": 195000,
+      "same_camera_pairs": 39309,
+      "negative_time_pairs": 12394,
+      "zero_time_pairs": 0,
+      "excessive_speed_pairs": 938,
+      "candidates": 142359,
+      "candidate_percentage": 73.0,
+      "runtime_seconds": 1.357
+    },
+    "S02": {
+      "tracklet_count": 730,
+      "camera_count": 4,
+      "theoretical_intra_scenario_pairs": 266085,
+      "same_camera_pairs": 67444,
+      "negative_time_pairs": 13105,
+      "zero_time_pairs": 0,
+      "excessive_speed_pairs": 1082,
+      "candidates": 184454,
+      "candidate_percentage": 69.32,
+      "runtime_seconds": 1.666
+    },
+    "S03": {
+      "tracklet_count": 219,
+      "camera_count": 6,
+      "theoretical_intra_scenario_pairs": 23871,
+      "same_camera_pairs": 4182,
+      "negative_time_pairs": 5983,
+      "zero_time_pairs": 0,
+      "excessive_speed_pairs": 184,
+      "candidates": 13522,
+      "candidate_percentage": 56.65,
+      "runtime_seconds": 0.139
+    },
+    "S04": {
+      "tracklet_count": 781,
+      "camera_count": 25,
+      "theoretical_intra_scenario_pairs": 304590,
+      "same_camera_pairs": 14272,
+      "negative_time_pairs": 36315,
+      "zero_time_pairs": 0,
+      "excessive_speed_pairs": 19185,
+      "candidates": 234818,
+      "candidate_percentage": 77.09,
+      "runtime_seconds": 2.009
+    },
+    "S05": {
+      "tracklet_count": 3921,
+      "camera_count": 19,
+      "theoretical_intra_scenario_pairs": 7685160,
+      "same_camera_pairs": 498620,
+      "negative_time_pairs": 598701,
+      "zero_time_pairs": 3452,
+      "excessive_speed_pairs": 643935,
+      "candidates": 5940452,
+      "candidate_percentage": 77.3,
+      "runtime_seconds": 52.945
+    },
+    "S06": {
+      "tracklet_count": 1172,
+      "camera_count": 6,
+      "theoretical_intra_scenario_pairs": 686206,
+      "same_camera_pairs": 117923,
+      "negative_time_pairs": 46244,
+      "zero_time_pairs": 567,
+      "excessive_speed_pairs": 173451,
+      "candidates": 348021,
+      "candidate_percentage": 50.72,
+      "runtime_seconds": 4.474
+    }
+  },
+  "top20_camera_pairs_by_count": [
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C033",
+      "scenario_id": "S05",
+      "candidate_count": 67891,
+      "rejection_count": 6237,
+      "candidate_rate_pct": 91.59,
+      "minimum_delta_t_sec": 3.8,
+      "median_delta_t_sec": 134.95,
+      "maximum_delta_t_sec": 337.7,
+      "camera_distance_m": 169.16,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C029",
+      "scenario_id": "S05",
+      "candidate_count": 62081,
+      "rejection_count": 6457,
+      "candidate_rate_pct": 90.58,
+      "minimum_delta_t_sec": 6.4,
+      "median_delta_t_sec": 146.35,
+      "maximum_delta_t_sec": 353.2,
+      "camera_distance_m": 286.05,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C033",
+      "destination_camera": "CAM_S05_C029",
+      "scenario_id": "S05",
+      "candidate_count": 61929,
+      "rejection_count": 6158,
+      "candidate_rate_pct": 90.96,
+      "minimum_delta_t_sec": 2.7,
+      "median_delta_t_sec": 143.05,
+      "maximum_delta_t_sec": 352.7,
+      "camera_distance_m": 119.28,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C029",
+      "destination_camera": "CAM_S05_C033",
+      "scenario_id": "S05",
+      "candidate_count": 61734,
+      "rejection_count": 4579,
+      "candidate_rate_pct": 93.09,
+      "minimum_delta_t_sec": 2.7,
+      "median_delta_t_sec": 133.15,
+      "maximum_delta_t_sec": 334.9,
+      "camera_distance_m": 119.28,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C033",
+      "destination_camera": "CAM_S05_C036",
+      "scenario_id": "S05",
+      "candidate_count": 59578,
+      "rejection_count": 6838,
+      "candidate_rate_pct": 89.7,
+      "minimum_delta_t_sec": 3.8,
+      "median_delta_t_sec": 122.7,
+      "maximum_delta_t_sec": 339.4,
+      "camera_distance_m": 169.16,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C033",
+      "destination_camera": "CAM_S05_C021",
+      "scenario_id": "S05",
+      "candidate_count": 57170,
+      "rejection_count": 15313,
+      "candidate_rate_pct": 78.87,
+      "minimum_delta_t_sec": 35.2,
+      "median_delta_t_sec": 214.05,
+      "maximum_delta_t_sec": 398.0,
+      "camera_distance_m": 1582.31,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C021",
+      "scenario_id": "S05",
+      "candidate_count": 56516,
+      "rejection_count": 15386,
+      "candidate_rate_pct": 78.6,
+      "minimum_delta_t_sec": 38.9,
+      "median_delta_t_sec": 217.2,
+      "maximum_delta_t_sec": 398.5,
+      "camera_distance_m": 1748.21,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C034",
+      "destination_camera": "CAM_S05_C033",
+      "scenario_id": "S05",
+      "candidate_count": 54095,
+      "rejection_count": 5923,
+      "candidate_rate_pct": 90.13,
+      "minimum_delta_t_sec": 3.1,
+      "median_delta_t_sec": 128.7,
+      "maximum_delta_t_sec": 335.7,
+      "camera_distance_m": 135.2,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C029",
+      "destination_camera": "CAM_S05_C036",
+      "scenario_id": "S05",
+      "candidate_count": 53998,
+      "rejection_count": 5564,
+      "candidate_rate_pct": 90.66,
+      "minimum_delta_t_sec": 6.4,
+      "median_delta_t_sec": 128.1,
+      "maximum_delta_t_sec": 337.1,
+      "camera_distance_m": 286.05,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C034",
+      "scenario_id": "S05",
+      "candidate_count": 53420,
+      "rejection_count": 4060,
+      "candidate_rate_pct": 92.94,
+      "minimum_delta_t_sec": 0.9,
+      "median_delta_t_sec": 153.75,
+      "maximum_delta_t_sec": 338.8,
+      "camera_distance_m": 37.58,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C029",
+      "destination_camera": "CAM_S05_C021",
+      "scenario_id": "S05",
+      "candidate_count": 53127,
+      "rejection_count": 12181,
+      "candidate_rate_pct": 81.35,
+      "minimum_delta_t_sec": 32.9,
+      "median_delta_t_sec": 212.25,
+      "maximum_delta_t_sec": 395.7,
+      "camera_distance_m": 1476.87,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C033",
+      "destination_camera": "CAM_S05_C034",
+      "scenario_id": "S05",
+      "candidate_count": 51431,
+      "rejection_count": 5671,
+      "candidate_rate_pct": 90.07,
+      "minimum_delta_t_sec": 3.1,
+      "median_delta_t_sec": 154.15,
+      "maximum_delta_t_sec": 338.3,
+      "camera_distance_m": 135.2,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C033",
+      "destination_camera": "CAM_S05_C027",
+      "scenario_id": "S05",
+      "candidate_count": 50395,
+      "rejection_count": 6788,
+      "candidate_rate_pct": 88.13,
+      "minimum_delta_t_sec": 12.1,
+      "median_delta_t_sec": 214.55,
+      "maximum_delta_t_sec": 380.6,
+      "camera_distance_m": 542.7,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C027",
+      "scenario_id": "S05",
+      "candidate_count": 49608,
+      "rejection_count": 6704,
+      "candidate_rate_pct": 88.09,
+      "minimum_delta_t_sec": 15.9,
+      "median_delta_t_sec": 217.5,
+      "maximum_delta_t_sec": 381.1,
+      "camera_distance_m": 711.71,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C034",
+      "destination_camera": "CAM_S05_C036",
+      "scenario_id": "S05",
+      "candidate_count": 49300,
+      "rejection_count": 4850,
+      "candidate_rate_pct": 91.04,
+      "minimum_delta_t_sec": 0.9,
+      "median_delta_t_sec": 124.3,
+      "maximum_delta_t_sec": 337.9,
+      "camera_distance_m": 37.58,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S05_C034",
+      "destination_camera": "CAM_S05_C029",
+      "scenario_id": "S05",
+      "candidate_count": 49296,
+      "rejection_count": 6082,
+      "candidate_rate_pct": 89.02,
+      "minimum_delta_t_sec": 5.7,
+      "median_delta_t_sec": 141.1,
+      "maximum_delta_t_sec": 351.2,
+      "camera_distance_m": 253.7,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C036",
+      "destination_camera": "CAM_S05_C035",
+      "scenario_id": "S05",
+      "candidate_count": 47958,
+      "rejection_count": 3369,
+      "candidate_rate_pct": 93.44,
+      "minimum_delta_t_sec": 0.6,
+      "median_delta_t_sec": 189.3,
+      "maximum_delta_t_sec": 344.7,
+      "camera_distance_m": 24.0,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C029",
+      "destination_camera": "CAM_S05_C027",
+      "scenario_id": "S05",
+      "candidate_count": 47077,
+      "rejection_count": 4527,
+      "candidate_rate_pct": 91.23,
+      "minimum_delta_t_sec": 9.5,
+      "median_delta_t_sec": 214.2,
+      "maximum_delta_t_sec": 378.3,
+      "camera_distance_m": 426.8,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C029",
+      "destination_camera": "CAM_S05_C034",
+      "scenario_id": "S05",
+      "candidate_count": 46900,
+      "rejection_count": 4472,
+      "candidate_rate_pct": 91.29,
+      "minimum_delta_t_sec": 5.7,
+      "median_delta_t_sec": 156.5,
+      "maximum_delta_t_sec": 336.0,
+      "camera_distance_m": 253.7,
+      "graph_edge_exists": true
+    },
+    {
+      "source_camera": "CAM_S05_C021",
+      "destination_camera": "CAM_S05_C033",
+      "scenario_id": "S05",
+      "candidate_count": 46386,
+      "rejection_count": 14763,
+      "candidate_rate_pct": 75.86,
+      "minimum_delta_t_sec": 35.2,
+      "median_delta_t_sec": 150.05,
+      "maximum_delta_t_sec": 338.2,
+      "camera_distance_m": 1582.31,
+      "graph_edge_exists": false
+    }
+  ],
+  "top20_camera_pairs_by_rate": [
+    {
+      "source_camera": "CAM_S04_C027",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 3136,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 29.396,
+      "median_delta_t_sec": 65.546,
+      "maximum_delta_t_sec": 100.096,
+      "camera_distance_m": 542.7,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C027",
+      "destination_camera": "CAM_S04_C034",
+      "scenario_id": "S04",
+      "candidate_count": 2695,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 18.721,
+      "median_delta_t_sec": 51.671,
+      "maximum_delta_t_sec": 94.721,
+      "camera_distance_m": 677.74,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C027",
+      "destination_camera": "CAM_S04_C037",
+      "scenario_id": "S04",
+      "candidate_count": 2499,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 49.07,
+      "median_delta_t_sec": 83.87,
+      "maximum_delta_t_sec": 114.07,
+      "camera_distance_m": 833.32,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C027",
+      "destination_camera": "CAM_S04_C036",
+      "scenario_id": "S04",
+      "candidate_count": 2499,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 49.4,
+      "median_delta_t_sec": 80.95,
+      "maximum_delta_t_sec": 119.4,
+      "camera_distance_m": 711.71,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C029",
+      "destination_camera": "CAM_S04_C037",
+      "scenario_id": "S04",
+      "candidate_count": 2346,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 18.879,
+      "median_delta_t_sec": 55.479,
+      "maximum_delta_t_sec": 73.679,
+      "camera_distance_m": 409.26,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C029",
+      "destination_camera": "CAM_S04_C036",
+      "scenario_id": "S04",
+      "candidate_count": 2346,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 19.209,
+      "median_delta_t_sec": 49.359,
+      "maximum_delta_t_sec": 79.009,
+      "camera_distance_m": 286.05,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C021",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1792,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 80.02,
+      "median_delta_t_sec": 104.62,
+      "maximum_delta_t_sec": 144.72,
+      "camera_distance_m": 1582.31,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C027",
+      "destination_camera": "CAM_S04_C038",
+      "scenario_id": "S04",
+      "candidate_count": 1617,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 54.029,
+      "median_delta_t_sec": 87.579,
+      "maximum_delta_t_sec": 134.829,
+      "camera_distance_m": 859.11,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C017",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1600,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 108.575,
+      "median_delta_t_sec": 129.175,
+      "maximum_delta_t_sec": 169.175,
+      "camera_distance_m": 1700.21,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C021",
+      "destination_camera": "CAM_S04_C034",
+      "scenario_id": "S04",
+      "candidate_count": 1540,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 69.345,
+      "median_delta_t_sec": 93.345,
+      "maximum_delta_t_sec": 139.345,
+      "camera_distance_m": 1711.44,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C022",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1536,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 70.571,
+      "median_delta_t_sec": 82.771,
+      "maximum_delta_t_sec": 133.271,
+      "camera_distance_m": 1154.91,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C029",
+      "destination_camera": "CAM_S04_C038",
+      "scenario_id": "S04",
+      "candidate_count": 1518,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 23.838,
+      "median_delta_t_sec": 61.288,
+      "maximum_delta_t_sec": 94.438,
+      "camera_distance_m": 437.54,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C021",
+      "destination_camera": "CAM_S04_C037",
+      "scenario_id": "S04",
+      "candidate_count": 1428,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 99.694,
+      "median_delta_t_sec": 121.594,
+      "maximum_delta_t_sec": 158.694,
+      "camera_distance_m": 1885.32,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C021",
+      "destination_camera": "CAM_S04_C036",
+      "scenario_id": "S04",
+      "candidate_count": 1428,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 100.024,
+      "median_delta_t_sec": 114.824,
+      "maximum_delta_t_sec": 164.024,
+      "camera_distance_m": 1748.21,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C017",
+      "destination_camera": "CAM_S04_C034",
+      "scenario_id": "S04",
+      "candidate_count": 1375,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 97.9,
+      "median_delta_t_sec": 122.05,
+      "maximum_delta_t_sec": 163.8,
+      "camera_distance_m": 1828.82,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C016",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1344,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 119.993,
+      "median_delta_t_sec": 141.843,
+      "maximum_delta_t_sec": 177.693,
+      "camera_distance_m": 2028.39,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C018",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1344,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 79.238,
+      "median_delta_t_sec": 108.138,
+      "maximum_delta_t_sec": 146.638,
+      "camera_distance_m": 1627.98,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C025",
+      "destination_camera": "CAM_S04_C033",
+      "scenario_id": "S04",
+      "candidate_count": 1344,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 44.83,
+      "median_delta_t_sec": 63.13,
+      "maximum_delta_t_sec": 134.93,
+      "camera_distance_m": 1099.24,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C022",
+      "destination_camera": "CAM_S04_C034",
+      "scenario_id": "S04",
+      "candidate_count": 1320,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 59.896,
+      "median_delta_t_sec": 70.096,
+      "maximum_delta_t_sec": 127.896,
+      "camera_distance_m": 1286.23,
+      "graph_edge_exists": false
+    },
+    {
+      "source_camera": "CAM_S04_C021",
+      "destination_camera": "CAM_S04_C029",
+      "scenario_id": "S04",
+      "candidate_count": 1288,
+      "rejection_count": 0,
+      "candidate_rate_pct": 100.0,
+      "minimum_delta_t_sec": 55.015,
+      "median_delta_t_sec": 67.515,
+      "maximum_delta_t_sec": 110.115,
+      "camera_distance_m": 1476.87,
+      "graph_edge_exists": false
+    }
+  ],
+  "temporal_distribution_global": {
+    "min": 0.194,
+    "p01": 7.1,
+    "p05": 21.0,
+    "p25": 62.3,
+    "median": 114.9,
+    "p75": 187.8,
+    "p95": 296.4,
+    "p99": 354.2,
+    "max": 427.1
+  },
+  "temporal_distribution_by_scenario": {
+    "S01": {
+      "min": 0.295,
+      "p01": 1.591,
+      "p05": 5.777,
+      "p25": 28.377,
+      "median": 64.565,
+      "p75": 107.6255,
+      "p95": 170.477,
+      "p99": 191.791,
+      "max": 209.458
+    },
+    "S02": {
+      "min": 0.321,
+      "p01": 1.239,
+      "p05": 4.739,
+      "p25": 26.2395,
+      "median": 66.761,
+      "p75": 109.389,
+      "p95": 169.281,
+      "p99": 189.903,
+      "max": 210.26
+    },
+    "S03": {
+      "min": 0.625,
+      "p01": 2.2423,
+      "p05": 6.2658,
+      "p25": 29.922,
+      "median": 63.515,
+      "p75": 108.221,
+      "p95": 170.9066,
+      "p99": 206.0881,
+      "max": 235.85
+    },
+    "S04": {
+      "min": 0.194,
+      "p01": 3.3267,
+      "p05": 8.7182,
+      "p25": 28.232,
+      "median": 57.633,
+      "p75": 98.331,
+      "p95": 146.4108,
+      "p99": 170.9161,
+      "max": 209.726
+    },
+    "S05": {
+      "min": 0.3,
+      "p01": 9.7,
+      "p05": 24.9,
+      "p25": 67.8,
+      "median": 125.5,
+      "p75": 201.0,
+      "p95": 302.8,
+      "p99": 358.2,
+      "max": 427.1
+    },
+    "S06": {
+      "min": 10.6,
+      "p01": 16.4,
+      "p05": 28.7,
+      "p25": 57.3,
+      "median": 86.6,
+      "p75": 121.5,
+      "p95": 165.6,
+      "p99": 187.1,
+      "max": 199.8
+    }
+  },
+  "speed_distribution_mps": {
+    "min": 0.03,
+    "p01": 0.09,
+    "p05": 0.22,
+    "p25": 2.37,
+    "median": 6.42,
+    "p75": 13.38,
+    "p95": 31.39,
+    "p99": 41.45,
+    "max": 45.0
+  },
+  "speed_distribution_kmh": {
+    "min": 0.11,
+    "p01": 0.32,
+    "p05": 0.79,
+    "p25": 8.53,
+    "median": 23.11,
+    "p75": 48.17,
+    "p95": 113.0,
+    "p99": 149.22,
+    "max": 162.0
+  },
+  "topology_coverage": {
+    "global": {
+      "candidates_with_edge": 1432765,
+      "candidates_without_edge": 5430861,
+      "percentage_with_edge": 20.87,
+      "percentage_without_edge": 79.13
+    },
+    "by_scenario": {
+      "S01": {
+        "candidates_with_edge": 128488,
+        "candidates_without_edge": 13871,
+        "percentage_with_edge": 90.26,
+        "percentage_without_edge": 9.74
+      },
+      "S02": {
+        "candidates_with_edge": 150693,
+        "candidates_without_edge": 33761,
+        "percentage_with_edge": 81.7,
+        "percentage_without_edge": 18.3
+      },
+      "S03": {
+        "candidates_with_edge": 5857,
+        "candidates_without_edge": 7665,
+        "percentage_with_edge": 43.31,
+        "percentage_without_edge": 56.69
+      },
+      "S04": {
+        "candidates_with_edge": 18440,
+        "candidates_without_edge": 216378,
+        "percentage_with_edge": 7.85,
+        "percentage_without_edge": 92.15
+      },
+      "S05": {
+        "candidates_with_edge": 964326,
+        "candidates_without_edge": 4976126,
+        "percentage_with_edge": 16.23,
+        "percentage_without_edge": 83.77
+      },
+      "S06": {
+        "candidates_with_edge": 164961,
+        "candidates_without_edge": 183060,
+        "percentage_with_edge": 47.4,
+        "percentage_without_edge": 52.6
+      }
+    }
+  },
+  "vehicle_type_distribution": {
+    "exact_match": 5529187,
+    "exact_match_pct": 80.56,
+    "mismatch": 1334439,
+    "mismatch_pct": 19.44
+  },
+  "reid_availability": {
+    "both_available_and_compatible": 5966759,
+    "both_available_and_compatible_pct": 86.93,
+    "one_embedding_missing": 802968,
+    "one_embedding_missing_pct": 11.7,
+    "both_embeddings_missing": 53662,
+    "both_embeddings_missing_pct": 0.78,
+    "incompatible_reid_spaces": 40237,
+    "incompatible_reid_spaces_pct": 0.59,
+    "same_compatible_model": 5966759,
+    "c002_candidates_count": 57329
+  },
+  "ocr_availability": {
+    "both_endpoints_available": 7,
+    "both_endpoints_available_pct": 0.0,
+    "origin_only_available": 6704,
+    "origin_only_available_pct": 0.1,
+    "destination_only_available": 6248,
+    "destination_only_available_pct": 0.09,
+    "neither_endpoint_available": 6850667,
+    "neither_endpoint_available_pct": 99.81
+  },
+  "evidence_completeness_distribution": {
+    "MEDIUM (App+ST, No Edge)": {
+      "count": 4869703,
+      "percentage": 70.95
+    },
+    "MEDIUM-HIGH (App+Topo+ST)": {
+      "count": 1094431,
+      "percentage": 15.95
+    },
+    "LOW (ST Only, No App/Topo/OCR)": {
+      "count": 560592,
+      "percentage": 8.17
+    },
+    "LOW-MEDIUM (Topo+ST, No App/OCR)": {
+      "count": 335522,
+      "percentage": 4.89
+    },
+    "HIGH (App+OCR+Topo+ST)": {
+      "count": 2625,
+      "percentage": 0.04
+    },
+    "LOW-MEDIUM (OCR+ST, No App/Edge)": {
+      "count": 566,
+      "percentage": 0.01
+    },
+    "MEDIUM (Topo+OCR+ST, No App)": {
+      "count": 187,
+      "percentage": 0.0
+    }
+  },
+  "candidate_explosion_analysis": {
+    "total_surviving_candidates": 6863626,
+    "drivers": {
+      "A_no_graph_edge_but_spatiotemporal_passes": {
+        "count": 5430861,
+        "percentage": 79.13,
+        "finding": "83.6% of candidates come from non-adjacent camera pairs without direct road-graph edges."
+      },
+      "B_graph_edge_exists": {
+        "count": 1432765,
+        "percentage": 20.87,
+        "finding": "16.4% of candidates correspond to immediate directed physical road transitions."
+      },
+      "C_large_temporal_gap_gt_120s": {
+        "count": 3286075,
+        "percentage": 47.88,
+        "finding": "Substantial candidate volume persists across long time horizons (>120s)."
+      },
+      "D_compatible_reid_available": {
+        "count": 5966759,
+        "percentage": 86.93
+      },
+      "E_no_reid_or_incompatible": {
+        "count": 896867,
+        "percentage": 13.07
+      }
+    }
+  }
+}

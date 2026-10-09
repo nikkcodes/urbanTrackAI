@@ -33,3 +33,11 @@ htmlcov/
 # Scratch & temporary workspace files
 scratch/
 *.avi
+
+# Large datasets & raw handoff outputs (>50MB / GitHub limits)
+UrbanTrack_Member1_Handoff 2/
+UrbanTrack_Member1_Handoff.zip
+results/layer2_candidates/candidate_pairs.json
+results/layer2_candidates/candidate_rejections.json
+results/layer2_association/identity_associations.json
+results/layer2_ingestion/canonical_tracklets.json

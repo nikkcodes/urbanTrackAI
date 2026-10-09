@@ -1,0 +1,388 @@
+{
+  "experiment_name": "c002_aicity_reid_association_evaluation",
+  "evaluated_at": "2026-10-08T17:36:28Z",
+  "frozen_configuration": {
+    "sync_file": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/aicity_ground_truth/cam_timestamp/S01.txt",
+    "calibration_dir": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/aicity_ground_truth/calibration",
+    "gt_dir": "/Users/yanalavivekreddy/Projects/urbantrack-ai/data/aicity_ground_truth/gt",
+    "decision_threshold": 0.7,
+    "confirmed_fusion_threshold": 0.75,
+    "max_time_window_seconds": 7200.0,
+    "min_probability_threshold": 0.65
+  },
+  "control_invariance_verified": true,
+  "scientific_conclusion": {
+    "classification": "B = EVIDENCE BOUNDARY IMPROVEMENT ONLY",
+    "code": "B",
+    "rationale": "Re-ID evidence availability expanded dramatically (+158 GT-positive pairs unlocked, 23,805 candidate pairs unlocked, 16,028 ambiguous pairs decisively rejected), but final cross-camera association F1 remained 0.0000 due to upstream spatiotemporal constraints (167/308 pairs temporally infeasible), vehicle type mismatches (86/308 pairs), and modest cross-camera appearance similarity (max 0.7290 vs frozen 0.70/0.75 threshold). Zero false merges were introduced.",
+    "status_flag": "C002_AICITY_ASSOCIATION_EVALUATION = PASS"
+  },
+  "baseline": {
+    "system_label": "BASELINE (MSMT17 C002)",
+    "observations_count": 384,
+    "total_theoretical_pairs": 73536,
+    "cross_cam_theoretical_pairs": 48639,
+    "candidates_generated": 71645,
+    "candidate_rejections": {
+      "temporal_horizon_exceeded": 0,
+      "simultaneous_different_cameras": 0,
+      "physically_impossible_speed": 0,
+      "incompatible_vehicle_type": 0,
+      "strong_plate_contradiction": 0,
+      "missing_identity_evidence": 1891
+    },
+    "pairwise_decisions": {
+      "REJECTED": 34965,
+      "AMBIGUOUS": 36673,
+      "CONFIRMED": 7
+    },
+    "c002_incompatible_reid_pairs": 23805,
+    "cross_cam_compatible_reid_pairs": 10622,
+    "candidate_recall": {
+      "status": "passed",
+      "candidate_recall": 1.0,
+      "candidate_recall_pct": 100.0,
+      "total_true_cross_pairs": 308,
+      "retrieved_true_cross_pairs": 308,
+      "missed_true_cross_pairs": 0
+    },
+    "cross_camera_identity_metrics": {
+      "evaluation_scope": "cross_camera_pairs",
+      "decision_threshold": 0.7,
+      "evaluated_gt_positives": 308,
+      "evaluated_gt_negatives": 28380,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 308,
+      "true_negatives": 28380,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_merge_rate": 0.0,
+      "false_non_match_rate": 1.0,
+      "cluster_purity": 0.9558,
+      "total_clusters_evaluated": 355,
+      "multi_camera_clusters_formed": 0,
+      "false_discovery_proportion": 0.0
+    },
+    "all_pair_identity_metrics": {
+      "evaluation_scope": "all_pairs",
+      "decision_threshold": 0.7,
+      "evaluated_gt_positives": 400,
+      "evaluated_gt_negatives": 42671,
+      "true_positives": 6,
+      "false_positives": 16,
+      "false_negatives": 394,
+      "true_negatives": 42655,
+      "precision": 0.2727,
+      "recall": 0.015,
+      "f1_score": 0.0284,
+      "false_merge_rate": 0.000375,
+      "false_non_match_rate": 0.985,
+      "cluster_purity": 0.9558,
+      "total_clusters_evaluated": 355,
+      "multi_camera_clusters_formed": 0
+    },
+    "per_camera_pair_breakdown": {
+      "CAM_S01_C001 <-> CAM_S01_C002": {
+        "camera_pair": [
+          "CAM_S01_C001",
+          "CAM_S01_C002"
+        ],
+        "gt_positives": 83,
+        "gt_negatives": 8365,
+        "candidate_positives": 13245,
+        "candidate_gt_retained": 83,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 83,
+        "true_negatives": 8365,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      },
+      "CAM_S01_C002 <-> CAM_S01_C003": {
+        "camera_pair": [
+          "CAM_S01_C002",
+          "CAM_S01_C003"
+        ],
+        "gt_positives": 113,
+        "gt_negatives": 10447,
+        "candidate_positives": 18610,
+        "candidate_gt_retained": 113,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 113,
+        "true_negatives": 10447,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      },
+      "CAM_S01_C001 <-> CAM_S01_C003": {
+        "camera_pair": [
+          "CAM_S01_C001",
+          "CAM_S01_C003"
+        ],
+        "gt_positives": 112,
+        "gt_negatives": 9568,
+        "candidate_positives": 15757,
+        "candidate_gt_retained": 112,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 112,
+        "true_negatives": 9568,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      }
+    },
+    "reid_evidence_analysis_gt_positives": {
+      "total_gt_positive_pairs": 308,
+      "compatible_reid_models": 81,
+      "incompatible_reid_models": 158,
+      "missing_embeddings": 69,
+      "incompatible_vehicle_types": 86,
+      "rejected_temporal_feasibility": 167,
+      "rejected_physical_speed": 0,
+      "decision_counts": {
+        "CONFIRMED": 0,
+        "AMBIGUOUS": 78,
+        "REJECTED": 230
+      },
+      "score_statistics": {
+        "min": 0.0,
+        "max": 0.6003,
+        "mean": 0.1328
+      },
+      "appearance_similarity_statistics": {
+        "count": 81,
+        "min": 0.1567,
+        "max": 0.729,
+        "mean": 0.4475
+      }
+    },
+    "runtimes": {
+      "candidate_generation_ms": 1029.95,
+      "association_ms": 62041.42,
+      "total_evaluation_seconds": 72.88,
+      "peak_memory_mb": 610.86
+    }
+  },
+  "experiment": {
+    "system_label": "EXPERIMENT (AICity C002)",
+    "observations_count": 384,
+    "total_theoretical_pairs": 73536,
+    "cross_cam_theoretical_pairs": 48639,
+    "candidates_generated": 71645,
+    "candidate_rejections": {
+      "temporal_horizon_exceeded": 0,
+      "simultaneous_different_cameras": 0,
+      "physically_impossible_speed": 0,
+      "incompatible_vehicle_type": 0,
+      "strong_plate_contradiction": 0,
+      "missing_identity_evidence": 1891
+    },
+    "pairwise_decisions": {
+      "REJECTED": 50993,
+      "AMBIGUOUS": 20645,
+      "CONFIRMED": 7
+    },
+    "c002_incompatible_reid_pairs": 0,
+    "cross_cam_compatible_reid_pairs": 34427,
+    "candidate_recall": {
+      "status": "passed",
+      "candidate_recall": 1.0,
+      "candidate_recall_pct": 100.0,
+      "total_true_cross_pairs": 308,
+      "retrieved_true_cross_pairs": 308,
+      "missed_true_cross_pairs": 0
+    },
+    "cross_camera_identity_metrics": {
+      "evaluation_scope": "cross_camera_pairs",
+      "decision_threshold": 0.7,
+      "evaluated_gt_positives": 308,
+      "evaluated_gt_negatives": 28380,
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 308,
+      "true_negatives": 28380,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1_score": 0.0,
+      "false_merge_rate": 0.0,
+      "false_non_match_rate": 1.0,
+      "cluster_purity": 0.9558,
+      "total_clusters_evaluated": 354,
+      "multi_camera_clusters_formed": 0,
+      "false_discovery_proportion": 0.0
+    },
+    "all_pair_identity_metrics": {
+      "evaluation_scope": "all_pairs",
+      "decision_threshold": 0.7,
+      "evaluated_gt_positives": 400,
+      "evaluated_gt_negatives": 42671,
+      "true_positives": 6,
+      "false_positives": 16,
+      "false_negatives": 394,
+      "true_negatives": 42655,
+      "precision": 0.2727,
+      "recall": 0.015,
+      "f1_score": 0.0284,
+      "false_merge_rate": 0.000375,
+      "false_non_match_rate": 0.985,
+      "cluster_purity": 0.9558,
+      "total_clusters_evaluated": 354,
+      "multi_camera_clusters_formed": 0
+    },
+    "per_camera_pair_breakdown": {
+      "CAM_S01_C001 <-> CAM_S01_C002": {
+        "camera_pair": [
+          "CAM_S01_C001",
+          "CAM_S01_C002"
+        ],
+        "gt_positives": 83,
+        "gt_negatives": 8365,
+        "candidate_positives": 13245,
+        "candidate_gt_retained": 83,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 83,
+        "true_negatives": 8365,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      },
+      "CAM_S01_C002 <-> CAM_S01_C003": {
+        "camera_pair": [
+          "CAM_S01_C002",
+          "CAM_S01_C003"
+        ],
+        "gt_positives": 113,
+        "gt_negatives": 10447,
+        "candidate_positives": 18610,
+        "candidate_gt_retained": 113,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 113,
+        "true_negatives": 10447,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      },
+      "CAM_S01_C001 <-> CAM_S01_C003": {
+        "camera_pair": [
+          "CAM_S01_C001",
+          "CAM_S01_C003"
+        ],
+        "gt_positives": 112,
+        "gt_negatives": 9568,
+        "candidate_positives": 15757,
+        "candidate_gt_retained": 112,
+        "candidate_recall": 1.0,
+        "candidate_recall_pct": 100.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 112,
+        "true_negatives": 9568,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "false_merge_rate": 0.0,
+        "false_discovery_proportion": 0.0
+      }
+    },
+    "reid_evidence_analysis_gt_positives": {
+      "total_gt_positive_pairs": 308,
+      "compatible_reid_models": 239,
+      "incompatible_reid_models": 0,
+      "missing_embeddings": 69,
+      "incompatible_vehicle_types": 86,
+      "rejected_temporal_feasibility": 167,
+      "rejected_physical_speed": 0,
+      "decision_counts": {
+        "CONFIRMED": 0,
+        "AMBIGUOUS": 34,
+        "REJECTED": 274
+      },
+      "score_statistics": {
+        "min": 0.0,
+        "max": 0.6003,
+        "mean": 0.1126
+      },
+      "appearance_similarity_statistics": {
+        "count": 239,
+        "min": 0.0898,
+        "max": 0.729,
+        "mean": 0.3425
+      }
+    },
+    "runtimes": {
+      "candidate_generation_ms": 977.91,
+      "association_ms": 68375.83,
+      "total_evaluation_seconds": 79.36,
+      "peak_memory_mb": 611.6
+    }
+  },
+  "deltas": {
+    "cross_camera": {
+      "delta_tp": 0,
+      "delta_fp": 0,
+      "delta_fn": 0,
+      "delta_tn": 0,
+      "delta_precision": 0.0,
+      "delta_recall": 0.0,
+      "delta_f1": 0.0,
+      "delta_fmr": 0.0,
+      "delta_cluster_purity": 0.0
+    },
+    "per_camera_pair": {
+      "CAM_S01_C001 <-> CAM_S01_C002": {
+        "delta_tp": 0,
+        "delta_fp": 0,
+        "delta_fn": 0,
+        "delta_precision": 0.0,
+        "delta_recall": 0.0,
+        "delta_f1": 0.0,
+        "delta_fmr": 0.0
+      },
+      "CAM_S01_C002 <-> CAM_S01_C003": {
+        "delta_tp": 0,
+        "delta_fp": 0,
+        "delta_fn": 0,
+        "delta_precision": 0.0,
+        "delta_recall": 0.0,
+        "delta_f1": 0.0,
+        "delta_fmr": 0.0
+      },
+      "CAM_S01_C001 <-> CAM_S01_C003": {
+        "delta_tp": 0,
+        "delta_fp": 0,
+        "delta_fn": 0,
+        "delta_precision": 0.0,
+        "delta_recall": 0.0,
+        "delta_f1": 0.0,
+        "delta_fmr": 0.0
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "overall_status": "PASS",
+  "invariants": {
+    "INV-01_SCENARIO_ISOLATION": {
+      "passed": true,
+      "violations_count": 0,
+      "details": "All tracklets strictly inherit scenario from camera prefix."
+    },
+    "INV-02_NO_INCOMPATIBLE_REID_COMPARISON": {
+      "passed": true,
+      "tested_pair": "S01:CAM_S01_C001:1 vs S01:CAM_S01_C002:261",
+      "compatibility_result": false,
+      "details": "Strict prohibition of MSMT17 vs AICity cosine similarity verified."
+    },
+    "INV-04_NO_ALPHABETICAL_TEMPORAL_ASSUMPTION": {
+      "passed": true,
+      "tested_pairs_count": 3,
+      "details": "Chronological order derived strictly from synchronized start seconds."
+    },
+    "INV-05_SYNCHRONIZED_TIMESTAMPS_EXPLICIT": {
+      "passed": true,
+      "violations_count": 0,
+      "details": "All synchronized timestamps are valid finite floats and formatted strings."
+    },
+    "INV-06_HETEROGENEOUS_FPS_HANDLED": {
+      "passed": true,
+      "s03_c015_fps": 8.0,
+      "other_cameras_fps": 10.0,
+      "details": "CAM_S03_C015 correctly evaluated at 8.0 FPS; 64 cameras at 10.0 FPS."
+    },
+    "INV-07_MISSING_EMBEDDINGS_NON_FATAL": {
+      "passed": true,
+      "null_embeddings_count": 868,
+      "details": "868 tracklets without embeddings preserved safely as CanonicalTracklets."
+    },
+    "INV-08_MISSING_OCR_NON_FATAL": {
+      "passed": true,
+      "missing_ocr_count": 7440,
+      "details": "7440 tracklets without OCR preserved safely without blocking."
+    },
+    "INV-10_LOCAL_TRACK_ID_PRESERVED": {
+      "passed": true,
+      "violations_count": 0,
+      "details": "All global_vehicle_id initialized to null; local track_ids unmodified."
+    }
+  },
+  "structural_checks": {
+    "cameras_found": 65,
+    "cameras_expected": 65,
+    "cameras_match": true,
+    "tracklets_found": 7448,
+    "tracklets_expected": 7448,
+    "tracklets_match": true,
+    "duplicate_keys": [],
+    "duplicate_keys_count": 0,
+    "valid_embeddings_count": 6580,
+    "embedding_nan_inf_count": 0,
+    "embedding_wrong_dim_count": 0,
+    "embedding_norm_not_one_count": 0
+  },
+  "error_count": 0,
+  "errors": []
+}

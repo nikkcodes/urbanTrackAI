@@ -1,0 +1,341 @@
+{
+  "status": "COMPLETED",
+  "execution_metrics": {
+    "total_candidates_entering_fusion": 3780333,
+    "runtime_seconds": 125.73,
+    "peak_memory_mb": 395.27,
+    "throughput_candidates_per_second": 30067.07
+  },
+  "decision_breakdown": {
+    "CONFIRMED": 263906,
+    "AMBIGUOUS": 3466361,
+    "REJECTED": 50066,
+    "percentages": {
+      "confirmed_pct": 6.98,
+      "ambiguous_pct": 91.69,
+      "rejected_pct": 1.32
+    }
+  },
+  "reasons_breakdown": {
+    "AMBIGUOUS_INCOMPATIBLE_REID_SPACES": 35161,
+    "AMBIGUOUS_MISSING_OCR_EVIDENCE": 3466361,
+    "AMBIGUOUS_VEHICLE_TYPE_NOISE": 665568,
+    "CONCURRENT_INTERSECTION_TRANSIT": 145684,
+    "AMBIGUOUS_MODERATE_APPEARANCE_SIMILARITY": 1763823,
+    "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING": 544453,
+    "CONFIRM_STRONG_APPEARANCE_AND_SPATIOTEMPORAL": 263906,
+    "VEHICLE_TYPE_AGREEMENT": 258762,
+    "TOPOLOGY_EDGE_SUPPORTED": 145862,
+    "ADJACENT_FOV_BOUNDARY_HANDOFF": 11405,
+    "REJECT_LOW_ASSOCIATION_SCORE": 46454,
+    "LOW_APPEARANCE_SIMILARITY": 24831,
+    "VEHICLE_TYPE_MISMATCH": 43838,
+    "REJECT_DISSIMILAR_APPEARANCE": 3607,
+    "REJECT_OCR_CONTRADICTION": 5
+  },
+  "missing_modalities": {
+    "ocr": 3780328,
+    "appearance": 551072
+  },
+  "incompatible_modalities": {
+    "appearance": 35336
+  },
+  "policy_thresholds": {
+    "threshold_confirmed": 0.68,
+    "threshold_rejected": 0.4,
+    "min_appearance_for_confirmation": 0.45,
+    "min_ocr_for_confirmation": 0.85,
+    "dissimilar_appearance_threshold": 0.18,
+    "ocr_contradiction_rejection": true
+  },
+  "s01_ground_truth_validation": {
+    "dataset": "AI City Challenge 2022 Track 1 / CityFlowV2 S01",
+    "total_gt_positives": 308,
+    "gt_positives_reaching_fusion": 308,
+    "candidate_recall_percentage": 100.0,
+    "gt_decision_breakdown": {
+      "CONFIRMED": 34,
+      "AMBIGUOUS": 274,
+      "REJECTED": 0
+    },
+    "confusion_matrix": {
+      "TP_confirmed_gt": 34,
+      "FP_false_merge": 3584,
+      "FN_rejected_gt": 0,
+      "TN_rejected_neg": 1389,
+      "ambiguous_gt_preserved": 274,
+      "ambiguous_neg_preserved": 122183
+    },
+    "metrics": {
+      "precision_percentage": 0.94,
+      "confirmed_recall_percentage": 11.04,
+      "permissive_recall_percentage": 100.0,
+      "f1_score": 0.0173,
+      "false_merge_rate_percentage": 99.06,
+      "cluster_purity_percentage": 0.94
+    }
+  },
+  "hard_negatives_sample": [
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:261",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:261",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.8286,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "AMBIGUOUS_VEHICLE_TYPE_NOISE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:268",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:268",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:267",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:267",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:265",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:265",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:266",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:266",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9071,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:270",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:270",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:269",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:269",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9071,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:281",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:281",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:279",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:279",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:283",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:283",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.7015,
+      "appearance_cosine": 0.3765,
+      "reason_codes": [
+        "AMBIGUOUS_MODERATE_APPEARANCE_SIMILARITY",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:277",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:277",
+      "decision": "CONFIRMED",
+      "association_score": 0.7316,
+      "appearance_cosine": 0.4607,
+      "reason_codes": [
+        "CONFIRM_STRONG_APPEARANCE_AND_SPATIOTEMPORAL",
+        "VEHICLE_TYPE_AGREEMENT",
+        "TOPOLOGY_EDGE_SUPPORTED"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:278",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:278",
+      "decision": "CONFIRMED",
+      "association_score": 0.7403,
+      "appearance_cosine": 0.4874,
+      "reason_codes": [
+        "CONFIRM_STRONG_APPEARANCE_AND_SPATIOTEMPORAL",
+        "VEHICLE_TYPE_AGREEMENT",
+        "TOPOLOGY_EDGE_SUPPORTED"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:284",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:284",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9071,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:271",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:271",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:274",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:274",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:289",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:289",
+      "decision": "AMBIGUOUS",
+      "association_score": 1.0,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:275",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:275",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9071,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C004:12",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C004:12",
+      "decision": "CONFIRMED",
+      "association_score": 0.7027,
+      "appearance_cosine": 0.4874,
+      "reason_codes": [
+        "CONFIRM_STRONG_APPEARANCE_AND_SPATIOTEMPORAL",
+        "VEHICLE_TYPE_AGREEMENT",
+        "TOPOLOGY_EDGE_SUPPORTED"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C002:277",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C002:277",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9071,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_INCOMPATIBLE_REID_SPACES",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "CONCURRENT_INTERSECTION_TRANSIT"
+      ]
+    },
+    {
+      "candidate_id": "S01:CAM_S01_C001:1__S01:CAM_S01_C005:290",
+      "origin_tracklet": "S01:CAM_S01_C001:1",
+      "destination_tracklet": "S01:CAM_S01_C005:290",
+      "decision": "AMBIGUOUS",
+      "association_score": 0.9786,
+      "appearance_cosine": null,
+      "reason_codes": [
+        "AMBIGUOUS_MISSING_APPEARANCE_EMBEDDING",
+        "AMBIGUOUS_MISSING_OCR_EVIDENCE",
+        "ADJACENT_FOV_BOUNDARY_HANDOFF"
+      ]
+    }
+  ]
+}
